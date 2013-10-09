@@ -1,0 +1,61 @@
+from orges.paramspec import ParamSpec, DuplicateParamError
+from orges.paramspec import FloatInterval, FloatStep
+
+from nose.tools import raises
+
+def test_float_unique_name_asks_for_interval():
+  param_spec = ParamSpec()  
+  obj = param_spec.float("a")
+  assert isinstance(obj, FloatInterval)
+
+def test_float_interval_asks_for_step():  
+  param_spec = ParamSpec()
+  need_interval = param_spec.float("a")
+  obj = need_interval.interval((0, 1))
+  assert isinstance(obj, FloatStep)
+
+def test_float_given_name_saves_by_name():
+  param_spec = ParamSpec()
+  param_spec.float("a")
+  assert "a" in param_spec.params
+
+def test_float_parameter_has_type_float():
+  param_spec = ParamSpec()
+  param_spec.float("a")
+  assert param_spec.params["a"].type == "float"
+
+def test_float_only_name_has_no_interval():
+  param_spec = ParamSpec()
+  param_spec.float("a")
+  assert param_spec.params["a"].interval is None
+
+def test_all_float_parameter_has_no_interval():
+  param_spec = ParamSpec()
+  param_spec.float("a").all()
+  assert param_spec.params["a"].interval is None  
+
+def test_float_speficied_interval_saves_it():
+  param_spec = ParamSpec()
+  param_spec.float("a").interval((-1,1))
+  assert param_spec.params["a"].interval == (-1,1)
+
+def test_float_speficied_step_saves_it():
+  param_spec = ParamSpec()
+  param_spec.float("a").interval((-1,1  )).step(0.1)
+  assert param_spec.params["a"].step == 0.1
+
+def test_float_multiple_params_are_ordered():
+  param_spec = ParamSpec()
+
+  param_spec.float("a")
+  param_spec.float("b")
+  param_spec.float("c")
+
+  assert list(param_spec.params) == ["a", "b", "c"]
+
+@raises(DuplicateParamError)
+def test_float_duplicate_name_raises_error():
+  param_spec = ParamSpec()
+  param_spec.float("a")
+  param_spec.float("a")
+
