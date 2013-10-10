@@ -26,7 +26,7 @@ class ParamSpec(object):
     param_spec.float("c").interval(0, None)
 
   The order the parameters are specified matters since they are used to invoke
-  the actual algorithm. That is, given a function ``f(a, b)`` the paramter "a"
+  the actual algorithm. That is, given a function ``f(a, b)`` the parameter "a"
   should be specified before the parameter "b".
 
   """
@@ -48,33 +48,44 @@ class ParamSpec(object):
     self.add_param(param)
     return IntInterval(param)
 
+  def bool(self, name):
+    param = Param(name, "bool")
+    self.add_param(param)
+    return None
+
 class DuplicateParamError(Exception):
   """The error that occurs when two parameters with the same name are specified."""
 
   def __init__(self, param):
-    Exception.__init__(self, "Duplicate paramter: %s" % (param.name,))
+    Exception.__init__(self, "Duplicate parameter: %s" % (param.name,))
     self.param = param
 
 class NonIntIntervalError(Exception):
   """The error that occurs when a non-intergral bound is specified"""
 
   def __init__(self, param, interval, index):
-      Exception.__init__(self, "...")
-      self.param = param
+    Exception.__init__(self, 
+      "Interval [%s, %s] contains non-interger for parameter: %s"
+      % (interval[0], interval[1], param.name))
+    self.param = param
 
 class NonIntStepError(Exception):
   """The error that occurs when a non-integral is specified"""
 
   def __init__(self, param, step):
-      Exception.__init__(self, "")
-      self.param = param      
+    Exception.__init__(self, 
+      "Step size (%s) is not an integer for parameter: %s"
+      % (step, param.name))
+    self.param = param      
 
 class InvalidIntervalError(Exception):
   """The error that occurs when an invalid interval is specified"""
 
   def __init__(self, param, interval):
-      Exception.__init__(self, "")
-      self.param = param
+    Exception.__init__(self, 
+      "Lower bound (%s) is larger than upper bound (%s) for parameter: %s" 
+      % (interval[0], interval[1], param.name))
+    self.param = param
 
 class Param(object):
   """A specified parameter consisting of a type, an interval and a step."""
@@ -104,7 +115,7 @@ class Param(object):
   @property
   def interval(self):
     """
-    The interval specifying the allowed values of the paramter
+    The interval specifying the allowed values of the parameter
 
     The interval is either a pair (from, to) that represents the closed interval
     [from, to] or None specifying that all values are valid. If ``from`` or
@@ -119,7 +130,7 @@ class Param(object):
     The step size of the parameter.
 
     The step size represents the smallest meaningful change in the value of the
-    paramter. A smaller change than the step size is expected to have no
+    parameter. A smaller change than the step size is expected to have no
     significant effect on the outcome of the algorithm or might not be even
     valid.
 
@@ -154,15 +165,15 @@ class IntInterval(object):
     self.param = param
 
   def interval(self, interval):
-    if interval[0] is not None and interval[1] is not None\
-       and interval[0] > interval[1]:
-      raise InvalidIntervalError(self.param, interval)
-
     if interval[0] is not None and not isinstance(interval[0], Integral):
       raise NonIntIntervalError(self.param, interval, 0)
 
     if interval[1] is not None and not isinstance(interval[1], Integral):
-      raise NonIntIntervalError(self.param, interval, 1)      
+      raise NonIntIntervalError(self.param, interval, 1)
+
+    if interval[0] is not None and interval[1] is not None\
+       and interval[0] > interval[1]:
+      raise InvalidIntervalError(self.param, interval)      
 
     self.param._interval = interval
     return IntStep(self.param)
@@ -180,3 +191,8 @@ class IntStep(object):
 
     self.param._step = step
     return None
+
+if __name__ == '__main__':
+  param_spec = ParamSpec()
+  param_spec.int("a")
+  param_spec.int("a")

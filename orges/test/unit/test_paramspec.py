@@ -96,3 +96,9 @@ def test_int_right_bounded_interval_raises_nothing():
 def test_int_float_step_raises_error():
   param_spec = ParamSpec()
   param_spec.int("a").all().step(0.1)
+
+@raises(NonIntIntervalError)
+def test_int_invalid_float_interval_raises_float_error():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((0.2, 0.1))
+
