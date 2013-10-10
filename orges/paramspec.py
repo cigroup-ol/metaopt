@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from numbers import Integral
 
 class ParamSpec(object):
   """
@@ -12,7 +13,7 @@ class ParamSpec(object):
     # A float parameter named "a" with values between 0 and 1
     param_spec.float("a").interval((0, 1))
 
-    # The values of "a" should only be multiples of 0.1
+    # The values of "a" should only be multiple of 0.1
     param_spec.float("a").interval((0, 1)).step(0.1)
 
     # A float parameter named "b" with all values being allowed
@@ -20,6 +21,9 @@ class ParamSpec(object):
 
     # The values of "b" should only be changed in steps of size 0.2
     param_spec.float("b").all().step(0.2)
+
+    # A float parameter named "c" with no upper bound
+    param_spec.float("c").interval(0, None)
 
   The order the parameters are specified matters since they are used to invoke
   the actual algorithm. That is, given a function ``f(a, b)`` the paramter "a"
@@ -39,12 +43,38 @@ class ParamSpec(object):
     self.add_param(param)    
     return FloatInterval(param)
 
+  def int(self, name):
+    param = Param(name, "int")
+    self.add_param(param)
+    return IntInterval(param)
+
 class DuplicateParamError(Exception):
   """The error that occurs when two parameters with the same name are specified."""
 
   def __init__(self, param):
     Exception.__init__(self, "Duplicate paramter: %s" % (param.name,))
     self.param = param
+
+class NonIntIntervalError(Exception):
+  """The error that occurs when a non-intergral bound is specified"""
+
+  def __init__(self, param, interval, index):
+      Exception.__init__(self, "...")
+      self.param = param
+
+class NonIntStepError(Exception):
+  """The error that occurs when a non-integral is specified"""
+
+  def __init__(self, param, step):
+      Exception.__init__(self, "")
+      self.param = param      
+
+class InvalidIntervalError(Exception):
+  """The error that occurs when an invalid interval is specified"""
+
+  def __init__(self, param, interval):
+      Exception.__init__(self, "")
+      self.param = param
 
 class Param(object):
   """A specified parameter consisting of a type, an interval and a step."""
@@ -53,7 +83,7 @@ class Param(object):
     self._name = name
     self._type = type
 
-    self._interval = None
+    self._interval = (None, None)
     self._step = None
 
   @property
@@ -77,7 +107,8 @@ class Param(object):
     The interval specifying the allowed values of the paramter
 
     The interval is either a pair (from, to) that represents the closed interval
-    [from, to] or None specifying that all values are valid.
+    [from, to] or None specifying that all values are valid. If ``from`` or
+    ``to`` is None there is no lower or upper bound.
 
     """
     return self._interval
@@ -94,13 +125,16 @@ class Param(object):
 
     """
     return self._step
-  
 
 class FloatInterval(object):
   def __init__(self, param):
     self.param = param
   
   def interval(self, interval):
+    if interval[0] is not None and interval[1] is not None\
+       and interval[0] > interval[1]:
+      raise InvalidIntervalError(self.param, interval)
+
     self.param._interval = interval
     return FloatStep(self.param)
 
@@ -112,5 +146,37 @@ class FloatStep(object):
     self.param = param
 
   def step(self, step):
+    self.param._step = step
+    return None
+
+class IntInterval(object):
+  def __init__(self, param):
+    self.param = param
+
+  def interval(self, interval):
+    if interval[0] is not None and interval[1] is not None\
+       and interval[0] > interval[1]:
+      raise InvalidIntervalError(self.param, interval)
+
+    if interval[0] is not None and not isinstance(interval[0], Integral):
+      raise NonIntIntervalError(self.param, interval, 0)
+
+    if interval[1] is not None and not isinstance(interval[1], Integral):
+      raise NonIntIntervalError(self.param, interval, 1)      
+
+    self.param._interval = interval
+    return IntStep(self.param)
+
+  def all(self):
+    return IntStep(self.param)
+
+class IntStep(object):
+  def __init__(self, param):
+    self.param = param
+
+  def step(self, step):
+    if not isinstance(step, Integral):
+      raise NonIntStepError(self.param, step)
+
     self.param._step = step
     return None

@@ -1,4 +1,6 @@
-from orges.paramspec import ParamSpec, DuplicateParamError
+from orges.paramspec import ParamSpec
+from orges.paramspec import DuplicateParamError, InvalidIntervalError
+from orges.paramspec import NonIntIntervalError, NonIntStepError
 from orges.paramspec import FloatInterval, FloatStep
 
 from nose.tools import raises
@@ -27,12 +29,12 @@ def test_float_parameter_has_type_float():
 def test_float_only_name_has_no_interval():
   param_spec = ParamSpec()
   param_spec.float("a")
-  assert param_spec.params["a"].interval is None
+  assert param_spec.params["a"].interval == (None, None)
 
 def test_all_float_parameter_has_no_interval():
   param_spec = ParamSpec()
   param_spec.float("a").all()
-  assert param_spec.params["a"].interval is None  
+  assert param_spec.params["a"].interval == (None, None)
 
 def test_float_speficied_interval_saves_it():
   param_spec = ParamSpec()
@@ -41,7 +43,7 @@ def test_float_speficied_interval_saves_it():
 
 def test_float_speficied_step_saves_it():
   param_spec = ParamSpec()
-  param_spec.float("a").interval((-1,1  )).step(0.1)
+  param_spec.float("a").interval((-1,1)).step(0.1)
   assert param_spec.params["a"].step == 0.1
 
 def test_float_multiple_params_are_ordered():
@@ -59,3 +61,38 @@ def test_float_duplicate_name_raises_error():
   param_spec.float("a")
   param_spec.float("a")
 
+@raises(InvalidIntervalError)
+def test_float_invalid_interval_raises_error():
+  param_spec = ParamSpec()
+  param_spec.float("a").interval((0.1, 0.0))  
+
+@raises(InvalidIntervalError)
+def test_int_invalid_interval_raises_error():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((2, 1))  
+
+@raises(NonIntIntervalError)
+def test_int_float_interval_raises_error():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((0.1, 0.9))
+
+def test_float_left_bounded_interval_raises_nothing():
+  param_spec = ParamSpec()
+  param_spec.float("a").interval((0.1, None))
+
+def test_float_right_bounded_interval_raises_nothing():
+  param_spec = ParamSpec()
+  param_spec.float("a").interval((None, 0.1))
+
+def test_int_left_bounded_interval_raises_nothing():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((1, None))
+
+def test_int_right_bounded_interval_raises_nothing():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((None, 1))  
+
+@raises(NonIntStepError)
+def test_int_float_step_raises_error():
+  param_spec = ParamSpec()
+  param_spec.int("a").all().step(0.1)
