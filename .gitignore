@@ -34,3 +34,11 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# VIM specific ignores
+*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
