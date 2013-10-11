@@ -1,11 +1,12 @@
 #!/bin/python
 
-"""ProcessQueue - Syncronizing workers through Queues"""
+"""
+ProcessQueue - runs workers through queues
+"""
 
 from __future__ import division
 from __future__ import print_function
 from multiprocessing import Process, Queue, cpu_count
-from Queue import Empty
 from collections import namedtuple
 import time
 import random
@@ -51,9 +52,8 @@ def worker_f(index, queue_tasks, queue_results):
     while True:
         args = queue_tasks.get()
         if (args == 'DONE'):
-            queue_results.put('DONE')
+            queue_results.put(Result(index, 'DONE'))
             break
-        queue_results.put('BUSY')
 
         # execute payload
         result = f(args)
@@ -65,6 +65,8 @@ def worker_f(index, queue_tasks, queue_results):
 # data structure for a worker process and attached queues
 Worker = namedtuple("Worker", ["id", "process", "queue_tasks", "queue_results"])
 
+# data struture for a pool of workers
+WorkerPool = namedtuple("WorkerPool", ["workers", "queue_results"])
 
 def fill_worker_pool(process_count):
     """Returns a tuple consisting of workers and their common result queue."""
@@ -82,7 +84,7 @@ def fill_worker_pool(process_count):
         worker_process.start()
         workers.append(Worker(worker_index, worker_process, queue_tasks, \
                               queue_results))
-    return workers
+    return (WorkerPool(workers, queue_results))
 
 
 def send_tasks(worker_pool):
@@ -99,29 +101,37 @@ def send_tasks(worker_pool):
     }
 
     # fill each worker's queue with task messages
-    for worker in worker_pool:
+    for worker in worker_pool.workers:
         worker.queue_tasks.put(args)
         worker.queue_tasks.put("DONE")
 
 
-def poll_workers(worker_pool):
-    """Polls all workers for results, till they are finished."""
+def listen_to_workers(worker_pool):
+    """Listens to the result queue for all workers and dispatches handling."""
     # handle feedback from the workers
-    while len(worker_pool):
-        for (list_index, worker)  in enumerate(worker_pool):
-            # get one message, or move on to the next worker
-            try:
-                # do not wait for a message
-                msg = worker.queue_results.get_nowait()
-            except Empty:
-                continue
+    worker_done_count = 0
+    while len(worker_pool.workers) != worker_done_count:
+        # get a message from the queue
+        result = worker_pool.queue_results.get()
 
-            # handle finished workers
-            if msg == "DONE":
-                worker.process.join()
-                print("Worker %i finished after %f seconds." % (worker.id, time.time() - _start))
-                worker_pool.pop(list_index)
-                break
+        # handle finished workers
+        if result.performance == "DONE":
+            worker = worker_pool.workers[result.id]
+            worker.process.join()
+            print("Worker %i finished after %f seconds." % \
+                  (result.id, time.time() - _start))
+            worker_pool.workers[result.id] = None  # delete reference
+            worker_done_count += 1
+            continue
+
+        # handle all other results
+        handle_result(result)
+
+
+def handle_result(result):
+    """Handles a result"""
+    #TODO do actually handle the results
+    pass
 
 
 if __name__ == '__main__':
@@ -134,7 +144,7 @@ if __name__ == '__main__':
     send_tasks(worker_pool)
 
     # get results
-    poll_workers(worker_pool)
+    listen_to_workers(worker_pool)
 
     print("Sending a task to %i process workers via a Queue() took %s seconds" % \
           (PROCESS_COUNT, (time.time() - _start)))
