@@ -3,6 +3,7 @@
 """ProcessQueue - Syncronizing workers through Queues"""
 
 from __future__ import division
+from __future__ import print_function
 from multiprocessing import Process, Queue, cpu_count
 from Queue import Empty
 from collections import namedtuple
@@ -107,17 +108,18 @@ def poll_workers(worker_pool):
     """Polls all workers for results, till they are finished."""
     # handle feedback from the workers
     while len(worker_pool):
-        for (list_index, (worker_index, (worker)))  in enumerate(worker_pool):
+        for (list_index, worker)  in enumerate(worker_pool):
             # get one message, or move on to the next worker
             try:
-                msg = worker.queue_results.get_nowait()  # do not wait for a message
+                # do not wait for a message
+                msg = worker.queue_results.get_nowait()
             except Empty:
                 continue
-                
+
             # handle finished workers
             if msg == "DONE":
                 worker.process.join()
-                print "Worker %i finished after %f seconds." % (worker_index, time.time() - _start)
+                print("Worker %i finished after %f seconds." % (worker.id, time.time() - _start))
                 worker_pool.pop(list_index)
                 break
 
@@ -134,5 +136,5 @@ if __name__ == '__main__':
     # get results
     poll_workers(worker_pool)
 
-    print "Sending %s tasks to %i process workers via a Queue() took %s seconds" % \
-          (MSG_COUNT, PROCESS_COUNT, (time.time() - _start))
+    print("Sending a task to %i process workers via a Queue() took %s seconds" % \
+          (PROCESS_COUNT, (time.time() - _start)))
