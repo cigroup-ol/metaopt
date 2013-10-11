@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from inspect import getargspec
 from numbers import Integral
 
 class ParamSpec(object):
@@ -33,10 +34,25 @@ class ParamSpec(object):
   def __init__(self, f=None):
     self.params = OrderedDict()
 
+    if f is not None:
+      self.infer_params(f)
+
   def add_param(self, param):
     if param.name in self.params:
       raise DuplicateParamError(param)
     self.params[param.name] = param
+
+  def infer_params(self, f):
+    args, vargs, kwargs, _ = getargspec(f)
+
+    if vargs is not None:
+      raise InferNotPossibleError("Cannot infer parameters for variable arguments.")
+
+    if kwargs is not None:
+      raise InferNotPossibleError("Cannot infer parameters for keyword arguments.")
+
+    for arg in args:
+      self.add_param(Param(arg, "float"))
 
   def float(self, name):
     param = Param(name, "float")
@@ -86,6 +102,11 @@ class InvalidIntervalError(Exception):
       "Lower bound (%s) is larger than upper bound (%s) for parameter: %s" 
       % (interval[0], interval[1], param.name))
     self.param = param
+
+class InferNotPossibleError(Exception):
+  """The error that occurs when parameters cannot be infered"""
+  def __init__(self, msg):
+    Exception.__init__(self, msg)
 
 class Param(object):
   """A specified parameter consisting of a type, an interval and a step."""
@@ -193,6 +214,4 @@ class IntStep(object):
     return None
 
 if __name__ == '__main__':
-  param_spec = ParamSpec()
-  param_spec.int("a")
-  param_spec.int("a")
+  pass

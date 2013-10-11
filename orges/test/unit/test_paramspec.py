@@ -1,6 +1,7 @@
 from orges.paramspec import ParamSpec
 from orges.paramspec import DuplicateParamError, InvalidIntervalError
 from orges.paramspec import NonIntIntervalError, NonIntStepError
+from orges.paramspec import InferNotPossibleError
 from orges.paramspec import FloatInterval, FloatStep
 
 from nose.tools import raises
@@ -102,3 +103,39 @@ def test_int_invalid_float_interval_raises_float_error():
   param_spec = ParamSpec()
   param_spec.int("a").interval((0.2, 0.1))
 
+def test_init_given_regular_func_infers_params():
+  def f(a, b, c):
+    pass
+
+  param_spec = ParamSpec(f)
+  assert "a" in param_spec.params
+  assert "b" in param_spec.params
+  assert "c" in param_spec.params
+
+@raises(InferNotPossibleError)
+def test_init_given_kwargs_func_raises_error():
+  def f(**kwargs):
+    pass
+
+  param_spec = ParamSpec(f)
+
+@raises(InferNotPossibleError)
+def test_init_given_kwargs_and_args_func_raises_error():
+  def f(a, b, c, **kwargs):
+    pass
+
+  param_spec = ParamSpec(f)  
+
+@raises(InferNotPossibleError)
+def test_init_given_vargs_func_raises_error():
+  def f(*vargs):
+    pass
+
+  param_spec = ParamSpec(f)
+
+@raises(InferNotPossibleError)
+def test_init_given_vargs_and_args_func_raises_error():
+  def f(a, b, c, *vargs):
+    pass
+
+  param_spec = ParamSpec(f)  
