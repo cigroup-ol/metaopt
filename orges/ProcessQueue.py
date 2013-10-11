@@ -1,4 +1,7 @@
 #!/bin/python
+
+"""ProcessQueue - Syncronizing workers through Queues"""
+
 from __future__ import division
 from multiprocessing import Process, Queue, cpu_count
 from Queue import Empty
@@ -7,7 +10,7 @@ import random
 
 from test.algorithms.saes import f
 
-# Configuration
+# (Semi Auto) Configuration
 
 try:
     PROCESS_COUNT = cpu_count()  # number of parallel processes
@@ -19,12 +22,12 @@ MSG_COUNT = 3  # number of task messages per Queue
 def worker_delay(queue_tasks, queue_results):
     """
     Dummy worker that does not have any dependencies.
-    
+
     Waits a random time for each message it gets from the queue.
     """
     # set payload weight once per lifetime
     delay = random.choice([1, 2, 5, 10])
-    
+
     while True:
         msg = queue_tasks.get()
         if (msg == 'DONE'):
@@ -79,9 +82,9 @@ def send_tasks(worker_pool):
     args = {
       'mu' : 15,
       'lambd' : 100,
-      'd' : 2, 
-      'tau0' : 0.5, 
-      'tau1' : 0.6, 
+      'd' : 2,
+      'tau0' : 0.5,
+      'tau1' : 0.6,
       'epsilon' : 0.0001
     }
 
@@ -118,7 +121,7 @@ if __name__ == '__main__':
     # create pool of workers
     worker_pool = [(i, get_worker()) for i in range(0, PROCESS_COUNT)]
 
-    # send tasks to workers 
+    # send tasks to workers
     send_tasks(worker_pool)
 
     # get results
