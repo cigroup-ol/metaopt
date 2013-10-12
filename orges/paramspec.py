@@ -32,15 +32,26 @@ class ParamSpec(object):
 
   """
   def __init__(self, f=None):
-    self.params = OrderedDict()
+    self._params = OrderedDict()
 
     if f is not None:
       self.infer_params(f)
 
+  @property
+  def params(self):
+    """
+    The specified parameters as ordered dictionary
+
+    Individual parameters can be accessed by using their name as key. To get all
+    parameters as list use the ``values`` method  .
+
+    """
+    return self._params
+
   def add_param(self, param):
-    if param.name in self.params:
+    if param.name in self._params:
       raise DuplicateParamError(param)
-    self.params[param.name] = param
+    self._params[param.name] = param
 
   def infer_params(self, f):
     args, vargs, kwargs, _ = getargspec(f)
@@ -61,11 +72,14 @@ class ParamSpec(object):
 
   def int(self, name):
     param = Param(name, "int")
+    param._step = 1
+
     self.add_param(param)
     return IntInterval(param)
 
   def bool(self, name):
     param = Param(name, "bool")
+    param._interval = (True, False)
     self.add_param(param)
     return None
 

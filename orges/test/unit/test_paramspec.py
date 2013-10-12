@@ -91,7 +91,12 @@ def test_int_left_bounded_interval_raises_nothing():
 
 def test_int_right_bounded_interval_raises_nothing():
   param_spec = ParamSpec()
-  param_spec.int("a").interval((None, 1))  
+  param_spec.int("a").interval((None, 1))
+
+def test_bool_has_pseudo_interval():
+  param_spec = ParamSpec()
+  param_spec.bool("a")
+  assert param_spec.params["a"].interval == (True, False)
 
 @raises(NonIntStepError)
 def test_int_float_step_raises_error():
@@ -102,6 +107,11 @@ def test_int_float_step_raises_error():
 def test_int_invalid_float_interval_raises_float_error():
   param_spec = ParamSpec()
   param_spec.int("a").interval((0.2, 0.1))
+
+def test_int_given_no_step_defaults_to_one():
+  param_spec = ParamSpec()
+  param_spec.int("a")
+  assert param_spec.params["a"].step == 1
 
 def test_init_given_regular_func_infers_params():
   def f(a, b, c):
