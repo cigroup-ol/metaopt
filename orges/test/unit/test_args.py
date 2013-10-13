@@ -10,6 +10,7 @@ from nose.tools import eq_
 
 from mock import Mock
 
+
 def test_call_func_with_args_works():
   param_spec = ParamSpec()
   param_spec.int("a")
@@ -65,7 +66,7 @@ def test_call_func_with_dict_args_works():
 
   call(f, [arg_a, arg_b])
 
-  f_mock.assert_called_with({"a": arg_a.value, "b": arg_b.value})  
+  f_mock.assert_called_with({"a": arg_a.value, "b": arg_b.value})
 
 def test_call_func_with_kwargs_works():
   param_spec = ParamSpec()
@@ -85,7 +86,7 @@ def test_call_func_with_kwargs_works():
 
   call(f, [arg_a, arg_b])
 
-  f_mock.assert_called_with(a=arg_a.value, b=arg_b.value)  
+  f_mock.assert_called_with(a=arg_a.value, b=arg_b.value)
 
 def test_call_func_with_args_returns_result():
   param_spec = ParamSpec()
@@ -135,7 +136,7 @@ def test_call_func_with_incorrect_number_of_args_raises_error():
   def f(a, b, c):
     pass
 
-  call(f, [arg_a, arg_b])  
+  call(f, [arg_a, arg_b])
 
 def test_arg_iter_bounded_int_works():
   param_spec = ParamSpec()
@@ -164,7 +165,7 @@ def test_arg_iter_bool_works():
   param_spec.bool("a")
 
   values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
-  eq_(values, [True, False])  
+  eq_(values, [True, False])
 
 @raises(UnboundedArgIterError)
 def test_arg_iter_unbounded_raises_error():

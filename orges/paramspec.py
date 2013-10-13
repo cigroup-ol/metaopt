@@ -67,7 +67,7 @@ class ParamSpec(object):
 
   def float(self, name):
     param = Param(name, "float")
-    self.add_param(param)    
+    self.add_param(param)
     return FloatInterval(param)
 
   def int(self, name):
@@ -94,7 +94,7 @@ class NonIntIntervalError(Exception):
   """The error that occurs when a non-intergral bound is specified"""
 
   def __init__(self, param, interval, index):
-    Exception.__init__(self, 
+    Exception.__init__(self,
       "Interval [%s, %s] contains non-interger for parameter: %s"
       % (interval[0], interval[1], param.name))
     self.param = param
@@ -103,17 +103,17 @@ class NonIntStepError(Exception):
   """The error that occurs when a non-integral is specified"""
 
   def __init__(self, param, step):
-    Exception.__init__(self, 
+    Exception.__init__(self,
       "Step size (%s) is not an integer for parameter: %s"
       % (step, param.name))
-    self.param = param      
+    self.param = param
 
 class InvalidIntervalError(Exception):
   """The error that occurs when an invalid interval is specified"""
 
   def __init__(self, param, interval):
-    Exception.__init__(self, 
-      "Lower bound (%s) is larger than upper bound (%s) for parameter: %s" 
+    Exception.__init__(self,
+      "Lower bound (%s) is larger than upper bound (%s) for parameter: %s"
       % (interval[0], interval[1], param.name))
     self.param = param
 
@@ -161,7 +161,7 @@ class Param(object):
 
   @property
   def step(self):
-    """    
+    """
     The step size of the parameter.
 
     The step size represents the smallest meaningful change in the value of the
@@ -175,7 +175,7 @@ class Param(object):
 class FloatInterval(object):
   def __init__(self, param):
     self.param = param
-  
+
   def interval(self, interval):
     if interval[0] is not None and interval[1] is not None\
        and interval[0] > interval[1]:
@@ -208,7 +208,7 @@ class IntInterval(object):
 
     if interval[0] is not None and interval[1] is not None\
        and interval[0] > interval[1]:
-      raise InvalidIntervalError(self.param, interval)      
+      raise InvalidIntervalError(self.param, interval)
 
     self.param._interval = interval
     return IntStep(self.param)
