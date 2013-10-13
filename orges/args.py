@@ -4,7 +4,7 @@ from inspect import getargspec
 import itertools
 
 def call(f, fargs):
-  args, vargs, kwargs, _ = getargspec(f)  
+  args, vargs, kwargs, _ = getargspec(f)
 
   if vargs is not None:
     raise CallNotPossibleError(
@@ -20,7 +20,7 @@ def call(f, fargs):
 
   if vargs is None and kwargs is None:
     if len(args) == len(fargs):
-      return f(*[farg.value for farg in fargs])      
+      return f(*[farg.value for farg in fargs])
 
     if len(args) == 1:
       dargs = dict()
@@ -72,7 +72,7 @@ class Arg(object):
   def __repr__(self):
     return "%s=%s" % (self.param.name, self.value)
 
-  def default():
+  def default(self):
     pass
 
 class ArgIter():
@@ -121,14 +121,14 @@ class BoolArgIter():
 class UnboundedArgIterError(Exception):
   """The error that occurs when an iter for an unbounded interval is used"""
   def __init__(self, param):
-    Exception.__init__(self, "The interval %s is unbounded for parameter: %s" 
+    Exception.__init__(self, "The interval %s is unbounded for parameter: %s"
       % (param.interval, param.name))
 
 class NoStepArgIterError(Exception):
   """The error that occurs when an iter with no given step size is used"""
   def __init__(self, param):
-    Exception.__init__(self, "No step size specified for parameter: %s" 
-      % (param.name,))    
+    Exception.__init__(self, "No step size specified for parameter: %s"
+      % (param.name,))
 
 if __name__ == '__main__':
   param_spec = ParamSpec()
