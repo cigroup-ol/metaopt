@@ -142,7 +142,14 @@ def test_arg_iter_bounded_int_works():
   param_spec.int("a").interval((1, 10))
 
   values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
-  eq_(values, list(range(1, 10)))
+  eq_(values, range(1, 11))
+
+def test_arg_iter_bounded_int_small_interval_works():
+  param_spec = ParamSpec()
+  param_spec.int("a").interval((1, 2))
+
+  values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
+  eq_(values, [1, 2])
 
 def test_arg_iter_bounded_int_with_step_works():
   param_spec = ParamSpec()

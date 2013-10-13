@@ -83,10 +83,10 @@ class ArgIter():
   def next(self):
     current_arg = self.arg
 
-    if self.arg.value == self.arg.param.interval[1] or self.stop:
+    if self.stop:
       raise StopIteration()
 
-    if self.arg.value > self.arg.param.interval[1]:
+    if self.arg.value >= self.arg.param.interval[1]:
       self.stop = True
       return Arg(self.arg.param, self.arg.param.interval[1])
 
