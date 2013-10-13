@@ -10,3 +10,8 @@ OrgES is a Python-based organic computing framework for difficult blackbox optim
 ## Run Tests
 
     $ nosetests
+
+## Run Pylint
+
+    $ pylint orges --rcfile=orges/pylintrc
+
