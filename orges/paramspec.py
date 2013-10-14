@@ -2,6 +2,7 @@ from collections import OrderedDict
 from inspect import getargspec
 from numbers import Integral
 
+
 class ParamSpec(object):
   """
   An object describing the parameters of an algorithm.
