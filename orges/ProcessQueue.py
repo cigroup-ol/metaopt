@@ -11,7 +11,7 @@ from collections import namedtuple
 import time
 import random
 
-from test.algorithms.saes import f
+from orges.test.algorithms.saes import f
 
 # (Semi Auto) Configuration
 
