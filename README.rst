@@ -1,5 +1,5 @@
 # OrgES – Organic Computing for Evolution Strategies
- 
+
 OrgES is a Python-based organic computing framework for difficult blackbox optimization problems. It allows easy self-configuration of complex optimization heuristics.
 
 ## Setup
@@ -7,11 +7,7 @@ OrgES is a Python-based organic computing framework for difficult blackbox optim
     $ virtualenv venv
     $ source ./venv/bin/activate
 
-## Run Tests
-
-    $ nosetests
-
-## Run Pylint
+## Run PyLint
 
     $ pylint orges --rcfile=orges/pylintrc
 
