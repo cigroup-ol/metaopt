@@ -1,7 +1,10 @@
-from paramspec import ParamSpec
+from __future__ import division
+from __future__ import print_function
 from inspect import getargspec
-
 import itertools
+
+from orges.paramspec import ParamSpec
+
 
 def call(f, fargs):
   args, vargs, kwargs, _ = getargspec(f)
@@ -139,5 +142,5 @@ if __name__ == '__main__':
 
   args_creator = ArgsCreator(param_spec)
 
-  print list(args_creator.product())
+  print(list(args_creator.product()))
 
