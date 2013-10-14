@@ -2,7 +2,7 @@
 
 OrgES is a Python-based organic computing framework for difficult blackbox optimization problems. It allows easy self-configuration of complex optimization heuristics.
 
-## Run
+## Run OrgES
 
     $ PYTHONPATH=`pwd` python orges/main.py
 
