@@ -73,14 +73,14 @@ class ParamSpec(object):
 
   def int(self, name):
     param = Param(name, "int")
-    param._step = 1
+    param.step = 1
 
     self.add_param(param)
     return IntInterval(param)
 
   def bool(self, name):
     param = Param(name, "bool")
-    param._interval = (True, False)
+    param.interval = (True, False)
     self.add_param(param)
     return None
 
@@ -160,6 +160,10 @@ class Param(object):
     """
     return self._interval
 
+  @interval.setter
+  def interval(self, interval):
+    self._interval = interval
+
   @property
   def step(self):
     """
@@ -173,6 +177,10 @@ class Param(object):
     """
     return self._step
 
+  @step.setter
+  def step(self, step):
+    self._step = step
+
 class FloatInterval(object):
   def __init__(self, param):
     self.param = param
@@ -182,7 +190,7 @@ class FloatInterval(object):
        and interval[0] > interval[1]:
       raise InvalidIntervalError(self.param, interval)
 
-    self.param._interval = interval
+    self.param.interval = interval
     return FloatStep(self.param)
 
   def all(self):
@@ -193,7 +201,7 @@ class FloatStep(object):
     self.param = param
 
   def step(self, step):
-    self.param._step = step
+    self.param.step = step
     return None
 
 class IntInterval(object):
@@ -225,7 +233,7 @@ class IntStep(object):
     if not isinstance(step, Integral):
       raise NonIntStepError(self.param, step)
 
-    self.param._step = step
+    self.param.step = step
     return None
 
 if __name__ == '__main__':
