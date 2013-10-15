@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
+import os
 
 setup(
-    name='orges',
-    version='0.0.1',
-    description='OrgES Package - Organic Computing for Evolution Strategies',
-    long_description=open('README.rst').read(),
-    author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
-    author_email='info@orges.org',
-    url='http://organic-es.tumblr.com/',
-    #TODO use relative path
-    license=open('/home/bengt/Arbeit/CI/OrgES/LICENSE').read(),
-    packages=find_packages(exclude=('tests', 'docs'))
+  name='orges',
+  version='0.0.1',
+  description='OrgES Package - Organic Computing for Evolution Strategies',
+  long_description=open('README.rst').read(),
+  author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
+  author_email='info@orges.org',
+  url='http://organic-es.tumblr.com/',
+  license=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "LICENSE")).read(),
+  packages=find_packages(exclude=('tests', 'docs')),
 )
