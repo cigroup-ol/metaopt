@@ -6,6 +6,7 @@ from numpy import abs
 from random import sample
 from numpy import exp
 
+
 def f(args):
   mu = args['mu']
   lambd = args['lambd']
@@ -25,7 +26,7 @@ def f(args):
     population.append((randn(d), sigma))
 
   fitvals = map(fitness, population)
-  fitvals = sorted(fitvals, key = lambda t : t[1])
+  fitvals = sorted(fitvals, key=lambda t: t[1])
 
   best = fitvals[0]
   generations = 0
@@ -36,8 +37,8 @@ def f(args):
       parents = sample(population, 2)
 
             # recombination
-      child = (0.5 * parents[0][0] + 0.5 * parents[1][0],\
-        0.5 * (parents[0][1] + parents[1][1]))
+      child = (0.5 * parents[0][0] + 0.5 * parents[1][0],
+               0.5 * (parents[0][1] + parents[1][1]))
 
       tau0_random = randn(1)
       # mutation of position
@@ -59,12 +60,12 @@ def f(args):
   return generations
 
 args = {
-  'mu' : 15,
-  'lambd' : 100,
-  'd' : 2,
-  'tau0' : 0.5,
-  'tau1' : 0.6,
-  'epsilon' : 0.0001
+  'mu': 15,
+  'lambd': 100,
+  'd': 2,
+  'tau0': 0.5,
+  'tau1': 0.6,
+  'epsilon': 0.0001,
 }
 
 # for tau0 in [i / 10.0 for i in range(10)]:

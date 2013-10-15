@@ -58,10 +58,12 @@ class ParamSpec(object):
     args, vargs, kwargs, _ = getargspec(f)
 
     if vargs is not None:
-      raise InferNotPossibleError("Cannot infer parameters for variable arguments.")
+      raise InferNotPossibleError(
+        "Cannot infer parameters for variable arguments.")
 
     if kwargs is not None:
-      raise InferNotPossibleError("Cannot infer parameters for keyword arguments.")
+      raise InferNotPossibleError(
+        "Cannot infer parameters for keyword arguments.")
 
     for arg in args:
       self.add_param(Param(arg, "float"))
@@ -84,44 +86,58 @@ class ParamSpec(object):
     self.add_param(param)
     return None
 
+
 class DuplicateParamError(Exception):
-  """The error that occurs when two parameters with the same name are specified."""
+  """The error that occurs when two parameters with the same name are
+     specified."""
 
   def __init__(self, param):
     Exception.__init__(self, "Duplicate parameter: %s" % (param.name,))
     self.param = param
 
+
 class NonIntIntervalError(Exception):
   """The error that occurs when a non-intergral bound is specified"""
 
   def __init__(self, param, interval, index):
-    Exception.__init__(self,
+    Exception.__init__(
+      self,
       "Interval [%s, %s] contains non-interger for parameter: %s"
-      % (interval[0], interval[1], param.name))
+      % (interval[0], interval[1], param.name)
+    )
+
     self.param = param
+
 
 class NonIntStepError(Exception):
   """The error that occurs when a non-integral is specified"""
 
   def __init__(self, param, step):
-    Exception.__init__(self,
+    Exception.__init__(
+      self,
       "Step size (%s) is not an integer for parameter: %s"
-      % (step, param.name))
+      % (step, param.name)
+    )
     self.param = param
+
 
 class InvalidIntervalError(Exception):
   """The error that occurs when an invalid interval is specified"""
 
   def __init__(self, param, interval):
-    Exception.__init__(self,
+    Exception.__init__(
+      self,
       "Lower bound (%s) is larger than upper bound (%s) for parameter: %s"
-      % (interval[0], interval[1], param.name))
+      % (interval[0], interval[1], param.name)
+    )
     self.param = param
+
 
 class InferNotPossibleError(Exception):
   """The error that occurs when parameters cannot be infered"""
   def __init__(self, msg):
     Exception.__init__(self, msg)
+
 
 class Param(object):
   """A specified parameter consisting of a type, an interval and a step."""
@@ -181,6 +197,7 @@ class Param(object):
   def step(self, step):
     self._step = step
 
+
 class FloatInterval(object):
   def __init__(self, param):
     self.param = param
@@ -196,6 +213,7 @@ class FloatInterval(object):
   def all(self):
     return FloatStep(self.param)
 
+
 class FloatStep(object):
   def __init__(self, param):
     self.param = param
@@ -203,6 +221,7 @@ class FloatStep(object):
   def step(self, step):
     self.param.step = step
     return None
+
 
 class IntInterval(object):
   def __init__(self, param):
@@ -224,6 +243,7 @@ class IntInterval(object):
 
   def all(self):
     return IntStep(self.param)
+
 
 class IntStep(object):
   def __init__(self, param):

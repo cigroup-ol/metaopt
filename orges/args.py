@@ -42,6 +42,7 @@ class CallNotPossibleError(Exception):
   def __init__(self, msg):
     Exception.__init__(self, msg)
 
+
 class ArgsCreator(object):
   def __init__(self, param_spec):
     self.param_spec = param_spec
@@ -51,6 +52,7 @@ class ArgsCreator(object):
 
   def product(self):
     return itertools.product(*self.args())
+
 
 class Arg(object):
   def __init__(self, param, value=None):
@@ -78,6 +80,7 @@ class Arg(object):
   def default(self):
     pass
 
+
 class ArgIter():
   def __init__(self, arg):
     self.arg = arg
@@ -100,6 +103,7 @@ class ArgIter():
   def __next__(self):
     next(self)
 
+
 class BoolArgIter():
   def __init__(self, arg):
     self.stop = False
@@ -121,17 +125,25 @@ class BoolArgIter():
   def __next__(self):
     next(self)
 
+
 class UnboundedArgIterError(Exception):
   """The error that occurs when an iter for an unbounded interval is used"""
   def __init__(self, param):
-    Exception.__init__(self, "The interval %s is unbounded for parameter: %s"
-      % (param.interval, param.name))
+    Exception.__init__(
+      self,
+      "The interval %s is unbounded for parameter: %s"
+      % (param.interval, param.name)
+    )
+
 
 class NoStepArgIterError(Exception):
   """The error that occurs when an iter with no given step size is used"""
   def __init__(self, param):
-    Exception.__init__(self, "No step size specified for parameter: %s"
-      % (param.name,))
+    Exception.__init__(
+      self,
+      "No step size specified for parameter: %s"
+      % (param.name,)
+    )
 
 if __name__ == '__main__':
   param_spec = ParamSpec()
@@ -143,4 +155,3 @@ if __name__ == '__main__':
   args_creator = ArgsCreator(param_spec)
 
   print(list(args_creator.product()))
-

@@ -15,9 +15,11 @@ def _optimize(f, param_spec=None, return_spec=None, minimize=True):
   for args in ArgsCreator(param_spec).product():
     print(call(f, args), args)
 
+
 def minimize(f, param_spec=None, return_spec=None):
   """Optimizes f to return a minimal value."""
   _optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=True)
+
 
 def maximize(f, param_spec=None, return_spec=None):
   """Optimizes f to return a maximal value."""
