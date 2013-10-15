@@ -21,6 +21,12 @@ Run pep8
 Run tox
 -------
 
+We need Tox >= 1.6, so probably:
+
+    $ [sudo] pip install --upgrade tox
+
+Actually run:
+
     $ tox orges
 
 Run Sphinx
