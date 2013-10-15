@@ -25,7 +25,7 @@ def maximize(f, param_spec=None, return_spec=None):
   """Optimizes f to return a maximal value."""
   _optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=False)
 
-if __name__ == '__main__':
+def main():
   def f(args):
     args["d"] = 2
     args["epsilon"] = 0.0001
@@ -41,3 +41,6 @@ if __name__ == '__main__':
   param_spec.float("tau0").interval((0, 1)).step(0.1)
   param_spec.float("tau1").interval((0, 1)).step(0.1)
   minimize(f, param_spec)
+
+if __name__ == '__main__':
+  main()
