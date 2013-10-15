@@ -31,6 +31,9 @@ if __name__ == '__main__':
 
   param_spec = ParamSpec()
 
+  # Tipp
+  # 1 (mu=20, lambd=23, tau0=0.5, tau1=0.7)
+
   param_spec.int("mu").interval((10, 20))
   param_spec.int("lambd").interval((10, 50))
   param_spec.float("tau0").interval((0, 1)).step(0.1)
