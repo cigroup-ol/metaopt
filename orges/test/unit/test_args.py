@@ -189,3 +189,7 @@ def test_arg_iter_no_step_raises_error():
   param_spec = ParamSpec()
   param_spec.float("a").interval((0, 1))
   list(Arg(param_spec.params["a"]))
+
+if __name__ == '__main__':
+  import nose
+  nose.runmodule()

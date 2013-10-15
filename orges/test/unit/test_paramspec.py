@@ -149,3 +149,7 @@ def test_init_given_vargs_and_args_func_raises_error():
     pass
 
   param_spec = ParamSpec(f)  
+
+if __name__ == '__main__':
+  import nose
+  nose.runmodule()
