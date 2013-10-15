@@ -3,6 +3,9 @@
 from setuptools import setup, find_packages, Extension
 import os
 
+hang_module_ext = Extension('orges.test.unit.hang', 
+  sources = ['orges/test/unit/hangmodule.c'])
+
 setup(
   name='orges',
   version='0.0.1',
@@ -13,4 +16,5 @@ setup(
   url='http://organic-es.tumblr.com/',
   license=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "LICENSE")).read(),
   packages=find_packages(exclude=('tests', 'docs')),
+  ext_modules = [hang_module_ext],
 )
