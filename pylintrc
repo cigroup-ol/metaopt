@@ -121,10 +121,10 @@ const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 class-rgx=[A-Z_][a-zA-Z0-9]+$
 
 # Regular expression which should only match correct function names
-function-rgx=[a-z_][a-z0-9_]{2,30}$
+function-rgx=([a-z_][a-z0-9_]{2,30})|(test_[a-z_][a-z0-9_]{2,50})|f$
 
 # Regular expression which should only match correct method names
-method-rgx=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{2,30}|(test_[a-z_][a-z0-9_]{2,50})$$
 
 # Regular expression which should only match correct instance attribute names
 attr-rgx=[a-z_][a-z0-9_]{2,30}$
@@ -144,14 +144,14 @@ class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_
+good-names=a,b,c,i,j,k,ex,Run,_
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz,toto,tutu,tata
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
-no-docstring-rgx=__.*__
+no-docstring-rgx=(__.*__)|(test_.*)|f
 
 # Minimum line length for functions/classes that require docstrings, shorter
 # ones are exempt.
