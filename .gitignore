@@ -45,3 +45,4 @@ Session.vim
 # Sphinx' Output
 /docs/_build
 /docs/orges.*
+/docs/modules.rst
