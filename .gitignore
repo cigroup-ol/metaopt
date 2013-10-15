@@ -42,5 +42,11 @@ Session.vim
 .netrwhist
 *~
 
+# Sublime Text project files
 *.sublime-project
 *.sublime-workspace
+
+# Sphinx' Output
+/docs/_build
+/docs/orges.*
+/docs/modules.rst
