@@ -17,3 +17,10 @@ OrgES is a Python-based organic computing framework for difficult blackbox optim
 ## Run tox
 
     $ tox orges
+
+## Run Sphinx
+
+    $ make --directory docs clean
+    $ sphinx-apidoc -o docs orges
+    $ make --directory docs html
+    $ xdg-open _build/html/index.html

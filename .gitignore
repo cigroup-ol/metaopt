@@ -42,3 +42,6 @@ Session.vim
 .netrwhist
 *~
 
+# Sphinx' Output
+/docs/_build
+/docs/orges.*
