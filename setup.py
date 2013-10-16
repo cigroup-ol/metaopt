@@ -4,7 +4,7 @@ from setuptools import setup, find_packages, Extension
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
-    ources=['orges/test/unit/hangmodule.c']
+    sources=['orges/test/unit/hangmodule.c']
 )
 
 setup(
