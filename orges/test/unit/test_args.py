@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import division
 from __future__ import print_function
 
@@ -202,6 +204,17 @@ def test_arg_iter_no_step_raises_error():
     param_spec = ParamSpec()
     param_spec.float("a").interval((0, 1))
     list(Arg(param_spec.params["a"]))
+
+def test_arg_repr_no_display_name_shows_name_and_value():
+    param_spec = ParamSpec()
+    param_spec.int("a").interval((0, None))
+    eq_(str(Arg(param_spec.params["a"])), "a=0")
+
+def test_arg_repr_display_name_shows_display_name_and_value():
+    param_spec = ParamSpec()
+    param_spec.int("a", "α").interval((0, None))
+    eq_(str(Arg(param_spec.params["a"])), "α=0")
+
 
 if __name__ == '__main__':
     import nose

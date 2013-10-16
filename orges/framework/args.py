@@ -79,7 +79,7 @@ class Arg(object):
         return ArgIter(self)
 
     def __repr__(self):
-        return "%s=%s" % (self.param.name, self.value)
+        return "%s=%s" % (self.param.display_name, self.value)
 
     def default(self):
         pass

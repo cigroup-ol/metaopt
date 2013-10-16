@@ -177,6 +177,28 @@ def test_init_given_vargs_and_args_func_raises_error():
     ParamSpec(f)
 
 
+def test_given_no_display_name_defaults_to_name():
+    param_spec = ParamSpec()
+
+    param_spec.int("a")
+    param_spec.float("b")
+    param_spec.bool("g")
+
+    assert param_spec.params["a"].display_name == "a"
+    assert param_spec.params["b"].display_name == "b"
+    assert param_spec.params["g"].display_name == "g"
+
+def test_given_display_name_saves_it():
+    param_spec = ParamSpec()
+
+    param_spec.int("a", "α")
+    param_spec.float("b", "β")
+    param_spec.bool("g", "γ")
+
+    assert param_spec.params["a"].display_name == "α"
+    assert param_spec.params["b"].display_name == "β"
+    assert param_spec.params["g"].display_name == "γ"
+
 if __name__ == '__main__':
     import nose
     nose.runmodule()

@@ -68,20 +68,20 @@ class ParamSpec(object):
         for arg in args:
             self.add_param(Param(arg, "float"))
 
-    def float(self, name):
-        param = Param(name, "float")
+    def float(self, name, display_name=None):
+        param = Param(name, "float", display_name)
         self.add_param(param)
         return FloatInterval(param)
 
-    def int(self, name):
-        param = Param(name, "int")
+    def int(self, name, display_name=None):
+        param = Param(name, "int", display_name)
         param.step = 1
 
         self.add_param(param)
         return IntInterval(param)
 
-    def bool(self, name):
-        param = Param(name, "bool")
+    def bool(self, name, display_name=None):
+        param = Param(name, "bool", display_name)
         param.interval = (True, False)
         self.add_param(param)
         return None
@@ -142,17 +142,30 @@ class InferNotPossibleError(Exception):
 class Param(object):
     """A specified parameter consisting of a type, an interval and a step."""
 
-    def __init__(self, name, type):
+    def __init__(self, name, type, display_name=None):
         self._name = name
         self._type = type
 
         self._interval = (None, None)
         self._step = None
 
+        self._display_name = display_name
+
+        if display_name is None:
+            self._display_name = name
+
     @property
     def name(self):
         """The name of the parameter """
         return self._name
+
+    @property
+    def display_name(self):
+        return self._display_name
+
+    @display_name.setter
+    def display_name(self, display_name):
+        self._display_name = display_name
 
     @property
     def type(self):

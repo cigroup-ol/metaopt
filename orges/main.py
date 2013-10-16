@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import division
 from __future__ import print_function
 
@@ -37,10 +38,10 @@ def main():
     # Tip
     # 1 (mu=20, lambd=23, tau0=0.5, tau1=0.7)
 
-    param_spec.int("mu").interval((10, 20))
-    param_spec.int("lambd").interval((10, 50))
-    param_spec.float("tau0").interval((0, 1)).step(0.1)
-    param_spec.float("tau1").interval((0, 1)).step(0.1)
+    param_spec.int("mu", "μ").interval((10, 20))
+    param_spec.int("lambd", "λ").interval((10, 50))
+    param_spec.float("tau0", "τ1").interval((0, 1)).step(0.1)
+    param_spec.float("tau1", "τ2").interval((0, 1)).step(0.1)
     minimize(f, param_spec)
 
 if __name__ == '__main__':
