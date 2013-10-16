@@ -150,7 +150,7 @@ def test_init_given_kwargs_func_raises_error():
     def f(**kwargs):
         pass
 
-    param_spec = ParamSpec(f)
+    ParamSpec(f)
 
 
 @raises(InferNotPossibleError)
@@ -158,7 +158,7 @@ def test_init_given_kwargs_and_args_func_raises_error():
     def f(a, b, c, **kwargs):
         pass
 
-    param_spec = ParamSpec(f)
+    ParamSpec(f)
 
 
 @raises(InferNotPossibleError)
@@ -166,7 +166,7 @@ def test_init_given_vargs_func_raises_error():
     def f(*vargs):
         pass
 
-    param_spec = ParamSpec(f)
+    ParamSpec(f)
 
 
 @raises(InferNotPossibleError)
@@ -174,7 +174,8 @@ def test_init_given_vargs_and_args_func_raises_error():
     def f(a, b, c, *vargs):
         pass
 
-    param_spec = ParamSpec(f)
+    ParamSpec(f)
+
 
 if __name__ == '__main__':
     import nose
