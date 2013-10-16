@@ -33,7 +33,7 @@ def main():
 
   param_spec = ParamSpec()
 
-  # Tipp
+  # Tip
   # 1 (mu=20, lambd=23, tau0=0.5, tau1=0.7)
 
   param_spec.int("mu").interval((10, 20))

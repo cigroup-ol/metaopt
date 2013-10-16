@@ -92,12 +92,12 @@ def send_tasks(worker_pool):
   # Config for the ES
   #TODO Get this from the paramspec of f()
   args = {
-    'mu' : 15,
-    'lambd' : 100,
-    'd' : 2,
-    'tau0' : 0.5,
-    'tau1' : 0.6,
-    'epsilon' : 0.0001
+    'mu': 15,
+    'lambd': 100,
+    'd': 2,
+    'tau0': 0.5,
+    'tau1': 0.6,
+    'epsilon': 0.0001
   }
 
   # fill each worker's queue with task messages
@@ -119,7 +119,7 @@ def listen_to_workers(worker_pool):
       worker = worker_pool.workers[result.id]
       worker.process.join()
       print("Worker %i finished after %f seconds." % \
-          (result.id, time.time() - _start))
+          (result.id, time.time() - START))
       worker_pool.workers[result.id] = None  # delete reference
       worker_done_count += 1
       continue
@@ -135,16 +135,16 @@ def handle_result(result):
 
 
 if __name__ == '__main__':
-  _start = time.time()
+  START = time.time()
 
   # create pool of workers
-  worker_pool = fill_worker_pool(PROCESS_COUNT)
+  WORKER_POOL = fill_worker_pool(PROCESS_COUNT)
 
   # send tasks to workers
-  send_tasks(worker_pool)
+  send_tasks(WORKER_POOL)
 
   # get results
-  listen_to_workers(worker_pool)
+  listen_to_workers(WORKER_POOL)
 
   print("Sending a task to %i process workers via a Queue() took %s seconds" % \
-      (PROCESS_COUNT, (time.time() - _start)))
+      (PROCESS_COUNT, (time.time() - START)))
