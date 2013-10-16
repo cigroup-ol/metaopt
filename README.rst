@@ -11,7 +11,7 @@ Run OrgES
 Run PyLint
 ----------
 
-    $ pylint orges --rcfile=orges/pylintrc
+    $ pylint orges
 
 Run pep8
 --------
