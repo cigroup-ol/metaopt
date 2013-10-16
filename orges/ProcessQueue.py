@@ -63,10 +63,12 @@ def worker_f(index, queue_tasks, queue_results):
 
 
 # data structure for a worker process and attached queues
-Worker = namedtuple("Worker", ["id", "process", "queue_tasks", "queue_results"])
+Worker = namedtuple("Worker", \
+                    ["id", "process", "queue_tasks", "queue_results"])
 
 # data struture for a pool of workers
 WorkerPool = namedtuple("WorkerPool", ["workers", "queue_results"])
+
 
 def fill_worker_pool(process_count):
     """Returns a tuple consisting of workers and their common result queue."""
@@ -79,7 +81,8 @@ def fill_worker_pool(process_count):
         queue_tasks = Queue()
         # construct a worker process with the queues
         worker_process = Process(target=worker_f,
-                                 args=(worker_index, queue_tasks, queue_results))
+                                 args=(worker_index, queue_tasks,
+                                       queue_results))
         worker_process.daemon = True
         worker_process.start()
         workers.append(Worker(worker_index, worker_process, queue_tasks, \
@@ -146,5 +149,5 @@ if __name__ == '__main__':
     # get results
     listen_to_workers(WORKER_POOL)
 
-    print("Sending a task to %i process workers via a Queue() took %s seconds" % \
-            (PROCESS_COUNT, (time.time() - START)))
+    print("Sending a task to %i process workers via a queue took %s seconds" %\
+          (PROCESS_COUNT, (time.time() - START)))
