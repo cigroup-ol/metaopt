@@ -27,13 +27,19 @@ def fill_worker_pool(process_count, worker_f):
     return (Pool(workers, queue_results))
 
 
-def send_tasks(worker_pool, gen_args):
+def send_tasks(worker_pool, ArgumentIterator):
     """Sends a bunch of tasks to all workers in the given worker pool."""
     # Config for the ES
     #TODO Get this from the paramspec of f()
 
     # fill each worker's queue with task messages
-    args = gen_args()
+    ai = ArgumentIterator()
+    print ai
+    try:
+        args = next(ai)
+    except StopIteration:
+        return
+    print args
     for worker in worker_pool.workers:
         worker.queue_tasks.put(Task(args))
         worker.queue_tasks.put("DONE")

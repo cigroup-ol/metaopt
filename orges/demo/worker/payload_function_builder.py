@@ -6,7 +6,8 @@ def get_worker_function(algorithm_function):
     def worker(index, queue_tasks, queue_results):
         """Runs the imported f() with the last queue message as argument."""
         while True:
-            args = queue_tasks.get()
+            task = queue_tasks.get()
+            args = task.args
             if (args == 'DONE'):
                 queue_results.put(Result(index, 'DONE'))
                 break

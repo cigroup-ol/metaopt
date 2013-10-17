@@ -1,7 +1,7 @@
 """Returns always the same arguments for the saes."""
 
 
-def args_generator():
+def ArgsIterator():
     args = {
         'mu': 15,
         'lambd': 100,
