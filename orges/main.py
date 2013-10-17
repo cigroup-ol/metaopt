@@ -1,7 +1,7 @@
 from __future__ import division
 from __future__ import print_function
 
-from orges.test.algorithms.saes import f as saes
+from orges.demo.algorithms.saes import f as saes
 from orges.paramspec import ParamSpec
 from orges.args import ArgsCreator, call
 
