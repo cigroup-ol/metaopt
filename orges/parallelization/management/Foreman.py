@@ -16,7 +16,6 @@ class Foreman(object):
     Oversights some workers, each in a Python process.
     """
 
-    @callable
     def __init__(self, worker, result_handler, args_generator, \
                  force_worker_count=None):
         """
@@ -33,7 +32,7 @@ class Foreman(object):
             self.worker_count = force_worker_count
 
         self.worker = worker
-        self.handle_result = result_handler
+        self.result_handler = result_handler
         self.args_generator = args_generator
 
     def run(self):
@@ -44,4 +43,4 @@ class Foreman(object):
         send_tasks(worker_pool, self.args_generator)
 
         # get results
-        listen_to_workers(worker_pool, self.handle_result)
+        listen_to_workers(worker_pool, self.result_handler)

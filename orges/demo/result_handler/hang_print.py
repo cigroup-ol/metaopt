@@ -1,7 +1,7 @@
 """Handler function for hang results"""
 
 
-def handle_result(result):
+def result_handler(result):
     """Handles a result"""
     #TODO Actually handle the results
     print(result.id)

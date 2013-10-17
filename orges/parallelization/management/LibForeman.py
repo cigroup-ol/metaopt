@@ -53,7 +53,7 @@ def send_task_to_worker(worker, task):
     pass
 
 
-def listen_to_workers(worker_pool, handle_result):
+def listen_to_workers(worker_pool, result_handler):
     """Listens to the result queue for all workers and dispatches handling."""
     # handle feedback from the workers
     worker_done_count = 0
@@ -70,4 +70,4 @@ def listen_to_workers(worker_pool, handle_result):
             continue
 
         # handle all other results
-        handle_result(result)
+        result_handler(result)
