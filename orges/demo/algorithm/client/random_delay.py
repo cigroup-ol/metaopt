@@ -9,13 +9,11 @@ from __future__ import print_function
 import random
 from time import sleep
 
-from orges.parallelization.model.Worker import Result
+from orges.framework.parallelization.model.Worker import Result
 
 
-def worker(index, queue_tasks, queue_results):
-    """
-    Worker function that waits a random time for each task.
-    """
+def get_worker(index, queue_tasks, queue_results):
+    """Gets a worker function that waits a random time for each task."""
     # set payload weight once per lifetime
     delay = random.choice([1, 2, 5, 10])
 

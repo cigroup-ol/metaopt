@@ -1,8 +1,8 @@
-from orges.paramspec import ParamSpec
-from orges.paramspec import DuplicateParamError, InvalidIntervalError
-from orges.paramspec import NonIntIntervalError, NonIntStepError
-from orges.paramspec import InferNotPossibleError
-from orges.paramspec import FloatInterval, FloatStep
+from orges.framework.paramspec import ParamSpec
+from orges.framework.paramspec import DuplicateParamError, InvalidIntervalError
+from orges.framework.paramspec import NonIntIntervalError, NonIntStepError
+from orges.framework.paramspec import InferNotPossibleError
+from orges.framework.paramspec import FloatInterval, FloatStep
 
 from nose.tools import raises
 

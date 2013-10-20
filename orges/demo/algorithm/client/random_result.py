@@ -1,10 +1,10 @@
 """Worker with a random result."""
 
-from orges.parallelization.model.Worker import Result
+from orges.framework.parallelization.model.Worker import Result
 import random
 
 
-def worker(index, queue_tasks, queue_results):
+def get_worker(index, queue_tasks, queue_results):
     """
     Returns a Result object with a random performance for each task.
     """

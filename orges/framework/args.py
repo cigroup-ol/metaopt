@@ -1,9 +1,13 @@
+"""
+TODO document me
+"""
+
 from __future__ import division
 from __future__ import print_function
 from inspect import getargspec
 import itertools
 
-from orges.paramspec import ParamSpec
+from orges.framework.paramspec import ParamSpec
 
 
 def call(f, fargs):

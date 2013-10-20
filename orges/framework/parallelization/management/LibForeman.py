@@ -2,22 +2,22 @@
 
 from multiprocessing.queues import Queue
 from multiprocessing.process import Process
-from orges.parallelization.model.Worker import Worker
-from orges.parallelization.model.Worker import Task
-from orges.parallelization.model.Worker import Pool
+from orges.framework.parallelization.model.Worker import Worker
+from orges.framework.parallelization.model.Worker import Task
+from orges.framework.parallelization.model.Worker import Pool
 
 
-def fill_worker_pool(process_count, worker_f):
+def fill_worker_pool(process_count, get_worker):
     """Returns a tuple consisting of workers and their common result queue."""
     # shared result queue
     queue_results = Queue()
     # list of all workers
     workers = []
     for worker_index in range(0, process_count):
-        # queue for this worker's tasks
+        # queue for this get_worker's tasks
         queue_tasks = Queue()
-        # construct a worker process with the queues
-        worker_process = Process(target=worker_f,
+        # construct a get_worker process with the queues
+        worker_process = Process(target=get_worker,
                                  args=(worker_index, queue_tasks,
                                        queue_results))
         worker_process.daemon = True
@@ -27,39 +27,29 @@ def fill_worker_pool(process_count, worker_f):
     return (Pool(workers, queue_results))
 
 
-def send_tasks(worker_pool, ArgumentIterator):
-    """Sends a bunch of tasks to all workers in the given worker pool."""
+def send_tasks_to_workers(get_tasks, worker_pool):
+    """Sends a bunch of tasks to all workers in the given get_worker pool."""
     # Config for the ES
     #TODO Get this from the paramspec of f()
 
-    # fill each worker's queue with task messages
-    ai = ArgumentIterator()
-    print ai
-    try:
-        args = next(ai)
-    except StopIteration:
-        return
-    print args
+    # fill each get_worker's queue with task messages
+    for task in get_tasks():
+        send_task_to_workers(task, worker_pool)
+    send_task_to_workers(Task("DONE"), worker_pool)
+
+
+def send_task_to_workers(task, worker_pool):
+    """Sends a single task to all workers in the given get_worker pool."""
     for worker in worker_pool.workers:
-        worker.queue_tasks.put(Task(args))
-        worker.queue_tasks.put("DONE")
-
-    worker.process.terminate()
+        send_task_to_worker(task, worker)
 
 
-def send_task_to_workers(worker_pool, task):
-    """Sends a single task to all workers in the given worker pool."""
-    #TODO implement me
-    pass
+def send_task_to_worker(task, worker):
+    """Sends a single task to all workers in the given get_worker pool."""
+    worker.queue_tasks.put(task)
 
 
-def send_task_to_worker(worker, task):
-    """Sends a single task to all workers in the given worker pool."""
-    #TODO implement me
-    pass
-
-
-def listen_to_workers(worker_pool, result_handler):
+def listen_to_workers(worker_pool, handle_result, handle_error):
     """Listens to the result queue for all workers and dispatches handling."""
     # handle feedback from the workers
     worker_done_count = 0
@@ -67,13 +57,13 @@ def listen_to_workers(worker_pool, result_handler):
         # get a message from the queue
         result = worker_pool.queue_results.get()
 
-        # handle finished worker
+        # handle finished get_worker
         if result.performance == "DONE":
-            worker = worker_pool.workers[result.id]
-            worker.process.join()
+            get_worker = worker_pool.workers[result.id]
+            get_worker.process.join()
             worker_pool.workers[result.id] = None    # delete reference
             worker_done_count += 1
             continue
 
         # handle all other results
-        result_handler(result)
+        handle_result(result)

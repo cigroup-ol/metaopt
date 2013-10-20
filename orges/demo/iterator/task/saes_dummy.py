@@ -1,7 +1,7 @@
 """Returns always the same arguments for the saes."""
 
 
-def ArgsIterator():
+def get_argument_batches():
     args = {
         'mu': 15,
         'lambd': 100,
