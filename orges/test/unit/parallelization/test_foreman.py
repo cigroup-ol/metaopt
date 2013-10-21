@@ -8,11 +8,11 @@ from __future__ import division
 from __future__ import print_function
 import time
 
-from orges.framework.parallelization.management.Foreman import Foreman
-from orges.demo.algorithm.client.hang import get_worker
-from orges.demo.iterator.task.hang_constant import get_tasks
-from orges.demo.handler.result.hang_print import handle_result
-from orges.demo.handler.error.hang_retry import handle_error
+from orges.invoker.multiprocess_lib.management.Foreman import Foreman
+from orges.test.demo.iterator.task.hang_constant import get_tasks
+from orges.test.demo.handler.result.hang_print import handle_result
+from orges.test.demo.handler.error.hang_retry import handle_error
+from orges.test.demo.algorithm.client.hang import get_worker
 
 
 if __name__ == '__main__':

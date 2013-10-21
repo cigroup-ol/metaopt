@@ -7,11 +7,11 @@ from nose.tools import raises
 from nose.tools import eq_
 from mock import Mock
 
-from orges.framework.paramspec import ParamSpec
-from orges.framework.args import Arg
-from orges.framework.args import UnboundedArgIterError, NoStepArgIterError
-from orges.framework.args import CallNotPossibleError
-from orges.framework.args import call
+from orges.paramspec import ParamSpec
+from orges.args import Arg
+from orges.args import UnboundedArgIterError, NoStepArgIterError
+from orges.args import CallNotPossibleError
+from orges.args import call
 
 
 def test_call_func_with_args_works():

@@ -7,7 +7,7 @@ from __future__ import print_function
 from inspect import getargspec
 import itertools
 
-from orges.framework.paramspec import ParamSpec
+from orges.paramspec import ParamSpec
 
 
 def call(f, fargs):
@@ -56,6 +56,18 @@ class ArgsCreator(object):
 
     def product(self):
         return itertools.product(*self.args())
+
+    def combine(self, param1, param2):
+        # TODO implement me
+        pass
+
+    def random(self):
+        # TODO implement me
+        pass
+
+    def randomize(self, child_args_sigma):
+        # TODO implement me
+        pass
 
 
 class Arg(object):

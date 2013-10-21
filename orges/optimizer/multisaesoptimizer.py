@@ -25,6 +25,12 @@ class SAESOptimizer(object):
 
         self.generation = 1
 
+
+    def initalize_population(self):
+        # TODO implement me
+        pass
+
+
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
         self.f = f
         self.param_spec = param_spec
@@ -97,5 +103,5 @@ class SAESOptimizer(object):
         if fitness < best_fitness:
             self.best_scored_indivual = scored_individual
 
-    def on_error(args, error, individual):
+    def on_error(self, args, error, individual):
         pass

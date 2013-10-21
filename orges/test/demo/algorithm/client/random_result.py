@@ -1,6 +1,6 @@
 """Worker with a random result."""
 
-from orges.framework.parallelization.model.Worker import Result
+from orges.invoker.multiprocess_lib.model.Worker import Result
 import random
 
 

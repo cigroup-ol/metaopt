@@ -9,7 +9,7 @@ class ConstantArgumentBatchIterator(object):
         self.arguments = arguments
 
     def __iter__(self):
-        return self
+        yield self
 
     def next(self):
         """Returns alwayst the arguments, that were given upon creation."""

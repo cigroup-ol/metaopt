@@ -9,7 +9,7 @@ from __future__ import print_function
 import random
 from time import sleep
 
-from orges.framework.parallelization.model.Worker import Result
+from orges.invoker.multiprocess_lib.model.Worker import Result
 
 
 def get_worker(index, queue_tasks, queue_results):

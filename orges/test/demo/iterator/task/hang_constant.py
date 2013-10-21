@@ -2,9 +2,9 @@
 Returns always the same arguments for the hang module c extension.
 """
 
-from orges.demo.iterator.args.ConstantArgsIterator import ConstantArgumentBatchIterator
-from orges.demo.iterator.task.TaskIterator import TaskIterator
-from orges.demo.iterator.args.LimitedArgumentBatchIterator import \
+from orges.test.demo.iterator.args.ConstantArgsIterator import ConstantArgumentBatchIterator
+from orges.test.demo.iterator.task.TaskIterator import TaskIterator
+from orges.test.demo.iterator.args.LimitedArgumentBatchIterator import \
     LimitedArgumentBatchIterator
 
 

@@ -7,7 +7,7 @@ from __future__ import division
 from __future__ import print_function
 
 from multiprocessing import cpu_count
-from orges.framework.parallelization.management.LibForeman import \
+from orges.invoker.multiprocess_lib.management.LibForeman import \
     fill_worker_pool, send_tasks_to_workers, listen_to_workers
 
 

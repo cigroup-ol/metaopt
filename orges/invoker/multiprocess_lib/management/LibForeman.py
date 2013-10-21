@@ -2,9 +2,9 @@
 
 from multiprocessing.queues import Queue
 from multiprocessing.process import Process
-from orges.framework.parallelization.model.Worker import Worker
-from orges.framework.parallelization.model.Worker import Task
-from orges.framework.parallelization.model.Worker import Pool
+from orges.invoker.multiprocess_lib.model.Worker import Worker
+from orges.invoker.multiprocess_lib.model.Worker import Task
+from orges.invoker.multiprocess_lib.model.Worker import Pool
 
 
 def fill_worker_pool(process_count, get_worker):

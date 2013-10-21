@@ -1,7 +1,7 @@
 """
 Wraps an ArgumentsIterator to return task objects.
 """
-from orges.framework.parallelization.model.Worker import Task
+from orges.invoker.multiprocess_lib.model.Worker import Task
 
 
 class TaskIterator(object):

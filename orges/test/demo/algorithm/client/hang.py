@@ -3,9 +3,10 @@
 from __future__ import division
 from __future__ import print_function
 
-from orges.test.unit.hang import hang
-from orges.framework.parallelization.worker.worker_builder import \
+
+from orges.invoker.multiprocess_lib.worker.worker_builder import \
     get_worker_for_function
+from orges.test.unit.hang import hang
 
 
 def get_worker():

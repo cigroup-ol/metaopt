@@ -1,7 +1,7 @@
 """
 Builds workers for given f()s.
 """
-from orges.framework.parallelization.model.Worker import Result
+from orges.invoker.multiprocess_lib.model.Worker import Result
 
 
 def get_worker_for_function(algorithm_function):
