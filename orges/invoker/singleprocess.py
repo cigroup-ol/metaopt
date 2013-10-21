@@ -15,6 +15,7 @@ class SingleProcessInvoker(Invoker):
         """
         self.resources = resources
         self.resources = 1  # enforce
+        super(SingleProcessInvoker, self).__init__(resources, self)
 
     @property
     def caller(self):

@@ -14,7 +14,7 @@ class MultiProcessInvoker(Invoker):
         caller - calling class's self
         """
         self.resources = resources
-        Invoker.__init__()
+        super(MultiProcessInvoker, self).__init__(resources, self)
 
     @property
     def caller(self):
