@@ -15,8 +15,8 @@ from orges.args import call
 
 def test_call_func_with_args_works():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -36,7 +36,7 @@ def test_call_func_with_args_works():
 
 def test_call_func_with_single_arg_works():
     param_spec = ParamSpec()
-    param_spec.int("a")
+    param_spec.int("a", interval=(1, 2))
 
     param_a = param_spec.params["a"]
 
@@ -54,8 +54,8 @@ def test_call_func_with_single_arg_works():
 
 def test_call_func_with_dict_args_works():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -75,8 +75,8 @@ def test_call_func_with_dict_args_works():
 
 def test_call_func_with_kwargs_works():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -96,8 +96,8 @@ def test_call_func_with_kwargs_works():
 
 def test_call_func_with_args_returns_result():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -114,8 +114,8 @@ def test_call_func_with_args_returns_result():
 @raises(CallNotPossibleError)
 def test_call_func_with_vargs_raises_error():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -132,8 +132,8 @@ def test_call_func_with_vargs_raises_error():
 @raises(CallNotPossibleError)
 def test_call_func_with_incorrect_number_of_args_raises_error():
     param_spec = ParamSpec()
-    param_spec.int("a")
-    param_spec.int("b")
+    param_spec.int("a", interval=(1, 2))
+    param_spec.int("b", interval=(1, 2))
 
     param_a = param_spec.params["a"]
     param_b = param_spec.params["b"]
@@ -178,25 +178,6 @@ def test_arg_iter_bool_works():
 
     values = [arg.value for arg in list(BoolArg(param_spec.params["a"]))]
     eq_(values, [True, False])
-
-
-@raises(UnboundedArgIterError)
-def test_arg_iter_unbounded_raises_error():
-    param_spec = ParamSpec()
-    param_spec.float("a")
-
-    list(Arg(param_spec.params["a"]))
-
-
-@raises(UnboundedArgIterError)
-def test_arg_iter_half_bounded_raises_error():
-    param_spec = ParamSpec()
-    param_spec.float("a", interval=(0, None))
-    param_spec.float("b", interval=(None, 0))
-
-    list(Arg(param_spec.params["a"]))
-    list(Arg(param_spec.params["b"]))
-
 
 @raises(NoStepArgIterError)
 def test_arg_iter_no_step_raises_error():

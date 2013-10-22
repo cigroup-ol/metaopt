@@ -13,19 +13,10 @@ class ParamSpec(object):
     Parameters are specified using chained method invocations like this::
 
         # A float parameter named "a" with values between 0 and 1
-        param_spec.float("a").interval((0, 1))
+        param_spec.float("a", interval=(0, 1))
 
         # The values of "a" should only be multiple of 0.1
-        param_spec.float("a").interval((0, 1)).step(0.1)
-
-        # A float parameter named "b" with all values being allowed
-        param_spec.float("b")
-
-        # The values of "b" should only be changed in steps of size 0.2
-        param_spec.float("b").all().step(0.2)
-
-        # A float parameter named "c" with no upper bound
-        param_spec.float("c").interval(0, None)
+        param_spec.float("a", interval=(0, 1), step=0.1)
 
     The order the parameters are specified matters since they are used to invoke
     the actual algorithm. That is, given a function ``f(a, b)`` the parameter
@@ -65,14 +56,14 @@ class ParamSpec(object):
         for arg in args:
             self.add_param(Param(arg, "float"))
 
-    def float(self, name, interval=(None,None), display_name=None, step=None):
+    def float(self, name, interval, display_name=None, step=None):
 
         param = Param(name, "float", interval,
             step=step, display_name=display_name)
 
         self.add_param(param)
 
-    def int(self, name, interval=(None, None), display_name=None, step=1):
+    def int(self, name, interval, display_name=None, step=1):
         param = IntParam(name, "int", interval,
             step=step, display_name=display_name)
 
@@ -138,7 +129,7 @@ class InferNotPossibleError(Exception):
 class Param(object):
     """A specified parameter consisting of a type, an interval and a step."""
 
-    def __init__(self, name, type, interval=None, step=None, display_name=None):
+    def __init__(self, name, type, interval, step=None, display_name=None):
         self._name = name
         self._type = type
 

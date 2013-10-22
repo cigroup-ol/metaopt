@@ -25,7 +25,7 @@ class GridSearchOptimizer(Optimizer):
         return self.best
 
     # Wird aufgerufen wenn ein Aufruf von f beendet wurde.
-    def on_result(self, result, args, vargs):
+    def on_result(self, result, args, *vargs):
         # solution, fitness = result
         fitness = result
         _, best_fitness = self.best
@@ -34,5 +34,5 @@ class GridSearchOptimizer(Optimizer):
             self.best = (args, fitness)
 
     # Wird aufgerufen wenn beim Aufruf von f ein Fehler aufgetaucht ist.
-    def on_errora(self, args, vargs, error):
+    def on_error(self, args, vargs, error):
         return False # Bei True könnte man z.B. den Aufruf von F erneut probieren.

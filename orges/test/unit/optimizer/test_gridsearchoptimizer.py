@@ -13,8 +13,8 @@ def f(a, b):
     return -(a + b)
 
 PARAM_SPEC = ParamSpec()
-PARAM_SPEC.int("a").interval((1, 2))
-PARAM_SPEC.int("b").interval((1, 2))
+PARAM_SPEC.int("a", interval=(1, 2))
+PARAM_SPEC.int("b", interval=(1, 2))
 
 
 class Caller(object):
