@@ -8,15 +8,15 @@ def f(a, b):
     return a + b
 
 PARAM_SPEC = ParamSpec()
-PARAM_SPEC.int("a").interval((1, 10))
-PARAM_SPEC.int("b").interval((1, 10))
+PARAM_SPEC.int("a", interval=(1, 10))
+PARAM_SPEC.int("b", interval=(1, 10))
 
 args_creator = ArgsCreator(PARAM_SPEC)
 args = args_creator.args()
 
 
 def test_invoke_calls_on_result():
-    invoker = SimpleInvoker()
+    invoker = SimpleInvoker(1)
 
     caller = Mock()
 
@@ -26,10 +26,10 @@ def test_invoke_calls_on_result():
     invoker._caller = caller
     invoker.invoke(f, args)
 
-    _caller.on_result.assert_called_with(args, 2)
+    caller.on_result.assert_called_with(2, args)
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
-    invoker = SimpleInvoker()
+    invoker = SimpleInvoker(1)
 
     caller = Mock()
 
@@ -41,7 +41,7 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     data = object()
     invoker.invoke(f, args, data)
 
-    _caller.on_result.assert_called_with(args, 2, data)
+    caller.on_result.assert_called_with(2, args, data)
 
 if __name__ == '__main__':
     import nose

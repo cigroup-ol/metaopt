@@ -149,7 +149,7 @@ def test_call_func_with_incorrect_number_of_args_raises_error():
 
 def test_arg_iter_bounded_int_works():
     param_spec = ParamSpec()
-    param_spec.int("a").interval((1, 10))
+    param_spec.int("a", interval=(1, 10))
 
     values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
     eq_(values, range(1, 11))
@@ -157,7 +157,7 @@ def test_arg_iter_bounded_int_works():
 
 def test_arg_iter_bounded_int_small_interval_works():
     param_spec = ParamSpec()
-    param_spec.int("a").interval((1, 2))
+    param_spec.int("a", interval=(1, 2))
 
     values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
     eq_(values, [1, 2])
@@ -165,7 +165,7 @@ def test_arg_iter_bounded_int_small_interval_works():
 
 def test_arg_iter_bounded_int_with_step_works():
     param_spec = ParamSpec()
-    param_spec.int("a").interval((1, 10)).step(2)
+    param_spec.int("a", interval=(1, 10), step=2)
 
     values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
     # TODO: Should the upper bound always be included?
@@ -191,8 +191,8 @@ def test_arg_iter_unbounded_raises_error():
 @raises(UnboundedArgIterError)
 def test_arg_iter_half_bounded_raises_error():
     param_spec = ParamSpec()
-    param_spec.float("a").interval((0, None))
-    param_spec.float("b").interval((None, 0))
+    param_spec.float("a", interval=(0, None))
+    param_spec.float("b", interval=(None, 0))
 
     list(Arg(param_spec.params["a"]))
     list(Arg(param_spec.params["b"]))
@@ -201,19 +201,19 @@ def test_arg_iter_half_bounded_raises_error():
 @raises(NoStepArgIterError)
 def test_arg_iter_no_step_raises_error():
     param_spec = ParamSpec()
-    param_spec.float("a").interval((0, 1))
+    param_spec.float("a", interval=(0, 1))
     list(Arg(param_spec.params["a"]))
 
 
 def test_arg_repr_no_display_name_shows_name_and_value():
     param_spec = ParamSpec()
-    param_spec.int("a").interval((0, None))
+    param_spec.int("a", interval=(0, None))
     eq_(str(Arg(param_spec.params["a"])), "a=0")
 
 
 def test_arg_repr_display_name_shows_display_name_and_value():
     param_spec = ParamSpec()
-    param_spec.int("a", "α").interval((0, None))
+    param_spec.int("a", interval=(0, None), display_name="α")
     eq_(str(Arg(param_spec.params["a"])), "α=0")
 
 

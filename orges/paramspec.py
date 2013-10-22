@@ -35,9 +35,6 @@ class ParamSpec(object):
     def __init__(self, f=None):
         self._params = OrderedDict()
 
-        if f is not None:
-            self.infer_params(f)
-
     @property
     def params(self):
         """
@@ -68,23 +65,22 @@ class ParamSpec(object):
         for arg in args:
             self.add_param(Param(arg, "float"))
 
-    def float(self, name, display_name=None):
-        param = Param(name, "float", display_name)
-        self.add_param(param)
-        return FloatInterval(param)
+    def float(self, name, interval=(None,None), display_name=None, step=None):
 
-    def int(self, name, display_name=None):
-        param = Param(name, "int", display_name)
-        param.step = 1
+        param = Param(name, "float", interval,
+            step=step, display_name=display_name)
 
         self.add_param(param)
-        return IntInterval(param)
+
+    def int(self, name, interval=(None, None), display_name=None, step=1):
+        param = IntParam(name, "int", interval,
+            step=step, display_name=display_name)
+
+        self.add_param(param)
 
     def bool(self, name, display_name=None):
-        param = Param(name, "bool", display_name)
-        param.interval = (True, False)
+        param = BoolParam(name, "bool", (True, False), display_name=display_name)
         self.add_param(param)
-        return None
 
 
 class DuplicateParamError(Exception):
@@ -142,17 +138,23 @@ class InferNotPossibleError(Exception):
 class Param(object):
     """A specified parameter consisting of a type, an interval and a step."""
 
-    def __init__(self, name, type, display_name=None):
+    def __init__(self, name, type, interval=None, step=None, display_name=None):
         self._name = name
         self._type = type
 
-        self._interval = (None, None)
-        self._step = None
+        self._interval = interval
+        self.check_interval()
 
+        self._step = step
         self._display_name = display_name
 
         if display_name is None:
             self._display_name = name
+
+    def check_interval(self):
+        if self.interval[0] is not None and self.interval[1] is not None\
+                and self.interval[0] > self.interval[1]:
+            raise InvalidIntervalError(self, self.interval)
 
     @property
     def name(self):
@@ -210,64 +212,37 @@ class Param(object):
     def step(self, step):
         self._step = step
 
+class IntParam(Param):
+    def __init__(self, *vargs, **kwargs):
+        Param.__init__(self, *vargs, **kwargs)
+        self.check_step()
 
-class FloatInterval(object):
-    def __init__(self, param):
-        self.param = param
+    def check_step(self):
+        if not isinstance(self.step, Integral):
+            raise NonIntStepError(self, self.step)
 
-    def interval(self, interval):
-        if interval[0] is not None and interval[1] is not None\
-             and interval[0] > interval[1]:
-            raise InvalidIntervalError(self.param, interval)
+    def check_interval(self):
+        if self.interval[0] is not None\
+                and not isinstance(self.interval[0], Integral):
+            raise NonIntIntervalError(self, self.interval, 0)
 
-        self.param.interval = interval
-        return FloatStep(self.param)
+        if self.interval[1] is not None\
+                and not isinstance(self.interval[1], Integral):
+            raise NonIntIntervalError(self.param, self.interval, 1)
 
-    def all(self):
-        return FloatStep(self.param)
+        if self.interval[0] is not None and self.interval[1] is not None\
+                and self.interval[0] > self.interval[1]:
+            raise InvalidIntervalError(self, self.interval)
 
+        Param.check_interval(self)
 
-class FloatStep(object):
-    def __init__(self, param):
-        self.param = param
+class BoolParam(Param):
+    def __init__(self, *vargs, **kwargs):
+        Param.__init__(self, *vargs, **kwargs)
 
-    def step(self, step):
-        self.param.step = step
-        return None
+    def check_interval(self):
+        pass
 
-
-class IntInterval(object):
-    def __init__(self, param):
-        self.param = param
-
-    def interval(self, interval):
-        if interval[0] is not None and not isinstance(interval[0], Integral):
-            raise NonIntIntervalError(self.param, interval, 0)
-
-        if interval[1] is not None and not isinstance(interval[1], Integral):
-            raise NonIntIntervalError(self.param, interval, 1)
-
-        if interval[0] is not None and interval[1] is not None\
-                and interval[0] > interval[1]:
-            raise InvalidIntervalError(self.param, interval)
-
-        self.param._interval = interval
-        return IntStep(self.param)
-
-    def all(self):
-        return IntStep(self.param)
-
-
-class IntStep(object):
-    def __init__(self, param):
-        self.param = param
-
-    def step(self, step):
-        if not isinstance(step, Integral):
-            raise NonIntStepError(self.param, step)
-
-        self.param.step = step
-        return None
 
 if __name__ == '__main__':
     pass
