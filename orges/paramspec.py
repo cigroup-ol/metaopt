@@ -23,8 +23,9 @@ class ParamSpec(object):
     "a" should be specified before the parameter "b".
 
     """
-    def __init__(self, f=None):
-        self._params = OrderedDict()
+    def __init__(self, via_decorator=False):
+        self._params = []
+        self.via_decorator = via_decorator
 
     @property
     def params(self):
@@ -35,12 +36,21 @@ class ParamSpec(object):
         all parameters as list use the ``values`` method.
 
         """
-        return self._params
+        ordered_params = OrderedDict()
+
+        if self.via_decorator:
+            for param in reversed(self._params):
+                ordered_params[param.name] = param
+        else:
+            for param in self._params:
+                ordered_params[param.name] = param
+
+        return ordered_params
 
     def add_param(self, param):
-        if param.name in self._params:
+        if param.name in self.params:
             raise DuplicateParamError(param)
-        self._params[param.name] = param
+        self._params.append(param)
 
     def infer_params(self, f):
         args, vargs, kwargs, _ = getargspec(f)
