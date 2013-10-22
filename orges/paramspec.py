@@ -73,58 +73,6 @@ class ParamSpec(object):
         self.add_param(param)
 
 
-class DuplicateParamError(Exception):
-    """The error that occurs when two parameters with the same name are
-         specified."""
-
-    def __init__(self, param):
-        Exception.__init__(self, "Duplicate parameter: %s" % (param.name,))
-        self.param = param
-
-
-class NonIntIntervalError(Exception):
-    """The error that occurs when a non-intergral bound is specified"""
-
-    def __init__(self, param, interval, index):
-        Exception.__init__(
-            self,
-            "Interval [%s, %s] contains non-interger for parameter: %s"
-            % (interval[0], interval[1], param.name)
-        )
-
-        self.param = param
-
-
-class NonIntStepError(Exception):
-    """The error that occurs when a non-integral is specified"""
-
-    def __init__(self, param, step):
-        Exception.__init__(
-            self,
-            "Step size (%s) is not an integer for parameter: %s"
-            % (step, param.name)
-        )
-        self.param = param
-
-
-class InvalidIntervalError(Exception):
-    """The error that occurs when an invalid interval is specified"""
-
-    def __init__(self, param, interval):
-        Exception.__init__(
-            self,
-            "Lower bound (%s) is larger than upper bound (%s) for parameter: %s"
-            % (interval[0], interval[1], param.name)
-        )
-        self.param = param
-
-
-class InferNotPossibleError(Exception):
-    """The error that occurs when parameters cannot be infered"""
-    def __init__(self, msg):
-        Exception.__init__(self, msg)
-
-
 class Param(object):
     """A specified parameter consisting of a type, an interval and a step."""
 
@@ -136,10 +84,7 @@ class Param(object):
         self.check_interval()
 
         self._step = step
-        self._display_name = display_name
-
-        if display_name is None:
-            self._display_name = name
+        self._display_name = display_name or name
 
     def check_interval(self):
         if self.lower_bound > self.upper_bound:
@@ -233,3 +178,54 @@ class BoolParam(Param):
 
     def check_interval(self):
         pass
+
+class DuplicateParamError(Exception):
+    """The error that occurs when two parameters with the same name are
+         specified."""
+
+    def __init__(self, param):
+        Exception.__init__(self, "Duplicate parameter: %s" % (param.name,))
+        self.param = param
+
+
+class NonIntIntervalError(Exception):
+    """The error that occurs when a non-intergral bound is specified"""
+
+    def __init__(self, param, interval, index):
+        Exception.__init__(
+            self,
+            "Interval [%s, %s] contains non-interger for parameter: %s"
+            % (interval[0], interval[1], param.name)
+        )
+
+        self.param = param
+
+
+class NonIntStepError(Exception):
+    """The error that occurs when a non-integral is specified"""
+
+    def __init__(self, param, step):
+        Exception.__init__(
+            self,
+            "Step size (%s) is not an integer for parameter: %s"
+            % (step, param.name)
+        )
+        self.param = param
+
+
+class InvalidIntervalError(Exception):
+    """The error that occurs when an invalid interval is specified"""
+
+    def __init__(self, param, interval):
+        Exception.__init__(
+            self,
+            "Lower bound (%s) is larger than upper bound (%s) for parameter: %s"
+            % (interval[0], interval[1], param.name)
+        )
+        self.param = param
+
+
+class InferNotPossibleError(Exception):
+    """The error that occurs when parameters cannot be infered"""
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
