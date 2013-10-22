@@ -20,7 +20,7 @@ class Invoker(object):
         pass
 
     @abc.abstractmethod
-    def invoke(self, f, fargs, **vargs):
+    def invoke(self, f, fargs, *vargs):
         """Calls back to self.caller.on_result() for call(f, fargs)."""
         pass
 

@@ -96,8 +96,7 @@ class SAESOptimizer(Optimizer):
         new_scored_population = self.scored_population[0:SAESOptimizer.MU]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, args, vargs):
-        individual = args.individual
+    def on_result(self, result, args, individual):
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)
@@ -127,7 +126,7 @@ if __name__ == '__main__':
     PARAM_SPEC.float("tau0", "τ1").interval((0, 1)).step(0.1)
     PARAM_SPEC.float("tau1", "τ2").interval((0, 1)).step(0.1)
 
-    invoker = SimpleInvoker()
+    invoker = SimpleInvoker(1)
 
     optimizer = SAESOptimizer(invoker)
     optimizer.optimize(f, PARAM_SPEC)

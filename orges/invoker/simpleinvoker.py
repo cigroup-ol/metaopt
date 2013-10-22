@@ -29,9 +29,9 @@ class SimpleInvoker(Invoker):
         # TODO implement me
         pass
 
-    def invoke(self, f, fargs, **vargs):
+    def invoke(self, f, fargs, *vargs):
         return_value = call(f, fargs)
-        self._caller.on_result(return_value, fargs, vargs)
+        self._caller.on_result(return_value, fargs, *vargs)
 
     def wait(self):
         pass
