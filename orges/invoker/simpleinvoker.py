@@ -1,3 +1,7 @@
+"""
+TODO document me
+"""
+
 from orges.args import call
 
 class SimpleInvoker():
@@ -6,10 +10,12 @@ class SimpleInvoker():
 
     @property
     def caller(self):
+        """Gets the caller."""
         return self._caller
 
     @caller.setter
     def caller(self, value):
+        """Sets the caller."""
         self._caller = value
 
     def invoke(self, f, fargs, *vargs):

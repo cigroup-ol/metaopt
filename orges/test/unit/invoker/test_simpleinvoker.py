@@ -7,11 +7,11 @@ from orges.invoker.simpleinvoker import SimpleInvoker
 def f(a, b):
     return a + b
 
-param_spec = ParamSpec()
-param_spec.int("a").interval((1, 10))
-param_spec.int("b").interval((1, 10))
+PARAM_SPEC = ParamSpec()
+PARAM_SPEC.int("a").interval((1, 10))
+PARAM_SPEC.int("b").interval((1, 10))
 
-args_creator = ArgsCreator(param_spec)
+args_creator = ArgsCreator(PARAM_SPEC)
 args = args_creator.args()
 
 
