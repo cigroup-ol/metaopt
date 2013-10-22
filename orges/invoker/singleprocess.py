@@ -11,34 +11,34 @@ class SingleProcessInvoker(Invoker):
     def __init__(self, resources):
         """
         resources - number of CPUs to use.
-        caller - calling class's self
         """
         self.resources = resources
         self.resources = 1  # enforce
-        super(SingleProcessInvoker, self).__init__(resources, self)
+        self._caller = None
+        super(SingleProcessInvoker, self).__init__(self, resources)
 
     @property
     def caller(self):
         """Gets the caller."""
-        return self.caller
+        return self._caller
 
     @caller.setter
-    def set_caller(self, caller):
+    def caller(self, value):
         """Sets the caller."""
-        self.caller = caller
+        self._caller = value
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amout of resources of self."""
         pass
 
-    def invoke(self, f, args, **vargs):
-        """Calls back to self.caller.on_result() for call(f, args)."""
+    def invoke(self, f, fargs, **vargs):
+        """Calls back to self._caller.on_result() for call(f, fargs)."""
         try:
-            result = call(f, args)
+            result = call(f, fargs)
         except Exception as exception:
-            self.caller.on_error(args, vargs, exception)
+            self._caller.on_error(fargs, vargs, exception)
             return
-        self.caller.on_result(args, vargs, result)
+        self._caller.on_result(result, fargs, vargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""

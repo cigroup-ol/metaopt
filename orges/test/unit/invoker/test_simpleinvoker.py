@@ -23,10 +23,10 @@ def test_invoke_calls_on_result():
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    invoker.caller = caller
+    invoker._caller = caller
     invoker.invoke(f, args)
 
-    caller.on_result.assert_called_with(args, 2)
+    _caller.on_result.assert_called_with(args, 2)
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = SimpleInvoker()
@@ -36,12 +36,12 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    invoker.caller = caller
+    invoker._caller = caller
 
     data = object()
     invoker.invoke(f, args, data)
 
-    caller.on_result.assert_called_with(args, 2, data)
+    _caller.on_result.assert_called_with(args, 2, data)
 
 if __name__ == '__main__':
     import nose

@@ -7,8 +7,10 @@ from random import sample, gauss
 from math import exp
 
 from orges.args import ArgsCreator
+from orges.optimizer.optimizer import Optimizer
 
-class SAESOptimizer(object):
+
+class SAESOptimizer(Optimizer):
     MU = 10
     LAMBDA = 10
     TAU0 = 0.5
@@ -16,19 +18,13 @@ class SAESOptimizer(object):
 
     def __init__(self, invoker):
         self.invoker = invoker
-        self.invoker.caller = self
+        self.invoker._caller = self
 
         self.population = []
         self.scored_population = []
         self.best_scored_indivual = (None, None)
 
         self.generation = 1
-
-
-    def initalize_population(self):
-        # TODO implement me
-        pass
-
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
         self.f = f
@@ -100,7 +96,8 @@ class SAESOptimizer(object):
         new_scored_population = self.scored_population[0:SAESOptimizer.MU]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, args, result, individual):
+    def on_result(self, result, args, vargs):
+        individual = args.individual
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)
@@ -117,7 +114,7 @@ class SAESOptimizer(object):
 if __name__ == '__main__':
     from orges.invoker.simpleinvoker import SimpleInvoker
     from orges.paramspec import ParamSpec
-    from orges.demo.algorithm.host.saes import f as saes
+    from orges.test.demo.algorithm.host.saes import f as saes
 
     def f(args):
         args["d"] = 2
@@ -126,12 +123,11 @@ if __name__ == '__main__':
         args["lambd"] = 100
         return saes(args)
 
-    param_spec = ParamSpec()
-
-    param_spec.float("tau0", "τ1").interval((0, 1)).step(0.1)
-    param_spec.float("tau1", "τ2").interval((0, 1)).step(0.1)
+    PARAM_SPEC = ParamSpec()
+    PARAM_SPEC.float("tau0", "τ1").interval((0, 1)).step(0.1)
+    PARAM_SPEC.float("tau1", "τ2").interval((0, 1)).step(0.1)
 
     invoker = SimpleInvoker()
 
     optimizer = SAESOptimizer(invoker)
-    optimizer.optimize(f, param_spec)
+    optimizer.optimize(f, PARAM_SPEC)

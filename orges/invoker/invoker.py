@@ -20,14 +20,8 @@ class Invoker(object):
         pass
 
     @abc.abstractmethod
-    def invoke(self, f, args, **vargs):
-        """Calls back to self.caller.on_result() for call(f, args)."""
-        # try:
-        #     ret = call(f, args)
-        # except Exception as exception:
-        #     caller.on_error(args, vargs, exception)
-        #     return
-        # caller.on_result(args, vargs)
+    def invoke(self, f, fargs, **vargs):
+        """Calls back to self.caller.on_result() for call(f, fargs)."""
         pass
 
     @abc.abstractmethod

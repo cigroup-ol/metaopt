@@ -3,10 +3,16 @@ TODO document me
 """
 
 from orges.args import call
+from orges.invoker.invoker import Invoker
 
-class SimpleInvoker():
-    def __init__(self):
-        self.caller = None
+
+class SimpleInvoker(Invoker):
+    """TODO document me"""
+
+    def __init__(self, resources):
+        self._caller = None
+        self.resources = resources
+        super(SimpleInvoker, self).__init__(self, resources)
 
     @property
     def caller(self):
@@ -18,9 +24,14 @@ class SimpleInvoker():
         """Sets the caller."""
         self._caller = value
 
-    def invoke(self, f, fargs, *vargs):
+    def get_subinvoker(self, resources):
+        """TODO document me"""
+        # TODO implement me
+        pass
+
+    def invoke(self, f, fargs, **vargs):
         return_value = call(f, fargs)
-        self.caller.on_result(fargs, return_value, *vargs)
+        self._caller.on_result(return_value, fargs, vargs)
 
     def wait(self):
         pass

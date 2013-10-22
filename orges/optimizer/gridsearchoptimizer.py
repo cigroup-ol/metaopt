@@ -1,13 +1,15 @@
 # -!- coding: utf-8 -!-
 from orges.args import ArgsCreator
+from orges.optimizer.optimizer import Optimizer
 
-class GridSearchOptimizer(object):
+
+class GridSearchOptimizer(Optimizer):
     # Invoker ist erstmal ein Objekt, mit dem man Prozesse aufrufen kann
     def __init__(self, invoker):
         self.best = (None, None)
 
         self.invoker = invoker
-        self.invoker.caller = self
+        self.invoker._caller = self
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
         args_creator = ArgsCreator(param_spec)
@@ -22,9 +24,8 @@ class GridSearchOptimizer(object):
 
         return self.best
 
-
     # Wird aufgerufen wenn ein Aufruf von f beendet wurde.
-    def on_result(self, args, result):
+    def on_result(self, result, args, vargs):
         # solution, fitness = result
         fitness = result
         _, best_fitness = self.best
@@ -33,5 +34,5 @@ class GridSearchOptimizer(object):
             self.best = (args, fitness)
 
     # Wird aufgerufen wenn beim Aufruf von f ein Fehler aufgetaucht ist.
-    def on_error(self, args, error):
+    def on_error(self, args, vargs, error):
         return False # Bei True könnte man z.B. den Aufruf von F erneut probieren.
