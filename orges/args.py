@@ -16,7 +16,6 @@ from __future__ import division
 from __future__ import print_function
 
 from inspect import getargspec
-
 import itertools
 import random
 
@@ -75,6 +74,17 @@ class ArgsCreator(object):
     def randomize(self, args, sigmas):
         f = lambda arg, sigma: Arg(arg.param, arg.value + random.gauss(0, sigma))
         return map(f, args, sigmas)
+
+    def random(self):
+        return [arg.random() for arg in self.args()]
+
+    def combine(self, args1, args2):
+        f = lambda arg1, arg2: Arg(arg1.param, (arg1.value + arg2.value) / 2)
+        return map(f, args1, args2)
+
+    def randomize(self, args, args_sigmas):
+        f = lambda arg, sigma: Arg(arg.param, arg.value + random.gauss(0, sigma))
+        return map(f, args, args_sigmas)
 
     def random(self):
         return [arg.random() for arg in self.args()]
