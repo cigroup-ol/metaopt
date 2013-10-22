@@ -73,27 +73,6 @@ def test_int_float_interval_raises_error():
     param_spec = ParamSpec()
     param_spec.int("a", interval=(0.1, 0.9))
 
-
-def test_float_left_bounded_interval_raises_nothing():
-    param_spec = ParamSpec()
-    param_spec.float("a", interval=(0.1, None))
-
-
-def test_float_right_bounded_interval_raises_nothing():
-    param_spec = ParamSpec()
-    param_spec.float("a", interval=(None, 0.1))
-
-
-def test_int_left_bounded_interval_raises_nothing():
-    param_spec = ParamSpec()
-    param_spec.int("a", interval=(1, None))
-
-
-def test_int_right_bounded_interval_raises_nothing():
-    param_spec = ParamSpec()
-    param_spec.int("a", interval=(None, 1))
-
-
 def test_bool_has_pseudo_interval():
     param_spec = ParamSpec()
     param_spec.bool("a")

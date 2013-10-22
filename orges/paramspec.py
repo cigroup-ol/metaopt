@@ -57,7 +57,6 @@ class ParamSpec(object):
             self.add_param(Param(arg, "float"))
 
     def float(self, name, interval, display_name=None, step=None):
-
         param = Param(name, "float", interval,
             step=step, display_name=display_name)
 
@@ -143,8 +142,7 @@ class Param(object):
             self._display_name = name
 
     def check_interval(self):
-        if self.interval[0] is not None and self.interval[1] is not None\
-                and self.interval[0] > self.interval[1]:
+        if self.lower_bound > self.upper_bound:
             raise InvalidIntervalError(self, self.interval)
 
     @property
@@ -176,8 +174,7 @@ class Param(object):
         The interval specifying the allowed values of the parameter
 
         The interval is either a pair (from, to) that represents the closed
-        interval [from, to] or None specifying that all values are valid. If
-        ``from`` or ``to`` is None there is no lower or upper bound.
+        interval [from, to].
 
         """
         return self._interval
@@ -203,6 +200,15 @@ class Param(object):
     def step(self, step):
         self._step = step
 
+    @property
+    def lower_bound(self):
+        return self.interval[0]
+
+    @property
+    def upper_bound(self):
+        return self.interval[1]
+
+
 class IntParam(Param):
     def __init__(self, *vargs, **kwargs):
         Param.__init__(self, *vargs, **kwargs)
@@ -213,17 +219,11 @@ class IntParam(Param):
             raise NonIntStepError(self, self.step)
 
     def check_interval(self):
-        if self.interval[0] is not None\
-                and not isinstance(self.interval[0], Integral):
+        if not isinstance(self.lower_bound, Integral):
             raise NonIntIntervalError(self, self.interval, 0)
 
-        if self.interval[1] is not None\
-                and not isinstance(self.interval[1], Integral):
+        if not isinstance(self.upper_bound, Integral):
             raise NonIntIntervalError(self.param, self.interval, 1)
-
-        if self.interval[0] is not None and self.interval[1] is not None\
-                and self.interval[0] > self.interval[1]:
-            raise InvalidIntervalError(self, self.interval)
 
         Param.check_interval(self)
 
@@ -233,7 +233,3 @@ class BoolParam(Param):
 
     def check_interval(self):
         pass
-
-
-if __name__ == '__main__':
-    pass

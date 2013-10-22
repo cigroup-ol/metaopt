@@ -2,7 +2,7 @@
 Abstract invoker defining the API of invoker implementations.
 """
 
-import abc  # Abstract Base Class
+import abc # Abstract Base Class
 
 
 class Invoker(object):

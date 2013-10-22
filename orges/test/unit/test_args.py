@@ -188,13 +188,13 @@ def test_arg_iter_no_step_raises_error():
 
 def test_arg_repr_no_display_name_shows_name_and_value():
     param_spec = ParamSpec()
-    param_spec.int("a", interval=(0, None))
+    param_spec.int("a", interval=(0, 10))
     eq_(str(Arg(param_spec.params["a"])), "a=0")
 
 
 def test_arg_repr_display_name_shows_display_name_and_value():
     param_spec = ParamSpec()
-    param_spec.int("a", interval=(0, None), display_name="α")
+    param_spec.int("a", interval=(0, 10), display_name="α")
     eq_(str(Arg(param_spec.params["a"])), "α=0")
 
 
