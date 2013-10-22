@@ -8,11 +8,10 @@ from nose.tools import eq_
 from mock import Mock
 
 from orges.paramspec import ParamSpec
-from orges.args import Arg
+from orges.args import Arg, BoolArg
 from orges.args import UnboundedArgIterError, NoStepArgIterError
 from orges.args import CallNotPossibleError
 from orges.args import call
-
 
 def test_call_func_with_args_works():
     param_spec = ParamSpec()
@@ -177,7 +176,7 @@ def test_arg_iter_bool_works():
     param_spec = ParamSpec()
     param_spec.bool("a")
 
-    values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
+    values = [arg.value for arg in list(BoolArg(param_spec.params["a"]))]
     eq_(values, [True, False])
 
 
@@ -205,10 +204,12 @@ def test_arg_iter_no_step_raises_error():
     param_spec.float("a").interval((0, 1))
     list(Arg(param_spec.params["a"]))
 
+
 def test_arg_repr_no_display_name_shows_name_and_value():
     param_spec = ParamSpec()
     param_spec.int("a").interval((0, None))
     eq_(str(Arg(param_spec.params["a"])), "a=0")
+
 
 def test_arg_repr_display_name_shows_display_name_and_value():
     param_spec = ParamSpec()

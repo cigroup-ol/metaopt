@@ -1,16 +1,28 @@
 """
-TODO document me
+
+This module is responsible for creating actual args from params that are defined
+in a paramspec and also provides the means to alter these args such as
+randomizing.
+
+An arg is something that contains a value that respects the contraints (e.g.
+interval with step size) defined by the corresponding param.
+
+For instance, given an int param like ``param_spec.int("a").interval((1,10))`` a
+corresponding arg could be something like ``a=1``.
+
 """
 
 from __future__ import division
 from __future__ import print_function
+
 from inspect import getargspec
 import itertools
-
-from orges.paramspec import ParamSpec
+import random
 
 
 def call(f, fargs):
+    """Call a function using a list of args"""
+
     args, vargs, kwargs, _ = getargspec(f)
 
     if vargs is not None:
@@ -48,27 +60,46 @@ class CallNotPossibleError(Exception):
 
 
 class ArgsCreator(object):
+    """This class provides the means to create args in different useful ways"""
     def __init__(self, param_spec):
         self.param_spec = param_spec
 
     def args(self):
-        return [Arg(param) for param in self.param_spec.params.values()]
+        return [create_arg(param) for param in self.param_spec.params.values()]
 
-    def product(self):
-        return itertools.product(*self.args())
+    def combine(self, args1, args2):
+        f = lambda arg1, arg2: Arg(arg1.param, (arg1.value + arg2.value) / 2)
+        return map(f, args1, args2)
 
-    def combine(self, param1, param2):
-        # TODO implement me
-        pass
+    def randomize(self, args, sigmas):
+        f = lambda arg, sigma: Arg(arg.param, arg.value + random.gauss(0, sigma))
+        return map(f, args, sigmas)
 
     def random(self):
-        # TODO implement me
-        pass
+        return [arg.random() for arg in self.args()]
 
-    def randomize(self, child_args_sigma):
-        # TODO implement me
-        pass
+    def combine(self, args1, args2):
+        f = lambda arg1, arg2: Arg(arg1.param, (arg1.value + arg2.value) / 2)
+        return map(f, args1, args2)
 
+    def randomize(self, args, args_sigmas):
+        f = lambda arg, sigma: Arg(arg.param, arg.value + random.gauss(0, sigma))
+        return map(f, args, args_sigmas)
+
+    def random(self):
+        return [arg.random() for arg in self.args()]
+
+    def product(self):
+        """Iterator that iterates over all args combinations"""
+        return itertools.product(*self.args())
+
+def create_arg(param, value=None):
+    """Factory method for creating args from params"""
+
+    if (param.type == "bool"):
+        return BoolArg(param, value)
+    else:
+        return Arg(param, value)
 
 class Arg(object):
     def __init__(self, param, value=None):
@@ -78,69 +109,35 @@ class Arg(object):
         if self.value is None:
             self.value = self.param.interval[0]
 
-    def __iter__(self):
-        if self.param.type is "bool":
-            return BoolArgIter(self)
+    def random(self):
+        return Arg(self.param, random.gauss(0, 1))
 
+    def __iter__(self):
         if None in self.param.interval:
             raise UnboundedArgIterError(self.param)
 
         if self.param.step is None:
             raise NoStepArgIterError(self.param)
 
-        return ArgIter(self)
+        current = self
+
+        while current.value < current.param.interval[1]:
+            yield current
+            current = Arg(current.param, current.value + current.param.step)
+
+        yield Arg(self.param, self.param.interval[1])
 
     def __repr__(self):
         return "%s=%s" % (self.param.display_name, self.value)
 
-    def default(self):
-        pass
+class BoolArg(Arg):
+    def __init__(self, param, value=None):
+        Arg.__init__(self, param, value)
 
-
-class ArgIter():
-    def __init__(self, arg):
-        self.arg = arg
-        self.stop = False
-
-    def next(self):
-        current_arg = self.arg
-
-        if self.stop:
-            raise StopIteration()
-
-        if self.arg.value >= self.arg.param.interval[1]:
-            self.stop = True
-            return Arg(self.arg.param, self.arg.param.interval[1])
-
-        self.arg = Arg(self.arg.param, self.arg.value + self.arg.param.step)
-
-        return current_arg
-
-    def __next__(self):
-        next(self)
-
-
-class BoolArgIter():
-    def __init__(self, arg):
-        self.stop = False
-        self.arg = arg
-
-    def next(self):
-        current_arg = self.arg
-
-        if self.stop:
-            raise StopIteration
-
-        if self.arg.value:
-            self.arg = Arg(self.arg.param, False)
-        else:
-            self.stop = True
-
-        return current_arg
-
-    def __next__(self):
-        next(self)
-
+    def __iter__(self):
+        if self.value:
+            yield BoolArg(self.param, True)
+        yield BoolArg(self.param, False)
 
 class UnboundedArgIterError(Exception):
     """The error that occurs when an iter for an unbounded interval is used"""
@@ -160,14 +157,3 @@ class NoStepArgIterError(Exception):
             "No step size specified for parameter: %s"
             % (param.name,)
         )
-
-if __name__ == '__main__':
-    param_spec = ParamSpec()
-    param_spec.int("lambda").interval((1, 3))
-    param_spec.int("mu").interval((1, 3))
-    param_spec.float("tau").interval((0.0, 1.0)).step(0.1)
-    param_spec.bool("flag")
-
-    args_creator = ArgsCreator(param_spec)
-
-    print(list(args_creator.product()))
