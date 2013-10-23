@@ -50,3 +50,6 @@ Session.vim
 /docs/_build
 /docs/orges.*
 /docs/modules.rst
+
+# PyDev/LiClipse/Eclipse's settings
+/.settings/
