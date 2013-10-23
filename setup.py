@@ -16,7 +16,7 @@ class Tox(TestCommand):
         try:
             tox.cmdline(self.test_args)
         except SystemExit as exception:
-            sys.exit(exception.msg)
+            sys.exit(exception.code)
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
