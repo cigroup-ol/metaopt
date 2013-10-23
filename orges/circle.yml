@@ -2,6 +2,10 @@ machine:
   timezone:
     Europe/Berlin
 
+dependencies:
+  post:
+    - pip install -r ../requirements.txt
+
 test:
   override:
     - nosetests
