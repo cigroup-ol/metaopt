@@ -4,4 +4,4 @@ machine:
 
 test:
   override:
-    - python ../setup.py test
+    - cd .. && python setup.py test
