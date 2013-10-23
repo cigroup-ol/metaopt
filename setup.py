@@ -33,18 +33,15 @@ setup(
     name='orges',
     version='0.0.1',
     description='OrgES Package - Organic Computing for Evolution Strategies',
-    long_description=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), \
-                          "README.rst")).read(),
+    long_description=open("README.rst").read(),
     author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
     author_email='info@orges.org',
     url='http://organic-es.tumblr.com/',
-    license=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), \
-                 "LICENSE")).read(),
+    license=open("LICENSE").read(),
     packages=find_packages(exclude=('tests', 'docs')),
-    package_data={'': ['LICENSE', 'README.rst']},
+    package_data={'': ['LICENSE', 'README.rst', 'requirements.txt']},
     ext_modules=[HANG_MODULE_EXTENSION],
-    install_requires=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), \
-                          "requirements.txt")).read().splitlines(),
+    install_requires=open("requirements.txt").read().splitlines(),
     tests_require=['tox'],
     cmdclass={'test': Tox},
 )
