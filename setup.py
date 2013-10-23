@@ -1,6 +1,22 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 from setuptools import setup, find_packages, Extension
+from setuptools.command.test import test as TestCommand
+
+class Tox(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import tox
+        try:
+            tox.cmdline(self.test_args)
+        except SystemExit as exception:
+            sys.exit(exception.msg)
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
@@ -18,5 +34,7 @@ setup(
     license=open("LICENSE").read(),
     packages=find_packages(exclude=('tests', 'docs')),
     ext_modules=[HANG_MODULE_EXTENSION],
-    install_requires=open('requirements.txt').read().splitlines()
+    install_requires=open('requirements.txt').read().splitlines(),
+    tests_require=['tox'],
+    cmdclass = {'test': Tox},
 )

@@ -18,8 +18,8 @@ Run pep8
 
     $ pep8 orges
 
-Run tox
--------
+Run Tests
+---------
 
 We need Tox >= 1.6, so probably:
 
@@ -27,9 +27,13 @@ We need Tox >= 1.6, so probably:
 
 Actually run:
 
-    $ tox orges
+    $ tox
 
-Run Sphinx
+or
+
+    $ python setup.py test
+
+Build Docs
 ----------
 
     $ make --directory docs clean
