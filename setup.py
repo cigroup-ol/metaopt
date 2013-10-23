@@ -37,9 +37,9 @@ setup(
     author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
     author_email='info@orges.org',
     url='http://organic-es.tumblr.com/',
-#    license=open("LICENSE.txt").read(), # travis will choke on this
+    license=open("LICENSE.txt").read(), # travis will choke on this
     packages=find_packages(exclude=('tests', 'docs')),
-    package_data={'': ['LICENSE', 'README.rst', 'requirements.txt']},
+    package_data={'': ['LICENSE.txt', 'README.rst', 'requirements.txt']},
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=open("requirements.txt").read().splitlines(),
     tests_require=['tox'],
