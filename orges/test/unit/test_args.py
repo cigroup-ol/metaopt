@@ -152,7 +152,7 @@ def test_arg_iter_bounded_int_works():
     param_spec.int("a", interval=(1, 10))
 
     values = [arg.value for arg in list(Arg(param_spec.params["a"]))]
-    eq_(values, range(1, 11))
+    eq_(values, list(range(1, 11)))
 
 
 def test_arg_iter_bounded_int_small_interval_works():
