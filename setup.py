@@ -31,7 +31,7 @@ setup(
     author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
     author_email='info@orges.org',
     url='http://organic-es.tumblr.com/',
-    license=open("LICENSE").read(),
+    license=open('LICENSE').read(),
     packages=find_packages(exclude=('tests', 'docs')),
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=open('requirements.txt').read().splitlines(),
