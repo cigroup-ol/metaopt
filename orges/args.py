@@ -7,7 +7,7 @@ randomizing.
 An arg is something that contains a value that respects the contraints (e.g.
 interval with step size) defined by the corresponding param.
 
-For instance, given an int param like ``param_spec.int("a").interval((1,10))`` a
+For instance, given an int param like ``param_spec.int("a", interval=(1,10))`` a
 corresponding arg could be something like ``a=1``.
 
 """

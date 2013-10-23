@@ -2,7 +2,7 @@
 """
 
 This module provides decorators to specify the parameters of a function without
-using a explicit param_spec object. For example:
+using an explicit param_spec object. For example::
 
     import orges.param as param
 
@@ -20,6 +20,8 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 from orges.paramspec import ParamSpec
 
 def int(*vargs, **kwargs):
+    """A decorator that specifies an int parameter for a function"""
+
     def decorator(f):
         param_spec = make_param_spec(f)
         param_spec.int(*vargs, **kwargs)
@@ -27,7 +29,9 @@ def int(*vargs, **kwargs):
 
     return decorator
 
-def float(f, *vargs, **kwargs):
+def float(*vargs, **kwargs):
+    """A decorator that specifies a float parameter for a function"""
+
     def decorator(f):
         param_spec = make_param_spec(f)
         param_spec.float(*vargs, **kwargs)
@@ -35,7 +39,8 @@ def float(f, *vargs, **kwargs):
 
     return decorator
 
-def bool(f, *vargs, **kwargs):
+def bool(*vargs, **kwargs):
+    """A decorator that specifies an bool parameter for a function"""
     def decorator(f):
         param_spec = make_param_spec(f)
         param_spec.bool(*vargs, **kwargs)
@@ -44,6 +49,7 @@ def bool(f, *vargs, **kwargs):
     return decorator
 
 def make_param_spec(f):
+    """Create a new param_spec object for ``f`` or retrieves it if it exists"""
     try:
         param_spec = f.param_spec
     except AttributeError:

@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from inspect import getargspec
 from numbers import Integral
 
 
@@ -10,7 +9,7 @@ class ParamSpec(object):
     A parameter is either a fixed value or a description consisting of a type
     and optionally an interval with an associated step size.
 
-    Parameters are specified using chained method invocations like this::
+    Parameters are specified like this::
 
         # A float parameter named "a" with values between 0 and 1
         param_spec.float("a", interval=(0, 1))
@@ -48,37 +47,27 @@ class ParamSpec(object):
         return ordered_params
 
     def add_param(self, param):
+        """Add a param to this param_spec object manually"""
         if param.name in self.params:
             raise DuplicateParamError(param)
         self._params.append(param)
 
-    def infer_params(self, f):
-        args, vargs, kwargs, _ = getargspec(f)
-
-        if vargs is not None:
-            raise InferNotPossibleError(
-                "Cannot infer parameters for variable arguments.")
-
-        if kwargs is not None:
-            raise InferNotPossibleError(
-                "Cannot infer parameters for keyword arguments.")
-
-        for arg in args:
-            self.add_param(Param(arg, "float"))
-
     def float(self, name, interval, display_name=None, step=None):
+        """Add a float param to this param_spec object"""
         param = Param(name, "float", interval,
             step=step, display_name=display_name)
 
         self.add_param(param)
 
     def int(self, name, interval, display_name=None, step=1):
+        """Add an int param to this param_spec object"""
         param = IntParam(name, "int", interval,
             step=step, display_name=display_name)
 
         self.add_param(param)
 
     def bool(self, name, display_name=None):
+        """Add a bool param to this param_spec object"""
         param = BoolParam(name, "bool", (True, False), display_name=display_name)
         self.add_param(param)
 
@@ -233,9 +222,3 @@ class InvalidIntervalError(Exception):
             % (interval[0], interval[1], param.name)
         )
         self.param = param
-
-
-class InferNotPossibleError(Exception):
-    """The error that occurs when parameters cannot be infered"""
-    def __init__(self, msg):
-        Exception.__init__(self, msg)

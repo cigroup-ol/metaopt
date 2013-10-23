@@ -3,7 +3,6 @@
 from orges.paramspec import ParamSpec
 from orges.paramspec import DuplicateParamError, InvalidIntervalError
 from orges.paramspec import NonIntIntervalError, NonIntStepError
-from orges.paramspec import InferNotPossibleError
 
 from nose.tools import raises
 
