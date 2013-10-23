@@ -41,6 +41,7 @@ setup(
     license=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), \
                  "LICENSE")).read(),
     packages=find_packages(exclude=('tests', 'docs')),
+    package_data={'': ['LICENSE', 'README.rst']},
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=open(os.path.join(os.path.dirname(os.path.realpath(__file__)), \
                           "requirements.txt")).read().splitlines(),
