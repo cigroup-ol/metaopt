@@ -20,11 +20,22 @@ class Invoker(object):
         pass
 
     @abc.abstractmethod
-    def invoke(self, f, fargs, *vargs):
+    def invoke(self, f, fargs, **kwargs):
         """Calls back to self.caller.on_result() for call(f, fargs)."""
         pass
 
     @abc.abstractmethod
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
+        pass
+
+class Caller(object):
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def on_result(return_value, fargs, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def on_error(fargs, **kwargs):
         pass

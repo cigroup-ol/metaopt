@@ -1,7 +1,7 @@
 """
 Invoker that uses multiple cores or CPUs respectively.
 """
-from orges.invoker.invoker import Invoker
+from orges.invoker.base import Invoker
 from orges.args import call
 
 

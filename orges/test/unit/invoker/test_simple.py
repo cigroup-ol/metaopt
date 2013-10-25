@@ -2,7 +2,7 @@ from mock import Mock
 
 from orges.paramspec import ParamSpec
 from orges.args import ArgsCreator
-from orges.invoker.simpleinvoker import SimpleInvoker
+from orges.invoker.simple import SimpleInvoker
 
 def f(a, b):
     return a + b
@@ -25,6 +25,7 @@ def test_invoke_calls_on_result():
 
     invoker._caller = caller
     invoker.invoke(f, args)
+    invoker.wait()
 
     caller.on_result.assert_called_with(2, args)
 
@@ -39,9 +40,11 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker._caller = caller
 
     data = object()
-    invoker.invoke(f, args, data)
 
-    caller.on_result.assert_called_with(2, args, data)
+    invoker.invoke(f, args, data=data)
+    invoker.wait()
+
+    caller.on_result.assert_called_with(2, args, data=data)
 
 if __name__ == '__main__':
     import nose

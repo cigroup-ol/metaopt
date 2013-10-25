@@ -4,7 +4,7 @@ TODO document me
 
 from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
 from orges.paramspec import ParamSpec
-from orges.invoker.simpleinvoker import SimpleInvoker
+from orges.invoker.simple import SimpleInvoker
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.singleprocess import SingleProcessInvoker
 
