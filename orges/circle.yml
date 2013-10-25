@@ -1,7 +1,0 @@
-machine:
-  timezone:
-    Europe/Berlin
-
-test:
-  override:
-    - cd .. && python setup.py test
