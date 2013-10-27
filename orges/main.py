@@ -18,7 +18,7 @@ from orges.paramspec import ParamSpec
 
 from orges.test.demo.algorithm.client.saes import f as saes
 
-def optimize(function, param_spec=None, return_spec=None, minimize=True):
+def optimize(f, param_spec=None, return_spec=None):
     """Optimize the given function"""
 
     try:
@@ -33,20 +33,21 @@ def optimize(function, param_spec=None, return_spec=None, minimize=True):
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
 
-    optimizer.optimize(function, param_spec)
+    # TODO: Use timeout that cancels optimization after a certain time elapsed
+    optimizer.optimize(f, param_spec)
 
 class NoParamSpecError(Exception):
     """The error that occurs when no ParamSpec object is provided"""
     pass
 
 def minimize(f, param_spec=None, return_spec=None):
-    """Optimizes f to return a minimal value."""
-    optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=True)
+    """Minimize the given function"""
+    optimize(f, param_spec=param_spec, return_spec=return_spec)
 
 
 def maximize(f, param_spec=None, return_spec=None):
-    """Optimizes f to return a maximal value."""
-    optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=False)
+    """Maximize the given function"""
+    optimize(f, param_spec=param_spec, return_spec=return_spec)
 
 
 def main():

@@ -20,36 +20,32 @@ class PluggableInvoker(Invoker, Caller):
     def get_subinvoker(self, resources):
         pass
 
-    def invoke(self, f, fargs, **kwargs):
-        task = self.invoker.invoke(f, fargs, **kwargs)
-
+    def invoke(self, f, fargs, invocation=None, **kwargs):
+        # TODO: Reuse exinsting invocation object
         invocation = Invocation()
+        task = self.invoker.invoke(f, fargs, invocation=invocation)
+
         invocation.current_task = task
-        invocation.args = fargs
+        invocation.fargs = fargs
+        invocation.kwargs = kwargs
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
 
-        #print "Starting", "f%s" % (fargs,)
-
-        # TODO: Implement this as plugin
-
-
-    def on_result(self, return_value, fargs, **kwargs):
-        # print "Finished", "f%s = %s" % (fargs, return_value)
+    def on_result(self, result, fargs, invocation):
+        invocation.current_result = result
 
         for plugin in self.plugins:
-            plugin.on_result(None)  # TODO: Pass Invocation object
+            plugin.on_result(invocation)
 
-        self.caller.on_result(return_value, fargs, **kwargs)
+        self.caller.on_result(result, fargs, **invocation.kwargs)
 
-    def on_error(self, fargs, **kwargs):
-        # print "Failed", "f%s" % (fargs,)
+    def on_error(self, fargs, invocation):
 
         for plugin in self.plugins:
-            plugin.on_error(None)  # TODO: Pass Invocation object
+            plugin.on_error(invocation)
 
-        self.caller.on_error(fargs, **kwargs)
+        self.caller.on_error(fargs, **invocation.kwargs)
 
     def wait(self):
         self.invoker.wait()
@@ -72,15 +68,24 @@ class Invocation():
         self._current_result = result
 
     @property
-    def args(self):
+    def fargs(self):
         return self._args
 
-    @args.setter
-    def args(self, args):
-        self._args = args
+    @fargs.setter
+    def fargs(self, fargs):
+        self._args = fargs
+
+    @property
+    def kwargs(self):
+        return self._kwargs
+
+    @kwargs.setter
+    def kwargs(self, kwargs):
+        self._kwargs = kwargs
 
     def __repr__(self):
-        return str(self.args)
+        return str(self.fargs)
+
 
 class InvocationPlugin():
     def on_invoke(self, invocation):
@@ -95,16 +100,14 @@ class InvocationPlugin():
 
 class PrintInvocationPlugin(InvocationPlugin):
     def on_invoke(self, invocation):
-        print "Started", invocation
-        # print "Started", "f%s" % (fargs,)
+        print "Started", "f%s" % (invocation.fargs,)
 
     def on_result(self, invocation):
-        print "Finished", invocation
-        # print "Finished", "f%s = %s" % (fargs, return_value)
+        result = invocation.current_result
+        print "Finished", "f%s=%s" % (invocation.fargs, result)
 
     def on_error(self, invocation):
-        print "Failed", invocation
-        # print "Failed", "f%s" % (fargs,)
+        print "Failed", "f%s" % (invocation.fargs,)
 
 
 class TimeoutInvocationPlugin(InvocationPlugin):
