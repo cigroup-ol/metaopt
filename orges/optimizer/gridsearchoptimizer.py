@@ -5,11 +5,17 @@ from orges.optimizer.optimizer import Optimizer
 
 class GridSearchOptimizer(Optimizer):
     # Invoker ist erstmal ein Objekt, mit dem man Prozesse aufrufen kann
-    def __init__(self, invoker):
+    def __init__(self):
         self.best = (None, None)
 
-        self.invoker = invoker
-        self.invoker._caller = self
+    @property
+    def invoker(self):
+        return self._invoker
+
+    @invoker.setter
+    def invoker(self, invoker):
+        invoker.caller = self
+        self._invoker = invoker
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
         args_creator = ArgsCreator(param_spec)

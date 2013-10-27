@@ -24,9 +24,9 @@ def optimize(function, param_spec=None, return_spec=None, minimize=True):
 
     invoker = PluggableInvoker(None, SimpleInvoker(None))
 
-    # optimizer = SAESOptimizer(invoker)
-    optimizer = GridSearchOptimizer(invoker)
-
+    # optimizer = SAESOptimizer()
+    optimizer = GridSearchOptimizer()
+    optimizer.invoker = invoker
 
     optimizer.optimize(function, param_spec)
 

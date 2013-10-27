@@ -16,15 +16,21 @@ class SAESOptimizer(Optimizer):
     TAU0 = 0.5
     TAU1 = 0.5
 
-    def __init__(self, invoker):
-        self.invoker = invoker
-        self.invoker._caller = self
-
+    def __init__(self):
         self.population = []
         self.scored_population = []
         self.best_scored_indivual = (None, None)
 
         self.generation = 1
+
+    @property
+    def invoker(self):
+        return self._invoker
+
+    @invoker.setter
+    def invoker(self, invoker):
+        invoker.caller = self
+        self._invoker = invoker
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
         self.f = f
