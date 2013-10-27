@@ -28,9 +28,13 @@ class Caller(object):
 
 def test_optimize_returns_result():
     resources = 2  # should get ignored
+
     invoker = SimpleInvoker(resources)
     invoker.caller = Caller()
-    optimizer = GridSearchOptimizer(invoker)
+
+    optimizer = GridSearchOptimizer()
+    optimizer.invoker = invoker
+
     args, minimum = optimizer.optimize(f, PARAM_SPEC)
 
     assert args[0].value == 2
@@ -40,9 +44,13 @@ def test_optimize_returns_result():
 
 def test_multiprocess_returns_result():
     resources = 2  # read: CPUs
+
     invoker = MultiProcessInvoker(resources)
     invoker.caller = Caller()
-    optimizer = GridSearchOptimizer(invoker)
+
+    optimizer = GridSearchOptimizer()
+    optimizer.invoker = invoker
+
     args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
                                        return_spec=None, minimize=True)
 
@@ -53,9 +61,13 @@ def test_multiprocess_returns_result():
 
 def test_singleprocess_returns_result():
     resources = 2  # should get ignored
+
     invoker = SingleProcessInvoker(resources)
     invoker.caller = Caller()
-    optimizer = GridSearchOptimizer(invoker)
+
+    optimizer = GridSearchOptimizer()
+    optimizer.invoker = invoker
+
     args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
                                        return_spec=None, minimize=True)
 

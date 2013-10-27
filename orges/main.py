@@ -5,6 +5,10 @@ from __future__ import print_function
 from orges.args import ArgsCreator, call
 
 from orges.invoker.pluggable import PluggableInvoker
+
+from orges.invoker.pluggable import TimeoutInvocationPlugin
+from orges.invoker.pluggable import PrintInvocationPlugin
+
 from orges.invoker.simple import SimpleInvoker
 
 # from orges.optimizer.saesoptimizer import SAESOptimizer
@@ -22,7 +26,8 @@ def optimize(function, param_spec=None, return_spec=None, minimize=True):
     except AttributeError:
         raise NoParamSpecError()
 
-    invoker = PluggableInvoker(None, SimpleInvoker(None))
+    plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
+    invoker = PluggableInvoker(None, SimpleInvoker(None), plugins=plugins)
 
     # optimizer = SAESOptimizer()
     optimizer = GridSearchOptimizer()

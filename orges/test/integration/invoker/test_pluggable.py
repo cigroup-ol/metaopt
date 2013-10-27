@@ -3,11 +3,15 @@ from time import sleep
 
 from orges.args import ArgsCreator
 from orges.invoker.pluggable import PluggableInvoker
+from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.simple import SimpleInvoker
 from orges.paramspec import ParamSpec
 
+FUNCTION_SLEEP = 2
+INVOKER_TIMEOUT = 1
+
 def f(a, b):
-    sleep(2)
+    sleep(FUNCTION_SLEEP)
     return a + b
 
 PARAM_SPEC = ParamSpec()
@@ -20,7 +24,9 @@ args = args_creator.args()
 
 def test():  # TODO: Find some better name for these kind of tests
     simple_invoker = SimpleInvoker(None)
-    invoker = PluggableInvoker(None, simple_invoker)
+
+    plugins = [TimeoutInvocationPlugin(INVOKER_TIMEOUT)]
+    invoker = PluggableInvoker(None, simple_invoker, plugins=plugins)
 
     caller = Mock()
 
