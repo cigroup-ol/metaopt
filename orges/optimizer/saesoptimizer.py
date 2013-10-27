@@ -38,7 +38,6 @@ class SAESOptimizer(Optimizer):
             self.score_population()
             self.select_parents()
 
-            print(self.best_scored_indivual[0])
             self.generation += 1
 
         return self.best_scored_indivual[0]
@@ -87,7 +86,7 @@ class SAESOptimizer(Optimizer):
     def score_population(self):
         for individual in self.population:
             args, _ = individual
-            self.invoker.invoke(self.f, args, individual)
+            self.invoker.invoke(self.f, args, individual=individual)
 
         self.invoker.wait()
 
@@ -96,7 +95,7 @@ class SAESOptimizer(Optimizer):
         new_scored_population = self.scored_population[0:SAESOptimizer.MU]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, args, individual):
+    def on_result(self, result, args, indivdual):
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)
@@ -107,7 +106,7 @@ class SAESOptimizer(Optimizer):
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
 
-    def on_error(self, args, error, individual):
+    def on_error(self, args, individual):
         pass
 
 if __name__ == '__main__':

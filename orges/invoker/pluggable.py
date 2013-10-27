@@ -21,14 +21,18 @@ class PluggableInvoker(Invoker, Caller):
     def invoke(self, f, fargs, **kwargs):
         task = self.invoker.invoke(f, fargs, **kwargs)
 
-        # TODO: Implement this as middleware
+        print "Starting", fargs
+
+        # TODO: Implement this as plugin
         timer = Timer(1, task.cancel) # Cancel after 1 second
         timer.start()
 
     def on_result(self, return_value, fargs, **kwargs):
+        print "Finished", fargs, return_value
         self.caller.on_result(return_value, fargs, **kwargs)
 
     def on_error(self, fargs, **kwargs):
+        print "Failed", fargs
         self.caller.on_error(fargs, **kwargs)
 
     def wait(self):

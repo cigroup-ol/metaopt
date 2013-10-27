@@ -2,29 +2,46 @@
 from __future__ import division
 from __future__ import print_function
 
-from orges.test.demo.algorithm.client.saes import f as saes
-from orges.paramspec import ParamSpec
 from orges.args import ArgsCreator, call
 
+from orges.invoker.pluggable import PluggableInvoker
+from orges.invoker.simple import SimpleInvoker
 
-#TODO take boolean minimize into account
-def _optimize(f, param_spec=None, return_spec=None, minimize=True):
-    """Generic optimizer function."""
-    if param_spec is None:
-        param_spec = ParamSpec(f)
+# from orges.optimizer.saesoptimizer import SAESOptimizer
+from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
 
-    for args in ArgsCreator(param_spec).product():
-        print(call(f, args), args)
+from orges.paramspec import ParamSpec
 
+from orges.test.demo.algorithm.client.saes import f as saes
+
+def optimize(function, param_spec=None, return_spec=None, minimize=True):
+    """Optimize the given function"""
+
+    try:
+        param_spec = param_spec or function.param_spec
+    except AttributeError:
+        raise NoParamSpecError()
+
+    invoker = PluggableInvoker(None, SimpleInvoker(None))
+
+    # optimizer = SAESOptimizer(invoker)
+    optimizer = GridSearchOptimizer(invoker)
+
+
+    optimizer.optimize(function, param_spec)
+
+class NoParamSpecError(Exception):
+    """The error that occurs when no ParamSpec object is provided"""
+    pass
 
 def minimize(f, param_spec=None, return_spec=None):
     """Optimizes f to return a minimal value."""
-    _optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=True)
+    optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=True)
 
 
 def maximize(f, param_spec=None, return_spec=None):
     """Optimizes f to return a maximal value."""
-    _optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=False)
+    optimize(f, param_spec=param_spec, return_spec=return_spec, minimize=False)
 
 
 def main():
@@ -38,10 +55,11 @@ def main():
     # Tip
     # 1 (mu=20, lambd=23, tau0=0.5, tau1=0.7)
 
-    param_spec.int("mu", "μ").interval((10, 20))
-    param_spec.int("lambd", "λ").interval((10, 50))
-    param_spec.float("tau0", "τ1").interval((0, 1)).step(0.1)
-    param_spec.float("tau1", "τ2").interval((0, 1)).step(0.1)
+    param_spec.int("mu", interval=(10, 100), display_name="μ")
+    param_spec.int("lambd", interval=(10, 100), display_name="λ")
+    param_spec.float("tau0", interval=(0, 1), step=0.1, display_name="τ1")
+    param_spec.float("tau1", interval=(0, 1), step=0.1, display_name="τ2")
+
     minimize(f, param_spec)
 
 if __name__ == '__main__':

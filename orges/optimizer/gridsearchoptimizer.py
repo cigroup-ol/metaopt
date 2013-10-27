@@ -34,5 +34,5 @@ class GridSearchOptimizer(Optimizer):
             self.best = (args, fitness)
 
     # Wird aufgerufen wenn beim Aufruf von f ein Fehler aufgetaucht ist.
-    def on_error(self, args, vargs, error):
-        return False # Bei True könnte man z.B. den Aufruf von F erneut probieren.
+    def on_error(self, args, **kwargs):
+        pass
