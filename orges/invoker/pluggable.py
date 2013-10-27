@@ -22,12 +22,20 @@ class PluggableInvoker(Invoker, Caller):
 
     def invoke(self, f, fargs, invocation=None, **kwargs):
         # TODO: Reuse exinsting invocation object
-        invocation = Invocation()
-        task = self.invoker.invoke(f, fargs, invocation=invocation)
+        if invocation is None:
+            invocation = Invocation()
 
+            invocation.f = f
+            invocation.fargs = fargs
+            invocation.kwargs = kwargs
+
+        for plugin in self.plugins:
+            plugin.before_invoke(invocation)
+
+        invocation.tries += 1
+
+        task = self.invoker.invoke(f, fargs, invocation=invocation)
         invocation.current_task = task
-        invocation.fargs = fargs
-        invocation.kwargs = kwargs
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
@@ -38,7 +46,16 @@ class PluggableInvoker(Invoker, Caller):
         for plugin in self.plugins:
             plugin.on_result(invocation)
 
-        self.caller.on_result(result, fargs, **invocation.kwargs)
+        if invocation.retry:
+            # TODO: Maybe run this in its own thread
+            self.invoke(
+                invocation.f,
+                invocation.fargs,
+                invocation,
+                **invocation.kwargs
+            )
+        else:
+            self.caller.on_result(result, fargs, **invocation.kwargs)
 
     def on_error(self, fargs, invocation):
 
@@ -51,6 +68,10 @@ class PluggableInvoker(Invoker, Caller):
         self.invoker.wait()
 
 class Invocation():
+    def __init__(self):
+        self._retry = False
+        self._tries = 0
+
     @property
     def current_task(self):
         return self._current_task
@@ -68,6 +89,14 @@ class Invocation():
         self._current_result = result
 
     @property
+    def f(self):
+        return self._f
+
+    @f.setter
+    def f(self, f):
+        self._f = f
+
+    @property
     def fargs(self):
         return self._args
 
@@ -83,11 +112,29 @@ class Invocation():
     def kwargs(self, kwargs):
         self._kwargs = kwargs
 
+    @property
+    def retry(self):
+        return self._retry
+
+    @retry.setter
+    def retry(self, retry):
+        self._retry = retry
+
+    @property
+    def tries(self):
+        return self._tries
+    @tries.setter
+    def tries(self, value):
+        self._tries = value
+
     def __repr__(self):
         return str(self.fargs)
 
 
 class InvocationPlugin():
+    def before_invoke(self, invocation):
+        pass
+
     def on_invoke(self, invocation):
         pass
 
