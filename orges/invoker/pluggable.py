@@ -23,11 +23,16 @@ class PluggableInvoker(Invoker, Caller):
     def invoke(self, f, fargs, invocation=None, **kwargs):
         # TODO: Reuse exinsting invocation object
         invocation = Invocation()
+
+        invocation.fargs = fargs
+        invocation.kwargs = kwargs
+
+        for plugin in self.plugins:
+            plugin.before_invoke(invocation)
+
         task = self.invoker.invoke(f, fargs, invocation=invocation)
 
         invocation.current_task = task
-        invocation.fargs = fargs
-        invocation.kwargs = kwargs
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
@@ -88,6 +93,9 @@ class Invocation():
 
 
 class InvocationPlugin():
+    def before_invoke(self, invocation):
+        pass
+
     def on_invoke(self, invocation):
         pass
 
