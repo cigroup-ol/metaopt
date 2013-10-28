@@ -18,6 +18,10 @@ class SAESOptimizer(Optimizer):
     TAU1 = 0.5
 
     def __init__(self):
+        self._invoker = None
+        self._f = None
+        self.param_spec = None
+
         self.population = []
         self.scored_population = []
         self.best_scored_indivual = (None, None)
@@ -34,7 +38,7 @@ class SAESOptimizer(Optimizer):
         self._invoker = invoker
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
-        self.f = f
+        self._f = f
         self.param_spec = param_spec
 
         self.initalize_population()
@@ -92,7 +96,7 @@ class SAESOptimizer(Optimizer):
     def score_population(self):
         for individual in self.population:
             args, _ = individual
-            self.invoker.invoke(self.f, args, individual=individual)
+            self.invoker.invoke(self._f, args, individual=individual)
 
         self.invoker.wait()
 

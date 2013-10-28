@@ -6,6 +6,7 @@ class PluggableInvoker(Invoker, Caller):
     def __init__(self, resources, invoker, plugins=[]):
         self.invoker = invoker
         self.invoker.caller = self
+        self._caller = None
 
         self.plugins = plugins
 
