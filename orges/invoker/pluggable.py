@@ -1,8 +1,9 @@
 from threading import Timer
 
-from orges.invoker.base import Invoker, Caller
+from orges.invoker.base import BaseInvoker, BaseCaller
 
-class PluggableInvoker(Invoker, Caller):
+
+class PluggableInvoker(BaseInvoker, BaseCaller):
     def __init__(self, resources, invoker, plugins=[]):
         self.invoker = invoker
         self.invoker.caller = self

@@ -5,10 +5,10 @@ TODO document me
 from threading import Thread, Lock
 
 from orges.args import call
-from orges.invoker.base import Invoker
+from orges.invoker.base import BaseInvoker
 
 
-class SimpleInvoker(Invoker):
+class SimpleInvoker(BaseInvoker):
     """TODO document me"""
 
     def __init__(self, resources):

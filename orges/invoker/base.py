@@ -5,7 +5,7 @@ Abstract invoker defining the API of invoker implementations.
 import abc  # Abstract Base Class
 
 
-class Invoker(object):
+class BaseInvoker(object):
     """Abstract invoker managing calls to ."""
 
     __metaclass__ = abc.ABCMeta
@@ -29,7 +29,8 @@ class Invoker(object):
         """Blocks till all invoke, on_error or on_result calls are done."""
         pass
 
-class Caller(object):
+
+class BaseCaller(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

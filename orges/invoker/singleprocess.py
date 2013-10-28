@@ -1,11 +1,11 @@
 """
-Invoker that uses multiple cores or CPUs respectively.
+Invoker that uses a single core or CPU respectively.
 """
-from orges.invoker.base import Invoker
+from orges.invoker.base import BaseInvoker
 from orges.args import call
 
 
-class SingleProcessInvoker(Invoker):
+class SingleProcessInvoker(BaseInvoker):
     """Invoker that does the work on its own."""
 
     def __init__(self, resources):

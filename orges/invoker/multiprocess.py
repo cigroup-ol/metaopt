@@ -1,11 +1,11 @@
 """
 Invoker that uses multiple cores or CPUs respectively.
 """
-from orges.invoker.base import Invoker
+from orges.invoker.base import BaseInvoker
 from orges.args import call
 
 
-class MultiProcessInvoker(Invoker):
+class MultiProcessInvoker(BaseInvoker):
     """Invoker that manages worker processes that do the actual work."""
 
     def __init__(self, resources):

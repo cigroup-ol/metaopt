@@ -17,7 +17,7 @@ PARAM_SPEC.int("a", interval=(1, 2))
 PARAM_SPEC.int("b", interval=(1, 2))
 
 
-class Caller(object):
+class BaseCaller(object):
 
     def __init__(self):
         pass
@@ -30,7 +30,7 @@ def test_optimize_returns_result():
     resources = 2  # should get ignored
 
     invoker = SimpleInvoker(resources)
-    invoker.caller = Caller()
+    invoker.caller = BaseCaller()
 
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
@@ -46,7 +46,7 @@ def test_multiprocess_returns_result():
     resources = 2  # read: CPUs
 
     invoker = MultiProcessInvoker(resources)
-    invoker.caller = Caller()
+    invoker.caller = BaseCaller()
 
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
@@ -63,7 +63,7 @@ def test_singleprocess_returns_result():
     resources = 2  # should get ignored
 
     invoker = SingleProcessInvoker(resources)
-    invoker.caller = Caller()
+    invoker.caller = BaseCaller()
 
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
