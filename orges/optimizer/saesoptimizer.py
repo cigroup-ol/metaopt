@@ -105,7 +105,7 @@ class SAESOptimizer(Optimizer):
         new_scored_population = self.scored_population[0:SAESOptimizer.MU]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, args, indivdual):
+    def on_result(self, result, args, individual):
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)
@@ -121,7 +121,7 @@ class SAESOptimizer(Optimizer):
 
 
 if __name__ == '__main__':
-    from orges.invoker.simpleinvoker import SimpleInvoker
+    from orges.invoker.simple import SimpleInvoker
     from orges.paramspec import ParamSpec
     from orges.test.demo.algorithm.host.saes import f as saes
 

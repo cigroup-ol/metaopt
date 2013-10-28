@@ -33,9 +33,9 @@ class Caller(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def on_result(return_value, fargs, **kwargs):
+    def on_result(self, return_value, fargs, **kwargs):
         pass
 
     @abc.abstractmethod
-    def on_error(fargs, **kwargs):
+    def on_error(self, fargs, **kwargs):
         pass

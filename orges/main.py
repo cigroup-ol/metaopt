@@ -2,8 +2,6 @@
 from __future__ import division
 from __future__ import print_function
 
-from orges.args import ArgsCreator, call
-
 from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
@@ -18,7 +16,7 @@ def optimize(f, param_spec=None, return_spec=None):
     """Optimize the given function"""
 
     try:
-        param_spec = param_spec or function.param_spec
+        param_spec = param_spec or f.param_spec
     except AttributeError:
         raise NoParamSpecError()
 

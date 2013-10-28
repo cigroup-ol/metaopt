@@ -22,7 +22,7 @@ class PluggableInvoker(Invoker, Caller):
         pass
 
     def invoke(self, f, fargs, invocation=None, **kwargs):
-        # TODO: Reuse exinsting invocation object
+        # TODO: Reuse existing invocation object
         if invocation is None:
             invocation = Invocation()
 

@@ -5,7 +5,8 @@ TODO Figure out what such a command should actually mean and do
 
 """
 
-import main
+from orges.main import main
+
 
 if __name__ == '__main__':
-  main.main()
+    main()
