@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-
 import sys
-import os
 
 from setuptools import setup, find_packages, Extension
 from setuptools.command.test import test as TestCommand
@@ -33,15 +30,14 @@ setup(
     name='orges',
     version='0.0.1',
     description='OrgES Package - Organic Computing for Evolution Strategies',
-    long_description=open("README.rst").read(),
     author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
     author_email='info@orges.org',
     url='http://organic-es.tumblr.com/',
-    license=open("LICENSE.txt").read(), # travis will choke on this
+    license="3-Clause BSD",
     packages=find_packages(exclude=('tests', 'docs')),
     package_data={'': ['LICENSE.txt', 'README.rst', 'requirements.txt']},
     ext_modules=[HANG_MODULE_EXTENSION],
-    install_requires=open("requirements.txt").read().splitlines(),
+    install_requires=["nose", "mock", "numpy"],
     tests_require=['tox'],
     cmdclass={'test': Tox},
 )
