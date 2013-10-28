@@ -4,8 +4,10 @@ from orges.paramspec import ParamSpec
 from orges.args import ArgsCreator
 from orges.invoker.simple import SimpleInvoker
 
+
 def f(a, b):
     return a + b
+
 
 PARAM_SPEC = ParamSpec()
 PARAM_SPEC.int("a", interval=(1, 10))
@@ -28,6 +30,7 @@ def test_invoke_calls_on_result():
     invoker.wait()
 
     caller.on_result.assert_called_with(2, args)
+
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = SimpleInvoker(1)

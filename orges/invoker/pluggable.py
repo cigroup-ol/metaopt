@@ -67,6 +67,7 @@ class PluggableInvoker(Invoker, Caller):
     def wait(self):
         self.invoker.wait()
 
+
 class Invocation():
     def __init__(self):
         self._retry = False
@@ -123,6 +124,7 @@ class Invocation():
     @property
     def tries(self):
         return self._tries
+
     @tries.setter
     def tries(self, value):
         self._tries = value

@@ -171,12 +171,14 @@ class IntParam(Param):
 
         Param.check_interval(self)
 
+
 class BoolParam(Param):
     def __init__(self, *vargs, **kwargs):
         Param.__init__(self, *vargs, **kwargs)
 
     def check_interval(self):
         pass
+
 
 class DuplicateParamError(Exception):
     """The error that occurs when two parameters with the same name are

@@ -10,9 +10,11 @@ from orges.paramspec import ParamSpec
 FUNCTION_SLEEP = 2
 INVOKER_TIMEOUT = 1
 
+
 def f(a, b):
     sleep(FUNCTION_SLEEP)
     return a + b
+
 
 PARAM_SPEC = ParamSpec()
 PARAM_SPEC.int("a", interval=(1, 10))

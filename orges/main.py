@@ -5,18 +5,14 @@ from __future__ import print_function
 from orges.args import ArgsCreator, call
 
 from orges.invoker.pluggable import PluggableInvoker
-
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
-
 from orges.invoker.simple import SimpleInvoker
-
 # from orges.optimizer.saesoptimizer import SAESOptimizer
 from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
-
 from orges.paramspec import ParamSpec
-
 from orges.test.demo.algorithm.client.saes import f as saes
+
 
 def optimize(f, param_spec=None, return_spec=None):
     """Optimize the given function"""
@@ -36,9 +32,11 @@ def optimize(f, param_spec=None, return_spec=None):
     # TODO: Use timeout that cancels optimization after a certain time elapsed
     optimizer.optimize(f, param_spec)
 
+
 class NoParamSpecError(Exception):
     """The error that occurs when no ParamSpec object is provided"""
     pass
+
 
 def minimize(f, param_spec=None, return_spec=None):
     """Minimize the given function"""

@@ -19,6 +19,7 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 
 from orges.paramspec import ParamSpec
 
+
 def int(*vargs, **kwargs):
     """A decorator that specifies an int parameter for a function"""
 
@@ -28,6 +29,7 @@ def int(*vargs, **kwargs):
         return f
 
     return decorator
+
 
 def float(*vargs, **kwargs):
     """A decorator that specifies a float parameter for a function"""
@@ -39,6 +41,7 @@ def float(*vargs, **kwargs):
 
     return decorator
 
+
 def bool(*vargs, **kwargs):
     """A decorator that specifies an bool parameter for a function"""
     def decorator(f):
@@ -47,6 +50,7 @@ def bool(*vargs, **kwargs):
         return f
 
     return decorator
+
 
 def make_param_spec(f):
     """Create a new param_spec object for ``f`` or retrieves it if it exists"""

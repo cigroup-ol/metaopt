@@ -75,7 +75,6 @@ def test_singleprocess_returns_result():
     assert args[1].value == 2
     assert minimum == -4
 
-
 if __name__ == '__main__':
     import nose
     nose.runmodule()

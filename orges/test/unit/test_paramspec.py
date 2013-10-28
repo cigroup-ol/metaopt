@@ -6,25 +6,30 @@ from orges.paramspec import NonIntIntervalError, NonIntStepError
 
 from nose.tools import raises
 
+
 @raises(Exception)
 def test_float_no_interval_raises_error():
     param_spec = ParamSpec()
     param_spec.float("a")
+
 
 @raises(Exception)
 def test_int_no_interval_raises_error():
     param_spec = ParamSpec()
     param_spec.int("a")
 
+
 def test_float_given_name_saves_by_name():
     param_spec = ParamSpec()
     param_spec.float("a", interval=(0, 1))
     assert "a" in param_spec.params
 
+
 def test_float_parameter_has_type_float():
     param_spec = ParamSpec()
     param_spec.float("a", interval=(0, 1))
     assert param_spec.params["a"].type == "float"
+
 
 def test_float_speficied_interval_saves_it():
     param_spec = ParamSpec()
@@ -72,6 +77,7 @@ def test_int_float_interval_raises_error():
     param_spec = ParamSpec()
     param_spec.int("a", interval=(0.1, 0.9))
 
+
 def test_bool_has_pseudo_interval():
     param_spec = ParamSpec()
     param_spec.bool("a")
@@ -106,6 +112,7 @@ def test_given_no_display_name_defaults_to_name():
     assert param_spec.params["a"].display_name == "a"
     assert param_spec.params["b"].display_name == "b"
     assert param_spec.params["g"].display_name == "g"
+
 
 def test_given_display_name_saves_it():
     param_spec = ParamSpec()

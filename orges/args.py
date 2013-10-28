@@ -82,6 +82,7 @@ class ArgsCreator(object):
         """Iterator that iterates over all args combinations"""
         return itertools.product(*self.args())
 
+
 def create_arg(param, value=None):
     """Factory method for creating args from params"""
 
@@ -89,6 +90,7 @@ def create_arg(param, value=None):
         return BoolArg(param, value)
     else:
         return Arg(param, value)
+
 
 class Arg(object):
     def __init__(self, param, value=None):
@@ -119,6 +121,7 @@ class Arg(object):
     def __repr__(self):
         return "%s=%s" % (self.param.display_name, self.value)
 
+
 class BoolArg(Arg):
     def __init__(self, param, value=None):
         Arg.__init__(self, param, value)
@@ -127,6 +130,7 @@ class BoolArg(Arg):
         if self.value:
             yield BoolArg(self.param, True)
         yield BoolArg(self.param, False)
+
 
 class UnboundedArgIterError(Exception):
     """The error that occurs when an iter for an unbounded interval is used"""

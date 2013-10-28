@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import division
 from __future__ import print_function
 
@@ -69,7 +70,7 @@ class SAESOptimizer(Optimizer):
 
             child_args = args_creator.combine(mother[0], father[0])
 
-            mean = lambda x1,x2: (x1 + x2) / 2
+            mean = lambda x1, x2: (x1 + x2) / 2
             child_args_sigma = map(mean, mother[1], father[1])
 
             child_args = args_creator.randomize(child_args, child_args_sigma)
@@ -87,7 +88,6 @@ class SAESOptimizer(Optimizer):
             child = (child_args, child_args_sigma)
 
             self.population.append(child)
-
 
     def score_population(self):
         for individual in self.population:
@@ -114,6 +114,7 @@ class SAESOptimizer(Optimizer):
 
     def on_error(self, args, individual):
         pass
+
 
 if __name__ == '__main__':
     from orges.invoker.simpleinvoker import SimpleInvoker

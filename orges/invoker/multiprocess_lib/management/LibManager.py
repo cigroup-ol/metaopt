@@ -10,4 +10,3 @@ def kill_worker_by_id(worker_pool, id):
 def kill_worker(worker):
     """Kills the given worker."""
     worker.process.terminate()
-

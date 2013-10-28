@@ -13,6 +13,7 @@ from orges.args import UnboundedArgIterError, NoStepArgIterError
 from orges.args import CallNotPossibleError
 from orges.args import call
 
+
 def test_call_func_with_args_works():
     param_spec = ParamSpec()
     param_spec.int("a", interval=(1, 2))
@@ -178,6 +179,7 @@ def test_arg_iter_bool_works():
 
     values = [arg.value for arg in list(BoolArg(param_spec.params["a"]))]
     eq_(values, [True, False])
+
 
 @raises(NoStepArgIterError)
 def test_arg_iter_no_step_raises_error():
