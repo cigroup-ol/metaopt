@@ -31,7 +31,12 @@ Run pep8
 Run Tests
 ---------
 
-We need Tox >= 1.6, so probably:
+We need Tox >= 1.6, so if you run into this:
+
+    $ tox
+    ERROR: tox version is 1.4.2, required is at least 1.6
+
+Upgrade tox:
 
     $ [sudo] pip install --upgrade tox
 
