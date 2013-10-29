@@ -68,6 +68,7 @@ class SimpleInvoker(BaseInvoker):
         if self.thread is not None:
             self.thread.join()
 
+
 class Task(object):
     def __init__(self, simple_invoker):
         self.simple_invoker = simple_invoker
