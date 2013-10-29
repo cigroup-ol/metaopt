@@ -21,6 +21,7 @@ class SimpleInvoker(BaseInvoker):
 
         self.current_task = None
         self.cancelled = False
+        self.aborted = False
 
     @property
     def caller(self):
@@ -34,6 +35,10 @@ class SimpleInvoker(BaseInvoker):
         return self
 
     def invoke(self, f, fargs, **kwargs):
+        with self.lock:
+            if self.aborted:
+                return None, True
+
         self.wait()
 
         with self.lock:
@@ -42,7 +47,10 @@ class SimpleInvoker(BaseInvoker):
         self.thread = Thread(target=self.target, args=(f, fargs), kwargs=kwargs)
         self.thread.start()
 
-        return self.task
+        with self.lock:
+            aborted = self.aborted
+
+        return self.task, aborted
 
     def cancel(self, task):
         with self.lock:
@@ -67,6 +75,18 @@ class SimpleInvoker(BaseInvoker):
     def wait(self):
         if self.thread is not None:
             self.thread.join()
+
+        with self.lock:
+            aborted = self.aborted
+
+        return aborted
+
+    def abort(self):
+        with self.lock:
+            self.aborted = True
+
+        self.cancel(self.current_task)
+
 
 class Task(object):
     def __init__(self, simple_invoker):
