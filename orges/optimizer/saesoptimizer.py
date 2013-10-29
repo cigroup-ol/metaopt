@@ -12,8 +12,8 @@ from orges.optimizer.optimizer import Optimizer
 
 
 class SAESOptimizer(Optimizer):
-    MU = 10
-    LAMBDA = 10
+    MU = 3
+    LAMBDA = 3
     TAU0 = 0.5
     TAU1 = 0.5
 
@@ -62,6 +62,7 @@ class SAESOptimizer(Optimizer):
         for _ in xrange(SAESOptimizer.MU):
             args = args_creator.random()
             args_sigma = list(randn(len(args)))
+            args_sigma = [float(sigma) for sigma in args_sigma]
 
             individual = (args, args_sigma)
             self.population.append(individual)
@@ -74,7 +75,7 @@ class SAESOptimizer(Optimizer):
 
             child_args = args_creator.combine(mother[0], father[0])
 
-            mean = lambda x1, x2: (x1 + x2) / 2
+            mean = lambda x1, x2: float((x1 + x2) / 2)
             child_args_sigma = map(mean, mother[1], father[1])
 
             child_args = args_creator.randomize(child_args, child_args_sigma)
