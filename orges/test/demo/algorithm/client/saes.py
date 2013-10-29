@@ -2,6 +2,7 @@
 
 from __future__ import division
 from __future__ import print_function
+from __future__ import with_statement
 
 from orges.test.demo.algorithm.host.saes import f
 from orges.invoker.multiprocess_lib.worker.worker_builder import \

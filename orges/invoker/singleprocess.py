@@ -1,6 +1,10 @@
 """
 Invoker that uses a single core or CPU respectively.
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from orges.invoker.base import BaseInvoker
 from orges.args import call
 

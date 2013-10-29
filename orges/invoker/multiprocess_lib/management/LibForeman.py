@@ -1,7 +1,12 @@
 """Collection of no-self-use methods to build a Foreman from."""
 
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from multiprocessing.queues import Queue
 from multiprocessing.process import Process
+
 from orges.invoker.multiprocess_lib.model.Worker import Worker
 from orges.invoker.multiprocess_lib.model.Worker import Task
 from orges.invoker.multiprocess_lib.model.Worker import Pool

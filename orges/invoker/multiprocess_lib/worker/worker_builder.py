@@ -1,6 +1,10 @@
 """
 Builds workers for given f()s.
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from orges.invoker.multiprocess_lib.model.Worker import Result
 
 

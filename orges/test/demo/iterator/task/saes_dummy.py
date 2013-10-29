@@ -1,4 +1,7 @@
 """Returns always the same arguments for the saes."""
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
 
 
 def get_argument_batches():

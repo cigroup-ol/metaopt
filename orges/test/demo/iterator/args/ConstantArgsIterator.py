@@ -1,5 +1,9 @@
 """Argument iterator that always returns the same arguments."""
 
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 
 class ConstantArgumentBatchIterator(object):
     """Argument iterator that always returns the same arguments."""

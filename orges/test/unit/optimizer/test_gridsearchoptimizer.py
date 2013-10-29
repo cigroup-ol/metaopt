@@ -2,6 +2,10 @@
 TODO document me
 """
 
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
 from orges.paramspec import ParamSpec
 from orges.invoker.simple import SimpleInvoker

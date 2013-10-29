@@ -1,6 +1,9 @@
 """
 Returns always the same arguments for the hang module c extension.
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
 
 from orges.test.demo.iterator.args.ConstantArgsIterator import ConstantArgumentBatchIterator
 from orges.test.demo.iterator.task.TaskIterator import TaskIterator

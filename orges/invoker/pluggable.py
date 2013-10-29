@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from threading import Timer
 
 from orges.invoker.base import BaseInvoker, BaseCaller
@@ -151,14 +155,14 @@ class InvocationPlugin():
 
 class PrintInvocationPlugin(InvocationPlugin):
     def on_invoke(self, invocation):
-        print "Started", "f%s" % (invocation.fargs,)
+        print("Started", "f%s" % (invocation.fargs,))
 
     def on_result(self, invocation):
         result = invocation.current_result
-        print "Finished", "f%s=%s" % (invocation.fargs, result)
+        print("Finished", "f%s=%s" % (invocation.fargs, result))
 
     def on_error(self, invocation):
-        print "Failed", "f%s" % (invocation.fargs,)
+        print("Failed", "f%s" % (invocation.fargs,))
 
 
 class TimeoutInvocationPlugin(InvocationPlugin):

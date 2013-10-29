@@ -3,9 +3,10 @@
 """
 Tests the foreman object.
 """
-
 from __future__ import division
 from __future__ import print_function
+from __future__ import with_statement
+
 import time
 
 from orges.invoker.multiprocess_lib.management.Foreman import Foreman

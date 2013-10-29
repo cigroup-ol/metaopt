@@ -1,4 +1,8 @@
 # -!- coding: utf-8 -!-
+from __future__ import division
+from __future__ import print_function
+from __future__ import with_statement
+
 from orges.args import ArgsCreator
 from orges.optimizer.optimizer import Optimizer
 
