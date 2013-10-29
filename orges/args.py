@@ -16,6 +16,7 @@ from __future__ import division
 from __future__ import print_function
 
 from inspect import getargspec
+from random import randint
 import itertools
 import random
 
@@ -68,12 +69,11 @@ class ArgsCreator(object):
         return [create_arg(param) for param in self.param_spec.params.values()]
 
     def combine(self, args1, args2):
-        f = lambda arg1, arg2: Arg(arg1.param, (arg1.value + arg2.value) / 2)
-        return map(f, args1, args2)
+        return map(lambda arg1, arg2: arg1.combine(arg2), args1, args2)
 
-    def randomize(self, args, sigmas):
-        f = lambda arg, sigma: Arg(arg.param, arg.value + random.gauss(0, sigma))
-        return map(f, args, sigmas)
+    def randomize(self, args, strengths):
+        return map(lambda arg, strength: arg.randomize(strength),\
+            args, strengths)
 
     def random(self):
         return [arg.random() for arg in self.args()]
@@ -86,8 +86,10 @@ class ArgsCreator(object):
 def create_arg(param, value=None):
     """Factory method for creating args from params"""
 
-    if (param.type == "bool"):
+    if param.type == "bool":
         return BoolArg(param, value)
+    elif param.type == "int":
+        return IntArg(param, value)
     else:
         return Arg(param, value)
 
@@ -102,6 +104,14 @@ class Arg(object):
 
     def random(self):
         return Arg(self.param, random.gauss(0, 1))
+
+    def randomize(self, strength):
+        value = self.value + random.gauss(0, 1) * strength
+        return Arg(self.param, value)
+
+    def combine(self, other_arg):
+        value = (self.value + other_arg.value) / 2
+        return Arg(self.param, value)
 
     def __iter__(self):
         if None in self.param.interval:
@@ -122,9 +132,31 @@ class Arg(object):
         return "%s=%s" % (self.param.display_name, self.value)
 
 
-class BoolArg(Arg):
+class IntArg(Arg):
     def __init__(self, param, value=None):
         Arg.__init__(self, param, value)
+
+    def random(self):
+        value = randint(self.param.lower_bound, self.param.upper_bound)
+        return IntArg(self.param, value=value)
+
+    def randomize(self, sigma):
+        value = self.value + random.gauss(0, 1) * sigma
+        return IntArg(self.param, value=int(value))
+
+    def combine(self, other_arg):
+        value = (self.value + other_arg.value) / 2
+        return IntArg(self.param, int(value))
+
+class BoolArg(Arg):
+    def __init__(self, param, value=None):
+        Arg.__init__(self, param, value=value)
+
+    def random(self):
+        return BoolArg(self.param, value=random.choice([True, False]))
+
+    def randomize(self):
+        return random(self)
 
     def __iter__(self):
         if self.value:
