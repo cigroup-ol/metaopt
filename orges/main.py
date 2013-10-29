@@ -2,6 +2,8 @@
 from __future__ import division
 from __future__ import print_function
 
+from threading import Timer
+
 from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
@@ -12,23 +14,31 @@ from orges.paramspec import ParamSpec
 from orges.test.demo.algorithm.client.saes import f as saes
 
 
-def optimize(f, param_spec=None, return_spec=None):
-    """Optimize the given function"""
-
+def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
+                    optimizer=None, invoker=None):
+    """Optimize the given function using the specified optimizer and invoker"""
     try:
         param_spec = param_spec or f.param_spec
     except AttributeError:
         raise NoParamSpecError()
 
+    optimizer.invoker = invoker
+
+    if timeout is not None:
+        Timer(timeout, invoker.abort).start()
+
+    return optimizer.optimize(f, param_spec)
+
+def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None):
+    """Optimize the given function"""
+
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
     invoker = PluggableInvoker(None, SimpleInvoker(None), plugins=plugins)
 
-    # optimizer = SAESOptimizer()
     optimizer = GridSearchOptimizer()
-    optimizer.invoker = invoker
 
-    # TODO: Use timeout that cancels optimization after a certain time elapsed
-    optimizer.optimize(f, param_spec)
+    return custom_optimize(f, param_spec, return_spec, timeout, optimizer,
+                           invoker)
 
 
 class NoParamSpecError(Exception):

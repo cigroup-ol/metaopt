@@ -25,11 +25,11 @@ class GridSearchOptimizer(Optimizer):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
-            # Wartet bis ein Prozess zur Verfügung steht, in dem f aufgerufen werden kann.
-            self.invoker.invoke(f, args)
-            # yield self.best[0]
+            _, aborted = self.invoker.invoke(f, args)
 
-        # Wartet bis alle Aufrufe von f beendet sind.
+            if aborted:
+                return self.best
+
         self.invoker.wait()
 
         return self.best

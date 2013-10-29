@@ -33,6 +33,11 @@ class BaseInvoker(object):
         """Blocks till all invoke, on_error or on_result calls are done."""
         pass
 
+    @abc.abstractmethod
+    def abort(self):
+        """Cancel all running and future tasks"""
+        pass
+
 
 class BaseCaller(object):
     __metaclass__ = abc.ABCMeta

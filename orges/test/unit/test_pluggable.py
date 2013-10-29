@@ -19,6 +19,9 @@ def test_before_invoke_calls_plugins():
     plugins = [mock_plugin]
     stub_invoker = Mock()
 
+    stub_invoker.invoke = Mock(return_value=(None, False))
+    stub_invoker.wait = Mock(return_value=False)
+
     invoker = PluggableInvoker(None, stub_invoker, plugins=plugins)
 
     args = ArgsCreator(f.param_spec).args()
@@ -34,6 +37,9 @@ def test_on_invoke_calls_plugins():
     plugins = [mock_plugin]
     stub_invoker = Mock()
 
+    stub_invoker.invoke = Mock(return_value=(None, False))
+    stub_invoker.wait = Mock(return_value=False)
+
     invoker = PluggableInvoker(None, stub_invoker, plugins=plugins)
 
     args = ArgsCreator(f.param_spec).args()
@@ -48,14 +54,19 @@ def test_on_result_calls_plugins():
     mock_plugin = Mock()
     mock_plugin.on_result = Mock(spec=[])
 
-    plugins = [mock_plugin]
     stub_invoker = Mock()
+
+    stub_invoker.invoke = Mock(return_value=(None, False))
+    stub_invoker.wait = Mock(return_value=False)
+
+    plugins = [mock_plugin]
 
     invoker = PluggableInvoker(None, stub_invoker, plugins=plugins)
     invoker.caller = stub_caller
 
     def stub_invoke(f, fargs, **kwargs):
         invoker.on_result(0, fargs, **kwargs)
+        return None, False
 
     stub_invoker.invoke = Mock(spec=[])
     stub_invoker.invoke.side_effect = stub_invoke
@@ -74,12 +85,14 @@ def test_on_error_calls_plugins():
 
     plugins = [mock_plugin]
     stub_invoker = Mock()
+    stub_invoker.wait = Mock(return_value=False)
 
     invoker = PluggableInvoker(None, stub_invoker, plugins=plugins)
     invoker.caller = stub_caller
 
     def stub_invoke(f, fargs, **kwargs):
         invoker.on_error(fargs, **kwargs)
+        return None, False
 
     stub_invoker.invoke = Mock(spec=[])
     stub_invoker.invoke.side_effect = stub_invoke
@@ -102,6 +115,7 @@ def test_invocation_can_be_retried():
 
     def stub_invoke(f, fargs, **kwargs):
         invoker.on_result(0, fargs, **kwargs)
+        return None, False
 
     mock_invoker.invoke = Mock(spec=[])
     mock_invoker.invoke.side_effect = stub_invoke
@@ -133,6 +147,7 @@ def test_invocation_tries_is_saved():
 
     def stub_invoke(f, fargs, **kwargs):
         invoker.on_result(0, fargs, **kwargs)
+        return None, False
 
     mock_invoker.invoke = Mock(spec=[])
     mock_invoker.invoke.side_effect = stub_invoke

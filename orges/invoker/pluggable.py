@@ -40,11 +40,13 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         invocation.tries += 1
 
-        task = self.invoker.invoke(f, fargs, invocation=invocation)
+        task, aborted = self.invoker.invoke(f, fargs, invocation=invocation)
         invocation.current_task = task
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
+
+        return task, aborted
 
     def on_result(self, result, fargs, invocation):
         invocation.current_result = result
@@ -71,7 +73,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self.caller.on_error(fargs, **invocation.kwargs)
 
     def wait(self):
-        self.invoker.wait()
+        return self.invoker.wait()
+
+    def abort(self):
+        self.invoker.abort()
 
 
 class Invocation():

@@ -47,3 +47,6 @@ class SingleProcessInvoker(BaseInvoker):
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
         pass
+
+    def abort(self):
+        raise NotImplemented()

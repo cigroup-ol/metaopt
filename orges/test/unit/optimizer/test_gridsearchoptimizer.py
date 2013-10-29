@@ -46,38 +46,38 @@ def test_optimize_returns_result():
     assert minimum == -4
 
 
-def test_multiprocess_returns_result():
-    resources = 2  # read: CPUs
+# def test_multiprocess_returns_result():
+#     resources = 2  # read: CPUs
 
-    invoker = MultiProcessInvoker(resources)
-    invoker.caller = BaseCaller()
+#     invoker = MultiProcessInvoker(resources)
+#     invoker.caller = BaseCaller()
 
-    optimizer = GridSearchOptimizer()
-    optimizer.invoker = invoker
+#     optimizer = GridSearchOptimizer()
+#     optimizer.invoker = invoker
 
-    args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
-                                       return_spec=None, minimize=True)
+#     args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
+#                                        return_spec=None, minimize=True)
 
-    assert args[0].value == 2
-    assert args[1].value == 2
-    assert minimum == -4
+#     assert args[0].value == 2
+#     assert args[1].value == 2
+#     assert minimum == -4
 
 
-def test_singleprocess_returns_result():
-    resources = 2  # should get ignored
+# def test_singleprocess_returns_result():
+#     resources = 2  # should get ignored
 
-    invoker = SingleProcessInvoker(resources)
-    invoker.caller = BaseCaller()
+#     invoker = SingleProcessInvoker(resources)
+#     invoker.caller = BaseCaller()
 
-    optimizer = GridSearchOptimizer()
-    optimizer.invoker = invoker
+#     optimizer = GridSearchOptimizer()
+#     optimizer.invoker = invoker
 
-    args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
-                                       return_spec=None, minimize=True)
+#     args, minimum = optimizer.optimize(f=f, param_spec=PARAM_SPEC, \
+#                                        return_spec=None, minimize=True)
 
-    assert args[0].value == 2
-    assert args[1].value == 2
-    assert minimum == -4
+#     assert args[0].value == 2
+#     assert args[1].value == 2
+#     assert minimum == -4
 
 if __name__ == '__main__':
     import nose
