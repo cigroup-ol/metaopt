@@ -1,49 +1,68 @@
 """
-Invoker that uses multiple cores or CPUs respectively.
+Invoker that uses multiple processes.
 """
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import with_statement
 
-from multiprocessing.process import Process
-from Queue import Queue
+import logging
+import multiprocessing
+from multiprocessing import Queue, cpu_count
 
 from orges.invoker.base import BaseInvoker
-from orges.invoker.multiprocess_lib.management.LibForeman import \
-    listen_to_workers
-from orges.invoker.multiprocess_lib.model.Worker import Worker, Pool, Task
-from orges.invoker.multiprocess_lib.worker.worker_builder import get_worker_for_function
+from orges.invoker.multiprocess_lib.Worker import WorkerProcess, Task
+
+# TODO use Pool from multiprocess
 
 
 class MultiProcessInvoker(BaseInvoker):
-    """Invoker that manages worker processes that do the actual work."""
+    """Invoker that manages worker processes."""
 
-    def __init__(self, resources, f):
+    def __init__(self, resources=None):
         """
-        resources - number of CPUs to use.
+        @param resources - number of CPUs to use.
+                           will automatically configure itself, if None
         """
+
+        # spawn one worker process per CPU, or as many as requested
+        if resources is None:
+            try:
+                self.worker_count_max = cpu_count()
+            except NotImplementedError:
+                self.worker_count_max = 2    # dual cores are very common, now
+        else:
+            self.worker_count_max = resources
+
+        # set this using the property
         self._caller = None
-        self.worker_count = resources  # we spawn one worker per CPU
 
-        # shared result queue
+        # init logging
+        multiprocessing.log_to_stderr(logging.INFO)
+
+        # queues common to all worker processes
         self.queue_results = Queue()
-        # list of all workers
-        workers = []
-        for worker_index in range(0, self.worker_count):
-            # queue for this get_worker's tasks
-            queue_tasks = Queue()
-            # construct a get_worker process with the queues
-            worker_process = Process(target=get_worker_for_function(f), args=(worker_index, queue_tasks,
-                                           self.queue_results))
-            worker_process.daemon = True
-            worker_process.start()
-            workers.append(Worker(worker_index, worker_process, queue_tasks, \
-                                    self.queue_results))
-        self.worker_pool = Pool(workers, self.queue_results)
-        self.next_inactive_worker = 0
+        self.queue_tasks = Queue()
 
-        # call superclass
-        super(MultiProcessInvoker, self).__init__(self, resources)
+        # init worker processes
+        self._worker_processes = None
+        self._populate_worker_processes()
+
+        super(MultiProcessInvoker, self).__init__(resources=resources,
+                                                  caller=self._caller)
+
+    def _populate_worker_processes(self):
+        """
+        Fills this class with as many worker processes with as many as allowed.
+        """
+        self._worker_processes = []
+        for worker_id in range(self.worker_count_max):
+            worker_process = WorkerProcess(worker_id=worker_id,
+                                           queue_tasks=self.queue_tasks,
+                                           queue_results=self.queue_results)
+            worker_process.daemon = True  # disallow workers to spawn processes
+            worker_process.start()
+            self._worker_processes.append(worker_process)
 
     @property
     def caller(self):
@@ -60,14 +79,47 @@ class MultiProcessInvoker(BaseInvoker):
         pass
 
     def invoke(self, f, fargs, **vargs):
-        """Calls back to self._caller.on_result() for call(f, fargs)."""
-        worker = self.worker_pool.workers[self.next_inactive_worker]
-        worker.queue_tasks.put(f, fargs)
-        worker.queue_tasks.put(Task(f, "DONE"))
-        self.next_inactive_worker += 1 % len(self.worker_pool)
+        """
+        Puts a task into this Invoker's task queue for the workers to execute.
+        """
+        self.queue_tasks.put(Task(f=f, args=fargs, vargs=vargs))
+
+    def terminate_gracefully(self):
+        """Sends sentinel objects to all workers to allow clean shutdown."""
+        for worker_process in self._worker_processes:
+            worker_process.queue_tasks.put(None)
 
     def wait(self):
-        """Blocks till all invoke, on_error or on_result calls are done."""
-        on_error = self._caller.on_error
-        on_result = self.caller.on_result
-        listen_to_workers(self.worker_pool, on_result, on_error)
+        """
+        Blocks till all invoke, on_error or on_result calls are done. Listens
+        to the result queue for all workers and dispatches handling.
+        """
+
+        self.terminate_gracefully()
+
+        # handle feedback from the workers
+        worker_done_count = 0
+        while len(self._worker_processes) != worker_done_count:
+            # get a message from the queue
+            result = self.queue_results.get()
+
+            # handle finished worker
+            if result.value == None:
+                worker_process = self._worker_processes[result.id]
+                worker_process.join()
+                self._worker_processes[result.id] = None   # delete reference
+                worker_done_count += 1
+                break
+
+            # handle all other results
+            self._caller.on_result(result.value, result.args, **result.vargs)
+
+    def status(self):
+        """Reports the status of the workforce."""
+        # TODO implement me
+        pass
+
+    def respawn_worker_by_id(self):
+        """Terminates and restarts a worker given by id."""
+        #TODO implement me
+        pass
