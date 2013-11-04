@@ -1,0 +1,35 @@
+"""
+Matchers for Mock.
+"""
+import string
+
+
+class EqualityMatcher(object):
+    """
+    Checks if two elements have the same value.
+
+    This is a workaround to the fact that Mock will check if the *same* object
+    is returned, which is never the case for objects that were pickled, as is
+    required for inter process communication (IPC) done by the
+    MultiProcessInvoker.
+    """
+    def __init__(self, one):
+        self.one = one
+
+    def __eq__(self, other):
+        if type(self.one) == int and type(other) == int:
+            return self.one == other
+        if type(self.one) == string and type(other) == string:
+            return self.one == other
+        if type(self.one) == list and type(other) == list:
+            for a, b in zip(self.one, other):
+                if not a.value == b.value:
+                    return False
+            return True
+        if type(self.one) == dict and type(other) == dict:
+            for key, value in self.one:
+                if not other[key] == value:
+                    return False
+            return True
+
+        raise NotImplementedError(type(self.one), type(other))
