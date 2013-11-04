@@ -41,6 +41,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         task, aborted = self.invoker.invoke(f, fargs, invocation=invocation)
+
+        if aborted:
+            return task, aborted
+
         invocation.current_task = task
 
         for plugin in self.plugins:
