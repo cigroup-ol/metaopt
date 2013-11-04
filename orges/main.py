@@ -29,13 +29,15 @@ def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
 
     return optimizer.optimize(f, param_spec)
 
-def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None):
+def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None,
+             optimizer=None):
     """Optimize the given function"""
 
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
     invoker = PluggableInvoker(None, SimpleInvoker(None), plugins=plugins)
 
-    optimizer = GridSearchOptimizer()
+    if optimizer is None:
+        optimizer = GridSearchOptimizer()
 
     return custom_optimize(f, param_spec, return_spec, timeout, optimizer,
                            invoker)
