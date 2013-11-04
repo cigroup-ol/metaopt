@@ -1,6 +1,13 @@
-# Week 3
+# Initial Presentation of 
 
-## install
+## Clone reveal.js
+
+    initial $ cd ../../
+    OrgES $ git submodule update --init
+    OrgES $ cd presentations/initial
+    initial $ 
+
+## Install
 
     $ npm install
 
