@@ -10,7 +10,7 @@ from __future__ import with_statement
 import random
 from time import sleep
 
-from orges.invoker.multiprocess_lib.model.Worker import Result
+from orges.invoker.multiprocess_lib.Worker import Result
 
 
 def get_worker(index, queue_tasks, queue_results):

@@ -5,7 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import with_statement
 
-from orges.invoker.multiprocess_lib.model.Worker import Task
+from orges.invoker.multiprocess_lib.Worker import Task
 
 
 class TaskIterator(object):
