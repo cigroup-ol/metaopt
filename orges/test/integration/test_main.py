@@ -3,10 +3,8 @@ from nose.tools import eq_
 # from orges.invoker.simple import SimpleInvoker
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.pluggable import PluggableInvoker
-
 from orges.main import custom_optimize
-from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
-
+from orges.optimizer.gridsearch import GridSearchOptimizer
 import orges.test.utils as utils
 
 

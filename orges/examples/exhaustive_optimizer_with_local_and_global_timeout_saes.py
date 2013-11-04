@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
+from orges.invoker.pluggable import TimeoutInvocationPlugin
+from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.main import optimize
+from orges.optimizer.gridsearch import GridSearchOptimizer
+import orges.param as param
 from orges.test.demo.algorithm.host.saes import f as saes
 
-from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
-from orges.optimizer.saesoptimizer import SAESOptimizer
-
-from orges.main import optimize
-
-import orges.param as param
 
 @param.int("mu", interval=(5, 10), display_name="μ")
 @param.int("lambd", interval=(5, 10), display_name="λ")

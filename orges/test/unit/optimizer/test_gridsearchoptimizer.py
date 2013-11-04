@@ -6,11 +6,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import with_statement
 
-from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
+from orges.optimizer.gridsearch import GridSearchOptimizer
 from orges.paramspec import ParamSpec
 from orges.invoker.simple import SimpleInvoker
-from orges.invoker.multiprocess import MultiProcessInvoker
-from orges.invoker.singleprocess import SingleProcessInvoker
 
 
 def f(a, b):
