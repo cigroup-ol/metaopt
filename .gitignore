@@ -53,3 +53,22 @@ Session.vim
 
 # PyDev/LiClipse/Eclipse's settings
 /.settings/
+
+# Node
+
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+
+npm-debug.log
+node_modules
+
