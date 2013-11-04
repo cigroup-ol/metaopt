@@ -5,14 +5,12 @@ from __future__ import print_function
 from threading import Timer
 
 from orges.invoker.pluggable import PluggableInvoker
+from orges.invoker.multiprocess import MultiProcessInvoker
+
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
-from orges.invoker.simple import SimpleInvoker
-# from orges.optimizer.saesoptimizer import SAESOptimizer
-from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
-from orges.paramspec import ParamSpec
-from orges.test.demo.algorithm.client.saes import f as saes
 
+from orges.optimizer.saesoptimizer import SAESOptimizer
 
 def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
                     optimizer=None, invoker=None):
@@ -29,13 +27,15 @@ def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
 
     return optimizer.optimize(f, param_spec)
 
-def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None):
+def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None,
+             optimizer=None):
     """Optimize the given function"""
 
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
-    invoker = PluggableInvoker(None, SimpleInvoker(None), plugins=plugins)
+    invoker = PluggableInvoker(None, MultiProcessInvoker(), plugins=plugins)
 
-    optimizer = GridSearchOptimizer()
+    if optimizer is None:
+        optimizer = SAESOptimizer()
 
     return custom_optimize(f, param_spec, return_spec, timeout, optimizer,
                            invoker)
@@ -54,25 +54,3 @@ def minimize(f, param_spec=None, return_spec=None):
 def maximize(f, param_spec=None, return_spec=None):
     """Maximize the given function"""
     optimize(f, param_spec=param_spec, return_spec=return_spec)
-
-
-def main():
-    def f(args):
-        args["d"] = 2
-        args["epsilon"] = 0.0001
-        return saes(args)
-
-    param_spec = ParamSpec()
-
-    # Tip
-    # 1 (mu=20, lambd=23, tau0=0.5, tau1=0.7)
-
-    param_spec.int("mu", interval=(10, 100), display_name="μ")
-    param_spec.int("lambd", interval=(10, 100), display_name="λ")
-    param_spec.float("tau0", interval=(0, 1), step=0.1, display_name="τ1")
-    param_spec.float("tau1", interval=(0, 1), step=0.1, display_name="τ2")
-
-    minimize(f, param_spec)
-
-if __name__ == '__main__':
-    main()
