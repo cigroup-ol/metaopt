@@ -1,6 +1,7 @@
 from nose.tools import eq_
 
-from orges.invoker.simple import SimpleInvoker
+# from orges.invoker.simple import SimpleInvoker
+from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.pluggable import PluggableInvoker
 
 from orges.main import custom_optimize
@@ -9,7 +10,7 @@ from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
 import orges.test.utils as utils
 
 def test_custom_optimize_running_too_long_aborts():
-    invoker = PluggableInvoker(None, invoker=SimpleInvoker(None))
+    invoker = PluggableInvoker(None, invoker=MultiProcessInvoker())
     optimizer = GridSearchOptimizer()
 
     f = utils.one_param_sleep_and_negate_f
