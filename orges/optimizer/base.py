@@ -8,7 +8,7 @@ from __future__ import with_statement
 import abc  # Abstract Base Class
 
 
-class Optimizer(object):
+class BaseOptimizer(object):
     """Abstract invoker managing calls to ."""
 
     __metaclass__ = abc.ABCMeta

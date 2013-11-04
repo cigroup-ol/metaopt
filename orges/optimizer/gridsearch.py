@@ -4,10 +4,10 @@ from __future__ import print_function
 from __future__ import with_statement
 
 from orges.args import ArgsCreator
-from orges.optimizer.optimizer import Optimizer
+from orges.optimizer.base import BaseOptimizer
 
 
-class GridSearchOptimizer(Optimizer):
+class GridSearchOptimizer(BaseOptimizer):
     # Invoker ist erstmal ein Objekt, mit dem man Prozesse aufrufen kann
     def __init__(self):
         self.best = (None, None)

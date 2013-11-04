@@ -8,10 +8,10 @@ from random import sample, gauss
 from math import exp
 
 from orges.args import ArgsCreator
-from orges.optimizer.optimizer import Optimizer
+from orges.optimizer.base import BaseOptimizer
 
 
-class SAESOptimizer(Optimizer):
+class SAESOptimizer(BaseOptimizer):
     MU = 3
     LAMBDA = 3
     TAU0 = 0.5

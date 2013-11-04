@@ -8,7 +8,7 @@ from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
-from orges.optimizer.saesoptimizer import SAESOptimizer
+from orges.optimizer.saes import SAESOptimizer
 
 
 def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
