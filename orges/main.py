@@ -4,13 +4,12 @@ from __future__ import print_function
 
 from threading import Timer
 
-from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.multiprocess import MultiProcessInvoker
-
+from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
-
 from orges.optimizer.saesoptimizer import SAESOptimizer
+
 
 def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
                     optimizer=None, invoker=None):
@@ -26,6 +25,7 @@ def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
         Timer(timeout, invoker.abort).start()
 
     return optimizer.optimize(f, param_spec)
+
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None,
              optimizer=None):

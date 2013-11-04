@@ -9,6 +9,7 @@ from orges.optimizer.gridsearchoptimizer import GridSearchOptimizer
 
 import orges.test.utils as utils
 
+
 def test_custom_optimize_running_too_long_aborts():
     invoker = PluggableInvoker(None, invoker=MultiProcessInvoker())
     optimizer = GridSearchOptimizer()

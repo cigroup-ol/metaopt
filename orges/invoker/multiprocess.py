@@ -125,4 +125,4 @@ class MultiProcessInvoker(BaseInvoker):
         pass
 
     def abort(self):
-        raise NotImplemented()
+        raise NotImplementedError()
