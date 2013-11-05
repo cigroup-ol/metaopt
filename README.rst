@@ -48,6 +48,11 @@ or
 
     $ python setup.py test
 
+Run Coverage
+------------
+
+    $ nosetests --with-coverage --cover-package=orges
+
 Build Docs
 ----------
 
