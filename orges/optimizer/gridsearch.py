@@ -25,9 +25,9 @@ class GridSearchOptimizer(BaseOptimizer):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
-            print("calling invoke")
+            #print("calling invoke")
             _, aborted = self.invoker.invoke(f_package, args)
-            print("called invoke", _, aborted)
+            #print("called invoke", _, aborted)
 
             if aborted:
                 return self.best
