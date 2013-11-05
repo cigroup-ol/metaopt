@@ -9,11 +9,14 @@ from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.optimizer.saes import SAESOptimizer
+import importlib
 
 
-def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
+def custom_optimize(f_package, param_spec=None, return_spec=None, timeout=None,
                     optimizer=None, invoker=None):
     """Optimize the given function using the specified optimizer and invoker"""
+    #importlib.import_module("f", package=f_package)
+    f = __import__(f_package, globals(), locals(), ['f'], -1).f
     try:
         param_spec = param_spec or f.param_spec
     except AttributeError:
@@ -24,10 +27,10 @@ def custom_optimize(f, param_spec=None, return_spec=None, timeout=None,
     if timeout is not None:
         Timer(timeout, invoker.abort).start()
 
-    return optimizer.optimize(f, param_spec)
+    return optimizer.optimize(f_package, param_spec)
 
 
-def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None,
+def optimize(f_package, param_spec=None, return_spec=None, timeout=None, plugins=None,
              optimizer=None):
     """Optimize the given function"""
 
@@ -37,7 +40,7 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=None,
     if optimizer is None:
         optimizer = SAESOptimizer()
 
-    return custom_optimize(f, param_spec, return_spec, timeout, optimizer,
+    return custom_optimize(f_package, param_spec, return_spec, timeout, optimizer,
                            invoker)
 
 

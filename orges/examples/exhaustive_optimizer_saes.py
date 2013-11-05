@@ -18,10 +18,10 @@ def f(mu, lambd, tau0, tau1):
     args["mu"] = mu
     args["lambd"] = lambd
     args["tau0"] = tau0
-    args["tau1"] = tau0
+    args["tau1"] = tau0  # TODO really tau0, too?
 
     return saes(args)
 
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
-    optimize(f, optimizer=GridSearchOptimizer(), plugins=plugins)
+    optimize(f_package="orges.examples.exhaustive_optimizer_saes", optimizer=GridSearchOptimizer(), plugins=plugins)

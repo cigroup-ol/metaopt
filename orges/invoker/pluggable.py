@@ -26,12 +26,12 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
     def get_subinvoker(self, resources):
         pass
 
-    def invoke(self, f, fargs, invocation=None, **kwargs):
+    def invoke(self, f_package, fargs, invocation=None, **kwargs):
         # TODO: Reuse existing invocation object
         if invocation is None:
             invocation = Invocation()
 
-            invocation.f = f
+            invocation.f_package = f_package
             invocation.fargs = fargs
             invocation.kwargs = kwargs
 
@@ -40,7 +40,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         invocation.tries += 1
 
-        task, aborted = self.invoker.invoke(f, fargs, invocation=invocation)
+        task, aborted = self.invoker.invoke(f_package, fargs,
+                                            invocation=invocation)
 
         if aborted:
             return task, aborted
@@ -61,7 +62,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         if invocation.retry:
             # TODO: Maybe run this in its own thread
             self.invoke(
-                invocation.f,
+                invocation.f_package,
                 invocation.fargs,
                 invocation,
                 **invocation.kwargs
@@ -105,12 +106,12 @@ class Invocation():
         self._current_result = result
 
     @property
-    def f(self):
-        return self._f
+    def f_package(self):
+        return self._f_package
 
-    @f.setter
-    def f(self, f):
-        self._f = f
+    @f_package.setter
+    def f_package(self, f_package):
+        self._f_package = f_package
 
     @property
     def fargs(self):
