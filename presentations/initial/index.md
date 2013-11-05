@@ -5,23 +5,20 @@
 Organic Computing for Evolution Strategies
 
 
-## Anwendungsfälle
+## Ziele
 
--   Einstellung von Parametern beliebiger Funktionen
 -   Blackbox-Optimierung von Fitness-Funktionen
--   Erstellen von Optimierungsverfahren
+-   Möglichst parallel, fehlertolerant und zeitig
+-   Erstellung von eigenen Optimierungsverfahren
+-   Erweiterbar durch den Nutzer in Form von Plugins
 
 
-## Setup
+## Allgemeines
 
--   [cigroup-ol/orges](https://github.com/cigroup-ol/orges)
--   3-Clause-BSD
--   Python>=2.5
--   Drone.io
--   Mock
--   Nose
--   Tox
-
+-   Als Bibliothek für Python 2.5 und später
+-   Entwicklung auf GitHub ([cigroup-ol/orges](https://github.com/cigroup-ol/orges))
+-   Verfügbar unter freier Lizenz (_3-Clause-BSD_)
+-   Unit Testing, Integration Testing, CI etc.
 
 
 ## Architekturüberlick
@@ -124,11 +121,10 @@ Selbstadaptiver genetischer Algorithmus
 
 ## Ideen für weitere Invoker
 
--   **MutliThread**Invoker
-    mit Ausführung in Threads
-    für EA-beschränkte Algorithmen
--   **Distributed**Invoker
-    mit Ausführung auf mehrere Maschinen
+-   MultiThreadedInvoker – Ausführung in Threads
+    für IO-beschränkte Algorithmen
+<br><br>
+-   DistributedInvoker – Ausführung auf mehrere Maschinen
     für mehr Parallelisierung
 
 
