@@ -70,7 +70,7 @@ Selbstadaptiver genetischer Algorithmus
     optimize(f, optimizer=SAESOptimizer())
 
 
-## Framework für Optimierer
+## Framework für Optimierer (1/2)
 
     def optimize(self, f, ...):
         ...
@@ -81,6 +81,10 @@ Selbstadaptiver genetischer Algorithmus
 
         # Warten bis alle Aufrufe beendet sind
         self.invoker.wait()
+        return self.best
+
+
+## Framework für Optimierer (2/2)
 
     # Wird aufgerufen, wenn ein Aufruf beendet ist
     def on_result(self, result, args, *vargs):
@@ -89,7 +93,6 @@ Selbstadaptiver genetischer Algorithmus
 
         if best_fitness is None or fitness < best_fitness:
             self.best = (args, fitness)
-
 
 
 ## Invoker
