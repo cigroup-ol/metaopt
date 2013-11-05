@@ -101,7 +101,7 @@ class MultiProcessInvoker(BaseInvoker):
         Puts a task into this Invoker's task queue for the workers to execute.
         """
 
-        self._logger.warning("invoke entered")
+        #self._logger.warning("invoke entered")
 
         self._provision_worker()
         task_id = uuid.uuid4()
@@ -113,14 +113,14 @@ class MultiProcessInvoker(BaseInvoker):
         else:
             task_handle = TaskHandle(self, status.worker_id, status.task_id)
 
-        self._logger.warning("invoke left")
+        #self._logger.warning("invoke left")
 
         return task_handle, self.aborted
 
     def abort(self):
         """Terminates all worker processes for immediate shutdown."""
 
-        self._logger.warning("abort entered")
+        #self._logger.warning("abort entered")
 
         # shutdown all workers
         for worker_process in self._worker_processes:
@@ -135,19 +135,19 @@ class MultiProcessInvoker(BaseInvoker):
     def terminate_gracefully(self):
         """Sends sentinel objects to all workers to allow clean shutdown."""
 
-        self._logger.warning("terminate entered")
+        #self._logger.warning("terminate entered")
 
         for worker_process in self._worker_processes:
             worker_process.queue_tasks.put(None)
 
     def _count_busy_workers(self):
-        self._logger.warning("count busy workers entered")
+        #self._logger.warning("count busy workers entered")
 
         worker_busy_count = 0
         for worker_process in self._worker_processes:
             if worker_process.busy:
                 worker_busy_count += 1
-        self._logger.warning(worker_busy_count)
+        #self._logger.warning(worker_busy_count)
         return worker_busy_count
 
     def wait(self):
@@ -158,10 +158,10 @@ class MultiProcessInvoker(BaseInvoker):
 
         #self.terminate_gracefully()
 
-        self._logger.warning("wait entered")
+        #self._logger.warning("wait entered")
 
         while self._count_busy_workers() >= 1:
-            self._logger.warning(self._count_busy_workers())
+            #self._logger.warning(self._count_busy_workers())
             # wait for the next result from the queue
             result = self._queue_results.get()
 
@@ -180,14 +180,14 @@ class MultiProcessInvoker(BaseInvoker):
         worker_process.queue_status.put(status)
         worker_process.terminate()
         worker_process.join()
-        self._logger.warning(self._worker_processes)
+        #self._logger.warning(self._worker_processes)
         self._worker_processes.remove(worker_process)
-        self._logger.warning(self._worker_processes)
+        #self._logger.warning(self._worker_processes)
 
     def cancel(self, worker_id, task_id):
         """Terminates a worker given by id."""
-        self._logger.warning("cancel entered")
-        self._logger.warning(worker_id)
+        #self._logger.warning("cancel entered")
+        #self._logger.warning(worker_id)
 
         for worker_process in self._worker_processes:
             if worker_process.worker_id == worker_id and \
@@ -196,7 +196,7 @@ class MultiProcessInvoker(BaseInvoker):
                 return  # worker id is unique, no need to look any further
         # TODO: handle queue corruption, by swapping them out for new ones?
 
-        self._logger.warning("cancel left")
+        #self._logger.warning("cancel left")
 
     def status(self):
         """Reports the status of the workforce."""
@@ -272,7 +272,7 @@ class WorkerProcess(Process):
             self._busy = True
             self._current_task_id = task.task_id
             # announce start of work
-            multiprocessing.log_to_stderr(logging.WARN).warning("a")
+            #multiprocessing.log_to_stderr(logging.WARN).warning("a")
             status = Status(task_id=self._current_task_id,
                              worker_id=self._worker_id,
                             f_package=task.f_package,
@@ -283,7 +283,7 @@ class WorkerProcess(Process):
             f = __import__(task.f_package, globals(), locals(), ['f'], -1).f
             value = call(f, task.args)
 
-            multiprocessing.log_to_stderr(logging.WARN).warning("b")
+            #multiprocessing.log_to_stderr(logging.WARN).warning("b")
 
             # report result back
             self._queue_results.put(Result(task_id=self._current_task_id,
@@ -291,11 +291,11 @@ class WorkerProcess(Process):
                                            f_package=task.f_package,
                                            args=task.args, value=value,
                                            vargs=task.vargs))
-            multiprocessing.log_to_stderr(logging.WARN).warning("c")
+            #multiprocessing.log_to_stderr(logging.WARN).warning("c")
             self._busy = False
         # send sentinel back
-        multiprocessing.log_to_stderr(logging.WARN).warning("d")
+        #multiprocessing.log_to_stderr(logging.WARN).warning("d")
         self._queue_results.put(Result(id=self._worker_id, f=None,
                                           args=None, vargs=None, value=None))
-        multiprocessing.log_to_stderr(logging.WARN).warning("e")
+        #multiprocessing.log_to_stderr(logging.WARN).warning("e")
 
