@@ -24,4 +24,4 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
-    optimize(f_package="orges.examples.exhaustive_optimizer_saes", optimizer=GridSearchOptimizer(), plugins=plugins)
+    optimize(f_package="orges.examples.gridsearch_optimizer_saes", optimizer=GridSearchOptimizer(), plugins=plugins)

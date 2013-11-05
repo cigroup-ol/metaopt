@@ -31,11 +31,11 @@ Organic Computing for Evolution Strategies
 
 ## Architekturüberlick
 
--   `Optimizer`  
+-   `Optimizer`
     nutzen `Invoker`
--   `PluggableInvoker`  
-    nutzt `Plugins` und andere `Invoker`    
--   `PluggableInvoker`  
+-   `PluggableInvoker`
+    nutzt `Plugins` und andere `Invoker`
+-   `PluggableInvoker`
     ist sowohl `Caller` als auch `Invoker`
 
 
@@ -63,7 +63,7 @@ Intervallen und Schrittgrößen.
 
 Brute-Force (benötigt `step` für jeden Parameter)
 
-    optimize(f, optimizer=ExhaustiveSearchOptimizer())
+    optimize(f, optimizer=GridSearchOptimizer())
 
 Selbstadaptiver genetischer Algorithmus
 
@@ -101,11 +101,11 @@ Selbstadaptiver genetischer Algorithmus
 
 ## API der Invoker
 
--  `invoke(f, args, ...)`  
+-  `invoke(f, args, ...)`
     Aufruf von Fitness-Funktion mit Parameterbelegung.
--   `wait()`  
+-   `wait()`
     Warten, bis alle Fitness-Funktionen beendet sind.
--   `abort()`  
+-   `abort()`
     Alle möglichen Aufrufe sofort beenden.
 -   Resultat eines Aufrufs wird via Callback ``on_result(...)`` oder ``on_error()`` an den Optimierer übergeben.
 -   Optimierer können zudem individuelle Aufrufe abbrechen
@@ -113,19 +113,19 @@ Selbstadaptiver genetischer Algorithmus
 
 ## Vorhandene Invoker
 
--   PluggableInvoker  
+-   PluggableInvoker
     mit Andockstellen für Plugins
--   MultiProcessInvoker  
+-   MultiProcessInvoker
     mit Ausführung in Python-Prozessen
 
 
 ## Ideen für weitere Invoker
 
--   **MutliThread**Invoker  
-    mit Ausführung in Threads  
+-   **MutliThread**Invoker
+    mit Ausführung in Threads
     für EA-beschränkte Algorithmen
--   **Distributed**Invoker  
-    mit Ausführung auf mehrere Maschinen  
+-   **Distributed**Invoker
+    mit Ausführung auf mehrere Maschinen
     für mehr Parallelisierung
 
 
@@ -188,8 +188,8 @@ Mögliche Ausgabe:
 
 Aufgabe
 
--   (selbstständige) Parallelisierung von  
--   (beliebigen) Funktionsaufrufen mit  
+-   (selbstständige) Parallelisierung von
+-   (beliebigen) Funktionsaufrufen mit
 -   (beliebigen) Argumenten
 
 &nbsp;
@@ -204,7 +204,7 @@ Ansatz
 
 ## IPC (1/3)
 
--   Inter-Prozess-Kommunikation (IPC) nötig  
+-   Inter-Prozess-Kommunikation (IPC) nötig
     &rArr; WorkerProcess und der Invoker teilen sich Queues:
     -   tasks: eingehende Aufträge
     -   status: Auftragsbesätigungen
@@ -234,7 +234,7 @@ Ansatz
 
 ## IPC (2/3)
 
--   Funktionen nicht `pickle`bar  
+-   Funktionen nicht `pickle`bar
     &rArr; `import`s übergeben
 
 &nbsp;
@@ -247,7 +247,7 @@ Ansatz
 
 ## IPC (3/3)
 
--   Worker-Management würde Polling erfordern  
+-   Worker-Management würde Polling erfordern
     &rArr; Synchronisation über `Queue`s
 
 &nbsp;
@@ -259,13 +259,13 @@ Ansatz
 
 ## Prozesse
 
--   Worker-Prozesse erzeugen ist recht teuer  
+-   Worker-Prozesse erzeugen ist recht teuer
     WorkerPool hält WorkerProzesse bereit
--   Worker und Tasks müssen identifiziert werden  
+-   Worker und Tasks müssen identifiziert werden
     bei Erzeugung `uuid`s vergeben
 
 &nbsp;
-    
+
     def _provision_worker(self):
         if len(self._worker_processes) is not self.worker_count_max:
             id = uuid.uuid4()
@@ -279,13 +279,13 @@ Ansatz
 
 # v0.0.1
 
--   mehr Tests  
+-   mehr Tests
     aktuell: 69 % coverage
--   mehr Beispiele  
+-   mehr Beispiele
     aktuell: 8
--   mehr Invoker  
+-   mehr Invoker
     aktuell: 3
--   mehr Plugins  
+-   mehr Plugins
     aktuell: 2
 
 

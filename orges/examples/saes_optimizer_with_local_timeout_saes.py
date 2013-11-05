@@ -2,7 +2,7 @@
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
-from orges.optimizer.gridsearch import GridSearchOptimizer
+from orges.optimizer.saesoptimizer import SAESOptimizer
 import orges.param as param
 from orges.test.demo.algorithm.host.saes import f as saes
 
@@ -26,4 +26,4 @@ def f(mu, lambd, tau0, tau1):
 if __name__ == '__main__':
     # Local timeout after 1 second
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
-    optimize(f, optimizer=GridSearchOptimizer(), plugins=plugins)
+    optimize(f, optimizer=SAESOptimizer(), plugins=plugins)
