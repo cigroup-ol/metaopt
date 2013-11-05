@@ -1,7 +1,9 @@
 <!--\n\n\n will create a horizontal slide, \n\n will create a vertical slide -->
+
 # OrgES
 
 Organic Computing for Evolution Strategies
+
 
 
 ## Allgemeines zum Projekt
@@ -15,14 +17,21 @@ Organic Computing for Evolution Strategies
 -   Python 2.5+
 
 
-## Ziel von OrgES
+## Projektziel von OrgES
 
-- Einstellung von Parametern beliebiger Funktionen
-- Blackbox-Optimierung von Fitness-Funktionen
-- Framework für Erstellung eigener Optimierungsverfahren
+-   Einstellung von Parametern beliebiger Funktionen
+-   Blackbox-Optimierung von Fitness-Funktionen
+-   Framework für Erstellung eigener Optimierungsverfahren
+
+
+## Architecture
+
+a
+
 
 
 ## Fitness-Funktionen
+
     @param.float("a", interval=(0, 1), step=0.1, display_name="α")
     @param.float("b", interval=(-1, 1), step=0.2, display_name="β")
     @param.int("c", interval=(1, 100), display_name="β")
@@ -32,6 +41,15 @@ Organic Computing for Evolution Strategies
 
 Eine Funktion mit 3 Parametern a,b∊ℝ und c∊ℤ mit jeweils verschiedenen
 Intervallen und Schrittgrößen.
+
+
+
+## API
+
+-   symmetry
+-   intuitivity
+-   
+
 
 
 ## Optimierung
@@ -88,12 +106,6 @@ an den Optimierer übergeben.
 - Optimierer können zudem individuelle Aufrufe abbrechen
 
 
-## MultiprocessInvoker
-
--   Multiprocessing.Queue
--   Multiprocessing.Process
-
-
 ## PluggableInvoker
 
 - Erweiterbarer Invoker, der intern andere Invoker nutzt
@@ -136,11 +148,30 @@ Mögliche Ausgabe:
 
 
 ## Ideen für weitere Plugins
-- Visualisierung (z.B. Fitnesslandschaft)
-- Mehrfacher Aufruf der Fitness-Funktion
-- Speicherung von Zwischenergebnissen
+
+-   Visualisierung (z.B. Fitnesslandschaft)
+-   Mehrfacher Aufruf der Fitness-Funktion
+-   Speicherung von Zwischenergebnissen
+
+## MultiProcessInvoker
+
+-   Multiprocessing.Queue
+-   Multiprocessing.Process
 
 
-# Aussicht
+# Demo
 
 
+# Ausblick
+
+towards v0.0.1
+
+-   rise test coverage
+-   extend examples
+-   more Plugins  
+    (Filter, File, Database)
+-   more Invoker  
+    (Threading, MultiMachine)
+
+
+# The End
