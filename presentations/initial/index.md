@@ -5,28 +5,38 @@
 Organic Computing for Evolution Strategies
 
 
-
-## Allgemeines zum Projekt
-
--   GitHub/cigroup-ol
--   3-Clause-BSD
--   TravisCI
--   Tox
--   Nose
--   Mock
--   Python 2.5+
-
-
-## Projektziel von OrgES
+## Anwendungsfälle
 
 -   Einstellung von Parametern beliebiger Funktionen
 -   Blackbox-Optimierung von Fitness-Funktionen
--   Framework für Erstellung eigener Optimierungsverfahren
+-   Erstellen von Optimierungsverfahren
 
 
-## Architecture
+## Setup
 
-a
+-   [cigroup-ol/orges](https://github.com/cigroup-ol/orges)
+-   3-Clause-BSD
+-   Python>=2.5
+-   Drone.io
+-   Mock
+-   Nose
+-   Tox
+
+
+
+## Architekturüberlick
+
+![](img/OrgES_Overview.png)
+
+
+## Architekturüberlick
+
+-   `Optimizer`  
+    nutzen `Invoker`
+-   `PluggableInvoker`  
+    nutzt `Plugins` und andere `Invoker`    
+-   `PluggableInvoker`  
+    ist sowohl `Caller` als auch `Invoker`
 
 
 
@@ -43,15 +53,6 @@ Eine Funktion mit 3 Parametern a,b∊ℝ und c∊ℤ mit jeweils verschiedenen
 Intervallen und Schrittgrößen.
 
 
-
-## API
-
--   symmetry
--   intuitivity
--   
-
-
-
 ## Optimierung
 
     >>> optimize(f, timeout=60) # Abbruch spätestens nach 60 Sekunden
@@ -60,10 +61,13 @@ Intervallen und Schrittgrößen.
 
 ## Optimierer
 
-- Brute-Force (benötigt `step` für jeden Parameter)
-        optimize(f, optimizer=ExhaustiveSearchOptimizer())
-- Selbstadaptiver genetischer Algorithmus
-        optimize(f, optimizer=SAESOptimizer())
+Brute-Force (benötigt `step` für jeden Parameter)
+
+    optimize(f, optimizer=ExhaustiveSearchOptimizer())
+
+Selbstadaptiver genetischer Algorithmus
+
+    optimize(f, optimizer=SAESOptimizer())
 
 
 ## Framework für Optimierer
@@ -87,34 +91,55 @@ Intervallen und Schrittgrößen.
             self.best = (args, fitness)
 
 
+
 ## Invoker
-- Zuständig für den Aufruf der Fitness-Funktionen
-- Beliebige Aufruf-Strategien (Prozesse, Threads, verteilt)
-- Teil des Frameworks zur Erstellung von Optimierern
+
+-   Zuständig für den Aufruf der Fitness-Funktionen
+-   Beliebige Aufruf-Strategien (Prozesse, Threads, verteilt)
+-   Teil des Frameworks zur Erstellung von Optimierern
 
 
 ## API der Invoker
-- `invoke(f, args, ...)` – Aufruf der Fitness-Funktion mit bestimmter Parameterbelegung im Hintergrund.
-<br><br>
-- `wait()` – Warten, bis alle Aufrufe der Fitness-Funktion beendet sind
-<br><br>
-- `abort()` – Alle derzeitigen und zukünftigen Aufrufe sofort beenden
-<br><br>
-- Resultat eines Aufrufs wird via Callback ``on_result(...)`` oder ``on_error()``
-an den Optimierer übergeben.
-<br><br>
-- Optimierer können zudem individuelle Aufrufe abbrechen
+
+-  `invoke(f, args, ...)`  
+    Aufruf von Fitness-Funktion mit Parameterbelegung.
+-   `wait()`  
+    Warten, bis alle Fitness-Funktionen beendet sind.
+-   `abort()`  
+    Alle möglichen Aufrufe sofort beenden.
+-   Resultat eines Aufrufs wird via Callback ``on_result(...)`` oder ``on_error()`` an den Optimierer übergeben.
+-   Optimierer können zudem individuelle Aufrufe abbrechen
+
+
+## Vorhandene Invoker
+
+-   PluggableInvoker  
+    mit Andockstellen für Plugins
+-   MultiProcessInvoker  
+    mit Ausführung in Python-Prozessen
+
+
+## Ideen für weitere Invoker
+
+-   **MutliThread**Invoker  
+    mit Ausführung in Threads  
+    für EA-beschränkte Algorithmen
+-   **Distributed**Invoker  
+    mit Ausführung auf mehrere Maschinen  
+    für mehr Parallelisierung
+
 
 
 ## PluggableInvoker
 
-- Erweiterbarer Invoker, der intern andere Invoker nutzt
-- Veränderung der Aufrufe der Fitness-Funktion durch Plugins
-- Plugins durch Ereignise: ``on_invoke``, ``on_result``, ``on_error``
+-   Erweiterbarer Invoker, der intern andere Invoker nutzt
+-   Veränderung der Aufrufe der Fitness-Funktion durch Plugins
+-   Plugins durch Ereignise: ``on_invoke``, ``on_result``, ``on_error``
 
 
-## Beispiel: TimeoutInvocationPlugin
-Abbruch eins Aufrufs der Fitness-Funktion nach bestimmter Zeit
+## TimeoutInvocationPlugin
+
+Abbruch eines Aufrufs der Fitness-Funktion nach bestimmter Zeit
 
     class TimeoutInvocationPlugin(InvocationPlugin):
         def __init__(self, timeout):
@@ -125,7 +150,8 @@ Abbruch eins Aufrufs der Fitness-Funktion nach bestimmter Zeit
             Timer(self.timeout, current_task.cancel).start()
 
 
-## Beispiel: PrintInvocationPlugin
+## PrintInvocationPlugin
+
 Logging von Ereignissen auf der Konsole
 
     class PrintInvocationPlugin(InvocationPlugin):
@@ -138,6 +164,9 @@ Logging von Ereignissen auf der Konsole
 
         def on_error(self, invocation):
             print("Failed", "f%s" % (invocation.fargs,))
+
+
+## PrintInvocationPlugin
 
 Mögliche Ausgabe:
 
@@ -153,25 +182,113 @@ Mögliche Ausgabe:
 -   Mehrfacher Aufruf der Fitness-Funktion
 -   Speicherung von Zwischenergebnissen
 
+
+
 ## MultiProcessInvoker
 
--   Multiprocessing.Queue
--   Multiprocessing.Process
+Aufgabe
+
+-   (selbstständige) Parallelisierung von  
+-   (beliebigen) Funktionsaufrufen mit  
+-   (beliebigen) Argumenten
+
+&nbsp;
+
+Ansatz
+
+`>>> import multiprocess`
+
+
+# Probleme & Lösungen
+
+
+## IPC (1/3)
+
+-   Inter-Prozess-Kommunikation (IPC) nötig  
+    &rArr; WorkerProcess und der Invoker teilen sich Queues:
+    -   tasks: eingehende Aufträge
+    -   status: Auftragsbesätigungen
+    -   results: (Zwischen-)Ergebnisse
+
+
+&nbsp;
+
+    class MultiProcessInvoker(BaseInvoker):
+        """Invoker that manages worker processes."""
+        def __init__(self, resources=None):
+            ...
+            # queues common to all worker processes
+            self._queue_results = Queue()
+            self._queue_status = Queue()
+            self._queue_tasks = Queue()
+
+&nbsp;
+
+    class WorkerProcess(Process):
+        """Calls functions with arguments, both given by a queue."""
+        def __init__(self, queue_results, queue_status, queue_tasks):
+            self._queue_results = queue_results
+            self._queue_status = queue_status
+            self._queue_tasks = queue_tasks
+
+
+## IPC (2/3)
+
+-   Funktionen nicht `pickle`bar  
+    &rArr; `import`s übergeben
+
+&nbsp;
+
+    for task in self.queue_tasks.get:
+        ...
+        f = __import__(task.f_package, globals(), locals(), ['f'], -1).f
+        value = call(f, task.args)
+
+
+## IPC (3/3)
+
+-   Worker-Management würde Polling erfordern  
+    &rArr; Synchronisation über `Queue`s
+
+&nbsp;
+
+    self._queue_tasks.put(Task(...))
+    # some worker will get the task and report back before executing
+    status = self._queue_status.get()
+
+
+## Prozesse
+
+-   Worker-Prozesse erzeugen ist recht teuer  
+    WorkerPool hält WorkerProzesse bereit
+-   Worker und Tasks müssen identifiziert werden  
+    bei Erzeugung `uuid`s vergeben
+
+&nbsp;
+    
+    def _provision_worker(self):
+        if len(self._worker_processes) is not self.worker_count_max:
+            id = uuid.uuid4()
+            self._worker_processes.append(self._get_worker_process(id))
+
 
 
 # Demo
 
 
-# Ausblick
 
-towards v0.0.1
+# v0.0.1
 
--   rise test coverage
--   extend examples
--   more Plugins  
-    (Filter, File, Database)
--   more Invoker  
-    (Threading, MultiMachine)
+-   mehr Tests  
+    aktuell: 69 % coverage
+-   mehr Beispiele  
+    aktuell: 8
+-   mehr Invoker  
+    aktuell: 3
+-   mehr Plugins  
+    aktuell: 2
+
 
 
 # The End
+
