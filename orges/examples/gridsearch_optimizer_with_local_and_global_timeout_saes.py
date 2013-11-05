@@ -28,4 +28,4 @@ if __name__ == '__main__':
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
 
     # Global timeout after 5 seconds
-    optimize(f, optimizer=GridSearchOptimizer(), timeout=5, plugins=plugins)
+    print optimize(f, optimizer=GridSearchOptimizer(), timeout=5, plugins=plugins)

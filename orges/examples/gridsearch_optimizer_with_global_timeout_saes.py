@@ -25,4 +25,4 @@ def f(mu, lambd, tau0, tau1):
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
     # Global timeout after 5 seconds
-    optimize(f, optimizer=GridSearchOptimizer(), timeout=5, plugins=plugins)
+    print optimize(f, optimizer=GridSearchOptimizer(), timeout=5, plugins=plugins)

@@ -24,4 +24,4 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
-    optimize(f, optimizer=SAESOptimizer(), plugins=plugins)
+    print optimize(f, optimizer=SAESOptimizer(), plugins=plugins)
