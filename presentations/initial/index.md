@@ -21,21 +21,6 @@ Organic Computing for Evolution Strategies
 -   Unit Testing, Integration Testing, CI etc.
 
 
-## Architekturüberlick
-
-![](img/OrgES_Overview.png)
-
-
-## Architekturüberlick
-
--   `Optimizer`
-    nutzen `Invoker`
--   `PluggableInvoker`
-    nutzt `Plugins` und andere `Invoker`
--   `PluggableInvoker`
-    ist sowohl `Caller` als auch `Invoker`
-
-
 
 ## Fitness-Funktionen
 
@@ -67,7 +52,7 @@ Selbstadaptiver genetischer Algorithmus
     optimize(f, optimizer=SAESOptimizer())
 
 
-## Framework für Optimierer (1/2)
+### Optimierer-Framework (1/2)
 
     def optimize(self, f, ...):
         ...
@@ -81,7 +66,7 @@ Selbstadaptiver genetischer Algorithmus
         return self.best
 
 
-## Framework für Optimierer (2/2)
+### Optimierer-Framework (2/2)
 
     # Wird aufgerufen, wenn ein Aufruf beendet ist
     def on_result(self, result, args, *vargs):
@@ -90,6 +75,7 @@ Selbstadaptiver genetischer Algorithmus
 
         if best_fitness is None or fitness < best_fitness:
             self.best = (args, fitness)
+
 
 
 ## Invoker
@@ -101,39 +87,55 @@ Selbstadaptiver genetischer Algorithmus
 
 ## API der Invoker
 
--  `invoke(f, args, ...)`
+-  `invoke(f, args, ...)`  
     Aufruf von Fitness-Funktion mit Parameterbelegung.
--   `wait()`
+-   `wait()`  
     Warten, bis alle Fitness-Funktionen beendet sind.
--   `abort()`
-    Alle möglichen Aufrufe sofort beenden.
--   Resultat eines Aufrufs wird via Callback ``on_result(...)`` oder ``on_error()`` an den Optimierer übergeben.
--   Optimierer können zudem individuelle Aufrufe abbrechen
+-   `abort(), cancel(task)`  
+    Aufrufe sofort beenden.
+-   ``on_result(...)``, ``on_error(...)``  
+    Callbacks des Optimierer für Resultate von Aufrufen.
 
 
 ## Vorhandene Invoker
 
--   PluggableInvoker
+-   PluggableInvoker  
     mit Andockstellen für Plugins
--   MultiProcessInvoker
+-   MultiProcessInvoker  
     mit Ausführung in Python-Prozessen
 
 
 ## Ideen für weitere Invoker
 
--   MultiThreadedInvoker – Ausführung in Threads
-    für IO-beschränkte Algorithmen
-<br><br>
--   DistributedInvoker – Ausführung auf mehrere Maschinen
-    für mehr Parallelisierung
+-   MultiThreadedInvoker
+    -   mit Ausführung in Threads
+    -   für EA-beschränkte Algorithmen
+-   DistributedInvoker  
+    -   mit Ausführung auf mehrere Maschinen
+    -   für mehr Parallelisierung
+
+
+
+## Architekturüberlick
+
+-   `Optimizer`  
+    nutzen `Invoker`
+-   `PluggableInvoker`  
+    nutzen `Plugins` und andere `Invoker`
+-   `PluggableInvoker`  
+    sind sowohl `Caller` als auch `Invoker`
+
+
+![](img/OrgES_Overview.png)
 
 
 
 ## PluggableInvoker
 
 -   Erweiterbarer Invoker, der intern andere Invoker nutzt
--   Veränderung der Aufrufe der Fitness-Funktion durch Plugins
--   Plugins durch Ereignise: ``on_invoke``, ``on_result``, ``on_error``
+-   Plugins verändern Aufrufe der Fitness-Funktion
+-   Plugins durch Ereignise:  
+    ``on_invoke``, ``on_result``, ``on_error``
 
 
 ## TimeoutInvocationPlugin
@@ -203,7 +205,7 @@ Ansatz
 
 ## IPC (1/3)
 
--   Inter-Prozess-Kommunikation (IPC) nötig
+-   Inter-Prozess-Kommunikation (IPC) nötig  
     &rArr; WorkerProcess und der Invoker teilen sich Queues:
     -   tasks: eingehende Aufträge
     -   status: Auftragsbesätigungen
@@ -213,10 +215,7 @@ Ansatz
 &nbsp;
 
     class MultiProcessInvoker(BaseInvoker):
-        """Invoker that manages worker processes."""
         def __init__(self, resources=None):
-            ...
-            # queues common to all worker processes
             self._queue_results = Queue()
             self._queue_status = Queue()
             self._queue_tasks = Queue()
@@ -224,7 +223,6 @@ Ansatz
 &nbsp;
 
     class WorkerProcess(Process):
-        """Calls functions with arguments, both given by a queue."""
         def __init__(self, queue_results, queue_status, queue_tasks):
             self._queue_results = queue_results
             self._queue_status = queue_status
@@ -232,6 +230,18 @@ Ansatz
 
 
 ## IPC (2/3)
+
+-   Worker-Management würde Polling erfordern  
+    &rArr; Synchronisation über `Queue`s
+
+&nbsp;
+
+    self._queue_tasks.put(Task(...))
+    # some worker will get the task and report back before executing
+    status = self._queue_status.get()
+
+
+## IPC (3/3)
 
 -   Funktionen nicht `pickle`bar
     &rArr; `import`s übergeben
@@ -244,24 +254,12 @@ Ansatz
         value = call(f, task.args)
 
 
-## IPC (3/3)
-
--   Worker-Management würde Polling erfordern
-    &rArr; Synchronisation über `Queue`s
-
-&nbsp;
-
-    self._queue_tasks.put(Task(...))
-    # some worker will get the task and report back before executing
-    status = self._queue_status.get()
-
-
 ## Prozesse
 
--   Worker-Prozesse erzeugen ist recht teuer
-    WorkerPool hält WorkerProzesse bereit
--   Worker und Tasks müssen identifiziert werden
-    bei Erzeugung `uuid`s vergeben
+-   Worker-Prozesse erzeugen ist recht teuer  
+    &rArr; WorkerPool hält WorkerProzesse bereit
+-   Worker und Tasks müssen identifiziert werden  
+    &rArr; bei Erzeugung `uuid`s vergeben
 
 &nbsp;
 
@@ -278,13 +276,13 @@ Ansatz
 
 # v0.0.1
 
--   mehr Tests
+-   mehr Tests  
     aktuell: 69 % coverage
--   mehr Beispiele
+-   mehr Beispiele  
     aktuell: 8
--   mehr Invoker
+-   mehr Invoker  
     aktuell: 3
--   mehr Plugins
+-   mehr Plugins  
     aktuell: 2
 
 
