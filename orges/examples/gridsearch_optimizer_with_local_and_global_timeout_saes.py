@@ -19,7 +19,7 @@ def f(mu, lambd, tau0, tau1):
     args["mu"] = mu
     args["lambd"] = lambd
     args["tau0"] = tau0
-    args["tau1"] = tau0
+    args["tau1"] = tau1
 
     return saes(args)
 
