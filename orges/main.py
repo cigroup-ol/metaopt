@@ -9,7 +9,6 @@ from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.optimizer.saes import SAESOptimizer
-import importlib
 
 
 def custom_optimize(f_package, param_spec=None, return_spec=None, timeout=None,
@@ -34,7 +33,9 @@ def optimize(f_package, param_spec=None, return_spec=None, timeout=None, plugins
              optimizer=None):
     """Optimize the given function"""
 
-    plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
+    if plugins is None:
+        plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
+
     invoker = PluggableInvoker(None, MultiProcessInvoker(), plugins=plugins)
 
     if optimizer is None:
