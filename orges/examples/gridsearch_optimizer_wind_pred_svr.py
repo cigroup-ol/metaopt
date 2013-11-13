@@ -63,7 +63,7 @@ if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
     print optimize(
-        f_package="orges.examples.wind_prediction_svr",
+        f_package="orges.examples.gridsearch_optimizer_wind_pred_svr",
         optimizer=GridSearchOptimizer(),
         plugins=plugins
     )
