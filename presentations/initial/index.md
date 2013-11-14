@@ -26,13 +26,26 @@ Organic Computing for Evolution Strategies
 
     @param.float("a", interval=(0, 1), step=0.1, display_name="α")
     @param.float("b", interval=(-1, 1), step=0.2, display_name="β")
-    @param.int("c", interval=(1, 100), display_name="β")
+    @param.int("c", interval=(1, 100))
     def f(a, b, c):
         # Berechnung basierend auf a, b und c...
         return fitness_wert
 
 Eine Funktion mit 3 Parametern a,b∊ℝ und c∊ℤ mit jeweils verschiedenen
 Intervallen und Schrittgrößen.
+
+
+## Parameteroptimierung
+
+    @param.int("lamb", interval=(10, 100), display_name="λ")
+    @param.int("mu", interval=(10, 100), display_name="μ")
+    @param.float("mutation_rate", interval=(0.005, 0.01), display_name="p_m")
+    def f(mu, lamb, mutation_rate):
+        # Ausführung eines EA...
+        return number_of_generations
+
+Optimierung eines EA mit Parametern λ, μ und Mutationsrate, der die
+Kugelfunktion optimiert.
 
 
 ## Optimierung
@@ -87,21 +100,21 @@ Selbstadaptiver genetischer Algorithmus
 
 ## API der Invoker
 
--  `invoke(f, args, ...)`  
+-  `invoke(f, args, ...)`
     Aufruf von Fitness-Funktion mit Parameterbelegung.
--   `wait()`  
+-   `wait()`
     Warten, bis alle Fitness-Funktionen beendet sind.
--   `abort(), cancel(task)`  
+-   `abort(), cancel(task)`
     Aufrufe sofort beenden.
--   ``on_result(...)``, ``on_error(...)``  
+-   ``on_result(...)``, ``on_error(...)``
     Callbacks des Optimierer für Resultate von Aufrufen.
 
 
 ## Vorhandene Invoker
 
--   PluggableInvoker  
+-   PluggableInvoker
     mit Andockstellen für Plugins
--   MultiProcessInvoker  
+-   MultiProcessInvoker
     mit Ausführung in Python-Prozessen
 
 
@@ -110,7 +123,7 @@ Selbstadaptiver genetischer Algorithmus
 -   MultiThreadedInvoker
     -   mit Ausführung in Threads
     -   für EA-beschränkte Algorithmen
--   DistributedInvoker  
+-   DistributedInvoker
     -   mit Ausführung auf mehrere Maschinen
     -   für mehr Parallelisierung
 
@@ -118,11 +131,11 @@ Selbstadaptiver genetischer Algorithmus
 
 ## Architekturüberlick
 
--   `Optimizer`  
+-   `Optimizer`
     nutzen `Invoker`
--   `PluggableInvoker`  
+-   `PluggableInvoker`
     nutzen `Plugins` und andere `Invoker`
--   `PluggableInvoker`  
+-   `PluggableInvoker`
     sind sowohl `Caller` als auch `Invoker`
 
 
@@ -134,7 +147,7 @@ Selbstadaptiver genetischer Algorithmus
 
 -   Erweiterbarer Invoker, der intern andere Invoker nutzt
 -   Plugins verändern Aufrufe der Fitness-Funktion
--   Plugins durch Ereignise:  
+-   Plugins durch Ereignise:
     ``on_invoke``, ``on_result``, ``on_error``
 
 
@@ -205,7 +218,7 @@ Ansatz
 
 ## IPC (1/3)
 
--   Inter-Prozess-Kommunikation (IPC) nötig  
+-   Inter-Prozess-Kommunikation (IPC) nötig
     &rArr; WorkerProcess und der Invoker teilen sich Queues:
     -   tasks: eingehende Aufträge
     -   status: Auftragsbesätigungen
@@ -231,7 +244,7 @@ Ansatz
 
 ## IPC (2/3)
 
--   Worker-Management würde Polling erfordern  
+-   Worker-Management würde Polling erfordern
     &rArr; Synchronisation über `Queue`s
 
 &nbsp;
@@ -256,9 +269,9 @@ Ansatz
 
 ## Prozesse
 
--   Worker-Prozesse erzeugen ist recht teuer  
+-   Worker-Prozesse erzeugen ist recht teuer
     &rArr; WorkerPool hält WorkerProzesse bereit
--   Worker und Tasks müssen identifiziert werden  
+-   Worker und Tasks müssen identifiziert werden
     &rArr; bei Erzeugung `uuid`s vergeben
 
 &nbsp;
@@ -276,13 +289,13 @@ Ansatz
 
 # v0.0.1
 
--   mehr Tests  
+-   mehr Tests
     aktuell: 69 % coverage
--   mehr Beispiele  
+-   mehr Beispiele
     aktuell: 8
--   mehr Invoker  
+-   mehr Invoker
     aktuell: 3
--   mehr Plugins  
+-   mehr Plugins
     aktuell: 2
 
 
