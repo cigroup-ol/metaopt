@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
-from orges.optimizer.saesoptimizer import SAESOptimizer
+from orges.optimizer.saes import SAESOptimizer
 import orges.param as param
 from orges.test.demo.algorithm.host.saes import f as saes
 
@@ -24,4 +24,9 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
-    print optimize(f, optimizer=SAESOptimizer(), plugins=plugins)
+
+    print optimize(
+        f_package="orges.examples.saes_optimizer_saes",
+        optimizer=SAESOptimizer(),
+        plugins=plugins
+    )

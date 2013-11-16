@@ -165,14 +165,14 @@ class InvocationPlugin():
 
 class PrintInvocationPlugin(InvocationPlugin):
     def on_invoke(self, invocation):
-        print("Started", "f%s" % (invocation.fargs,))
+        print("Started", "f%s" % (tuple(invocation.fargs),))
 
     def on_result(self, invocation):
         result = invocation.current_result
-        print("Finished", "f%s=%s" % (invocation.fargs, result))
+        print("Finished", "f%s=%s" % (tuple(invocation.fargs), result))
 
     def on_error(self, invocation):
-        print("Failed", "f%s" % (invocation.fargs,))
+        print("Failed", "f%s" % (tuple(invocation.fargs),))
 
 
 class TimeoutInvocationPlugin(InvocationPlugin):

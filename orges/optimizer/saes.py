@@ -17,6 +17,7 @@ class SAESOptimizer(BaseOptimizer):
     TAU0 = 0.5
     TAU1 = 0.5
 
+    # TODO: Add parameters for MU, LAMBDA etc.
     def __init__(self):
         self._invoker = None
         self._f = None
@@ -61,7 +62,10 @@ class SAESOptimizer(BaseOptimizer):
 
         for _ in xrange(SAESOptimizer.MU):
             args = args_creator.random()
+
+            # TODO: Use default_mutation_stength method
             args_sigma = list(randn(len(args)))
+
             args_sigma = [float(sigma) for sigma in args_sigma]
 
             individual = (args, args_sigma)
@@ -119,25 +123,3 @@ class SAESOptimizer(BaseOptimizer):
 
     def on_error(self, args, individual):
         pass
-
-
-if __name__ == '__main__':
-    from orges.invoker.simple import SimpleInvoker
-    from orges.paramspec import ParamSpec
-    from orges.test.demo.algorithm.host.saes import f as saes
-
-    def f(args):
-        args["d"] = 2
-        args["epsilon"] = 0.0001
-        args["mu"] = 100
-        args["lambd"] = 100
-        return saes(args)
-
-    PARAM_SPEC = ParamSpec()
-    PARAM_SPEC.float("tau0", "τ1").interval((0, 1)).step(0.1)
-    PARAM_SPEC.float("tau1", "τ2").interval((0, 1)).step(0.1)
-
-    invoker = SimpleInvoker(1)
-
-    optimizer = SAESOptimizer(invoker)
-    optimizer.optimize(f, PARAM_SPEC)

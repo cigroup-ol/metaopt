@@ -94,6 +94,16 @@ def create_arg(param, value=None):
         return Arg(param, value)
 
 
+# TODO: Move this into an useful class
+def default_mutation_stength(param):
+    """
+    Return the default mutation stength for a parameter.
+
+    Based on http://www.iue.tuwien.ac.at/phd/heitzinger/node27.html.
+    """
+    return (param.upper_bound - param.lower_bound) / 10
+
+
 class Arg(object):
     def __init__(self, param, value=None):
         self.param = param
@@ -103,10 +113,23 @@ class Arg(object):
             self.value = self.param.interval[0]
 
     def random(self):
-        return Arg(self.param, random.gauss(0, 1))
+        value = random.uniform(self.param.lower_bound, self.param.upper_bound)
+
+        if value < self.param.lower_bound:
+            value = self.param.lower_bound
+        elif value > self.param.upper_bound:
+            value = self.param.upper_bound
+
+        return Arg(self.param, value)
 
     def randomize(self, strength):
         value = self.value + random.gauss(0, 1) * strength
+
+        if value < self.param.lower_bound:
+            value = self.param.lower_bound
+        elif value > self.param.upper_bound:
+            value = self.param.upper_bound
+
         return Arg(self.param, value)
 
     def combine(self, other_arg):
@@ -140,9 +163,15 @@ class IntArg(Arg):
         value = randint(self.param.lower_bound, self.param.upper_bound)
         return IntArg(self.param, value=value)
 
-    def randomize(self, sigma):
-        value = self.value + random.gauss(0, 1) * sigma
-        return IntArg(self.param, value=int(value))
+    def randomize(self, strength):
+        value = int(self.value + random.gauss(0, 1) * strength)
+
+        if value < self.param.lower_bound:
+            value = self.param.lower_bound
+        elif value > self.param.upper_bound:
+            value = self.param.upper_bound
+
+        return IntArg(self.param, value=value)
 
     def combine(self, other_arg):
         value = (self.value + other_arg.value) / 2
@@ -155,8 +184,12 @@ class BoolArg(Arg):
     def random(self):
         return BoolArg(self.param, value=random.choice([True, False]))
 
-    def randomize(self):
+    def randomize(self, strength):
         return random(self)
+
+    def combine(self, other_arg):
+        value = self.value or other_arg.value
+        return BoolArg(self.param, value=value)
 
     def __iter__(self):
         if self.value:
