@@ -12,15 +12,22 @@ from orges.optimizer.base import BaseOptimizer
 
 
 class SAESOptimizer(BaseOptimizer):
+    # TODO: Find good default values
     MU = 3
     LAMBDA = 3
     TAU0 = 0.5
     TAU1 = 0.5
 
-    # TODO: Add parameters for MU, LAMBDA etc.
-    def __init__(self):
+    def __init__(self, mu=MU, lamb=LAMBDA, tau0=TAU0, tau1=TAU1):
         self._invoker = None
-        self._f = None
+
+        # TODO: Make sure these value are sane
+        self.mu = mu
+        self.lamb = lamb
+        self.tau0 = tau0
+        self.tau1 = tau1
+
+        self.f = None
         self.param_spec = None
 
         self.population = []
@@ -39,7 +46,8 @@ class SAESOptimizer(BaseOptimizer):
         self._invoker = invoker
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
-        self._f = f
+
+        self.f = f
         self.param_spec = param_spec
 
         self.initalize_population()
@@ -60,7 +68,7 @@ class SAESOptimizer(BaseOptimizer):
     def initalize_population(self):
         args_creator = ArgsCreator(self.param_spec)
 
-        for _ in xrange(SAESOptimizer.MU):
+        for _ in xrange(self.mu):
             args = args_creator.random()
 
             # TODO: Use default_mutation_stength method
@@ -74,7 +82,7 @@ class SAESOptimizer(BaseOptimizer):
     def add_offspring(self):
         args_creator = ArgsCreator(self.param_spec)
 
-        for _ in xrange(SAESOptimizer.LAMBDA):
+        for _ in xrange(self.lamb):
             mother, father = sample(self.population, 2)
 
             child_args = args_creator.combine(mother[0], father[0])
@@ -87,8 +95,8 @@ class SAESOptimizer(BaseOptimizer):
             tau0_random = gauss(0, 1)
 
             def mutate_sigma(sigma):
-                tau0 = SAESOptimizer.TAU0
-                tau1 = SAESOptimizer.TAU1
+                tau0 = self.tau0
+                tau1 = self.tau1
                 return sigma * exp(tau0 * tau0_random)\
                        * exp(tau1 * gauss(0, 1))
 
@@ -101,13 +109,14 @@ class SAESOptimizer(BaseOptimizer):
     def score_population(self):
         for individual in self.population:
             args, _ = individual
-            self.invoker.invoke(self._f, args, individual=individual)
+
+            self.invoker.invoke(self.f, args, individual=individual)
 
         self.invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])
-        new_scored_population = self.scored_population[0:SAESOptimizer.MU]
+        new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
 
     def on_result(self, result, args, individual):
