@@ -11,7 +11,9 @@ from mock import Mock
 from orges.paramspec import ParamSpec
 from orges.args import ArgsCreator
 from orges.invoker.multiprocess import MultiProcessInvoker
-from orges.test.unit.invoker.Matcher import EqualityMatcher as Matcher
+from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
+
+F_PACKAGE = __name__
 
 
 def f(a, b):
@@ -21,8 +23,7 @@ PARAM_SPEC = ParamSpec()
 PARAM_SPEC.int("a", interval=(1, 10))
 PARAM_SPEC.int("b", interval=(1, 10))
 
-ARGS_CREATOR = ArgsCreator(PARAM_SPEC)
-ARGS = ARGS_CREATOR.args()
+ARGS = ArgsCreator(PARAM_SPEC).args()
 
 
 def test_invoke_calls_on_result():
@@ -32,7 +33,8 @@ def test_invoke_calls_on_result():
 
     invoker = MultiProcessInvoker(resources=1)
     invoker.caller = caller
-    invoker.invoke(f, ARGS)
+
+    invoker.invoke(F_PACKAGE, ARGS)
     invoker.wait()
 
     caller.on_result.assert_called_once_with(Matcher(2), Matcher(ARGS))
@@ -45,10 +47,12 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
 
     invoker = MultiProcessInvoker(resources=2)
     invoker.caller = caller
+
     data = dict()
-    invoker.invoke(f, ARGS, data=data)
+    invoker.invoke(F_PACKAGE, ARGS, data=data)
     invoker.wait()
 
+    caller.on_error.assert_not_called()
     caller.on_result.assert_called_once_with(Matcher(2), Matcher(ARGS),
                                              data=Matcher(data))
 
