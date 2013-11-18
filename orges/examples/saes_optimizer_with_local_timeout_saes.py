@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import inspect
+
 from orges.invoker.pluggable import TimeoutInvocationPlugin
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
-from orges.optimizer.saesoptimizer import SAESOptimizer
+from orges.optimizer.saes import SAESOptimizer
 import orges.param as param
 from orges.test.demo.algorithm.host.saes import f as saes
 
@@ -23,7 +25,9 @@ def f(mu, lambd, tau0, tau1):
 
     return saes(args)
 
+F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
+
 if __name__ == '__main__':
     # Local timeout after 1 second
     plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
-    print optimize(f, optimizer=SAESOptimizer(), plugins=plugins)
+    print optimize(f_package=F_PACKAGE, optimizer=SAESOptimizer(), plugins=plugins)

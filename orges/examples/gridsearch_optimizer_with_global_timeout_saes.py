@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import inspect
+
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
@@ -22,7 +24,11 @@ def f(mu, lambd, tau0, tau1):
 
     return saes(args)
 
+
+F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
+
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
     # Global timeout after 5 seconds
-    print optimize(f, optimizer=GridSearchOptimizer(), timeout=5, plugins=plugins)
+    print optimize(f_package=F_PACKAGE, optimizer=GridSearchOptimizer(),
+                   timeout=5, plugins=plugins)
