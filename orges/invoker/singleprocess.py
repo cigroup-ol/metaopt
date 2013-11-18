@@ -32,21 +32,21 @@ class SingleProcessInvoker(BaseInvoker):
         self._caller = value
 
     def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amout of resources of self."""
+        """Returns a subinvoker using the given amount of resources of self."""
         pass
 
-    def invoke(self, f, fargs, **vargs):
+    def invoke(self, f_package, fargs, **vargs):
         """Calls back to self._caller.on_result() for call(f, fargs)."""
+        f = __import__(f_package, globals(), locals(), ['f'], -1).f
         try:
             result = call(f, fargs)
+            self._caller.on_result(result, fargs, vargs)
         except Exception as exception:
             self._caller.on_error(fargs, vargs, exception)
-            return
-        self._caller.on_result(result, fargs, vargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
         pass
 
     def abort(self):
-        raise NotImplemented()
+        raise NotImplementedError()

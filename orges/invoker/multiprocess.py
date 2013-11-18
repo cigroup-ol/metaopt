@@ -93,7 +93,7 @@ class MultiProcessInvoker(BaseInvoker):
         self._caller = value
 
     def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amout of resources of self."""
+        """Returns a subinvoker using the given amount of resources of self."""
         pass
 
     def invoke(self, f_package, fargs, **vargs):
@@ -124,7 +124,7 @@ class MultiProcessInvoker(BaseInvoker):
 
         # shutdown all workers
         for worker_process in self._worker_processes:
-            worker_process.report_status()
+            print(worker_process.busy)
             worker_process.terminate()
             worker_process.join()
         self.aborted = True

@@ -5,29 +5,39 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import with_statement
 
-import abc  # Abstract Base Class
+from abc import abstractmethod, ABCMeta  # Abstract Base Class
 
 
 class BaseOptimizer(object):
-    """Abstract invoker managing calls to ."""
+    """Abstract _invoker managing calls to ."""
 
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
-    @abc.abstractmethod
+    @abstractmethod
     def __init__(self):
-        pass
+        self._invoker = None
 
-    @abc.abstractmethod
-    def optimize(self, f, param_spec, return_spec, minimize):
+    @property
+    @abstractmethod
+    def invoker(self):
+        return self._invoker
+
+    @invoker.setter
+    @abstractmethod
+    def invoker(self, invoker):
+        self._invoker = invoker
+
+    @abstractmethod
+    def optimize(self, F_PACKAGE, param_spec, return_spec, minimize):
         """Handles a result."""
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def on_result(self, result, args, vargs):
         """Handles a result."""
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def on_error(self, error, args, vargs):
         """Handles an error."""
         pass
