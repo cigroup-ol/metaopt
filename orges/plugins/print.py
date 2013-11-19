@@ -1,9 +1,9 @@
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.pluggable import InvocationPlugin
+from orges.plugins.noop import PassInvocationPlugin
 
 
-class PrintInvocationPlugin(InvocationPlugin):
+class PrintInvocationPlugin(PassInvocationPlugin):
     """
     Logs all interaction with the invoker to the standard output.
     """

@@ -169,33 +169,3 @@ class Invocation(object):
 
     def __repr__(self):
         return str(self.fargs)
-
-
-class InvocationPlugin(object):
-    """
-    Base class for invocation plug-ins.
-    """
-
-    def before_invoke(self, invocation):
-        """
-        Gets called when plugpable invoker starts preparing a calls to invoke.
-        """
-        pass
-
-    def on_invoke(self, invocation):
-        """
-        Gets called right before pluggable invoker calls invoke on its invoker.
-        """
-        pass
-
-    def on_result(self, invocation):
-        """
-        Gets called when pluggable invoker receives a callback to on_result.
-        """
-        pass
-
-    def on_error(self, invocation):
-        """
-        Gets called when pluggable invoker receives a callback to on_error.
-        """
-        pass
