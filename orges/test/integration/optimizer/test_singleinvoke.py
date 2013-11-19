@@ -1,9 +1,7 @@
 """
 TODO document me
 """
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
@@ -13,7 +11,7 @@ from orges.invoker.singleprocess import SingleProcessInvoker
 from orges.args import ArgsCreator
 from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 
-F_PACKAGE = __name__
+f = __name__
 
 
 def f(a, b):
@@ -39,7 +37,7 @@ def test_optimize_returns_result():
     optimizer.invoker = invoker
     optimizer.invoker.caller = caller
 
-    f_package = F_PACKAGE
+    f_package = f
     param_spec = PARAM_SPEC
     return_spec = None
     minimize = True

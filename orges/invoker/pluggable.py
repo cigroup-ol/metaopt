@@ -1,19 +1,31 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from orges.invoker.base import BaseInvoker, BaseCaller
+from orges.invoker.base import BaseInvoker
+from orges.optimizer.base import BaseCaller
+from abc import ABCMeta, abstractmethod
+
+# TODO why use self._caller when there is self.invoker.caller?
 
 
 class PluggableInvoker(BaseInvoker, BaseCaller):
+    """
+    Invoker with hooks for calling plug-ins in various situations.
+    """
+
     def __init__(self, resources, invoker, plugins=[]):
+        """
+        :param plugins: List of plug-ins to be executed in various situations.
+        """
         self.invoker = invoker
         self.invoker.caller = self
         self._caller = None
-
         self.plugins = plugins
+
+        print(resources)
+
+        super(PluggableInvoker, self).__init__(self, invoker)
 
     @property
     def caller(self):
@@ -23,15 +35,24 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
     def caller(self, value):
         self._caller = value
 
+    @property
+    def invoker(self):
+        return self._invoker
+
+    @invoker.setter
+    def invoker(self, invoker):
+        invoker.caller = self
+        self._invoker = invoker
+
     def get_subinvoker(self, resources):
         pass
 
-    def invoke(self, f_package, fargs, invocation=None, **kwargs):
+    def invoke(self, function, fargs, invocation=None, **kwargs):
         # TODO: Reuse existing invocation object
         if invocation is None:
             invocation = Invocation()
 
-            invocation.f_package = f_package
+            invocation.f_package = function
             invocation.fargs = fargs
             invocation.kwargs = kwargs
 
@@ -40,7 +61,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         invocation.tries += 1
 
-        task, aborted = self.invoker.invoke(f_package, fargs,
+        task, aborted = self.invoker.invoke(function, fargs,
                                             invocation=invocation)
 
         if aborted:
@@ -53,7 +74,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         return task, aborted
 
-    def on_result(self, result, fargs, invocation):
+    def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
+        del vargs
+        del kwargs
+
         invocation.current_result = result
 
         for plugin in self.plugins:
@@ -84,7 +108,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self.invoker.abort()
 
 
-class Invocation():
+class Invocation(object):
+    """
+    TODO document me
+    """
     def __init__(self):
         self._retry = False
         self._tries = 0
@@ -149,21 +176,49 @@ class Invocation():
         return str(self.fargs)
 
 
-class InvocationPlugin():
+class InvocationPlugin(object):
+    """
+    Abstract base class for invocation plug-ins.
+    """
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
     def before_invoke(self, invocation):
+        """
+        Gets called when plugpable invoker starts preparing a calls to invoke.
+        """
         pass
 
+    @abstractmethod
     def on_invoke(self, invocation):
+        """
+        Gets called right before pluggable invoker calls invoke on its invoker.
+        """
         pass
 
+    @abstractmethod
     def on_result(self, invocation):
+        """
+        Gets called when pluggable invoker receives a callback to on_result.
+        """
         pass
 
+    @abstractmethod
     def on_error(self, invocation):
+        """
+        Gets called when pluggable invoker receives a callback to on_error.
+        """
         pass
 
 
 class PrintInvocationPlugin(InvocationPlugin):
+    """
+    Logs all interaction with the invoker to the standard output.
+    """
+    def before_invoke(self, invocation):
+        pass
+
     def on_invoke(self, invocation):
         print("Started", "f%s" % (tuple(invocation.fargs),))
 
@@ -176,9 +231,21 @@ class PrintInvocationPlugin(InvocationPlugin):
 
 
 class TimeoutInvocationPlugin(InvocationPlugin):
+    """
+    Sets a timeout for each call to invoke.
+    """
     def __init__(self, timeout):
         self.timeout = timeout
+
+    def before_invoke(self, invocation):
+        pass
 
     def on_invoke(self, invocation):
         current_task = invocation.current_task
         Timer(self.timeout, current_task.cancel).start()
+
+    def on_result(self, invocation):
+        pass
+
+    def on_error(self, invocation):
+        pass

@@ -1,13 +1,11 @@
 # -!- coding: utf-8 -!-
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from orges.args import ArgsCreator
-from orges.optimizer.base import BaseOptimizer
+from orges.optimizer.base import BaseOptimizer, BaseCaller
 
 
-class GridSearchOptimizer(BaseOptimizer):
+class GridSearchOptimizer(BaseOptimizer, BaseCaller):
     # Invoker ist erstmal ein Objekt, mit dem man Prozesse aufrufen kann
     def __init__(self):
         self.best = (None, None)
@@ -21,12 +19,12 @@ class GridSearchOptimizer(BaseOptimizer):
         invoker.caller = self
         self._invoker = invoker
 
-    def optimize(self, f_package, param_spec, return_spec=None, minimize=True):
+    def optimize(self, function, param_spec, return_spec=None, minimize=True):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
             #print("calling invoke")
-            _, aborted = self._invoker.invoke(f_package, args)
+            _, aborted = self._invoker.invoke(function, args)
             #print("called invoke", _, aborted)
 
             if aborted:
@@ -38,6 +36,7 @@ class GridSearchOptimizer(BaseOptimizer):
 
     # Wird aufgerufen wenn ein Aufruf von f beendet wurde.
     def on_result(self, result, args, *vargs):
+        del vargs
         # solution, fitness = result
         fitness = result
         _, best_fitness = self.best

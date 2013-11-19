@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, with_statement
 
 from nose.tools import raises
 from nose.tools import eq_

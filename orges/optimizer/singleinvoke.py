@@ -2,7 +2,9 @@
 """
 Optimizer that issues one single invocation, only.
 """
-from orges.optimizer.base import BaseOptimizer
+from __future__ import division, print_function, with_statement
+
+from orges.optimizer.base import BaseOptimizer, BaseCaller
 from orges.args import ArgsCreator
 from collections import namedtuple
 
@@ -10,7 +12,7 @@ from collections import namedtuple
 InvokeResult = namedtuple("InvokeResult", ["arguments", "fitness"])
 
 
-class SingleInvokeOptimizer(BaseOptimizer):
+class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
     """
     Optimizer that issues one single invocation, only.
     """
@@ -27,10 +29,10 @@ class SingleInvokeOptimizer(BaseOptimizer):
         invoker.caller = self
         self._invoker = invoker
 
-    def optimize(self, F_PACKAGE, param_spec, return_spec, minimize):
+    def optimize(self, f, param_spec, return_spec, minimize):
         args = ArgsCreator(param_spec).args()
 
-        self._invoker.invoke(F_PACKAGE, args)
+        self._invoker.invoke(f, args)
         self._invoker.wait()
 
         return self._result

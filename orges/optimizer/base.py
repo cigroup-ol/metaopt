@@ -1,15 +1,30 @@
 """
 Abstract optimizer defining the API of optimizer implementations.
 """
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from abc import abstractmethod, ABCMeta  # Abstract Base Class
 
 
 class BaseOptimizer(object):
-    """Abstract _invoker managing calls to ."""
+    """
+    Abstract optimizer, a systematic way to call a function with arguments.
+    """
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def optimize(self, function, param_spec, return_spec, minimize):
+        """
+        :param function:
+        :param param_spec: Parameter specification for the given function.
+        :param return_spec: Return value specification for the given function.
+        :param minimize: Flag determining, whether to minimize or maximize.
+        """
+
+
+class BaseCaller(object):
+    """Abstract caller handling calls to a given invoker."""
 
     __metaclass__ = ABCMeta
 
@@ -28,16 +43,20 @@ class BaseOptimizer(object):
         self._invoker = invoker
 
     @abstractmethod
-    def optimize(self, F_PACKAGE, param_spec, return_spec, minimize):
-        """Handles a result."""
+    def on_result(self, result, fargs, *vargs, **kwargs):
+        '''
+        Handles a result.
+
+        :param return_value: Return value of the given arguments.
+        :param fargs: The arguments given to a function.
+        '''
         pass
 
     @abstractmethod
-    def on_result(self, result, args, vargs):
-        """Handles a result."""
-        pass
+    def on_error(self, error, fargs, *vargs, **kwargs):
+        '''
+        Handles an error.
 
-    @abstractmethod
-    def on_error(self, error, args, vargs):
-        """Handles an error."""
+        :param fargs: The arguments given to a function.
+        '''
         pass

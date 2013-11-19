@@ -1,10 +1,7 @@
 """
 Invoker that uses multiple processes.
 """
-
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from collections import namedtuple
 import logging
@@ -15,6 +12,9 @@ from orges.args import call
 
 from orges.invoker.base import BaseInvoker
 import uuid
+import inspect
+import sys
+import os
 
 # TODO use Pool from multiprocess
 # TODO ensure tasks can be cancelled that are waiting in the queue
@@ -96,7 +96,7 @@ class MultiProcessInvoker(BaseInvoker):
         """Returns a subinvoker using the given amount of resources of self."""
         pass
 
-    def invoke(self, f_package, fargs, **vargs):
+    def invoke(self, function, fargs, **vargs):
         """
         Puts a task into this Invoker's task queue for the workers to execute.
         """
@@ -104,8 +104,30 @@ class MultiProcessInvoker(BaseInvoker):
         #self._logger.warning("invoke entered")
 
         self._provision_worker()
+
+        # call by package:
+        # - Determine absolute package name of the given function.
+        # - When the task gets executed, the worker process will import it.
+
+        # expand the module's path to an absolute import
+        filename = inspect.getsourcefile(function)
+        module_path, module_filename = os.path.split(filename)
+        module_name, module_ext = os.path.splitext(module_filename)
+        prefix = []
+        for dir in module_path.split(os.sep)[::-1]:
+            prefix.append(dir)
+            candidate = ".".join(prefix[::-1] + [module_name])
+            #print(candidate)
+            try:
+                __import__(candidate, globals(), locals(), [], 0)
+                f_package = candidate
+                break
+            except ImportError:
+                pass
+
         task_id = uuid.uuid4()
-        self._queue_tasks.put(Task(task_id=task_id, f_package=f_package, args=fargs, vargs=vargs))
+        self._queue_tasks.put(Task(task_id=task_id, f_package=f_package,
+                                   args=fargs, vargs=vargs))
         status = self._queue_status.get()
         if status is None:
             self.aborted = True
@@ -279,8 +301,12 @@ class WorkerProcess(Process):
                             args=task.args, vargs=task.vargs)
             self._queue_status.put(status)
 
+            # import f given by qualified package name
+            f = __import__(task.f_package, globals(), locals(), ['f'], 0).f
+            # Note that the following is equivalent:
+            #from orges.test.integration.invoker.multiprocess import f as f
+
             # the actual call
-            f = __import__(task.f_package, globals(), locals(), ['f'], -1).f
             value = call(f, task.args)
 
             #multiprocessing.log_to_stderr(logging.WARN).warning("b")

@@ -1,10 +1,7 @@
 """
 Tests for the MultiprocessInvoker.
 """
-
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
@@ -13,7 +10,7 @@ from orges.args import ArgsCreator
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 
-F_PACKAGE = __name__
+f = __name__
 
 
 def f(a, b):
@@ -34,7 +31,7 @@ def test_invoke_calls_on_result():
     invoker = MultiProcessInvoker(resources=1)
     invoker.caller = caller
 
-    invoker.invoke(F_PACKAGE, ARGS)
+    invoker.invoke(f, ARGS)
     invoker.wait()
 
     caller.on_result.assert_called_once_with(Matcher(2), Matcher(ARGS))
@@ -49,7 +46,7 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker.caller = caller
 
     data = dict()
-    invoker.invoke(F_PACKAGE, ARGS, data=data)
+    invoker.invoke(f, ARGS, data=data)
     invoker.wait()
 
     caller.on_error.assert_not_called()

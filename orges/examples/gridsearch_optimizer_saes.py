@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import division, print_function, with_statement
+
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
@@ -25,8 +27,5 @@ def f(mu, lambd, tau0, tau1):
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
-    print optimize(
-        f_package="orges.examples.gridsearch_optimizer_saes",
-        optimizer=GridSearchOptimizer(),
-        plugins=plugins
-    )
+    print(optimize(function=f, optimizer=GridSearchOptimizer(),
+                   plugins=plugins))

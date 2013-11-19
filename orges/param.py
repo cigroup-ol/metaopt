@@ -17,6 +17,8 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 
 """
 
+from __future__ import division, print_function, with_statement
+
 from orges.paramspec import ParamSpec
 
 

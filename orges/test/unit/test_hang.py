@@ -1,7 +1,6 @@
 """Test for the hangmodule C extension."""
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, with_statement
 
 from orges.test.unit.hang import hang
 
