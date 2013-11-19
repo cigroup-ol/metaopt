@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import inspect
+from __future__ import division, print_function, with_statement
+
 import math
 
 from sklearn.svm import SVR
@@ -12,7 +13,7 @@ from windml.mapping.power_mapping import PowerMapping
 
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
-from orges.optimizer.gridsearch import GridSearchOptimizer
+from orges.optimizer.singleinvoke import SingleInvokeOptimizer
 import orges.param as param
 
 
@@ -60,13 +61,8 @@ def f(C_exp, neg_gamma_exp):
 
     return mse_y_hat
 
-F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
-
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
-    print optimize(
-        f_package=F_PACKAGE,
-        optimizer=GridSearchOptimizer(),
-        plugins=plugins
-    )
+    print(optimize(function=f, optimizer=SingleInvokeOptimizer(),
+                   plugins=plugins))

@@ -5,6 +5,8 @@ TODO Figure out what such a command should actually mean and do
 
 """
 
+from __future__ import division, print_function, with_statement
+
 from orges.main import main
 
 

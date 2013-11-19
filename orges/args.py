@@ -11,6 +11,7 @@ For instance, given an int param like ``param_spec.int("a", interval=(1,10))`` a
 corresponding arg could be something like ``a=1``.
 
 """
+from __future__ import division, print_function, with_statement
 
 from __future__ import division
 from __future__ import print_function

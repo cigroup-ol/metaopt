@@ -2,9 +2,7 @@
 Worker that returns nothing.
 """
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
 
 def _pass_function():

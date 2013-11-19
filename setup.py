@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division, print_function, with_statement
+
 import sys
 
 from setuptools import setup, find_packages, Extension
@@ -27,17 +29,18 @@ HANG_MODULE_EXTENSION = Extension(
 )
 
 setup(
-    name='orges',
-    version='0.0.1',
-    description='OrgES Package - Organic Computing for Evolution Strategies',
     author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
     author_email='info@orges.org',
-    url='http://organic-es.tumblr.com/',
+    cmdclass={'test': Tox},
+    data_files=[("", ["README.rst", "LICENSE.txt", "requirements.txt"])],
+    description='OrgES Package - Organic Computing for Evolution Strategies',
+    ext_modules=[HANG_MODULE_EXTENSION],
+    install_requires=[],
     license="3-Clause BSD",
+    name='orges',
     packages=find_packages(exclude=('tests', 'docs')),
     package_data={'': ['LICENSE.txt', 'README.rst', 'requirements.txt']},
-    ext_modules=[HANG_MODULE_EXTENSION],
-    install_requires=["nose", "mock", "numpy"],
-    tests_require=['tox'],
-    cmdclass={'test': Tox},
+    tests_require=["tox", "nose", "mock"],
+    url='http://organic-es.tumblr.com/',
+    version='0.0.1'
 )

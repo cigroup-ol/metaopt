@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import inspect
+from __future__ import division, print_function, with_statement
 
 from sklearn.svm import SVR
 
@@ -59,13 +59,8 @@ def f(C_exp, neg_gamma_exp):
 
     return mse_y_hat
 
-F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
-
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
-    print optimize(
-        f_package=F_PACKAGE,
-        optimizer=SAESOptimizer(),
-        plugins=plugins
-    )
+    print(optimize(function=f, optimizer=SAESOptimizer(),
+                   plugins=plugins))

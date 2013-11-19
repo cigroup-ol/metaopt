@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
-from numpy.random import randn
-from random import sample, gauss
+#from numpy.random import randn
+from random import sample, gauss, normalvariate
 from math import exp
 
 from orges.args import ArgsCreator
-from orges.optimizer.base import BaseOptimizer
+from orges.optimizer.base import BaseOptimizer, BaseCaller
 
 
-class SAESOptimizer(BaseOptimizer):
+class SAESOptimizer(BaseOptimizer, BaseCaller):
     # TODO: Find good default values
     MU = 3
     LAMBDA = 3
@@ -71,7 +69,8 @@ class SAESOptimizer(BaseOptimizer):
             args = args_creator.random()
 
             # TODO: Use default_mutation_stength method
-            args_sigma = list(randn(len(args)))
+            # args_sigma = list(randn(len(args)))
+            args_sigma = [normalvariate(0, 1) for _ in range(len(args))]
 
             args_sigma = [float(sigma) for sigma in args_sigma]
 

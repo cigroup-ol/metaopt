@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, with_statement
+
 
 from threading import Timer
 
@@ -11,13 +11,12 @@ from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.optimizer.saes import SAESOptimizer
 
 
-def custom_optimize(f_package, param_spec=None, return_spec=None, timeout=None,
+def custom_optimize(function, param_spec=None, return_spec=None, timeout=None,
                     optimizer=None, invoker=None):
     """Optimize the given function using the specified optimizer and invoker"""
-    #importlib.import_module("f", package=f_package)
-    f = __import__(f_package, globals(), locals(), ['f'], -1).f
+    #importlib.import_module("f", package=function)
     try:
-        param_spec = param_spec or f.param_spec
+        param_spec = param_spec or function.param_spec
     except AttributeError:
         raise NoParamSpecError()
 
@@ -26,10 +25,10 @@ def custom_optimize(f_package, param_spec=None, return_spec=None, timeout=None,
     if timeout is not None:
         Timer(timeout, invoker.abort).start()
 
-    return optimizer.optimize(f_package, param_spec)
+    return optimizer.optimize(function, param_spec, None, None)
 
 
-def optimize(f_package, param_spec=None, return_spec=None, timeout=None, plugins=None,
+def optimize(function, param_spec=None, return_spec=None, timeout=None, plugins=None,
              optimizer=None):
     """Optimize the given function"""
 
@@ -41,7 +40,7 @@ def optimize(f_package, param_spec=None, return_spec=None, timeout=None, plugins
     if optimizer is None:
         optimizer = SAESOptimizer()
 
-    return custom_optimize(f_package, param_spec, return_spec, timeout,
+    return custom_optimize(function, param_spec, return_spec, timeout,
                            optimizer, invoker)
 
 
