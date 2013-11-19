@@ -4,7 +4,6 @@ from threading import Timer
 
 from orges.invoker.base import BaseInvoker
 from orges.optimizer.base import BaseCaller
-from abc import ABCMeta, abstractmethod
 
 # TODO why use self._caller when there is self.invoker.caller?
 
@@ -210,9 +209,6 @@ class PrintInvocationPlugin(InvocationPlugin):
     """
     Logs all interaction with the invoker to the standard output.
     """
-    def before_invoke(self, invocation):
-        pass
-
     def on_invoke(self, invocation):
         print("Started", "f%s" % (tuple(invocation.fargs),))
 
@@ -231,15 +227,6 @@ class TimeoutInvocationPlugin(InvocationPlugin):
     def __init__(self, timeout):
         self.timeout = timeout
 
-    def before_invoke(self, invocation):
-        pass
-
     def on_invoke(self, invocation):
         current_task = invocation.current_task
         Timer(self.timeout, current_task.cancel).start()
-
-    def on_result(self, invocation):
-        pass
-
-    def on_error(self, invocation):
-        pass
