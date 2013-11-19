@@ -1,11 +1,7 @@
 from __future__ import division, print_function, with_statement
 
-from threading import Timer
-
 from orges.invoker.base import BaseInvoker
 from orges.optimizer.base import BaseCaller
-
-# TODO why use self._caller when there is self.invoker.caller?
 
 
 class PluggableInvoker(BaseInvoker, BaseCaller):
@@ -203,30 +199,3 @@ class InvocationPlugin(object):
         Gets called when pluggable invoker receives a callback to on_error.
         """
         pass
-
-
-class PrintInvocationPlugin(InvocationPlugin):
-    """
-    Logs all interaction with the invoker to the standard output.
-    """
-    def on_invoke(self, invocation):
-        print("Started", "f%s" % (tuple(invocation.fargs),))
-
-    def on_result(self, invocation):
-        result = invocation.current_result
-        print("Finished", "f%s=%s" % (tuple(invocation.fargs), result))
-
-    def on_error(self, invocation):
-        print("Failed", "f%s" % (tuple(invocation.fargs),))
-
-
-class TimeoutInvocationPlugin(InvocationPlugin):
-    """
-    Sets a timeout for each call to invoke.
-    """
-    def __init__(self, timeout):
-        self.timeout = timeout
-
-    def on_invoke(self, invocation):
-        current_task = invocation.current_task
-        Timer(self.timeout, current_task.cancel).start()

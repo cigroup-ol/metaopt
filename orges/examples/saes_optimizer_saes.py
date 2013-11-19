@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.plugins.print import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.saes import SAESOptimizer
 import orges.param as param
