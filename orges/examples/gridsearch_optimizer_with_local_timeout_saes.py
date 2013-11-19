@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.pluggable import TimeoutInvocationPlugin
-from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.plugins.timeout import TimeoutInvocationPlugin
+from orges.plugins.print import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
 import orges.param as param

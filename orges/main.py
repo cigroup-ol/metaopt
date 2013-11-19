@@ -6,8 +6,8 @@ from threading import Timer
 
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.pluggable import PluggableInvoker
-from orges.invoker.pluggable import TimeoutInvocationPlugin
-from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.plugins.timeout import TimeoutInvocationPlugin
+from orges.plugins.print import PrintInvocationPlugin
 from orges.optimizer.saes import SAESOptimizer
 
 

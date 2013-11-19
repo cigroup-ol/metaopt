@@ -5,7 +5,7 @@ from time import sleep
 
 from orges.args import ArgsCreator
 from orges.invoker.pluggable import PluggableInvoker
-from orges.invoker.pluggable import TimeoutInvocationPlugin
+from orges.plugins.timeout import TimeoutInvocationPlugin
 from orges.invoker.simple import SimpleInvoker
 from orges.paramspec import ParamSpec
 

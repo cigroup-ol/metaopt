@@ -11,7 +11,7 @@ from sklearn.svm import SVR
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 
-from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.plugins.print import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.singleinvoke import SingleInvokeOptimizer
 import orges.param as param
