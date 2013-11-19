@@ -185,7 +185,7 @@ class BoolArg(Arg):
         return BoolArg(self.param, value=random.choice([True, False]))
 
     def randomize(self, strength):
-        return random(self)
+        return self.random(self)
 
     def combine(self, other_arg):
         value = self.value or other_arg.value

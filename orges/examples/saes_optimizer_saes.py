@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import inspect
+
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.saes import SAESOptimizer
@@ -22,11 +24,13 @@ def f(mu, lambd, tau0, tau1):
 
     return saes(args)
 
+F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
+
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
     print optimize(
-        f_package="orges.examples.saes_optimizer_saes",
+        f_package=F_PACKAGE,
         optimizer=SAESOptimizer(),
         plugins=plugins
     )

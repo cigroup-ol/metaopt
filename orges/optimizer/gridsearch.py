@@ -26,13 +26,13 @@ class GridSearchOptimizer(BaseOptimizer):
 
         for args in args_creator.product():
             #print("calling invoke")
-            _, aborted = self.invoker.invoke(f_package, args)
+            _, aborted = self._invoker.invoke(f_package, args)
             #print("called invoke", _, aborted)
 
             if aborted:
                 return self.best
 
-        self.invoker.wait()
+        self._invoker.wait()
 
         return self.best
 

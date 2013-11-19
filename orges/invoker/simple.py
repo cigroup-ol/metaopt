@@ -68,9 +68,9 @@ class SimpleInvoker(BaseInvoker):
             self.cancelled = False
 
         if not cancelled:
-            self.caller.on_result(return_value, fargs, **kwargs)
+            self._caller.on_result(return_value, fargs, **kwargs)
         else:
-            self.caller.on_error(fargs, **kwargs)
+            self._caller.on_error(fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:

@@ -41,8 +41,8 @@ def optimize(f_package, param_spec=None, return_spec=None, timeout=None, plugins
     if optimizer is None:
         optimizer = SAESOptimizer()
 
-    return custom_optimize(f_package, param_spec, return_spec, timeout, optimizer,
-                           invoker)
+    return custom_optimize(f_package, param_spec, return_spec, timeout,
+                           optimizer, invoker)
 
 
 class NoParamSpecError(Exception):

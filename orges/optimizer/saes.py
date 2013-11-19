@@ -46,7 +46,6 @@ class SAESOptimizer(BaseOptimizer):
         self._invoker = invoker
 
     def optimize(self, f, param_spec, return_spec=None, minimize=True):
-
         self.f = f
         self.param_spec = param_spec
 
@@ -109,10 +108,9 @@ class SAESOptimizer(BaseOptimizer):
     def score_population(self):
         for individual in self.population:
             args, _ = individual
-
             self.invoker.invoke(self.f, args, individual=individual)
 
-        self.invoker.wait()
+        self._invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])

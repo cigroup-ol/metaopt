@@ -6,5 +6,5 @@ from __future__ import print_function
 from orges.test.unit.hang import hang
 
 if __name__ == '__main__':
-    AMOUNT_OF_SECONDS_TO_HANG = 30
+    AMOUNT_OF_SECONDS_TO_HANG = 3
     hang(AMOUNT_OF_SECONDS_TO_HANG)

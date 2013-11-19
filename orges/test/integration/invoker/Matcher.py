@@ -2,6 +2,7 @@
 Matchers for Mock.
 """
 import string
+import itertools
 
 
 class EqualityMatcher(object):
@@ -10,13 +11,27 @@ class EqualityMatcher(object):
 
     This is a workaround to the fact that Mock will check if the *same* object
     is returned, which is never the case for objects that were pickled, as is
-    required for inter process communication (IPC) done by the
+    required for interprocess communication (IPC) done by the
     MultiProcessInvoker.
     """
     def __init__(self, one):
         self.one = one
 
     def __eq__(self, other):
+        if isinstance(self.one, itertools.product):
+            try:
+                for x, y in zip(self.one, other):
+                    if x != y:
+                        print("unequal:", x, y)
+                        return False
+                return True
+            except TypeError:
+                return False
+
+        if type(self.one) != type(other):
+            raise TypeError("One (%s) and other (%s) are of different types."
+                            % (type(self.one), type(other)))
+
         if type(self.one) == int and type(other) == int:
             return self.one == other
         if type(self.one) == string and type(other) == string:

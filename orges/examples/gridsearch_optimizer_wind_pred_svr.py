@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
+import inspect
+import math
+
+from sklearn.svm import SVR
+
+
+# to run this example, add windml, branch 'develop' to your PYTHONPATH
+# https://github.com/cigroup-ol/windml.git
+from windml.datasets.nrel import NREL
+from windml.mapping.power_mapping import PowerMapping
+
 from orges.invoker.pluggable import PrintInvocationPlugin
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
 import orges.param as param
-from orges.test.demo.algorithm.host.saes import f as saes
 
-# to run this example, add windml, branch 'develop' to your PYTHONPATH
-# https://github.com/cigroup-ol/windml.git
-import math
-from windml.datasets.nrel import NREL
-from windml.mapping.power_mapping import PowerMapping
 
-from sklearn.cross_validation import KFold
-from sklearn import __version__ as sklearn_version
-from sklearn.svm import SVR
-
-@param.int("C_exp", interval=(1,10), display_name="C_exp")
+@param.int("C_exp", interval=(1, 10), display_name="C_exp")
 @param.int("neg_gamma_exp", interval=(2, 15), display_name="gamma_exp")
 def f(C_exp, neg_gamma_exp):
     gamma_exp = -(neg_gamma_exp)
@@ -59,11 +60,13 @@ def f(C_exp, neg_gamma_exp):
 
     return mse_y_hat
 
+F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
+
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
     print optimize(
-        f_package="orges.examples.gridsearch_optimizer_wind_pred_svr",
+        f_package=F_PACKAGE,
         optimizer=GridSearchOptimizer(),
         plugins=plugins
     )

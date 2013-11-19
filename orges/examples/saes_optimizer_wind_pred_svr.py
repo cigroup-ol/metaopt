@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from orges.invoker.pluggable import PrintInvocationPlugin
-from orges.main import optimize
-from orges.optimizer.saes import SAESOptimizer
-import orges.param as param
+import inspect
+
+from sklearn.svm import SVR
 
 # to run this example, add windml, branch 'develop' to your PYTHONPATH
 # https://github.com/cigroup-ol/windml.git
@@ -10,7 +9,11 @@ import math
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 
-from sklearn.svm import SVR
+from orges.invoker.pluggable import PrintInvocationPlugin
+from orges.main import optimize
+from orges.optimizer.saes import SAESOptimizer
+import orges.param as param
+
 
 @param.int("C_exp", interval=(1,10), display_name="C_exp")
 @param.int("neg_gamma_exp", interval=(2, 15), display_name="gamma_exp")
@@ -56,11 +59,13 @@ def f(C_exp, neg_gamma_exp):
 
     return mse_y_hat
 
+F_PACKAGE = inspect.getmodulename(inspect.getabsfile(f))
+
 if __name__ == '__main__':
     plugins = [PrintInvocationPlugin()]
 
     print optimize(
-        f_package="orges.examples.gridsearch_optimizer_wind_pred_svr",
+        f_package=F_PACKAGE,
         optimizer=SAESOptimizer(),
         plugins=plugins
     )
