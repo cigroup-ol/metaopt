@@ -2,10 +2,10 @@ from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from orges.plugins.noop import PassInvocationPlugin
+from orges.plugins.dummy import DummyInvocationPlugin
 
 
-class TimeoutInvocationPlugin(PassInvocationPlugin):
+class TimeoutInvocationPlugin(DummyInvocationPlugin):
     """
     Sets a timeout for each call to invoke.
     """

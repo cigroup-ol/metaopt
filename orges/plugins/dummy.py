@@ -3,7 +3,7 @@ from __future__ import division, print_function, with_statement
 from orges.plugins.base import BaseInvocationPlugin
 
 
-class PassInvocationPlugin(BaseInvocationPlugin):
+class DummyInvocationPlugin(BaseInvocationPlugin):
     """
     Invocation plug-in that does nothing for all hooks.
     """
