@@ -198,7 +198,9 @@ class MultiProcessInvoker(BaseInvoker):
 
     def _remove_worker_process(self, worker_process):
         status = Status(worker_id=worker_process.worker_id, f_package=None,
-                        args=None, vargs=None)
+                        args=None, vargs=None,
+                        task_id=worker_process._current_task_id)
+
         worker_process.queue_status.put(status)
         worker_process.terminate()
         worker_process.join()
