@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-#from numpy.random import randn
-from random import sample, gauss, normalvariate
+from random import sample, gauss
 from math import exp
 
-from orges.args import ArgsCreator
+from orges.args import ArgsCreator, default_mutation_stength
 from orges.optimizer.base import BaseOptimizer, BaseCaller
 
 
@@ -67,12 +66,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
 
         for _ in xrange(self.mu):
             args = args_creator.random()
-
-            # TODO: Use default_mutation_stength method
-            # args_sigma = list(randn(len(args)))
-            args_sigma = [normalvariate(0, 1) for _ in range(len(args))]
-
-            args_sigma = [float(sigma) for sigma in args_sigma]
+            args_sigma = [default_mutation_stength(arg.param) for arg in args]
 
             individual = (args, args_sigma)
             self.population.append(individual)
