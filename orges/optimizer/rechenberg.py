@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from random import sample, gauss
-from math import exp
+from random import sample
 
 from orges.args import ArgsCreator, default_mutation_stength
 from orges.optimizer.base import BaseOptimizer, BaseCaller
 
 
-class SAESOptimizer(BaseOptimizer, BaseCaller):
+class RechenbergOptimizer(BaseOptimizer, BaseCaller):
     # TODO: Find good default values
     MU = 3
     LAMBDA = 3
-    TAU0 = 0.5
-    TAU1 = 0.5
+    A = 0.1
 
-    def __init__(self, mu=MU, lamb=LAMBDA, tau0=TAU0, tau1=TAU1):
+    def __init__(self, mu=MU, lamb=LAMBDA, a=A):
         self._invoker = None
 
         # TODO: Make sure these value are sane
         self.mu = mu
         self.lamb = lamb
-        self.tau0 = tau0
-        self.tau1 = tau1
+        self.a = a
 
         self.f = None
         self.param_spec = None
@@ -30,6 +27,9 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.population = []
         self.scored_population = []
         self.best_scored_indivual = (None, None)
+
+        self.best_fitness = None
+        self.previous_best_fitness = None
 
         self.generation = 1
 
@@ -46,6 +46,9 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.f = f
         self.param_spec = param_spec
 
+        params = param_spec.params.values()
+        self.sigmas = [default_mutation_stength(param) for param in params]
+
         self.initalize_population()
         self.score_population()
 
@@ -53,7 +56,9 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             self.add_offspring()
             self.score_population()
             self.select_parents()
+            self.change_mutation_strength()
 
+            self.previous_best_fitness  = self.best_fitness
             self.generation += 1
 
         return self.best_scored_indivual[0]
@@ -65,10 +70,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         args_creator = ArgsCreator(self.param_spec)
 
         for _ in xrange(self.mu):
-            args = args_creator.random()
-            args_sigma = [default_mutation_stength(arg.param) for arg in args]
-
-            individual = (args, args_sigma)
+            individual = args_creator.random()
             self.population.append(individual)
 
     def add_offspring(self):
@@ -77,24 +79,8 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         for _ in xrange(self.lamb):
             mother, father = sample(self.population, 2)
 
-            child_args = args_creator.combine(mother[0], father[0])
-
-            mean = lambda x1, x2: float((x1 + x2) / 2)
-            child_args_sigma = map(mean, mother[1], father[1])
-
-            child_args = args_creator.randomize(child_args, child_args_sigma)
-
-            tau0_random = gauss(0, 1)
-
-            def mutate_sigma(sigma):
-                tau0 = self.tau0
-                tau1 = self.tau1
-                return sigma * exp(tau0 * tau0_random)\
-                       * exp(tau1 * gauss(0, 1))
-
-            child_args_sigma = map(mutate_sigma, child_args_sigma)
-
-            child = (child_args, child_args_sigma)
+            child = args_creator.combine(mother, father)
+            child = args_creator.randomize(child, self.sigmas)
 
             self.population.append(child)
 
@@ -102,8 +88,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.scored_population = []
 
         for individual in self.population:
-            args, _ = individual
-            self.invoker.invoke(self.f, args, individual=individual)
+            self.invoker.invoke(self.f, individual, individual=individual)
 
         self._invoker.wait()
 
@@ -111,6 +96,23 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.scored_population.sort(key=lambda s: s[1])
         new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
+
+    def change_mutation_strength(self):
+        if self.previous_best_fitness is None:
+            return # We can't estimate success probablity yet
+
+        successes = len(filter(lambda scored: scored[1] <
+            self.previous_best_fitness, self.scored_population))
+
+        probablity = successes / self.lamb
+
+        # TODO: What happens if sigmas get too large or small
+        if probablity > 1/5:
+            self.sigmas = map(lambda sigma: sigma / self.a, self.sigmas)
+        elif probablity < 1/5:
+            self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
+
+        print(self.sigmas)
 
     def on_result(self, result, args, individual):
         # _, fitness = result
@@ -122,6 +124,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
 
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
+            self.best_fitness = fitness
 
     def on_error(self, args, individual):
         pass
