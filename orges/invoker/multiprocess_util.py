@@ -66,7 +66,7 @@ class WorkerProvider(Singleton):
     def __init__(self):
         self._lock = threading.Lock()
         self._cpu_count = cpu_count()
-        self._workers = []
+        self._worker_processes = []
 
     def provision(self, number_of_workers=1, queue_tasks=None,
                   queue_results=None, queue_status=None):
@@ -74,26 +74,37 @@ class WorkerProvider(Singleton):
         Provision a given number worker processes for future use.
         """
         with self._lock:
-            if self._cpu_count < (len(self._workers) + number_of_workers):
-                raise IndexError("Cannot currently provision so many workers.")
+            if self._cpu_count < (len(self._worker_processes) + number_of_workers):
+                raise IndexError("Cannot currently provision so many worker_processes.")
 
-            workers = []
+            worker_processes = []
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
                                  queue_tasks=queue_tasks,
                                  queue_results=queue_results,
                                  queue_status=queue_status)
-                worker_process.daemon = True  # workers may not spawn processes
+                worker_process.daemon = True  # worker_processes may not spawn processes
                 worker_process.start()
-                workers.append(worker_process)
+                worker_processes.append(worker_process)
 
-            self._workers += workers
-        return workers
+            self._worker_processes += worker_processes
+        return worker_processes
 
-    def release(self, worker):
+    def release(self, worker_process):
         with self._lock:
-            self._workers.remove(worker)
+            # send manually constructed empty result
+            result = Result(worker_id=worker_process.worker_id, f_package=None,
+                            args=None, vargs=None,
+                            task_id=worker_process._current_task_id,
+                            value=None)
+            worker_process.queue_results.put(result)
+
+            # send kill signal and wait for the process to die
+            worker_process.terminate()
+            worker_process.join()
+
+            self._worker_processes.remove(worker_process)
 
 
 class TaskHandle(object):
@@ -165,11 +176,10 @@ class WorkerProcess(Process):
             self._current_task_id = task.task_id
             # announce start of work
             #multiprocessing.log_to_stderr(logging.WARN).warning("a")
-            status = Status(task_id=self._current_task_id,
-                             worker_id=self._worker_id,
-                            f_package=task.f_package,
-                            args=task.args, vargs=task.vargs)
-            self._queue_status.put(status)
+            self._queue_status.put(Status(task_id=self._current_task_id,
+                                          worker_id=self._worker_id,
+                                          f_package=task.f_package,
+                                          args=task.args, vargs=task.vargs))
 
             # import f given by qualified package name
             f = __import__(task.f_package, globals(), locals(), ['f'], 0).f

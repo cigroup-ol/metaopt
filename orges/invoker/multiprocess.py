@@ -11,7 +11,7 @@ import uuid
 from orges.invoker.base import BaseInvoker
 
 from orges.invoker.multiprocess_util import WorkerProvider, Task, TaskHandle, \
-    Status, determine_package
+    determine_package
 
 # TODO use Pool from multiprocess
 # TODO ensure tasks can be cancelled that are waiting in the queue
@@ -29,7 +29,7 @@ class MultiProcessInvoker(BaseInvoker):
         # spawn one worker process per CPU, or as many as requested
         if resources is None:
             try:
-                self.worker_count_max = cpu_count()
+                self.worker_count_max = cpu_count()  # configure automatically
             except NotImplementedError:
                 self.worker_count_max = 2    # dual cores are very common, now
         else:
@@ -70,28 +70,32 @@ class MultiProcessInvoker(BaseInvoker):
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""
-        pass
+        raise NotImplementedError()
 
     def invoke(self, function, fargs, **vargs):
         """
-        Puts a task into this Invoker's task queue for the workers to execute.
+        Invokes call(f, fargs) with the given function and the given arguments.
+
+        Calls back to self.caller.on_result() for successful invokes.
+        Calls back to self.caller.on_error() for unsuccessful invokes.
+        Can be called asynchronously, but will block if the call can not be
+        executed immediately, especially when using multiple processes/threads.
         """
         #self._logger.warning("invoke entered")
 
         # provision a new worker, if allowed
         if len(self._worker_processes) is not self.worker_count_max:
-            process = self._worker_provider.provision(
-                   queue_tasks=self._queue_tasks,
-                   queue_results=self._queue_results,
-                   queue_status=self._queue_status)
-            self._worker_processes += process
+            self._worker_processes += self._worker_provider.provision(
+                     queue_tasks=self._queue_tasks,
+                     queue_results=self._queue_results,
+                     queue_status=self._queue_status)
 
-        # schedule task
+        # schedule task for the workers to execute
         self._queue_tasks.put(Task(task_id=uuid.uuid4(),
                                    f_package=determine_package(function),
                                    args=fargs, vargs=vargs))
 
-        # wait for status
+        # wait for status from a worker
         status = self._queue_status.get()
         if status is None:
             self.aborted = True
@@ -106,7 +110,7 @@ class MultiProcessInvoker(BaseInvoker):
             # handle finished worker
             if result.value is None:
                 worker_process = self._worker_processes[result.worker_id]
-                self._remove_worker_process(worker_process)
+                self._worker_provider.release(worker_process)
 
             # handle all other results
             self._caller.on_result(result.value, result.args, **result.vargs)
@@ -161,18 +165,6 @@ class MultiProcessInvoker(BaseInvoker):
         while self._count_busy_workers() >= 1:
             #self._logger.warning(self._count_busy_workers())
             pass
-
-    def _remove_worker_process(self, worker_process):
-        status = Status(worker_id=worker_process.worker_id, f_package=None,
-                        args=None, vargs=None,
-                        task_id=worker_process._current_task_id)
-
-        worker_process.queue_status.put(status)
-        worker_process.terminate()
-        worker_process.join()
-        #self._logger.warning(self._worker_processes)
-        self._worker_processes.remove(worker_process)
-        #self._logger.warning(self._worker_processes)
 
     def cancel(self, worker_id, task_id):
         """Terminates a worker given by id."""
