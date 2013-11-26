@@ -42,7 +42,7 @@ class MultiProcessInvoker(BaseInvoker):
         # set this using the property
         self._caller = None
 
-        # init logging
+        # initialize logging
         self._logger = multiprocessing.log_to_stderr(logging.INFO)
 
         # queues common to all worker processes
