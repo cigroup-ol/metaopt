@@ -112,8 +112,6 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         elif probablity < 1/5:
             self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
 
-        print(self.sigmas)
-
     def on_result(self, result, args, individual):
         # _, fitness = result
         fitness = result

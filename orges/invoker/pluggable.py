@@ -18,8 +18,6 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self._caller = None
         self.plugins = plugins
 
-        print(resources)
-
         super(PluggableInvoker, self).__init__(self, invoker)
 
     @property

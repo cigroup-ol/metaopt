@@ -67,11 +67,3 @@ args = {
     'tau1': 0.6,
     'epsilon': 0.0001,
 }
-
-# for tau0 in [i / 10.0 for i in range(10)]:
-#     args_current = deepcopy(args)
-#     args_current['tau0'] = tau0
-#     print "tau0: %f, generations: %i" % (tau0, optimize(args))
-
-if __name__ == '__main__':
-    print(f(args))
