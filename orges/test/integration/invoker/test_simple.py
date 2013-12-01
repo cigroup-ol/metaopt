@@ -2,25 +2,20 @@ from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
-from orges.paramspec import ParamSpec
+from orges import param
 from orges.args import ArgsCreator
 from orges.invoker.simple import SimpleInvoker
 
-
+@param.int("a", interval=(1, 10))
+@param.int("b", interval=(1, 10))
 def f(a, b):
     return a + b
 
-
-PARAM_SPEC = ParamSpec()
-PARAM_SPEC.int("a", interval=(1, 10))
-PARAM_SPEC.int("b", interval=(1, 10))
-
-args_creator = ArgsCreator(PARAM_SPEC)
-args = args_creator.args()
+ARGS = ArgsCreator(f.param_spec).args()
 
 
 def test_invoke_calls_on_result():
-    invoker = SimpleInvoker(1)
+    invoker = SimpleInvoker()
 
     caller = Mock()
 
@@ -28,14 +23,13 @@ def test_invoke_calls_on_result():
     caller.on_error = Mock()
 
     invoker._caller = caller
-    invoker.invoke(f, args)
+    invoker.invoke(f, ARGS)
     invoker.wait()
 
-    caller.on_result.assert_called_with(2, args)
-
+    caller.on_result.assert_called_with(2, ARGS)
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
-    invoker = SimpleInvoker(1)
+    invoker = SimpleInvoker()
 
     caller = Mock()
 
@@ -46,10 +40,10 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
 
     data = object()
 
-    invoker.invoke(f, args, data=data)
+    invoker.invoke(f, ARGS, data=data)
     invoker.wait()
 
-    caller.on_result.assert_called_with(2, args, data=data)
+    caller.on_result.assert_called_with(2, ARGS, data=data)
 
 if __name__ == '__main__':
     import nose

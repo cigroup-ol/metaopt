@@ -10,14 +10,9 @@ from orges.args import call
 class SingleProcessInvoker(BaseInvoker):
     """Invoker that does the work on its own."""
 
-    def __init__(self, resources):
-        """
-        resources - number of CPUs to use.
-        """
-        self.resources = resources
-        self.resources = 1  # enforce
+    def __init__(self):
         self._caller = None
-        super(SingleProcessInvoker, self).__init__(self, resources)
+        super(SingleProcessInvoker, self).__init__(self)
 
     @property
     def caller(self):

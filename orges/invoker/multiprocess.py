@@ -55,8 +55,7 @@ class MultiProcessInvoker(BaseInvoker):
         self._worker_provider = WorkerProvider()
         #self._populate_worker_processes()
 
-        super(MultiProcessInvoker, self).__init__(resources=resources,
-                                                  caller=self._caller)
+        super(MultiProcessInvoker, self).__init__(self._caller)
 
     @property
     def caller(self):

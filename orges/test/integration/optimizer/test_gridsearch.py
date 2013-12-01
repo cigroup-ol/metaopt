@@ -3,41 +3,25 @@ TODO document me
 """
 from __future__ import division, print_function, with_statement
 
-from orges.optimizer.gridsearch import GridSearchOptimizer
-from orges.paramspec import ParamSpec
-from orges.invoker.simple import SimpleInvoker
-from mock import Mock
-from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
+from orges import param
 from orges.args import ArgsCreator
+from orges.invoker.simple import SimpleInvoker
+from orges.optimizer.gridsearch import GridSearchOptimizer
 
-
+@param.int("a", interval=(1, 2))
+@param.int("b", interval=(1, 2))
 def f(a, b):
     return -(a + b)
 
-PARAM_SPEC = ParamSpec()
-PARAM_SPEC.int("a", interval=(1, 2))
-PARAM_SPEC.int("b", interval=(1, 2))
-
-ARGS = ArgsCreator(PARAM_SPEC).product()
-
+ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
 def test_optimize_returns_result():
-    resources = 2  # should get ignored
-
-    caller = Mock()
-    caller.on_result = Mock()
-    caller.on_error = Mock()
-
-    _invoker = SimpleInvoker(resources)
-    _invoker.caller = caller
-
+    invoker = SimpleInvoker()
     optimizer = GridSearchOptimizer()
-    optimizer._invoker = _invoker
+    optimizer.invoker = invoker
 
-    optimizer.optimize(f, PARAM_SPEC)
-
-    caller.on_error.assert_not_called()
-    caller.on_result.assert_called_with(Matcher(-4), Matcher(ARGS))
+    args = optimizer.optimize(f, f.param_spec)
+    assert map(lambda arg: arg.value, args) == map(lambda arg: arg.value, ARGS)
 
 if __name__ == '__main__':
     import nose

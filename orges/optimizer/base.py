@@ -14,12 +14,11 @@ class BaseOptimizer(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def optimize(self, function, param_spec, return_spec, minimize):
+    def optimize(self, function, param_spec, return_spec):
         """
         :param function:
         :param param_spec: Parameter specification for the given function.
         :param return_spec: Return value specification for the given function.
-        :param minimize: Flag determining, whether to minimize or maximize.
         """
 
 

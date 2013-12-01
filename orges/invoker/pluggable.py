@@ -9,7 +9,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
     Invoker with hooks for calling plug-ins in various situations.
     """
 
-    def __init__(self, resources, invoker, plugins=[]):
+    def __init__(self, invoker, plugins=[]):
         """
         :param plugins: List of plug-ins to be executed in various situations.
         """
@@ -18,7 +18,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self._caller = None
         self.plugins = plugins
 
-        super(PluggableInvoker, self).__init__(self, invoker)
+        super(PluggableInvoker, self).__init__(self)
 
     @property
     def caller(self):

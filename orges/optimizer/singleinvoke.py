@@ -29,7 +29,7 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         invoker.caller = self
         self._invoker = invoker
 
-    def optimize(self, f, param_spec, return_spec, minimize):
+    def optimize(self, f, param_spec, return_spec):
         args = ArgsCreator(param_spec).args()
 
         self._invoker.invoke(f, args)

@@ -2,21 +2,14 @@ from __future__ import division, print_function, with_statement
 
 from nose.tools import eq_
 
-from orges.invoker.multiprocess import MultiProcessInvoker
-from orges.invoker.pluggable import PluggableInvoker
-from orges.main import custom_optimize
+from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
-import orges.test.util.one_param_f as f_package
-
-f = f_package.__name__
+from orges.test.util.one_param_sleep_and_negate_f import f
 
 
-def test_custom_optimize_running_too_long_aborts():
-    invoker = PluggableInvoker(None, invoker=MultiProcessInvoker())
+def test_optimize_running_too_long_aborts():
     optimizer = GridSearchOptimizer()
-
-    val = custom_optimize(function=f, optimizer=optimizer,
-                          invoker=invoker, timeout=1)[1]
+    val = optimize(f, timeout=1, optimizer=optimizer)
 
     # f(a=0) is 0, f(a=1) is -1. Because of the timeout we never see a=1, hence
     # we except the minimum before the timeout to be 0.

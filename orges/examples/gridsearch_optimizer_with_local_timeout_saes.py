@@ -16,7 +16,7 @@ from orges.test.demo.algorithm.host.saes import f as saes
 def f(mu, lambd, tau0, tau1):
     args = dict()
 
-    args["d"] = 2
+    args["d"] = 10
     args["epsilon"] = 0.0001
     args["mu"] = mu
     args["lambd"] = lambd

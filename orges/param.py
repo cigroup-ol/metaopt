@@ -25,10 +25,10 @@ from orges.paramspec import ParamSpec
 def int(*vargs, **kwargs):
     """A decorator that specifies an int parameter for a function"""
 
-    def decorator(f):
-        param_spec = make_param_spec(f)
+    def decorator(func):
+        param_spec = make_param_spec(func)
         param_spec.int(*vargs, **kwargs)
-        return f
+        return func
 
     return decorator
 
@@ -36,28 +36,28 @@ def int(*vargs, **kwargs):
 def float(*vargs, **kwargs):
     """A decorator that specifies a float parameter for a function"""
 
-    def decorator(f):
-        param_spec = make_param_spec(f)
+    def decorator(func):
+        param_spec = make_param_spec(func)
         param_spec.float(*vargs, **kwargs)
-        return f
+        return func
 
     return decorator
 
 
 def bool(*vargs, **kwargs):
     """A decorator that specifies an bool parameter for a function"""
-    def decorator(f):
-        param_spec = make_param_spec(f)
+    def decorator(func):
+        param_spec = make_param_spec(func)
         param_spec.bool(*vargs, **kwargs)
-        return f
+        return func
 
     return decorator
 
 
-def make_param_spec(f):
+def make_param_spec(func):
     """Create a new param_spec object for ``f`` or retrieves it if it exists"""
     try:
-        param_spec = f.param_spec
+        param_spec = func.param_spec
     except AttributeError:
-        f.param_spec = param_spec = ParamSpec(via_decorator=True)
+        func.param_spec = param_spec = ParamSpec(via_decorator=True)
     return param_spec

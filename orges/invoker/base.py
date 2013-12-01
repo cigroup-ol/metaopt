@@ -15,16 +15,7 @@ class BaseInvoker(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def __init__(self, resources, caller):
-        pass
-
-    @abc.abstractmethod
-    def get_subinvoker(self, resources):
-        """
-        Implementations of this method should have the following behavior:
-
-        Returns a subinvoker using the given amount of resources of self.
-        """
+    def __init__(self, caller):
         pass
 
     @abc.abstractmethod

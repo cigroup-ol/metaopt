@@ -26,10 +26,10 @@ ARGS = ArgsCreator(PARAM_SPEC).args()
 
 
 def test():  # TODO: Find some better name for these kind of tests
-    simple_invoker = SimpleInvoker(None)
+    simple_invoker = SimpleInvoker()
 
     plugins = [TimeoutInvocationPlugin(INVOKER_TIMEOUT)]
-    invoker = PluggableInvoker(None, simple_invoker, plugins=plugins)
+    invoker = PluggableInvoker(simple_invoker, plugins=plugins)
 
     caller = Mock()
 

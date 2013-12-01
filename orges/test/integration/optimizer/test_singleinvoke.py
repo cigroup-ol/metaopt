@@ -10,38 +10,27 @@ from orges.paramspec import ParamSpec
 from orges.invoker.singleprocess import SingleProcessInvoker
 from orges.args import ArgsCreator
 from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
+from orges import param
 
-f = __name__
-
-
+@param.int("a", interval=(2, 2))
+@param.int("b", interval=(1, 1))
 def f(a, b):
     return -(a + b)
 
-PARAM_SPEC = ParamSpec()
-PARAM_SPEC.int("a", interval=(2, 2))
-PARAM_SPEC.int("b", interval=(1, 1))
-
-ARGS = ArgsCreator(PARAM_SPEC).args()
-
+ARGS = ArgsCreator(f.param_spec).args()
 
 def test_optimize_returns_result():
-    resources = 2  # should get ignored
-
     caller = Mock()
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    invoker = SingleProcessInvoker(resources)
+    invoker = SingleProcessInvoker()
     optimizer = SingleInvokeOptimizer()
 
     optimizer.invoker = invoker
     optimizer.invoker.caller = caller
 
-    f_package = f
-    param_spec = PARAM_SPEC
-    return_spec = None
-    minimize = True
-    optimizer.optimize(f_package, param_spec, return_spec, minimize)
+    optimizer.optimize(f, f.param_spec, None)
 
     invoker.caller.on_error.assert_not_called()
     invoker.caller.on_result.assert_called()

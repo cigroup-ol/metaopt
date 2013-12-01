@@ -12,8 +12,8 @@ from orges.invoker.base import BaseInvoker
 class SimpleInvoker(BaseInvoker):
     """TODO document me"""
 
-    def __init__(self, resources):
-        super(SimpleInvoker, self).__init__(self, resources)
+    def __init__(self):
+        super(SimpleInvoker, self).__init__(self)
         self.thread = None
         self.lock = Lock()
 

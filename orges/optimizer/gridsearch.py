@@ -6,7 +6,6 @@ from orges.optimizer.base import BaseOptimizer, BaseCaller
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):
-    # Invoker ist erstmal ein Objekt, mit dem man Prozesse aufrufen kann
     def __init__(self):
         self.best = (None, None)
 
@@ -19,26 +18,21 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
         invoker.caller = self
         self._invoker = invoker
 
-    def optimize(self, function, param_spec, return_spec=None, minimize=True):
+    def optimize(self, function, param_spec, return_spec=None):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
-            #print("calling invoke")
             _, aborted = self._invoker.invoke(function, args)
-            #print("called invoke", _, aborted)
 
             if aborted:
-                return self.best
+                return self.best[0]
 
         self._invoker.wait()
 
-        return self.best
+        return self.best[0]
 
     # Wird aufgerufen wenn ein Aufruf von f beendet wurde.
-    def on_result(self, result, args, *vargs):
-        del vargs
-        # solution, fitness = result
-        fitness = result
+    def on_result(self, fitness, args, *vargs):
         _, best_fitness = self.best
 
         if best_fitness is None or fitness < best_fitness:
