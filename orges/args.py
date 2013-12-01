@@ -1,8 +1,8 @@
 """
 
 This module is responsible for creating actual args from params that are defined
-in a paramspec and also provides the means to alter these args such as
-randomizing.
+in a ParamSpec and also provides the means to alter these args such as
+randomizing them.
 
 An arg is something that contains a value that respects the contraints (e.g.
 interval with step size) defined by the corresponding param.
@@ -12,9 +12,6 @@ corresponding arg could be something like ``a=1``.
 
 """
 from __future__ import division, print_function, with_statement
-
-from __future__ import division
-from __future__ import print_function
 
 from inspect import getargspec
 from random import randint

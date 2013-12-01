@@ -2,9 +2,9 @@
 """
 
 This module provides decorators to specify the parameters of a function without
-using an explicit param_spec object. For example::
+using an explicit ParamSpec object. For example::
 
-    import orges.param as param
+    from orges import param
 
     @param.int("a", interval=(1, 10), step=2, display_name="α")
     @param.float("b", interval=(0, 1), display_name"β")
