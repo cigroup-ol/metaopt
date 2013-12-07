@@ -19,27 +19,45 @@ class BasePlugin(object):
     @abstractmethod
     def before_invoke(self, invocation):
         """
-        Gets called when pluggable invoker starts preparing a calls to invoke.
+        Called right before the invoker calls the objective function
+
+        :param invocation: Information about the current (and past) invocations
+        :type invocation: :class:`orges.invoker.pluggable.Invocation`
         """
         pass
 
     @abstractmethod
     def on_invoke(self, invocation):
         """
-        Gets called right before pluggable invoker calls invoke on its invoker.
+        Called after the invoker called the objective function
+
+        Since objective functions are usually called asyncronously `invocation`
+        will not contain any results yet.
+
+        :param invocation: Information about the current (and past) invocations
+        :type invocation: :class:`orges.invoker.pluggable.Invocation`
         """
         pass
 
     @abstractmethod
     def on_result(self, invocation):
         """
-        Gets called when pluggable invoker receives a callback to on_result.
+        Called when the invocation of the objective function was successful
+
+        :param invocation: Information about the current (and past) invocations
+        :type invocation: :class:`orges.invoker.pluggable.Invocation`
         """
         pass
 
     @abstractmethod
     def on_error(self, invocation):
         """
-        Gets called when pluggable invoker receives a callback to on_error.
+        Called when the invocation of the objective function was not successful
+
+        Since the invocation was not successful `invocation` will not contain
+        any result.
+
+        :param invocation: Information about the current (and past) invocations
+        :type invocation: :class:`orges.invoker.pluggable.Invocation`
         """
         pass

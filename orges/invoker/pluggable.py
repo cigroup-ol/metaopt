@@ -110,11 +110,11 @@ class Invocation(object):
     An object of this class always corresponds to (possibly multiple)
     invocations of the *same* objective functions with the *same* set of
     arguments. Most notably, it grants access to all parameters that were passed
-    to  :func:`orges.plugins.base.BasePlugin.before_invoke`.
+    to  :meth:`orges.plugins.base.BasePlugin.before_invoke`.
 
     Certain properties of this object provide control over the actual objective
     function invocations. Generally, changes to properties only persist until
-    the next call of  :func:`orges.plugins.base.BasePlugin.before_invoke` where
+    the next call of  :meth:`orges.plugins.base.BasePlugin.before_invoke` where
     they are changed to their default values.
 
     Other properties provide information about the current invocation and their
