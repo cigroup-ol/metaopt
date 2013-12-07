@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from orges.plugins.timeout import TimeoutInvocationPlugin
-from orges.plugins.print import PrintInvocationPlugin
+from orges.plugins.timeout import TimeoutPlugin
+from orges.plugins.print import PrintPlugin
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
 import orges.param as param
@@ -27,7 +27,7 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     # Local timeout after 1 second
-    plugins = [TimeoutInvocationPlugin(1), PrintInvocationPlugin()]
+    plugins = [TimeoutPlugin(1), PrintPlugin()]
 
     # Global timeout after 5 seconds
     print(optimize(function=f, optimizer=GridSearchOptimizer(),

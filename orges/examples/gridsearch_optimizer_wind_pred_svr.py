@@ -11,7 +11,7 @@ from sklearn.svm import SVR
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 
-from orges.plugins.print import PrintInvocationPlugin
+from orges.plugins.print import PrintPlugin
 from orges.main import optimize
 from orges.optimizer.singleinvoke import SingleInvokeOptimizer
 import orges.param as param
@@ -62,7 +62,7 @@ def f(C_exp, neg_gamma_exp):
     return mse_y_hat
 
 if __name__ == '__main__':
-    plugins = [PrintInvocationPlugin()]
+    plugins = [PrintPlugin()]
 
     print(optimize(function=f, optimizer=SingleInvokeOptimizer(),
                    plugins=plugins))

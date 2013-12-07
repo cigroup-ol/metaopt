@@ -1,9 +1,9 @@
 from __future__ import division, print_function, with_statement
 
-from orges.plugins.base import BaseInvocationPlugin
+from orges.plugins.base import BasePlugin
 
 
-class DummyInvocationPlugin(BaseInvocationPlugin):
+class DummyPlugin(BasePlugin):
     """
     Invocation plug-in that does nothing for all hooks.
     """

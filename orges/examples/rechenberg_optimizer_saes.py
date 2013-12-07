@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from orges.plugins.print import PrintInvocationPlugin
+from orges.plugins.print import PrintPlugin
 from orges.main import optimize
 from orges.optimizer.rechenberg import RechenbergOptimizer
 import orges.param as param
@@ -25,7 +25,7 @@ def f(mu, lambd, tau0, tau1):
     return saes(args)
 
 if __name__ == '__main__':
-    plugins = [PrintInvocationPlugin()]
+    plugins = [PrintPlugin()]
 
     print(optimize(function=f, optimizer=RechenbergOptimizer(),
                    plugins=plugins))

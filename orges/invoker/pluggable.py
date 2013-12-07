@@ -6,12 +6,12 @@ from orges.optimizer.base import BaseCaller
 
 class PluggableInvoker(BaseInvoker, BaseCaller):
     """
-    Invoker with hooks for calling plug-ins in various situations.
+    Invoker with hooks for calling plugins in various situations.
     """
 
     def __init__(self, invoker, plugins=[]):
         """
-        :param plugins: List of plug-ins to be executed in various situations.
+        :param plugins: List of plugins to be executed in various situations.
         """
         self.invoker = invoker
         self.invoker.caller = self

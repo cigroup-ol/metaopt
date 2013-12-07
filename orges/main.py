@@ -6,8 +6,8 @@ from threading import Timer
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.pluggable import PluggableInvoker
 from orges.optimizer.saes import SAESOptimizer
-from orges.plugins.print import PrintInvocationPlugin
-from orges.plugins.timeout import TimeoutInvocationPlugin
+from orges.plugins.print import PrintPlugin
+from orges.plugins.timeout import TimeoutPlugin
 
 
 def custom_optimize(function, param_spec=None, return_spec=None, timeout=None,
@@ -27,7 +27,7 @@ def custom_optimize(function, param_spec=None, return_spec=None, timeout=None,
 
 
 def optimize(function, param_spec=None, return_spec=None, timeout=None,
-             plugins=[TimeoutInvocationPlugin(1), PrintInvocationPlugin()],
+             plugins=[TimeoutPlugin(1), PrintPlugin()],
              optimizer=SAESOptimizer()):
     """Optimize the given function using the specified optimizer and plugins"""
 

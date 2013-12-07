@@ -4,7 +4,7 @@
 from abc import abstractmethod, ABCMeta
 
 
-class BaseInvocationPlugin(object):
+class BasePlugin(object):
     """
     Abstract base class for invocation plugins.
 
