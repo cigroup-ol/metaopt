@@ -9,13 +9,17 @@ class DummyInvocationPlugin(BaseInvocationPlugin):
     """
 
     def before_invoke(self, invocation):
+        """Do nothing"""
         pass
 
     def on_invoke(self, invocation):
+        """Do nothing"""
         pass
 
     def on_result(self, invocation):
+        """Do nothing"""
         pass
 
     def on_error(self, invocation):
+        """Do nothing"""
         pass

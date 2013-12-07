@@ -1,9 +1,17 @@
+"""This module provides an abstract base class for invocation plugins"""
+
+
 from abc import abstractmethod, ABCMeta
 
 
 class BaseInvocationPlugin(object):
     """
-    Abstract base class for invocation plug-ins.
+    Abstract base class for invocation plugins.
+
+    Plugin developers can either derive their objects directly from this class
+    or from :class:`orges.plugins.dummy.DummyInvocationPlugin` to only override
+    methods selectively.
+
     """
 
     __metaclass__ = ABCMeta
