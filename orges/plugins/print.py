@@ -8,11 +8,11 @@ class PrintPlugin(DummyPlugin):
     Logs all interaction with the invoker to the standard output.
     """
     def on_invoke(self, invocation):
-        print("Started", "f%s" % (tuple(invocation.fargs),))
+        print("Started", "f%s" % (tuple(invocation.fargs), ))
 
     def on_result(self, invocation):
-        result = invocation.current_result
-        print("Finished", "f%s=%s" % (tuple(invocation.fargs), result))
+        print("Finished", "f%s = %s" % (tuple(invocation.fargs),
+                                        invocation.current_result))
 
     def on_error(self, invocation):
-        print("Failed", "f%s" % (tuple(invocation.fargs),))
+        print("Failed", "f%)" % (tuple(invocation.fargs)))
