@@ -2,7 +2,7 @@
 from __future__ import division, print_function, with_statement
 
 from orges.args import ArgsCreator
-from orges.optimizer.base import BaseOptimizer, BaseCaller
+from orges.optimizer.base import BaseCaller, BaseOptimizer
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):

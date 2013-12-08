@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
+import math
+
 from sklearn.svm import SVR
 
-# to run this example, add windml, branch 'develop' to your PYTHONPATH
-# https://github.com/cigroup-ol/windml.git
-import math
+import orges.param as param
+from orges.main import optimize
+from orges.optimizer.saes import SAESOptimizer
+from orges.plugins.print import PrintPlugin
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 
-from orges.plugins.print import PrintPlugin
-from orges.main import optimize
-from orges.optimizer.saes import SAESOptimizer
-import orges.param as param
+# to run this example, add windml, branch 'develop' to your PYTHONPATH
+# https://github.com/cigroup-ol/windml.git
 
 
 @param.int("C_exp", interval=(1,10), display_name="C_exp")

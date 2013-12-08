@@ -5,13 +5,13 @@ from __future__ import division, print_function, with_statement
 
 import logging
 import multiprocessing
-from multiprocessing import Queue, cpu_count
 import uuid
+from multiprocessing import cpu_count, Queue
+from threading import Lock
 
 from orges.invoker.base import BaseInvoker
-
-from orges.invoker.multiprocess_util import WorkerProvider, Task, TaskHandle, \
-    determine_package
+from orges.invoker.multiprocess_util import (determine_package, Task,
+                                             TaskHandle, WorkerProvider)
 
 # TODO use Pool from multiprocess
 # TODO ensure tasks can be cancelled that are waiting in the queue

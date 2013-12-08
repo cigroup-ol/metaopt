@@ -4,19 +4,24 @@ from __future__ import division, print_function, with_statement
 import math
 
 from sklearn.svm import SVR
-
-import orges.param as param
-from orges.main import optimize
-from orges.optimizer.singleinvoke import SingleInvokeOptimizer
-from orges.plugins.print import PrintInvocationPlugin
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
+
+<<<<<<< HEAD
+from orges.plugins.print import PrintPlugin
+=======
+import orges.param as param
+>>>>>>> normalize imports using isort
+from orges.main import optimize
+from orges.plugins.print import PrintInvocationPlugin
+from orges.optimizer.saes import SAESOptimizer
 
 # to run this example, add windml, branch 'develop' to your PYTHONPATH
 # https://github.com/cigroup-ol/windml.git
 
 
-@param.int("C_exp", interval=(1, 10), display_name="C_exp")
+
+@param.int("C_exp", interval=(1,10), display_name="C_exp")
 @param.int("neg_gamma_exp", interval=(2, 15), display_name="gamma_exp")
 def f(C_exp, neg_gamma_exp):
     gamma_exp = -(neg_gamma_exp)
@@ -63,5 +68,5 @@ def f(C_exp, neg_gamma_exp):
 if __name__ == '__main__':
     plugins = [PrintPlugin()]
 
-    print(optimize(function=f, optimizer=SingleInvokeOptimizer(),
+    print(optimize(function=f, optimizer=SAESOptimizer(),
                    plugins=plugins))

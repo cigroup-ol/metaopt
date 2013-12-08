@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 """This module provides an abstract base class for invocation plugins"""
 
 
+from abc import abstractmethod, ABCMeta
+=======
 from abc import ABCMeta, abstractmethod
+>>>>>>> normalize imports using isort
 
 
 class BasePlugin(object):

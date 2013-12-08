@@ -13,10 +13,10 @@ corresponding arg could be something like ``a=1``.
 """
 from __future__ import division, print_function, with_statement
 
-from inspect import getargspec
-from random import randint
-import itertools
 import random
+import itertools
+from random import randint
+from inspect import getargspec
 
 
 def call(f, fargs):

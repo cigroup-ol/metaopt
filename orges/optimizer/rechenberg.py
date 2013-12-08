@@ -4,7 +4,7 @@ from __future__ import division, print_function, with_statement
 from random import sample
 
 from orges.args import ArgsCreator, default_mutation_stength
-from orges.optimizer.base import BaseOptimizer, BaseCaller
+from orges.optimizer.base import BaseCaller, BaseOptimizer
 
 
 class RechenbergOptimizer(BaseOptimizer, BaseCaller):

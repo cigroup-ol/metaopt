@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from orges.plugins.print import PrintPlugin
+import orges.param as param
 from orges.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
-import orges.param as param
+from orges.plugins.print import PrintPlugin
 from orges.test.demo.algorithm.host.saes import f as saes
 
 

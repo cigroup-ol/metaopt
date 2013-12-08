@@ -3,8 +3,8 @@ Invoker that uses a single core or CPU respectively.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.base import BaseInvoker
 from orges.args import call
+from orges.invoker.base import BaseInvoker
 
 
 class SingleProcessInvoker(BaseInvoker):

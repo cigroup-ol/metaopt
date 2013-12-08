@@ -4,9 +4,10 @@ Optimizer that issues one single invocation, only.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.optimizer.base import BaseOptimizer, BaseCaller
-from orges.args import ArgsCreator
 from collections import namedtuple
+
+from orges.args import ArgsCreator
+from orges.optimizer.base import BaseCaller, BaseOptimizer
 
 # Data structure for results returned by invoke calls and the arguments of such
 InvokeResult = namedtuple("InvokeResult", ["arguments", "fitness"])

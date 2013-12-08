@@ -2,11 +2,9 @@
 Abstract invoker defining the API of invoker implementations.
 """
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
+from __future__ import division, print_function, with_statement
 
-import abc  # Abstract Base Class
+import abc
 
 
 class BaseInvoker(object):

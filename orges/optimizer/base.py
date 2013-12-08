@@ -11,7 +11,7 @@ and need to be called back by the invoker. Usually the classes that implement
 
 from __future__ import division, print_function, with_statement
 
-from abc import abstractmethod, ABCMeta  # Abstract Base Class
+from abc import ABCMeta, abstractmethod
 
 
 class BaseOptimizer(object):
