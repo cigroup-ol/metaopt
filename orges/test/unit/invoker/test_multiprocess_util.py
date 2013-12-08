@@ -45,7 +45,7 @@ def test_WorkerProvider_circle():
                             queue_results=queue_results,
                             queue_status=queue_status)
     for worker in workers:
-        worker_provider.release(worker)
+        worker.cancel()
 
     # and once more
     workers = worker_provider.provision(number_of_workers=worker_count,
@@ -53,7 +53,7 @@ def test_WorkerProvider_circle():
                             queue_results=queue_results,
                             queue_status=queue_status)
     for worker in workers:
-        worker_provider.release(worker)
+        worker.cancel()
 
 if __name__ == '__main__':
     nose.runmodule()

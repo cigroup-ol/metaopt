@@ -70,10 +70,13 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         return task, aborted
 
     def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
-        del vargs
-        del kwargs
 
+        if invocation is None:
+            invocation = Invocation()
         invocation.current_result = result
+        invocation.fargs = fargs
+        invocation.vargs = vargs
+        invocation.kwargs = kwargs
 
         for plugin in self.plugins:
             plugin.on_result(invocation)
@@ -87,7 +90,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
                 **invocation.kwargs
             )
         else:
-            self.caller.on_result(result, fargs, **invocation.kwargs)
+            self.caller.on_result(fitness=result, args=fargs, *invocation.vargs)
 
     def on_error(self, fargs, invocation):
 
