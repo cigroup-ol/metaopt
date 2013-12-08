@@ -1,5 +1,12 @@
 """
-This module provides an abstract base class for implementing optimizer
+This module provides an abstract base class for implementing optimizer.
+
+It provides two abstract base classes :class:`BaseOptimizer` and
+:class:`BaseCaller`. The former should be used to implement optimizer, the
+latter is for objects that call :meth:`orges.invoker.base.BaseInvoker.invoke`
+and need to be called back by the invoker. Usually the classes that implement
+:class:`BaseOptimizer` also implement :class:`BaseCaller`.
+
 """
 
 from __future__ import division, print_function, with_statement
