@@ -1,14 +1,14 @@
 """
 
-This module is responsible for creating actual args from params that are defined
-in a ParamSpec and also provides the means to alter these args such as
+This module is responsible for creating actual args from params that are
+defined in a ParamSpec and also provides the means to alter these args such as
 randomizing them.
 
 An arg is something that contains a value that respects the contraints (e.g.
 interval with step size) defined by the corresponding param.
 
-For instance, given an int param like ``param_spec.int("a", interval=(1,10))`` a
-corresponding arg could be something like ``a=1``.
+For instance, given an int param like ``param_spec.int("a", interval=(1,10))``
+a corresponding arg could be something like ``a=1``.
 
 """
 from __future__ import division, print_function, with_statement
@@ -26,7 +26,7 @@ def call(f, fargs):
 
     if vargs is not None:
         raise CallNotPossibleError(
-            "Functions with variable arguments are not supported")
+            "Functions with variable arguments are not supported.")
 
     if kwargs is not None:
         fkwargs = dict()
@@ -95,7 +95,7 @@ def create_arg(param, value=None):
 # TODO: Move this into an useful class
 def default_mutation_stength(param):
     """
-    Return the default mutation stength for a parameter.
+    Return the default mutation strength for a parameter.
 
     Based on http://www.iue.tuwien.ac.at/phd/heitzinger/node27.html.
     """
@@ -174,6 +174,7 @@ class IntArg(Arg):
     def combine(self, other_arg):
         value = (self.value + other_arg.value) / 2
         return IntArg(self.param, int(value))
+
 
 class BoolArg(Arg):
     def __init__(self, param, value=None):
