@@ -5,7 +5,7 @@ from orges.plugins.base import BasePlugin
 
 class DummyPlugin(BasePlugin):
     """
-    Invocation plug-in that does nothing for all hooks.
+    Invocation plugin that does nothing for all hooks.
     """
 
     def before_invoke(self, invocation):
