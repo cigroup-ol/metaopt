@@ -152,7 +152,7 @@ class Arg(object):
         yield Arg(self.param, self.param.interval[1])
 
     def __repr__(self):
-        return "%s=%s" % (self.param.display_name, self.value)
+        return "%s=%s" % (self.param.title, self.value)
 
 
 class IntArg(Arg):

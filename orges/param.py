@@ -6,9 +6,9 @@ using an explicit ParamSpec object. For example::
 
     from orges import param
 
-    @param.int("a", interval=(1, 10), step=2, display_name="α")
-    @param.float("b", interval=(0, 1), display_name"β")
-    @param.bool("g", display_name="γ")
+    @param.int("a", interval=(1, 10), step=2, title="α")
+    @param.float("b", interval=(0, 1), title="β")
+    @param.bool("g", title="γ")
     def some_function(a, b, c):
         pass
 

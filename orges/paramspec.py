@@ -19,9 +19,9 @@ class ParamSpec(object):
         # The values of "a" should only be multiple of 0.1
         param_spec.float("a", interval=(0, 1), step=0.1)
 
-    The order the parameters are specified matters since they are used to
-    invoke the actual algorithm. That is, given a function ``f(a, b)`` the
-    parameter "a" should be specified before the parameter "b".
+    The order the parameters are specified matters since they are used to invoke
+    the actual algorithm. That is, given a function ``f(a, b)`` the parameter
+    "a" should be specified before the parameter "b".
 
     """
     def __init__(self, via_decorator=False):
@@ -54,39 +54,38 @@ class ParamSpec(object):
             raise DuplicateParamError(param)
         self._params.append(param)
 
-    def float(self, name, interval, display_name=None, step=None):
+    def float(self, name, interval, title=None, step=None):
         """Add a float param to this param_spec object"""
         param = Param(name, "float", interval,
-            step=step, display_name=display_name)
+            step=step, title=title)
 
         self.add_param(param)
 
-    def int(self, name, interval, display_name=None, step=1):
+    def int(self, name, interval, title=None, step=1):
         """Add an int param to this param_spec object"""
         param = IntParam(name, "int", interval,
-            step=step, display_name=display_name)
+            step=step, title=title)
 
         self.add_param(param)
 
-    def bool(self, name, display_name=None):
+    def bool(self, name, title=None):
         """Add a bool param to this param_spec object"""
-        param = BoolParam(name, "bool", (True, False),
-                          display_name=display_name)
+        param = BoolParam(name, "bool", (True, False), title=title)
         self.add_param(param)
 
 
 class Param(object):
     """A specified parameter consisting of a type, an interval and a step."""
 
-    def __init__(self, name, type, interval, step=None, display_name=None):
+    def __init__(self, name, data_type, interval, step=None, title=None):
         self._name = name
-        self._type = type
+        self._data_type = data_type
 
         self._interval = interval
         self.check_interval()
 
         self._step = step
-        self._display_name = display_name or name
+        self._title = title or name
 
     def check_interval(self):
         if self.lower_bound > self.upper_bound:
@@ -98,12 +97,12 @@ class Param(object):
         return self._name
 
     @property
-    def display_name(self):
-        return self._display_name
+    def title(self):
+        return self._title
 
-    @display_name.setter
-    def display_name(self, display_name):
-        self._display_name = display_name
+    @title.setter
+    def title(self, title):
+        self._title = title
 
     @property
     def type(self):
@@ -113,7 +112,7 @@ class Param(object):
         It can be one of the following values: float.
 
         """
-        return self._type
+        return self._data_type
 
     @property
     def interval(self):

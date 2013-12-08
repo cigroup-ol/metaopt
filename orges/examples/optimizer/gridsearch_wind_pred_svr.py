@@ -16,8 +16,8 @@ from orges.optimizer.singleinvoke import SingleInvokeOptimizer
 # https://github.com/cigroup-ol/windml.git
 
 
-@param.int("C_exp", interval=(1, 10), display_name="C_exp")
-@param.int("neg_gamma_exp", interval=(2, 15), display_name="gamma_exp")
+@param.int("C_exp", interval=(1, 10), title="C_exp")
+@param.int("neg_gamma_exp", interval=(2, 15), title="gamma_exp")
 def f(C_exp, neg_gamma_exp):
     gamma_exp = -(neg_gamma_exp)
 
