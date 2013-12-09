@@ -19,30 +19,62 @@ class BaseInvoker(object):
     @abc.abstractmethod
     def invoke(self, f, fargs, **kwargs):
         """
-        Implementations of this method should have the following behavior:
+        Invoke an objective function with given arguments.
 
-        Invokes call(f, fargs) with the given function and the given arguments.
-        Calls back to self.caller.on_result() for successful invokes.
-        Calls back to self.caller.on_error() for unsuccessful invokes.
-        Can be called asynchronously, but will block if the call can not be
-        executed immediately, especially when using multiple processes/threads.
+        Implementations of this method are expected to have the following
+        behavior:
+
+        It applies the objective function `f` to the arguments `fargs` (usually
+        via :func:`orges.args.call`). If `f` can be applied right now (e.g.
+        enough resources are available) :func:`invoke` should return
+        immediately, otherwise :func:`invoke` should block until `f` can be
+        applied.
+
+        After `f` was applied successfully the invoker should call
+        :meth:`orges.optimizer.base.BaseCaller.on_result` on the caller passing
+        the result of the application, `fargs` and `kwargs`. If the application
+        of `f` was not successful the invoker should call
+        :meth:`orges.optimizer.base.BaseCaller.on_error` passing an error,
+        `fargs` and `kwargs`.
+
+        Calls to both `on_result` and `on_error` and should be synchronized and
+        thus the invoker has to wait until these methods return before calling
+        them again.
+
+        :param f: Objective function
+        :param fargs: Arguments `f` should be applied to
+        :param kwargs: Additional data arguments
+
+        TODO: Return value
         """
         pass
 
     @abc.abstractmethod
     def wait(self):
         """
-        Implementations of this method should have the following behavior:
+        Wait until `on_result` or `on_error` were called for each :meth:`invoke`
 
-        Blocks till all invoke, on_error or on_result calls are done.
+        Implementations of this method are expected to have the following
+        behavior:
+
+        It waits until :meth:`orges.optimizer.base.BaseCaller.on_result` or
+        :meth:`orges.optimizer.base.BaseCaller.on_error` were called for each
+        call to :meth:`invoke`.
+
+        TODO: Return value
         """
         pass
 
     @abc.abstractmethod
     def abort(self):
         """
-        Implementations of this method should have the following behavior:
+        Abort all current and future calls to :meth:`invoke`
 
-        Cancels all running and future tasks.
+        Implementations of this method are expected to have the following
+        behavior:
+
+        It immediately (or rather as fast as possible) calls
+        :meth:`orges.optimizer.base.BaseCaller.on_error` for each call to
+        :meth:`invoke`.
         """
         pass
