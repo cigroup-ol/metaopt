@@ -31,9 +31,10 @@ class BaseOptimizer(object):
 
     # TODO: Include invoker property
 
+
 class BaseCaller(object):
     """Abstract base class for objects calling
-    :meth:`orges.invoker.base.BaseInvoker.invoke` (and being called back by it).
+    :meth:`orges.invoker.base.BaseInvoker.invoke` (who calls it back).
     """
 
     __metaclass__ = ABCMeta

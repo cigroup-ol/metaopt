@@ -22,7 +22,7 @@ def determine_package(function):
     # expand the module's path to an absolute import
     filename = inspect.getsourcefile(function)
     module_path, module_filename = os.path.split(filename)
-    module_name, module_ext = os.path.splitext(module_filename)
+    module_name, _ = os.path.splitext(module_filename)
     prefix = []
     for directory in module_path.split(os.sep)[::-1]:
         prefix.append(directory)
@@ -49,7 +49,8 @@ class _Singleton(type):
             return cls._instances[cls]
         except KeyError:
             with cls._instances_lock:
-                cls._instances[cls] = super(_Singleton, cls).__call__(*args, **kwargs)
+                cls._instances[cls] = super(_Singleton, cls).__call__(*args,
+                                                                      **kwargs)
             return cls._instances[cls]
 
 
@@ -74,7 +75,7 @@ class WorkerProvider(Singleton):
         """
         with self._lock:
             if self._cpu_count < (len(self._workers) + number_of_workers):
-                raise IndexError("Cannot currently provision so many worker_processes.")
+                raise IndexError("Cannot provision so many worker processes.")
 
             worker_processes = []
             for _ in range(number_of_workers):
@@ -83,12 +84,13 @@ class WorkerProvider(Singleton):
                                  queue_tasks=queue_tasks,
                                  queue_results=queue_results,
                                  queue_status=queue_status)
-                worker_process.daemon = True  # worker_processes may not spawn processes
+                worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
                 worker_processes.append(worker_process)
 
             self._workers += worker_processes
-        return [WorkerHandle(worker_process) for worker_process in worker_processes]
+        return [WorkerHandle(worker_process) for worker_process in
+                worker_processes]
 
     def release(self, worker_process):
         with self._lock:

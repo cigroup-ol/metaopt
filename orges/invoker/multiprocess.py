@@ -104,7 +104,8 @@ class MultiProcessInvoker(BaseInvoker):
                 self._aborted = True
                 task_handle = None
             else:
-                task_handle = TaskHandle(self, status.worker_id, status.task_id)
+                task_handle = TaskHandle(self, status.worker_id,
+                                         status.task_id)
 
             # wait for result, if at worker limit
             if len(self._worker_handles) is self._worker_count_max:
@@ -114,14 +115,15 @@ class MultiProcessInvoker(BaseInvoker):
                 if result.value is None:
                     for worker_handle in self._worker_handles:
                         if worker_handle.worker_id == result.worker_id and \
-                                worker_handle.current_task_id == result.task_id:
+                        worker_handle.current_task_id == result.task_id:
                             worker_handle.cancel()
                             self._worker_handles.remove(worker_handle)
 
                 # handle all other results
 
                 self._caller.on_result(result=result.value, fargs=result.args,
-                                       vargs=result.vargs, kwargs=result.kwargs)
+                                       vargs=result.vargs,
+                                       kwargs=result.kwargs)
                 # TODO on_error
 
             #self._logger.warning("invoke left")
@@ -178,7 +180,7 @@ class MultiProcessInvoker(BaseInvoker):
                         worker_handle.current_task_id == task_id:
                     worker_handle.cancel()
                     self._worker_handles.remove(worker_handle)
-                    return  # worker_handle id is unique, no need to look any further
+                    return  # handle is unique, don't look any further
         # TODO: handle queue corruption, by swapping them out for new ones?
 
         #self._logger.warning("cancel left")

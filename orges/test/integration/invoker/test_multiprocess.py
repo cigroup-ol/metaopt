@@ -10,8 +10,6 @@ from orges.args import ArgsCreator
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 
-f = __name__
-
 
 def f(a, b):
     return a + b

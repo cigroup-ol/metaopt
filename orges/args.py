@@ -66,10 +66,12 @@ class ArgsCreator(object):
     def args(self):
         return [create_arg(param) for param in self.param_spec.params.values()]
 
-    def combine(self, args1, args2):
+    @staticmethod
+    def combine(args1, args2):
         return map(lambda arg1, arg2: arg1.combine(arg2), args1, args2)
 
-    def randomize(self, args, strengths):
+    @staticmethod
+    def randomize(args, strengths):
         return map(lambda arg, strength: arg.randomize(strength),\
             args, strengths)
 

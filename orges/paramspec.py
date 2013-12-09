@@ -19,9 +19,9 @@ class ParamSpec(object):
         # The values of "a" should only be multiple of 0.1
         param_spec.float("a", interval=(0, 1), step=0.1)
 
-    The order the parameters are specified matters since they are used to invoke
-    the actual algorithm. That is, given a function ``f(a, b)`` the parameter
-    "a" should be specified before the parameter "b".
+    The order the parameters are specified matters since they are used to
+    invoke the actual algorithm. That is, given a function ``f(a, b)`` the
+    parameter "a" should be specified before the parameter "b".
 
     """
     def __init__(self, via_decorator=False):
@@ -33,8 +33,8 @@ class ParamSpec(object):
         """
         The specified parameters as ordered dictionary
 
-        Individual parameters can be accessed by using their name as key. To get
-        all parameters as list use the ``values`` method.
+        Individual parameters can be accessed by using their name as key. To
+        get all parameters as list use the ``values`` method.
 
         """
         ordered_params = OrderedDict()
@@ -70,7 +70,8 @@ class ParamSpec(object):
 
     def bool(self, name, display_name=None):
         """Add a bool param to this param_spec object"""
-        param = BoolParam(name, "bool", (True, False), display_name=display_name)
+        param = BoolParam(name, "bool", (True, False),
+                          display_name=display_name)
         self.add_param(param)
 
 
@@ -222,7 +223,7 @@ class InvalidIntervalError(Exception):
     def __init__(self, param, interval):
         Exception.__init__(
             self,
-            "Lower bound (%s) is larger than upper bound (%s) for parameter: %s"
+            "Lower bound (%s) larger than upper bound (%s) for parameter: %s"
             % (interval[0], interval[1], param.name)
         )
         self.param = param

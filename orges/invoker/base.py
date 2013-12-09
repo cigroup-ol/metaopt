@@ -52,7 +52,8 @@ class BaseInvoker(object):
     @abc.abstractmethod
     def wait(self):
         """
-        Wait until `on_result` or `on_error` were called for each :meth:`invoke`
+        Wait until `on_result` or `on_error` were called for each
+        :meth:`invoke`
 
         Implementations of this method are expected to have the following
         behavior:

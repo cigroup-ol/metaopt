@@ -25,8 +25,8 @@ def f(C_exp, neg_gamma_exp):
     windpark = NREL().get_windpark(park_id, 3, 2004, 2005)
     target = windpark.get_target()
 
-    # use power mapping for pattern-label mapping. Feature window length is 3 time
-    # steps and time horizon (forecast) is 3 time steps.
+    # use power mapping for pattern-label mapping. Feature window length is 3
+    # time steps and time horizon (forecast) is 3 time steps.
     feature_window = 3
     horizon = 3
     mapping = PowerMapping()
@@ -43,8 +43,7 @@ def f(C_exp, neg_gamma_exp):
     train_step, test_step = 5, 5
 
     # train a SVR regressor with best found parameters.
-    svr = SVR(kernel='rbf', epsilon=0.1, C = 2**C_exp,\
-        gamma = 2**gamma_exp)
+    svr = SVR(kernel='rbf', epsilon=0.1, C=2 ** C_exp, gamma=2 ** gamma_exp)
 
     # fitting the pattern-label pairs
     svr.fit(X[0:train_to:train_step], Y[0:train_to:train_step])

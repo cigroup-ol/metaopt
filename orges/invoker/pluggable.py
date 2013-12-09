@@ -90,7 +90,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
                 **invocation.kwargs
             )
         else:
-            self.caller.on_result(fitness=result, args=fargs, *invocation.vargs)
+            self.caller.on_result(fitness=result, args=fargs,
+                                  *invocation.vargs)
 
     def on_error(self, fargs, invocation):
 
@@ -112,8 +113,8 @@ class Invocation(object):
 
     An object of this class always corresponds to (possibly multiple)
     invocations of the *same* objective functions with the *same* set of
-    arguments. Most notably, it grants access to all parameters that were passed
-    to  :meth:`orges.plugins.base.BasePlugin.before_invoke`.
+    arguments. Most notably, it grants access to all parameters that were
+    passed to  :meth:`orges.plugins.base.BasePlugin.before_invoke`.
 
     Certain properties of this object provide control over the actual objective
     function invocations. Generally, changes to properties only persist until
@@ -121,9 +122,9 @@ class Invocation(object):
     they are changed to their default values.
 
     Other properties provide information about the current invocation and their
-    values will change whenever the object function is invoked again. These kind
-    of properties are prefixed by `current_`. Some properties like :attr:`tries`
-    hold information about all invocations.
+    values will change whenever the object function is invoked again. These
+    kind of properties are prefixed by `current_`. Some properties like
+    :attr:`tries` hold information about all invocations.
 
     """
     def __init__(self):
