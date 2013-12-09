@@ -194,39 +194,43 @@ class WorkerProcess(Process):
         return self._current_task_id
 
     def run(self):
+        """Makes this worker execute all tasks incoming from the task queue."""
+        # Get tasks from the queue and trigger their execution
         for task in iter(self.queue_tasks.get, None):
-            self._busy = True
-            self._current_task_id = task.task_id
-            # announce start of work
-            #multiprocessing.log_to_stderr(logging.WARN).warning("a")
-            self._queue_status.put(Status(task_id=self._current_task_id,
-                                          worker_id=self._worker_id,
-                                          function=task.function,
-                                          args=task.args, vargs=task.vargs,
-                                          kwargs=task.kwargs))
+            self._execute(task)
 
-            # import f given by qualified package name
-            f = __import__(task.function, globals(), locals(), ['f'], 0).f
-            # Note that the following is equivalent:
-            #from orges.test.integration.invoker.multiprocess import f as f
-
-            # the actual call
-            value = call(f, task.args)
-
-            #multiprocessing.log_to_stderr(logging.WARN).warning("b")
-
-            # report result back
-            self._queue_results.put(Result(task_id=self._current_task_id,
-                                           worker_id=self._worker_id,
-                                           function=task.function,
-                                           args=task.args, value=value,
-                                           vargs=task.vargs,
-                                           kwargs=task.kwargs))
-            #multiprocessing.log_to_stderr(logging.WARN).warning("c")
-            self._busy = False
-        # send sentinel back
-        #multiprocessing.log_to_stderr(logging.WARN).warning("d")
+        # send sentinel result back to propagate the end of the task queue
         self._queue_results.put(Result(task_id=None, worker_id=self._worker_id,
                                        function=None, args=None, vargs=None,
                                        kwargs=None, value=None))
-        #multiprocessing.log_to_stderr(logging.WARN).warning("e")
+
+    def _execute(self, task):
+        self._busy = True
+        self._current_task_id = task.task_id
+        # announce start of work
+        self._queue_status.put(Status(task_id=self._current_task_id,
+                                      worker_id=self._worker_id,
+                                      function=task.function,
+                                      args=task.args, vargs=task.vargs,
+                                      kwargs=task.kwargs))
+
+        # import function given by qualified package name
+        function = __import__(task.function, globals(), locals(), ['function'],
+                              0).f
+        # Note that the following is equivalent:
+        #from MyPackage.MyModule import f as function
+
+        # make the actual call
+        value = call(function, task.args)
+
+        #multiprocessing.log_to_stderr(logging.WARN).warning("b")
+
+        # report result back
+        self._queue_results.put(Result(task_id=self._current_task_id,
+                                       worker_id=self._worker_id,
+                                       function=task.function,
+                                       args=task.args, value=value,
+                                       vargs=task.vargs,
+                                       kwargs=task.kwargs))
+        #multiprocessing.log_to_stderr(logging.WARN).warning("c")
+        self._busy = False
