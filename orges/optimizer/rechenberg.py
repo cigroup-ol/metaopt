@@ -58,7 +58,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
             self.select_parents()
             self.change_mutation_strength()
 
-            self.previous_best_fitness  = self.best_fitness
+            self.previous_best_fitness = self.best_fitness
             self.generation += 1
 
         return self.best_scored_indivual[0]
@@ -99,17 +99,18 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
 
     def change_mutation_strength(self):
         if self.previous_best_fitness is None:
-            return # We can't estimate success probablity yet
+            return  # We can't estimate success probablity yet
 
         successes = len(filter(lambda scored: scored[1] <
-            self.previous_best_fitness, self.scored_population))
+                               self.previous_best_fitness,
+                               self.scored_population))
 
         probablity = successes / self.lamb
 
         # TODO: What happens if sigmas get too large or small
-        if probablity > 1/5:
+        if probablity > (1 / 5):
             self.sigmas = map(lambda sigma: sigma / self.a, self.sigmas)
-        elif probablity < 1/5:
+        elif probablity < (1 / 5):
             self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
 
     def on_result(self, result, fargs, *vargs, **kwargs):

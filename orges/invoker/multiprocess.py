@@ -89,9 +89,9 @@ class MultiProcessInvoker(BaseInvoker):
             # provision a new worker, if allowed
             if len(self._worker_handles) is not self._worker_count_max:
                 self._worker_handles += self._worker_provider.provision(
-                         queue_tasks=self._queue_tasks,
-                         queue_results=self._queue_results,
-                         queue_status=self._queue_status)
+                    queue_tasks=self._queue_tasks,
+                    queue_results=self._queue_results,
+                    queue_status=self._queue_status)
 
             # schedule task for the workers to execute
             self._queue_tasks.put(Task(task_id=uuid.uuid4(),
@@ -114,8 +114,10 @@ class MultiProcessInvoker(BaseInvoker):
                 # handle finished worker
                 if result.value is None:
                     for worker_handle in self._worker_handles:
-                        if worker_handle.worker_id == result.worker_id and \
-                        worker_handle.current_task_id == result.task_id:
+                        if (
+                                worker_handle.worker_id == result.worker_id
+                                and worker_handle.current_task_id ==
+                                result.task_id):
                             worker_handle.cancel()
                             self._worker_handles.remove(worker_handle)
 

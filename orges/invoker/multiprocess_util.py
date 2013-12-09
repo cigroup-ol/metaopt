@@ -81,9 +81,9 @@ class WorkerProvider(Singleton):
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
-                                 queue_tasks=queue_tasks,
-                                 queue_results=queue_results,
-                                 queue_status=queue_status)
+                                               queue_tasks=queue_tasks,
+                                               queue_results=queue_results,
+                                               queue_status=queue_status)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
                 worker_processes.append(worker_process)

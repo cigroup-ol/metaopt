@@ -4,6 +4,7 @@ from nose.tools import eq_
 
 import orges.param as param
 
+
 def test_int_first_param_creates_param_spec():
     @param.int("a", interval=(1, 10))
     def f():

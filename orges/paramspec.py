@@ -19,9 +19,9 @@ class ParamSpec(object):
         # The values of "a" should only be multiple of 0.1
         param_spec.float("a", interval=(0, 1), step=0.1)
 
-    The order the parameters are specified matters since they are used to invoke
-    the actual algorithm. That is, given a function ``f(a, b)`` the parameter
-    "a" should be specified before the parameter "b".
+    The order the parameters are specified matters since they are used to
+    invoke the actual algorithm. That is, given a function ``f(a, b)`` the
+    parameter "a" should be specified before the parameter "b".
 
     """
     def __init__(self, via_decorator=False):
@@ -57,14 +57,14 @@ class ParamSpec(object):
     def float(self, name, interval, title=None, step=None):
         """Add a float param to this param_spec object"""
         param = Param(name, "float", interval,
-            step=step, title=title)
+                      step=step, title=title)
 
         self.add_param(param)
 
     def int(self, name, interval, title=None, step=1):
         """Add an int param to this param_spec object"""
         param = IntParam(name, "int", interval,
-            step=step, title=title)
+                         step=step, title=title)
 
         self.add_param(param)
 

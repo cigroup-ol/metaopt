@@ -41,17 +41,17 @@ def test_WorkerProvider_circle():
 
     # once
     workers = worker_provider.provision(number_of_workers=worker_count,
-                            queue_tasks=queue_tasks,
-                            queue_results=queue_results,
-                            queue_status=queue_status)
+                                        queue_tasks=queue_tasks,
+                                        queue_results=queue_results,
+                                        queue_status=queue_status)
     for worker in workers:
         worker.cancel()
 
     # and once more
     workers = worker_provider.provision(number_of_workers=worker_count,
-                            queue_tasks=queue_tasks,
-                            queue_results=queue_results,
-                            queue_status=queue_status)
+                                        queue_tasks=queue_tasks,
+                                        queue_results=queue_results,
+                                        queue_status=queue_status)
     for worker in workers:
         worker.cancel()
 

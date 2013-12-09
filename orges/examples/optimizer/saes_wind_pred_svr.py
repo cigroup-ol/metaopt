@@ -16,7 +16,7 @@ from orges.optimizer.saes import SAESOptimizer
 # https://github.com/cigroup-ol/windml.git
 
 
-@param.int("C_exp", interval=(1,10), title="C_exp")
+@param.int("C_exp", interval=(1, 10), title="C_exp")
 @param.int("neg_gamma_exp", interval=(2, 15), title="gamma_exp")
 def f(C_exp, neg_gamma_exp):
     gamma_exp = -(neg_gamma_exp)
@@ -25,8 +25,8 @@ def f(C_exp, neg_gamma_exp):
     windpark = NREL().get_windpark(park_id, 3, 2004, 2005)
     target = windpark.get_target()
 
-    # use power mapping for pattern-label mapping. Feature window length is 3 time
-    # steps and time horizon (forecast) is 3 time steps.
+    # use power mapping for pattern-label mapping. Feature window length is 3
+    # time steps and time horizon (forecast) is 3 time steps.
     feature_window = 3
     horizon = 3
     mapping = PowerMapping()
@@ -43,15 +43,15 @@ def f(C_exp, neg_gamma_exp):
     train_step, test_step = 5, 5
 
     # train a SVR regressor with best found parameters.
-    svr = SVR(kernel='rbf', epsilon=0.1, C = 2**C_exp,\
-        gamma = 2**gamma_exp)
+    svr = SVR(kernel='rbf', epsilon=0.1, C=2 ** C_exp,
+              gamma=2 ** gamma_exp)
 
     # fitting the pattern-label pairs
     svr.fit(X[0:train_to:train_step], Y[0:train_to:train_step])
 
     y_hat = svr.predict(X[train_to:test_to:test_step])
 
-    mse_y_hat, mse_naive_hat = 0, 0
+    mse_y_hat, _ = 0, 0
     for i in range(0, len(y_hat)):
         y = Y[train_to + (i * test_step)]
         mse_y_hat += (y_hat[i] - y) ** 2

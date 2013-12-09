@@ -87,8 +87,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
                 invocation.function,
                 invocation.fargs,
                 invocation,
-                **invocation.kwargs
-            )
+                **invocation.kwargs)
         else:
             self.caller.on_result(fitness=result, args=fargs,
                                   *invocation.vargs)

@@ -72,8 +72,8 @@ class ArgsCreator(object):
 
     @staticmethod
     def randomize(args, strengths):
-        return map(lambda arg, strength: arg.randomize(strength),\
-            args, strengths)
+        return map(lambda arg, strength: arg.randomize(strength),
+                   args, strengths)
 
     def random(self):
         return [arg.random() for arg in self.args()]

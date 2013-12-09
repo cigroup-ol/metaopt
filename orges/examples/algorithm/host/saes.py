@@ -1,6 +1,5 @@
 from __future__ import division, print_function, with_statement
 
-
 from numpy.random import randn
 from numpy import abs
 from random import sample
@@ -38,7 +37,7 @@ def f(args):
 
                         # recombination
             child = (0.5 * parents[0][0] + 0.5 * parents[1][0],
-                             0.5 * (parents[0][1] + parents[1][1]))
+                     0.5 * (parents[0][1] + parents[1][1]))
 
             tau0_random = randn(1)
             # mutation of position
@@ -65,5 +64,5 @@ args = {
     'd': 2,
     'tau0': 0.5,
     'tau1': 0.6,
-    'epsilon': 0.0001,
+    'epsilon': 0.0001
 }

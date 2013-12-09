@@ -89,8 +89,8 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             def mutate_sigma(sigma):
                 tau0 = self.tau0
                 tau1 = self.tau1
-                return sigma * exp(tau0 * tau0_random)\
-                       * exp(tau1 * gauss(0, 1))
+                return sigma * exp(tau0 * tau0_random) \
+                    * exp(tau1 * gauss(0, 1))
 
             child_args_sigma = map(mutate_sigma, child_args_sigma)
 

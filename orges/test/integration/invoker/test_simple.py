@@ -6,6 +6,7 @@ from orges import param
 from orges.args import ArgsCreator
 from orges.invoker.simple import SimpleInvoker
 
+
 @param.int("a", interval=(1, 10))
 @param.int("b", interval=(1, 10))
 def f(a, b):
@@ -28,6 +29,7 @@ def test_invoke_calls_on_result():
 
     caller.on_result.assert_called_with(2, ARGS)
 
+
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = SimpleInvoker()
 
@@ -48,4 +50,3 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
 if __name__ == '__main__':
     import nose
     nose.runmodule()
-

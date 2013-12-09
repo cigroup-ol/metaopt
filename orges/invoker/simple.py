@@ -42,7 +42,8 @@ class SimpleInvoker(BaseInvoker):
         with self.lock:
             self.task = Task(self)
 
-        self.thread = Thread(target=self.target, args=(f, fargs), kwargs=kwargs)
+        self.thread = Thread(target=self.target, args=(f, fargs),
+                             kwargs=kwargs)
         self.thread.start()
 
         with self.lock:
