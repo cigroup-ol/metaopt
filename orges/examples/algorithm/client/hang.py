@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function, with_statement
 
-from orges.test.unit.hang import hang
+from orges.examples.algorithm.hang import hang
 
 
 def get_worker():

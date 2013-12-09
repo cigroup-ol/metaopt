@@ -4,8 +4,9 @@ from __future__ import division, print_function, with_statement
 import orges.param as param
 from orges.main import optimize
 from orges.plugins.print import PrintPlugin
-from orges.optimizer.gridsearch import GridSearchOptimizer
-from orges.test.demo.algorithm.host.saes import f as saes
+from orges.optimizer.saes import SAESOptimizer
+from orges.plugins.timeout import TimeoutPlugin
+from orges.examples.algorithm.host.saes import f as saes
 
 
 @param.int("mu", interval=(5, 10), display_name="μ")
@@ -25,7 +26,7 @@ def f(mu, lambd, tau0, tau1):
     return saes(args)
 
 if __name__ == '__main__':
-    plugins = [PrintPlugin()]
-    # Global timeout after 5 seconds
-    print(optimize(function=f, optimizer=GridSearchOptimizer(),
-                   timeout=5, plugins=plugins))
+    # Local timeout after 1 second
+    plugins = [TimeoutPlugin(1), PrintPlugin()]
+    print(optimize(function=f, optimizer=SAESOptimizer(),
+                   plugins=plugins))

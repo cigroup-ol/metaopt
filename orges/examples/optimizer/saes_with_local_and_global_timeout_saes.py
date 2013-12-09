@@ -6,7 +6,7 @@ from orges.main import optimize
 from orges.plugins.print import PrintPlugin
 from orges.optimizer.saes import SAESOptimizer
 from orges.plugins.timeout import TimeoutPlugin
-from orges.test.demo.algorithm.host.saes import f as saes
+from orges.examples.algorithm.host.saes import f as saes
 
 
 @param.int("mu", interval=(5, 10), display_name="μ")

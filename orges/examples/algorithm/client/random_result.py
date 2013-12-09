@@ -1,7 +1,7 @@
 """Worker with a random result."""
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.multiprocess_lib.Worker import Result
+from orges.invoker.multiprocess_util import Result
 import random
 
 

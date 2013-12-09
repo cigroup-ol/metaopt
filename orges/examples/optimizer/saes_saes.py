@@ -5,7 +5,7 @@ import orges.param as param
 from orges.main import optimize
 from orges.plugins.print import PrintPlugin
 from orges.optimizer.saes import SAESOptimizer
-from orges.test.demo.algorithm.host.saes import f as saes
+from orges.examples.algorithm.host.saes import f as saes
 
 
 @param.int("mu", interval=(5, 10), display_name="μ")
@@ -26,6 +26,6 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     plugins = [PrintPlugin()]
-    # Global timeout after 5 seconds
-    print(optimize(function=f, optimizer=SAESOptimizer(), timeout=5,
+
+    print(optimize(function=f, optimizer=SAESOptimizer(),
                    plugins=plugins))

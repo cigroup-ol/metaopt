@@ -25,7 +25,7 @@ class Tox(TestCommand):
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
-    sources=['orges/test/unit/hangmodule.c']
+    sources=['orges/test/demo/algorithm/client/hangmodule.c']
 )
 
 setup(
