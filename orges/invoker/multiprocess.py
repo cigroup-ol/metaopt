@@ -3,15 +3,15 @@ Invoker that uses multiple processes.
 """
 from __future__ import division, print_function, with_statement
 
+import uuid
 import logging
 import multiprocessing
-import uuid
-from multiprocessing import cpu_count, Queue
 from threading import Lock
+from multiprocessing import Queue, cpu_count
 
 from orges.invoker.base import BaseInvoker
-from orges.invoker.multiprocess_util import (determine_package, Task,
-                                             TaskHandle, WorkerProvider)
+from orges.invoker.multiprocess_util import  Task, TaskHandle, \
+    WorkerProvider, determine_package
 
 # TODO use Pool from multiprocess
 # TODO ensure tasks can be cancelled that are waiting in the queue

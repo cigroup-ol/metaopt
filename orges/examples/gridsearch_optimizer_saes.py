@@ -3,8 +3,8 @@ from __future__ import division, print_function, with_statement
 
 import orges.param as param
 from orges.main import optimize
-from orges.optimizer.gridsearch import GridSearchOptimizer
 from orges.plugins.print import PrintPlugin
+from orges.optimizer.gridsearch import GridSearchOptimizer
 from orges.test.demo.algorithm.host.saes import f as saes
 
 

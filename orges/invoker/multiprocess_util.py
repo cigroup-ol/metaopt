@@ -1,10 +1,10 @@
 """
-TODO
+Various utilities for the multiprocess invoker.
 """
-import inspect
 import os
-import threading
 import uuid
+import inspect
+import threading
 from collections import namedtuple
 from multiprocessing import cpu_count
 from multiprocessing.process import Process

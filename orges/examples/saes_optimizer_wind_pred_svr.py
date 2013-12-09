@@ -4,13 +4,13 @@ from __future__ import division, print_function, with_statement
 import math
 
 from sklearn.svm import SVR
+from windml.datasets.nrel import NREL
+from windml.mapping.power_mapping import PowerMapping
 
 import orges.param as param
 from orges.main import optimize
-from orges.optimizer.saes import SAESOptimizer
 from orges.plugins.print import PrintPlugin
-from windml.datasets.nrel import NREL
-from windml.mapping.power_mapping import PowerMapping
+from orges.optimizer.saes import SAESOptimizer
 
 # to run this example, add windml, branch 'develop' to your PYTHONPATH
 # https://github.com/cigroup-ol/windml.git
