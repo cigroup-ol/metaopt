@@ -7,6 +7,11 @@ from random import gauss, sample
 from orges.args import ArgsCreator, default_mutation_stength
 from orges.optimizer.base import BaseCaller, BaseOptimizer
 
+try:
+    xrange  # will work in python2, only
+except NameError:
+    xrange = range  # rename range to xrange in python3
+
 
 class SAESOptimizer(BaseOptimizer, BaseCaller):
     # TODO: Find good default values
