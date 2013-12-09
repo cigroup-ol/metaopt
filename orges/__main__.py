@@ -1,13 +1,25 @@
-"""
-Invoke with python -m orges
+"""OrgES
 
-TODO Figure out what such a command should actually mean and do
+Usage:
+  orges run-example <name>...
+  orges (-h | --help)
+  orges --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
 
 """
+
+# TODO Figure out what such a command should actually mean and do
 
 from __future__ import division, print_function, with_statement
 
-from orges.main import main
+from docopt import docopt
+
+import orges
 
 if __name__ == '__main__':
-    main()
+    arguments = docopt(__doc__, version=" ".join([orges.__name__,
+                                                  orges.__version__]))
+    print(arguments)
