@@ -3,9 +3,10 @@
 from __future__ import division, print_function, with_statement
 
 import sys
-
 from setuptools import setup, find_packages, Extension
 from setuptools.command.test import test as TestCommand
+
+import orges
 
 
 class Tox(TestCommand):
@@ -29,18 +30,18 @@ HANG_MODULE_EXTENSION = Extension(
 )
 
 setup(
-    author='Renke Grunwald, Bengt Lüers, Jendrik Poloczek',
-    author_email='info@orges.org',
+    author=orges.__author__,
+    author_email=orges.__author_email__,
     cmdclass={'test': Tox},
     data_files=[("", ["README.rst", "LICENSE.txt", "requirements.txt"])],
     description='OrgES Package - Organic Computing for Evolution Strategies',
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=[],
-    license="3-Clause BSD",
+    license=orges.__license__,
     name='orges',
     packages=find_packages(exclude=('tests', 'docs')),
     package_data={'': ['LICENSE.txt', 'README.rst', 'requirements.txt']},
     tests_require=["tox", "nose", "mock"],
-    url='http://organic-es.tumblr.com/',
-    version='0.0.1'
+    url=orges.__url__,
+    version=orges.__version__
 )
