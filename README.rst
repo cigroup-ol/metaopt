@@ -27,12 +27,13 @@ Run PyLint
 
     $ pylint orges
 
-Run pep8
---------
+Run flake8
+----------
 
 .. code:: bash
 
-    $ pep8 orges
+    $ flake8
+    $ python3 setup.py flake8
 
 Run Tests
 ---------

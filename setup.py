@@ -41,6 +41,7 @@ setup(
     name='orges',
     packages=find_packages(exclude=('tests', 'docs')),
     package_data={'': ['LICENSE.txt', 'README.rst', 'requirements.txt']},
+    setup_requires=["flake8"],
     tests_require=["tox", "nose", "mock"],
     url=orges.__url__,
     version=orges.__version__
