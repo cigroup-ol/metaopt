@@ -9,10 +9,10 @@ from orges.optimizer.gridsearch import GridSearchOptimizer
 from orges.examples.algorithm.host.saes import f as saes
 
 
-@param.int("mu", interval=(5, 10), display_name="μ")
-@param.int("lambd", interval=(5, 10), display_name="λ")
-@param.float("tau0", interval=(0, 1), step=0.5, display_name="τ0")
-@param.float("tau1", interval=(0, 1), step=0.5, display_name="τ1")
+@param.int("mu", interval=(5, 10), title="μ")
+@param.int("lambd", interval=(5, 10), title="λ")
+@param.float("tau0", interval=(0, 1), step=0.5, title="τ0")
+@param.float("tau1", interval=(0, 1), step=0.5, title="τ1")
 def f(mu, lambd, tau0, tau1):
     args = dict()
 

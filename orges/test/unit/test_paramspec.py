@@ -104,28 +104,28 @@ def test_int_given_no_step_defaults_to_one():
     assert param_spec.params["a"].step == 1
 
 
-def test_given_no_display_name_defaults_to_name():
+def test_given_no_title_defaults_to_name():
     param_spec = ParamSpec()
 
     param_spec.int("a", interval=(1, 10))
     param_spec.float("b", interval=(0, 1))
     param_spec.bool("g")
 
-    assert param_spec.params["a"].display_name == "a"
-    assert param_spec.params["b"].display_name == "b"
-    assert param_spec.params["g"].display_name == "g"
+    assert param_spec.params["a"].title == "a"
+    assert param_spec.params["b"].title == "b"
+    assert param_spec.params["g"].title == "g"
 
 
-def test_given_display_name_saves_it():
+def test_given_title_saves_it():
     param_spec = ParamSpec()
 
-    param_spec.int("a", interval=(1, 10), display_name="α")
-    param_spec.float("b", interval=(0, 1), display_name="β")
-    param_spec.bool("g", display_name="γ")
+    param_spec.int("a", interval=(1, 10), title="α")
+    param_spec.float("b", interval=(0, 1), title="β")
+    param_spec.bool("g", title="γ")
 
-    assert param_spec.params["a"].display_name == "α"
-    assert param_spec.params["b"].display_name == "β"
-    assert param_spec.params["g"].display_name == "γ"
+    assert param_spec.params["a"].title == "α"
+    assert param_spec.params["b"].title == "β"
+    assert param_spec.params["g"].title == "γ"
 
 if __name__ == '__main__':
     import nose
