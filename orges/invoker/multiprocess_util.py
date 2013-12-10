@@ -44,7 +44,7 @@ class _Singleton(type):
     _instances = {}
     _instances_lock = threading.Lock()
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs):  # @NoSelf
         try:
             return cls._instances[cls]
         except KeyError:
@@ -96,7 +96,7 @@ class WorkerProvider(Singleton):
         with self._lock:
             # send manually constructed empty result
             result = Result(worker_id=worker_process.worker_id, function=None,
-                            args=None, vargs=None,
+                            args=None, vargs=None, kwargs=None,
                             task_id=worker_process._current_task_id,
                             value=None)
             worker_process.queue_results.put(result)

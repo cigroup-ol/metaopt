@@ -13,7 +13,7 @@ def test_optimize_running_too_long_aborts():
 
     # f(a=0) is 0, f(a=1) is -1. Because of the timeout we never see a=1, hence
     # we except the minimum before the timeout to be 0.
-    eq_(val, 0)
+    eq_(str(val), "(a=0,)")
 
 if __name__ == '__main__':
     import nose

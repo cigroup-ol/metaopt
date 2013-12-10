@@ -86,12 +86,14 @@ class MultiProcessInvoker(BaseInvoker):
 
             #self._logger.warning("invoke entered")
 
-            # provision a new worker, if allowed
-            if len(self._worker_handles) is not self._worker_count_max:
+            # try to provision a new worker
+            try:
                 self._worker_handles += self._worker_provider.provision(
                     queue_tasks=self._queue_tasks,
                     queue_results=self._queue_results,
                     queue_status=self._queue_status)
+            except IndexError:
+                pass  # give the task to one of the busy workers
 
             # schedule task for the workers to execute
             self._queue_tasks.put(Task(task_id=uuid.uuid4(),
