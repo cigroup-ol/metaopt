@@ -9,11 +9,12 @@ from orges.test.util.one_param_sleep_and_negate_f import f
 
 def test_optimize_running_too_long_aborts():
     optimizer = GridSearchOptimizer()
-    val = optimize(f, timeout=1, optimizer=optimizer)
+    result = optimize(f, timeout=1, optimizer=optimizer)
 
     # f(a=0) is 0, f(a=1) is -1. Because of the timeout we never see a=1, hence
     # we except the minimum before the timeout to be 0.
-    eq_(str(val), "(a=0,)")
+    eq_(result[0].value, 0)
+
 
 if __name__ == '__main__':
     import nose
