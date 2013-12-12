@@ -33,8 +33,7 @@ def test_optimize_returns_result():
 
     optimizer.optimize(f, f.param_spec, None)
 
-    invoker.caller.on_error.assert_not_called()
-    invoker.caller.on_result.assert_called()
+    assert not invoker.caller.on_error.called
     invoker.caller.on_result.assert_called_with(Matcher(-3), Matcher(ARGS), {})
 
 if __name__ == '__main__':
