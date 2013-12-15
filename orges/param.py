@@ -23,7 +23,12 @@ from orges.paramspec import ParamSpec
 
 
 def int(*vargs, **kwargs):
-    """A decorator that specifies an int parameter for a function"""
+    """
+    A decorator that specifies an int parameter for a function
+
+    See :meth:`orges.paramspec.ParamSpec.int` for the allowed parameters.
+
+    """
 
     def decorator(func):
         param_spec = make_param_spec(func)
@@ -34,7 +39,12 @@ def int(*vargs, **kwargs):
 
 
 def float(*vargs, **kwargs):
-    """A decorator that specifies a float parameter for a function"""
+    """
+    A decorator that specifies a float parameter for a function
+
+    See :meth:`orges.paramspec.ParamSpec.float` for the allowed parameters.
+
+    """
 
     def decorator(func):
         param_spec = make_param_spec(func)
@@ -45,7 +55,12 @@ def float(*vargs, **kwargs):
 
 
 def bool(*vargs, **kwargs):
-    """A decorator that specifies an bool parameter for a function"""
+    """
+    A decorator that specifies an bool parameter for a function
+
+    See :meth:`orges.paramspec.ParamSpec.bool` for the allowed parameters.
+
+    """
     def decorator(func):
         param_spec = make_param_spec(func)
         param_spec.bool(*vargs, **kwargs)

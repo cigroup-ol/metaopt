@@ -6,6 +6,8 @@ from orges.optimizer.base import BaseCaller, BaseOptimizer
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):
+    """TODO: Document"""
+
     def __init__(self):
         self.best = (None, None)
 
