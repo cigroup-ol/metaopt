@@ -105,6 +105,16 @@ def default_mutation_stength(param):
 
 
 class Arg(object):
+    """
+
+    An Arg is a container for a value that is associated with a parameter.
+
+    An Arg also provides various ways to create new Arg objects (that are
+    possibly based on a previous value). To get the actual value use
+    :attr:`value`.
+
+    """
+
     def __init__(self, param, value=None):
         self.param = param
         self.value = value

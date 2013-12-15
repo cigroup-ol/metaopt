@@ -13,6 +13,7 @@ except NameError:
 
 
 class RechenbergOptimizer(BaseOptimizer, BaseCaller):
+    """TODO: Document"""
     # TODO: Find good default values
     MU = 3
     LAMBDA = 3
