@@ -2,11 +2,10 @@
 
 from __future__ import division, print_function, with_statement
 
-from orges.paramspec import ParamSpec
-from orges.paramspec import DuplicateParamError, InvalidIntervalError
-from orges.paramspec import NonIntIntervalError, NonIntStepError
-
 from nose.tools import raises
+
+from orges.paramspec import ParamSpec, NonIntStepError, DuplicateParamError, \
+    NonIntIntervalError, InvalidIntervalError
 
 
 @raises(Exception)

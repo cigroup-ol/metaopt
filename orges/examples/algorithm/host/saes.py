@@ -1,9 +1,9 @@
 from __future__ import division, print_function, with_statement
 
-from numpy.random import randn
-from numpy import abs
 from random import sample
-from numpy import exp
+
+from numpy import abs, exp
+from numpy.random import randn
 
 
 def f(args):

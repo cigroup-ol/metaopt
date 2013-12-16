@@ -2,15 +2,12 @@
 
 from __future__ import division, print_function, with_statement
 
-from nose.tools import raises
-from nose.tools import eq_
 from mock import Mock
+from nose.tools import eq_, raises
 
+from orges.args import Arg, call, BoolArg, NoStepArgIterError, \
+    CallNotPossibleError
 from orges.paramspec import ParamSpec
-from orges.args import Arg, BoolArg
-from orges.args import NoStepArgIterError
-from orges.args import CallNotPossibleError
-from orges.args import call
 
 
 def test_call_func_with_args_works():

@@ -1,8 +1,9 @@
 """Worker with a random result."""
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.multiprocess_util import Result
 import random
+
+from orges.invoker.multiprocess_util import Result
 
 
 def get_worker(index, queue_tasks, queue_results):

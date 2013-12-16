@@ -1,6 +1,6 @@
-from orges.main import custom_optimize, NoParamSpecError
-
 from nose.tools import raises
+
+from orges.main import custom_optimize, NoParamSpecError
 
 
 def f(x, y):

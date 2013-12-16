@@ -5,11 +5,11 @@ from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
+from orges import param
 from orges.args import ArgsCreator
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 
-from orges import param
 
 @param.int("a", interval=(1, 10))
 @param.int("b", interval=(1, 10))

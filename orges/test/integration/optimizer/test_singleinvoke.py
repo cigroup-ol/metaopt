@@ -5,11 +5,11 @@ from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
-from orges.optimizer.singleinvoke import SingleInvokeOptimizer
-from orges.invoker.singleprocess import SingleProcessInvoker
-from orges.args import ArgsCreator
-from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 from orges import param
+from orges.args import ArgsCreator
+from orges.invoker.singleprocess import SingleProcessInvoker
+from orges.optimizer.singleinvoke import SingleInvokeOptimizer
+from orges.test.integration.invoker.Matcher import EqualityMatcher as Matcher
 
 
 @param.int("a", interval=(2, 2))

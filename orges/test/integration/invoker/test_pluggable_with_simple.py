@@ -1,13 +1,14 @@
 from __future__ import division, print_function, with_statement
 
-from mock import Mock
 from time import sleep
 
+from mock import Mock
+
 from orges.args import ArgsCreator
-from orges.invoker.pluggable import PluggableInvoker
-from orges.plugins.timeout import TimeoutPlugin
-from orges.invoker.simple import SimpleInvoker
 from orges.paramspec import ParamSpec
+from orges.invoker.simple import SimpleInvoker
+from orges.plugins.timeout import TimeoutPlugin
+from orges.invoker.pluggable import PluggableInvoker
 
 FUNCTION_SLEEP = 2
 INVOKER_TIMEOUT = 1
