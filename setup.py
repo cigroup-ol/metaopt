@@ -3,8 +3,14 @@
 from __future__ import division, print_function, with_statement
 
 import sys
-from setuptools import setup, find_packages, Extension
-from setuptools.command.test import test as TestCommand
+try:
+    from setuptools import setup, find_packages, Extension
+    from setuptools.command.test import test as TestCommand
+except ImportError:
+    import ez_setup
+    ez_setup.use_setuptools()
+    from setuptools import setup, find_packages, Extension
+    from setuptools.command.test import test as TestCommand
 
 import orges
 
