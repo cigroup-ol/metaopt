@@ -2,33 +2,14 @@
 
 from __future__ import division, print_function, with_statement
 
-import sys
 try:
     from setuptools import setup, find_packages, Extension
-    from setuptools.command.test import test as TestCommand
 except ImportError:
     import ez_setup
     ez_setup.use_setuptools()
     from setuptools import setup, find_packages, Extension
-    from setuptools.command.test import test as TestCommand
 
 import orges
-
-
-class Tox(TestCommand):
-    """Enables `python setup.py test` to run tox."""
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
-        import tox
-        try:
-            tox.cmdline(self.test_args)
-        except SystemExit as exception:
-            sys.exit(exception.code)
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
@@ -38,7 +19,6 @@ HANG_MODULE_EXTENSION = Extension(
 setup(
     author=orges.__author__,
     author_email=orges.__author_email__,
-    cmdclass={'test': Tox},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
