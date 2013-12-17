@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function, with_statement
 
-from orges.examples.algorithm.client.hang import hang
+from orges.examples.algorithm.hang import hang
 
 if __name__ == '__main__':
     AMOUNT_OF_SECONDS_TO_HANG = 3

@@ -6,7 +6,7 @@ from orges.main import optimize
 from orges.plugins.print import PrintPlugin
 from orges.plugins.timeout import TimeoutPlugin
 from orges.optimizer.gridsearch import GridSearchOptimizer
-from orges.examples.algorithm.host.saes import f as saes
+from orges.examples.algorithm.saes import f as saes
 
 
 @param.int("mu", interval=(5, 10), title="μ")

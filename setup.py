@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""setup.py script for OrgES."""
 
 from __future__ import division, print_function, with_statement
 
@@ -13,7 +14,7 @@ import orges
 
 HANG_MODULE_EXTENSION = Extension(
     'orges.test.unit.hang',
-    sources=['orges/examples/algorithm/client/hangmodule.c']
+    sources=['orges/examples/algorithm/hangmodule.c']
 )
 
 setup(
