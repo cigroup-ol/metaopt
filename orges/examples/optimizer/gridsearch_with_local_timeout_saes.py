@@ -30,6 +30,6 @@ def f(mu, lambd, tau0, tau1):
 
 if __name__ == '__main__':
     # Local timeout after 1 second
-    plugins = [TimeoutPlugin(1), PrintPlugin()]
+    PLUGINS = [TimeoutPlugin(1), PrintPlugin()]
     print(optimize(function=f, optimizer=GridSearchOptimizer(),
-                   plugins=plugins))
+                   plugins=PLUGINS))

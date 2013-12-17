@@ -28,7 +28,7 @@ def f(mu, lambd, tau0, tau1):
     return saes(args)
 
 if __name__ == '__main__':
-    plugins = [PrintPlugin()]
+    PLUGINS = [PrintPlugin()]
     # Global timeout after 5 seconds
     print(optimize(function=f, optimizer=SAESOptimizer(), timeout=5,
-                   plugins=plugins))
+                   plugins=PLUGINS))
