@@ -5,7 +5,6 @@
 
 TODO: Define "optimal"
 TODO: Computation vs Invocation vs Call
-TODO: Parameters vs Arguments
 
 OrgES
 =====
@@ -38,13 +37,12 @@ values between -1 and 1) and returns *some* value.
 
     args = optimize(f)
 
-.. OrgES will compute the result of `f` for different values of ``a`` and ``b`` in
-.. parallel using all available processors.
+OrgES will optimize ``f`` in parellel and then returns a list of arguments for
+which ``f`` is optimal.
 
 By default, OrgES uses the :class:`orges.optimizer.saes.SAESOptimizer` as
-optimizer. Other optimizers can be used by passing them to the ``optimize``
-function as shown with  :class:`orges.optimizer.gridsearch.GridSearchOptimizer`
-in the next example.
+optimizer. Other optimizers like
+the :class:`orges.optimizer.gridsearch.GridSearchOptimizer` can also be used.
 
 .. code-block:: python
 
@@ -52,8 +50,8 @@ in the next example.
 
     args = optimize(f, optimizer=GridSearchOptimizer())
 
-To limit the time an optimizer has to optimize `f` (called the global timeout)
-we can pass a timeout in seconds.
+To limit the time an optimizer has to optimize ``f`` we can pass a timeout in
+seconds.
 
 .. code-block:: python
 
@@ -61,9 +59,10 @@ we can pass a timeout in seconds.
 
     args = optimize(f, timeout=60, optimizer=GridSearchOptimizer())
 
-To also limit the time of an individual computation of `f` (called the local
-timeout) we can pass a timeout in seconds by using the
-:class:`orges.plugins.timeout.TimeoutPlugin`.
+OrgES will return the optimal arguments it found after 60 seconds.
+
+To also limit the time of an individual computation of ``f`` we can pass a
+timeout in seconds by using the :class:`orges.plugins.timeout.TimeoutPlugin`.
 
 .. code-block:: python
 
@@ -71,6 +70,12 @@ timeout) we can pass a timeout in seconds by using the
     from orges.plugins.timeout import TimeoutPlugin
 
     args = optimize(f, timeout=60, optimizer=GridSearchOptimizer(), plugins=[TimeoutPlugin(2)])
+
+OrgES will abort computations of ``f`` that take longer than 2 seconds and
+return the optimal arguments it found after 60 seconds.
+
+This should explain the most basic use cases of OrgES. For more details we
+recommend reading the next sections.
 
 Getting Started
 ---------------
