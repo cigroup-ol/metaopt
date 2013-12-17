@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Example demonstrating an external library as target algorithm and the grid
+search optimizer.
+
+To run this example, add windml, branch 'develop' to your PYTHONPATH:
+
+    https://github.com/cigroup-ol/windml.git
+"""
 from __future__ import division, print_function, with_statement
 
 import math
@@ -11,9 +19,6 @@ import orges.param as param
 from orges.main import optimize
 from orges.plugins.print import PrintPlugin
 from orges.optimizer.singleinvoke import SingleInvokeOptimizer
-
-# to run this example, add windml, branch 'develop' to your PYTHONPATH
-# https://github.com/cigroup-ol/windml.git
 
 
 @param.int("C_exp", interval=(1, 10), title="C_exp")

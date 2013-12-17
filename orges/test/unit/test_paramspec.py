@@ -1,5 +1,7 @@
 # -!- coding: utf-8 -!-
-
+"""
+Test for param_spec
+"""
 from __future__ import division, print_function, with_statement
 
 from nose.tools import raises

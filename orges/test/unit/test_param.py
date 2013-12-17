@@ -1,3 +1,6 @@
+"""
+Test for param
+"""
 from __future__ import division, print_function, with_statement
 
 from nose.tools import eq_

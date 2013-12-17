@@ -1,3 +1,6 @@
+"""
+Target algorithm implementing a self-adapting evolutionary strategy (SAES).
+"""
 from __future__ import division, print_function, with_statement
 
 from random import sample

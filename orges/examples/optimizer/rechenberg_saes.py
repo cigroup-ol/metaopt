@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Example demonstrating an SAES target algorithm and the rechenberg optimizer.
+"""
 from __future__ import division, print_function, with_statement
 
 import orges.param as param

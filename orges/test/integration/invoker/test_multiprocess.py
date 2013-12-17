@@ -55,6 +55,7 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
                                              result=Matcher(2),
                                              vargs=(), kwargs=Matcher(data))
 
+
 @param.int("a", interval=(1, 10))
 @param.int("b", interval=(1, 10))
 def failing(a, b):
@@ -62,6 +63,7 @@ def failing(a, b):
 
 FAILING_PARAM_SPEC = failing.param_spec
 FAILING_ARGS = ArgsCreator(FAILING_PARAM_SPEC).args()
+
 
 def test_invoke_not_successful_calls_on_error():
     caller = Mock()

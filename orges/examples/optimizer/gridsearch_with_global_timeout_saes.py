@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Example demonstrating the saes target algorithm and the grid search optimizer
+with global timeout.
+"""
 from __future__ import division, print_function, with_statement
 
 import orges.param as param

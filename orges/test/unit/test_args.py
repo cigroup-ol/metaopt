@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Tests for args.
+"""
 
 from __future__ import division, print_function, with_statement
 
