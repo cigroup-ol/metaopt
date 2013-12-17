@@ -64,23 +64,27 @@ class ArgsCreator(object):
         self.param_spec = param_spec
 
     def args(self):
+        """Returns an args derived from the params given on instantiation."""
         return [create_arg(param) for param in self.param_spec.params.values()]
 
-    @staticmethod
-    def combine(args1, args2):
-        return map(lambda arg1, arg2: arg1.combine(arg2), args1, args2)
-
-    @staticmethod
-    def randomize(args, strengths):
-        return map(lambda arg, strength: arg.randomize(strength),
-                   args, strengths)
-
     def random(self):
+        """Returns a randomized version of self.args()."""
         return [arg.random() for arg in self.args()]
 
     def product(self):
         """Iterator that iterates over all args combinations"""
         return itertools.product(*self.args())
+
+    @staticmethod
+    def combine(args1, args2):
+        """Returns the combination of the elements of the two given args."""
+        return map(lambda arg1, arg2: arg1.combine(arg2), args1, args2)
+
+    @staticmethod
+    def randomize(args, strengths):
+        """Randomizes all of the given args with the given strength."""
+        return map(lambda arg, strength: arg.randomize(strength),
+                   args, strengths)
 
 
 def create_arg(param, value=None):

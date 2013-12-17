@@ -20,6 +20,6 @@ from docopt import docopt
 import orges
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version=" ".join([orges.__name__,
+    ARGUMENTS = docopt(__doc__, version=" ".join([orges.__name__,
                                                   orges.__version__]))
-    print(arguments)
+    print(ARGUMENTS)

@@ -1,3 +1,7 @@
+"""
+Tests for MutliProcess_util
+"""
+
 from multiprocessing.queues import Queue
 
 import nose

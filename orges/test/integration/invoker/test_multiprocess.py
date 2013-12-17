@@ -19,6 +19,7 @@ def f(a, b):
 F_PARAM_SPEC = f.param_spec
 F_ARGS = ArgsCreator(F_PARAM_SPEC).args()
 
+
 def test_invoke_calls_on_result():
     caller = Mock()
     caller.on_result = Mock()
