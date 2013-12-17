@@ -10,6 +10,7 @@ from nose.tools import eq_
 from orges.args import ArgsCreator
 from orges.test.unit.util import get_intervals_from_function
 from orges.test.util.integer_functions import INTEGER_FUNCTIONS
+from orges.test.unit.util import get_intervals_from_function
 
 try:
     xrange  # will work in python2, only
