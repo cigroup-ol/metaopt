@@ -9,11 +9,11 @@ import multiprocessing
 from threading import Lock
 from multiprocessing import Queue, cpu_count
 
-from orges.invoker.base import BaseInvoker
-from orges.invoker.multiprocess_util import Task, TaskHandle, WorkerProvider, \
+from orges.invoker.base import BaseInvoker, TaskHandle
+from orges.invoker.multiprocess_util import Task, WorkerProvider, \
     determine_package
 
-# TODO use Pool from multiprocess
+# TODO use Pool from multiprocess?
 # TODO ensure tasks can be cancelled that are waiting in the queue
 
 
@@ -71,7 +71,7 @@ class MultiProcessInvoker(BaseInvoker):
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""
-        raise NotImplementedError()
+        raise NotImplementedError()  # TODO implement
 
     def invoke(self, function, fargs, *vargs, **kwargs):
         """
@@ -83,9 +83,6 @@ class MultiProcessInvoker(BaseInvoker):
         executed immediately, especially when using multiple processes/threads.
         """
         with self._lock:
-
-            #self._logger.warning("invoke entered")
-
             # try to provision a new worker
             try:
                 self._worker_handles += self._worker_provider.provision(
@@ -124,25 +121,22 @@ class MultiProcessInvoker(BaseInvoker):
                             self._worker_handles.remove(worker_handle)
 
                 # handle all other results
+                print(result.value.value)
+                raise Exception
 
                 self._caller.on_result(result=result.value, fargs=result.args,
                                        vargs=result.vargs,
                                        kwargs=result.kwargs)
                 # TODO on_error
 
-            #self._logger.warning("invoke left")
-
             return task_handle, self._aborted
 
     def abort(self):
         """Terminates all worker processes for immediate shutdown."""
 
-        #self._logger.warning("abort entered")
-
         # shutdown all workers
         with self._lock:
             for worker_handle in self._worker_handles:
-                #print(worker_handle.busy)
                 worker_handle.cancel()
                 self._worker_handles.remove(worker_handle)
             self._aborted = True
@@ -153,11 +147,7 @@ class MultiProcessInvoker(BaseInvoker):
     def terminate_gracefully(self):
         """Sends sentinel objects to all workers to allow clean shutdown."""
 
-        #self._logger.warning("terminate entered")
-
-        with self._lock:
-            for _ in self._worker_handles:
-                self._queue_tasks.put(None)
+        self.abort()
 
     def wait(self):
         """
@@ -167,16 +157,8 @@ class MultiProcessInvoker(BaseInvoker):
 
         self.terminate_gracefully()
 
-        #self._logger.warning("wait entered")
-
-        #while self._count_busy_workers() >= 1:
-            #self._logger.warning(self._count_busy_workers())
-        pass
-
     def cancel(self, worker_id, task_id):
         """Terminates a worker_handle given by id."""
-        #self._logger.warning("cancel entered")
-        #self._logger.warning(worker_id)
 
         with self._lock:
             for worker_handle in self._worker_handles:
@@ -187,9 +169,6 @@ class MultiProcessInvoker(BaseInvoker):
                     return  # handle is unique, don't look any further
         # TODO: handle queue corruption, by swapping them out for new ones?
 
-        #self._logger.warning("cancel left")
-
     def status(self):
         """Reports the status of the workforce."""
-        # TODO implement me
-        pass
+        raise NotImplementedError()  # TODO implement

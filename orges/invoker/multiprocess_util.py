@@ -10,6 +10,7 @@ from multiprocessing import cpu_count
 from multiprocessing.process import Process
 
 from orges.core.args import call
+import sys
 
 
 def determine_package(function):
@@ -68,8 +69,8 @@ class WorkerProvider(Singleton):
         self._cpu_count = cpu_count()
         self._workers = []
 
-    def provision(self, number_of_workers=1, queue_tasks=None,
-                  queue_results=None, queue_status=None):
+    def provision(self, queue_tasks, queue_results, queue_status,
+                  number_of_workers=1):
         """
         Provision a given number worker processes for future use.
         """
@@ -141,11 +142,12 @@ Result = namedtuple("Result", ["task_id", "function", "args", "vargs",
 
 class WorkerProcess(Process):
     """Calls functions with arguments, both given by a queue."""
-    def __init__(self, worker_id, queue_tasks, queue_results, queue_status):
+    def __init__(self, worker_id, queue_results, queue_status,
+                 queue_tasks):
         self._worker_id = worker_id
-        self._queue_tasks = queue_tasks
         self._queue_results = queue_results
         self._queue_status = queue_status
+        self._queue_tasks = queue_tasks
         self._busy = False
         self._current_task_id = None
         super(WorkerProcess, self).__init__()
@@ -208,9 +210,10 @@ class WorkerProcess(Process):
         #from MyPackage.MyModule import f as function
 
         # make the actual call
-        value = call(function, task.args)
-
-        #multiprocessing.log_to_stderr(logging.WARN).warning("b")
+        try:
+            value = call(function, task.args)
+        except Exception:
+            value = sys.exc_info()
 
         # report result back
         self._queue_results.put(Result(task_id=self._current_task_id,
@@ -219,5 +222,4 @@ class WorkerProcess(Process):
                                        args=task.args, value=value,
                                        vargs=task.vargs,
                                        kwargs=task.kwargs))
-        #multiprocessing.log_to_stderr(logging.WARN).warning("c")
         self._busy = False
