@@ -19,12 +19,11 @@ from orges.invoker.util import TaskHandle
 
 
 class MultiProcessInvoker(BaseInvoker):
-    """Invoker that manages worker processes."""
+    """Invoker that invokes objective functions in parallel"""
 
     def __init__(self, resources=None):
         """
-        @param resources - number of CPUs to use.
-                           will automatically configure itself, if None
+        :param  resources: number of CPUs to use. will automatically configure itself, if None
         """
 
         # spawn one worker process per CPU, or as many as requested

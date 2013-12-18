@@ -18,14 +18,17 @@ except NameError:
 
 
 class SAESOptimizer(BaseOptimizer, BaseCaller):
-    """TODO: Document"""
-    # TODO: Find good default values
+    """Optimization based on a self-adaptive evolution strategy (SAES)"""
     MU = 3
     LAMBDA = 3
     TAU0 = 0.5
     TAU1 = 0.5
 
     def __init__(self, mu=MU, lamb=LAMBDA, tau0=TAU0, tau1=TAU1):
+        """
+        :param mu: Number of parent arguments
+        :param lamb: Number of offspring arguments
+        """
         self._invoker = None
 
         # TODO: Make sure these value are sane
