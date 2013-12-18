@@ -9,12 +9,13 @@ from orges.optimizer.base import BaseCaller
 
 class PluggableInvoker(BaseInvoker, BaseCaller):
     """
-    Invoker with hooks for calling plugins in various situations.
+    Invoker that uses other invokers and allows plugins to be used.
     """
 
     def __init__(self, invoker, plugins=[]):
         """
-        :param plugins: List of plugins to be executed in various situations.
+        :param invoker: Other invoker
+        :param plugins: List of plugins
         """
         super(PluggableInvoker, self).__init__(self)
 

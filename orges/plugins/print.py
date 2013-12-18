@@ -5,7 +5,15 @@ from orges.plugins.dummy import DummyPlugin
 
 class PrintPlugin(DummyPlugin):
     """
-    Logs all interaction with the invoker to the standard output.
+    Log all invocation events to the standard output.
+
+    For example::
+
+        Started f(a=0.1, b=0.2)
+        Started f(a=0.2, b=0.3)
+        Finished f(a=0.1, b=0.2) = 0.7
+        Failed f(a=0.2, b=0.3)
+
     """
     def on_invoke(self, invocation):
         print("Started", "f%s" % (tuple(invocation.fargs), ))
