@@ -5,12 +5,14 @@ help:
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
+	@echo "install - install orges and all dependencies"
 	@echo "isort - sanititize imports with isort"
 	@echo "lint - check style with flake8"	
 	@echo "release - package and upload a release"
 	@echo "sdist - package"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
+	@echo "venv - create and activate virtual environment"
 
 clean: clean-build clean-pyc clean-patchfiles clean-backupfiles
 
@@ -18,6 +20,7 @@ clean-build:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
+	rm -fr *.egg
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -45,6 +48,10 @@ docs:
 	start docs/_build/html/index.html &> /dev/null || echo "";  # works under Windows
 	xdg-open docs/_build/html/index.html &> /dev/null || echo "";  # works under Linux
 
+install:
+	python setup.py install
+	find . -wholename "./requirements_*.txt" -exec pip install -r {} \;
+
 isort:
 	find orges -name "*.py" -exec isort {} &> /dev/null +
 
@@ -68,3 +75,7 @@ test:
 
 test-all:
 	tox
+
+venv:
+	virtualenv venv
+	source venv/bin/activate
