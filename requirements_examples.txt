@@ -1,0 +1,7 @@
+# requirements for windml
+https://codeload.github.com/Bengt/windml/zip/develop#egg=windml
+numpy
+scikit-learn
+scipy
+distribute
+matplotlib
