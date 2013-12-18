@@ -9,7 +9,7 @@ from random import gauss, sample
 
 from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
-from examples.algorithm.util import default_mutation_stength
+from orges.optimizer.util import default_mutation_stength
 
 try:
     xrange  # will work in python2, only
