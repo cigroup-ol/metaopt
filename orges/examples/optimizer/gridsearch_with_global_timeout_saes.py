@@ -29,7 +29,8 @@ def f(mu, lambd, tau0, tau1):
     return saes(args)
 
 if __name__ == '__main__':
-    PLUGINS = [PrintPlugin()]
-    # Global timeout after 5 seconds
+    GLOBAL_TIMEOUT = 5  # GLOBAL timeout after 1 seconds
+
     print(optimize(function=f, optimizer=GridSearchOptimizer(),
-                   timeout=5, plugins=PLUGINS))
+                   timeout=GLOBAL_TIMEOUT,
+                   plugins=[PrintPlugin()]))

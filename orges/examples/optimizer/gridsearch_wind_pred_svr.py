@@ -26,8 +26,9 @@ from orges.optimizer.singleinvoke import SingleInvokeOptimizer
 def f(C_exp, neg_gamma_exp):
     gamma_exp = -(neg_gamma_exp)
 
-    park_id = NREL.park_id['tehachapi']
-    windpark = NREL().get_windpark(park_id, 3, 2004, 2005)
+    # download wind data for a windpark
+    windpark = NREL().get_windpark(target_idx=NREL.park_id['tehachapi'],
+                                   radius=3, year_from=2004, year_to=2005)
     target = windpark.get_target()
 
     # use power mapping for pattern-label mapping. Feature window length is 3
@@ -65,7 +66,5 @@ def f(C_exp, neg_gamma_exp):
     return mse_y_hat
 
 if __name__ == '__main__':
-    PLUGINS = [PrintPlugin()]
-
     print(optimize(function=f, optimizer=SingleInvokeOptimizer(),
-                   plugins=PLUGINS))
+                   plugins=[PrintPlugin()]))
