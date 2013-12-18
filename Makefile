@@ -53,7 +53,9 @@ install:
 	find . -wholename "./requirements_*.txt" -exec pip install -r {} \;
 
 isort:
+	find examples -name "*.py" -exec isort {} &> /dev/null +
 	find orges -name "*.py" -exec isort {} &> /dev/null +
+	find tests -name "*.py" -exec isort {} &> /dev/null +
 
 lint:
 	find orges -name '*.py' -exec flake8 {} +

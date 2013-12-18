@@ -3,9 +3,9 @@ from __future__ import division, print_function, with_statement
 
 from random import sample
 
-from orges.args import ArgsCreator
+from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
-from orges.examples.algorithm.util import default_mutation_stength
+from examples.algorithm.util import default_mutation_stength
 
 try:
     xrange  # will work in python2, only

@@ -4,13 +4,8 @@ Optimizer that issues one single invocation, only.
 """
 from __future__ import division, print_function, with_statement
 
-from collections import namedtuple
-
 from orges.args import ArgsCreator
-from orges.optimizer.base import BaseCaller, BaseOptimizer
-
-# Data structure for results returned by invoke calls and the arguments of such
-InvokeResult = namedtuple("InvokeResult", ["arguments", "fitness"])
+from orges.optimizer.base import BaseCaller, InvokeResult, BaseOptimizer
 
 
 class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
@@ -30,10 +25,11 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         invoker.caller = self
         self._invoker = invoker
 
-    def optimize(self, f, param_spec, return_spec):
+    def optimize(self, function, param_spec, return_spec):
+        del return_spec  # TODO implement me
         args = ArgsCreator(param_spec).args()
 
-        self._invoker.invoke(f, args)
+        self._invoker.invoke(function, args)
         self._invoker.wait()
 
         return self._result

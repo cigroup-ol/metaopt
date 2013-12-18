@@ -1,0 +1,3 @@
+"""
+Package of core functionality.
+"""

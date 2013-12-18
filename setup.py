@@ -15,8 +15,8 @@ from pip.req import parse_requirements
 import orges
 
 HANG_MODULE_EXTENSION = Extension(
-    'orges.test.unit.hang',
-    sources=['orges/examples/algorithm/hangmodule.c']
+    'examples.algorithm.hang',
+    sources=['examples/algorithm/hangmodule.c']
 )
 
 
@@ -64,15 +64,15 @@ setup(
     ],
     data_files=[("", ["README.rst", "LICENSE.rst", "requirements_cli.txt",
                       "requirements_examples.txt", "requirements_lint.txt",
-                      "requirements_setup.txt", "requirements_tests.txt"])],
+                      "requirements_tests.txt"])],
     description=DESCRIPTION,
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=[],
     license=orges.__license__,
     name='orges',
     packages=find_packages(exclude=('examples', 'docs', 'tests')),
-    package_data={'': ['LICENSE.rst', 'README.rst', 'requirements.txt']},
-    setup_requires=find_requirements('requirements_setup.txt'),
+    package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},
+    setup_requires='',
     tests_require=find_requirements('requirements_tests.txt'),
     url=orges.__url__,
     version=orges.__version__

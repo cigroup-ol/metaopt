@@ -11,8 +11,8 @@ class SingleProcessInvoker(BaseInvoker):
     """Invoker that does the work on its own."""
 
     def __init__(self):
-        self._caller = None
         super(SingleProcessInvoker, self).__init__(self)
+        self._caller = None
 
     @property
     def caller(self):

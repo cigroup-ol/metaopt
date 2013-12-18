@@ -9,7 +9,7 @@ from collections import namedtuple
 from multiprocessing import cpu_count
 from multiprocessing.process import Process
 
-from orges.args import call
+from orges.core.args import call
 
 
 def determine_package(function):
@@ -106,19 +106,6 @@ class WorkerProvider(Singleton):
             worker_process.join()
 
             self._workers.remove(worker_process)
-
-
-class TaskHandle(object):
-    """A means to cancel a task."""
-
-    def __init__(self, invoker, worker_id, task_id):
-        self._invoker = invoker
-        self._worker_id = worker_id
-        self._task_id = task_id
-
-    def cancel(self):
-        """Cancels this task."""
-        self._invoker.cancel(self._worker_id, self._task_id)
 
 
 class WorkerHandle(object):
