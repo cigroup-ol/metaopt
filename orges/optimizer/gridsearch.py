@@ -1,7 +1,7 @@
 # -!- coding: utf-8 -!-
 from __future__ import division, print_function, with_statement
 
-from orges.args import ArgsCreator
+from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
 
 

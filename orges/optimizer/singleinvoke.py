@@ -4,8 +4,10 @@ Optimizer that issues one single invocation, only.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.args import ArgsCreator
-from orges.optimizer.base import BaseCaller, InvokeResult, BaseOptimizer
+
+from orges.optimizer.base import BaseCaller, BaseOptimizer
+from orges.core.args import ArgsCreator
+from orges.optimizer.util import InvokeResult
 
 
 class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
