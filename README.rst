@@ -10,6 +10,8 @@ Branch `develop`
 
 .. image:: https://travis-ci.org/cigroup-ol/orges.png?branch=develop
   :target: https://travis-ci.org/cigroup-ol/orges
+.. image:: https://drone.io/github.com/cigroup-ol/orges/status.png
+  :target: https://drone.io/github.com/cigroup-ol/orges
 
 OrgES is a Python-based organic computing framework for difficult blackbox optimization problems. It allows easy self-configuration of complex optimization heuristics.
 
