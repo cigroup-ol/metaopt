@@ -4,7 +4,7 @@ Integration test for main.py.
 
 from __future__ import division, print_function, with_statement
 
-from tests.util.integer_functions import g as f
+from orges.tests.util.integer_functions import g as f
 
 from nose.tools import eq_
 

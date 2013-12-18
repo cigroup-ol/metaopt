@@ -6,8 +6,8 @@ Tests for the ArgsCreator module.
 from __future__ import division, print_function, with_statement
 
 import itertools
-from tests.unit.core.util import get_intervals_from_function
-from tests.util.integer_functions import ALL_INTEGER_FUNCTIONS
+from orges.tests.unit.core.util import get_intervals_from_function
+from orges.tests.util.integer_functions import ALL_INTEGER_FUNCTIONS
 
 from nose.tools import eq_
 

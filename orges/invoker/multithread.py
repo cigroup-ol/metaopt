@@ -6,7 +6,8 @@ from __future__ import division, print_function, with_statement
 from threading import Lock, Thread
 
 from orges.core.args import call
-from orges.invoker.base import TaskHandle, BaseInvoker
+from orges.invoker.base import BaseInvoker
+from orges.invoker.util import TaskHandle
 
 
 class MultiThreadInvoker(BaseInvoker):

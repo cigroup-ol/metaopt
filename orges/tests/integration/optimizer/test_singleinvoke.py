@@ -3,7 +3,7 @@ TODO document me
 """
 from __future__ import division, print_function, with_statement
 
-from tests.integration.invoker.util import EqualityMatcher as Matcher
+from orges.tests.integration.invoker.util import EqualityMatcher as Matcher
 
 from mock import Mock
 

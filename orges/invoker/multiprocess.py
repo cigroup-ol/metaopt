@@ -9,9 +9,10 @@ import multiprocessing
 from threading import Lock
 from multiprocessing import Queue, cpu_count
 
-from orges.invoker.base import BaseInvoker, TaskHandle
+from orges.invoker.base import BaseInvoker
 from orges.invoker.multiprocess_util import Task, WorkerProvider, \
     determine_package
+from orges.invoker.util import TaskHandle
 
 # TODO use Pool from multiprocess?
 # TODO ensure tasks can be cancelled that are waiting in the queue
@@ -103,8 +104,7 @@ class MultiProcessInvoker(BaseInvoker):
                 self._aborted = True
                 task_handle = None
             else:
-                task_handle = TaskHandle(self, status.worker_id,
-                                         status.task_id)
+                task_handle = TaskHandle(self, status.task_id)
 
             # wait for result, if at worker limit
             if len(self._worker_handles) is self._worker_count_max:
