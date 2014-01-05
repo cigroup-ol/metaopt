@@ -2,6 +2,7 @@
 Various utilities for the multiprocess invoker.
 """
 import os
+import sys
 import uuid
 import inspect
 import threading
@@ -10,7 +11,6 @@ from multiprocessing import cpu_count
 from multiprocessing.process import Process
 
 from orges.core.args import call
-import sys
 
 
 def determine_package(function):

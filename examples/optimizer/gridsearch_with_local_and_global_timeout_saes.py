@@ -5,12 +5,12 @@ with local and global timeout.
 """
 from __future__ import division, print_function, with_statement
 
-from examples.algorithm.saes import f as saes
-from orges.core.main import optimize
 import orges.core.param as param
-from orges.optimizer.gridsearch import GridSearchOptimizer
+from orges.core.main import optimize
 from orges.plugins.print import PrintPlugin
 from orges.plugins.timeout import TimeoutPlugin
+from examples.algorithm.saes import f as saes
+from orges.optimizer.gridsearch import GridSearchOptimizer
 
 
 @param.int("mu", interval=(5, 10), title="μ")

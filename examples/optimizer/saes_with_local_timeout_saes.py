@@ -4,12 +4,12 @@ Example demonstrating the SAES optimizer with local timeout.
 """
 from __future__ import division, print_function, with_statement
 
-from examples.algorithm.saes import f as saes
-from orges.core.main import optimize
 import orges.core.param as param
-from orges.optimizer.saes import SAESOptimizer
+from orges.core.main import optimize
 from orges.plugins.print import PrintPlugin
+from orges.optimizer.saes import SAESOptimizer
 from orges.plugins.timeout import TimeoutPlugin
+from examples.algorithm.saes import f as saes
 
 
 @param.int("mu", interval=(5, 10), title="μ")

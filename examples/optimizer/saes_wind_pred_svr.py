@@ -14,10 +14,10 @@ from sklearn.svm import SVR
 from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 
-from orges.core.main import optimize
 import orges.core.param as param
-from orges.optimizer.saes import SAESOptimizer
+from orges.core.main import optimize
 from orges.plugins.print import PrintPlugin
+from orges.optimizer.saes import SAESOptimizer
 
 
 @param.int("C_exp", interval=(1, 10), title="C_exp")

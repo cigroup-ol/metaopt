@@ -4,12 +4,11 @@ Integration test for main.py.
 
 from __future__ import division, print_function, with_statement
 
-from orges.tests.util.integer_functions import g as f
-
 from nose.tools import eq_
 
 from orges.core.main import optimize
 from orges.optimizer.gridsearch import GridSearchOptimizer
+from orges.tests.util.integer_functions import g as f
 
 
 def test_optimize_running_too_long_aborts():

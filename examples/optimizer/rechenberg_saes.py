@@ -4,11 +4,11 @@ Example demonstrating an SAES target algorithm and the rechenberg optimizer.
 """
 from __future__ import division, print_function, with_statement
 
-from examples.algorithm.saes import f as saes
-from orges.core.main import optimize
 import orges.core.param as param
-from orges.optimizer.rechenberg import RechenbergOptimizer
+from orges.core.main import optimize
 from orges.plugins.print import PrintPlugin
+from examples.algorithm.saes import f as saes
+from orges.optimizer.rechenberg import RechenbergOptimizer
 
 
 @param.int("mu", interval=(5, 10), title="μ")
