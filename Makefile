@@ -55,7 +55,6 @@ install:
 isort:
 	find examples -name "*.py" -exec isort {} &> /dev/null +
 	find orges -name "*.py" -exec isort {} &> /dev/null +
-	find tests -name "*.py" -exec isort {} &> /dev/null +
 
 lint:
 	find orges -name '*.py' -exec flake8 {} +
@@ -73,11 +72,7 @@ sdist: clean
 	ls -l dist
 
 test:
-	python setup.py test
+	python setup.py nosetests
 
 test-all:
 	tox
-
-venv:
-	virtualenv venv
-	source venv/bin/activate

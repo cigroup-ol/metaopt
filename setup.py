@@ -74,7 +74,7 @@ setup(
     package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},
     setup_requires='',
     tests_require=find_requirements('requirements_tests.txt'),
-    test_suite="tests/",
+    test_suite="orges/tests/",
     url=orges.__url__,
     version=orges.__version__,
 )
