@@ -1,5 +1,5 @@
 # requirements for windml
-https://codeload.github.com/Bengt/windml/zip/develop#egg=windml
+https://codeload.github.com/Bengt/windml/zip/make-pip-installable#egg=windml
 numpy
 scikit-learn
 scipy
