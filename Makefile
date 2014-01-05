@@ -14,7 +14,11 @@ help:
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "venv - create and activate virtual environment"
 
-clean: clean-build clean-pyc clean-patchfiles clean-backupfiles
+clean: clean-backup clean-build clean-patch clean-pyc clean-reverse
+
+clean-backup:
+	find . -name '*~' -exec rm -f {} +
+	find . -name '*.bak' -exec rm -f {} +
 
 clean-build:
 	rm -fr build/
@@ -22,17 +26,16 @@ clean-build:
 	rm -fr *.egg-info
 	rm -fr *.egg
 
+clean-patch:
+	find . -name '*.orig' -exec rm -f {} +
+	find . -name '*.rej' -exec rm -f {} +
+
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 
-clean-patchfiles:
-	find . -name '*.orig' -exec rm -f {} +
-	find . -name '*.rej' -exec rm -f {} +
-
-clean-backupfiles:
-	find . -name '*~' -exec rm -f {} +
-	find . -name '*.bak' -exec rm -f {} +
+clean-reverse:
+	rm classes_OrgES.png packages_OrgES.png &> /dev/null || exit 0
 
 coverage:
 	coverage run --source orges setup.py nosetests
@@ -66,6 +69,15 @@ reindent:
 
 release: clean
 	python setup.py sdist upload
+
+reverse: clean-reverse
+	pyreverse --ignore tests -o png -p OrgES orges
+	open ./classes_OrgES.png &> /dev/null || echo "";  # works under MacOS
+	open ./packages_OrgES.png &> /dev/null || echo "";  # works under MacOS
+	start ./classes_OrgES.png &> /dev/null || echo "";  # works under Windows
+	start ./packages_OrgES.png &> /dev/null || echo "";  # works under Windows
+	xdg-open ./classes_OrgES.png &> /dev/null || echo "";  # works under Linux
+	xdg-open ./packages_OrgES.png &> /dev/null || echo "";  # works under Linux
 
 sdist: clean
 	python setup.py sdist
