@@ -19,7 +19,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         """
         super(PluggableInvoker, self).__init__(self)
 
+        # define self._invoker attribute and initialize it using property
+        self._invoker = None
         self.invoker = invoker
+
         self.invoker.caller = self
         self._caller = None
         self.plugins = plugins
