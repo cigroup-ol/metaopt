@@ -26,18 +26,22 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
     @property
     def caller(self):
+        """Property for the caller attribute."""
         return self._caller
 
     @caller.setter
     def caller(self, value):
+        """Setter for the caller attribute."""
         self._caller = value
 
     @property
     def invoker(self):
+        """Property for the invoker attribute."""
         return self._invoker
 
     @invoker.setter
     def invoker(self, invoker):
+        """Setter for the invoker attribute."""
         invoker.caller = self
         self._invoker = invoker
 
@@ -45,6 +49,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         pass
 
     def invoke(self, function, fargs, invocation=None, **kwargs):
+        """Implementation of the inherited abstract invoke method."""
         # TODO: Reuse existing invocation object
         if invocation is None:
             invocation = Invocation()
@@ -72,7 +77,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         return task, aborted
 
     def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
-
+        """Implementation of the inherited abstract on_result method."""
         if invocation is None:
             invocation = Invocation()
         invocation.current_result = result
@@ -95,14 +100,16 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
                                   *invocation.vargs)
 
     def on_error(self, fargs, invocation):
-
+        """Implementation of the inherited abstract on_error method."""
         for plugin in self.plugins:
             plugin.on_error(invocation)
 
         self.caller.on_error(fargs, **invocation.kwargs)
 
     def wait(self):
+        """Implementation of the inherited abstract wait method."""
         return self.invoker.wait()
 
     def abort(self):
+        # TODO rename this to stop
         self.invoker.abort()
