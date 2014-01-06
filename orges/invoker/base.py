@@ -5,6 +5,7 @@ Abstract invoker defining the API of invoker implementations.
 from __future__ import division, print_function, with_statement
 
 import abc
+
 from orges.util.stoppable import Stoppable
 
 
