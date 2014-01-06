@@ -24,7 +24,7 @@ class BaseInvoker(Stoppable):
 
     @abc.abstractmethod
     def __init__(self, caller):
-        pass
+        super(BaseInvoker, self).__init__()
 
     @abc.abstractmethod
     def invoke(self, f, fargs, **kwargs):

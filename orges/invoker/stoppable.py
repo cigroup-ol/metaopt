@@ -10,11 +10,11 @@ from orges.util.stoppable import Stoppable, stoppable_method
 # TODO make this thread-safe
 
 
-class StoppableInvoker(Stoppable, BaseInvoker):
+class StoppableInvoker(BaseInvoker):
     """Invoker that can be stopped."""
 
     def __init__(self):
-        super(StoppableInvoker, self).__init__()
+        super(StoppableInvoker, self).__init__(self)
 
     @stoppable_method
     def invoke(self, f, fargs, **kwargs):
