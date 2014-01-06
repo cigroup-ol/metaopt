@@ -4,13 +4,13 @@ Tests for the pluggable invoker.
 
 from __future__ import division, print_function, with_statement
 
+from nose.tools.trivial import eq_
+from nose.tools.nontrivial import raises
 
 from orges.core.args import ArgsCreator
+from orges.util.stoppable import StoppedException
 from orges.invoker.stoppable import StoppableInvoker
 from orges.tests.util.integer_functions import f
-from nose.tools.nontrivial import raises
-from orges.util.stoppable import StoppedException
-from nose.tools.trivial import eq_
 
 f = f  # helps static code checkers identify attributes.
 

@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 
 from nose.tools.nontrivial import raises
 
-from orges.util.stoppable import Stoppable, StoppedException, stoppable_method
+from orges.util.stoppable import Stoppable, stoppable_method, StoppedException
 
 
 def test_stoppable_is_not_stopped_initially():
