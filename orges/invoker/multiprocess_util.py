@@ -1,43 +1,15 @@
 """
 Various utilities for the multiprocess invoker.
 """
-import os
 import sys
 import uuid
-import inspect
 import threading
 from collections import namedtuple
-from multiprocessing import cpu_count
 from multiprocessing.process import Process
 
 from orges.core.args import call
 from orges.util.singleton import Singleton
-
-
-def determine_package(function):
-    """
-    Resolves a call by function to a call by package.
-    - Determine absolute package name of the given function.
-    - When the task gets executed, the worker process will import it.
-    """
-
-    # expand the module's path to an absolute import
-    filename = inspect.getsourcefile(function)
-    module_path, module_filename = os.path.split(filename)
-    module_name, _ = os.path.splitext(module_filename)
-    prefix = []
-    for directory in module_path.split(os.sep)[::-1]:
-        prefix.append(directory)
-        candidate = ".".join(prefix[::-1] + [module_name])
-        #print(candidate)
-        try:
-            __import__(candidate, globals(), locals(), [], 0)
-            function = candidate
-            return function
-        except ImportError:
-            pass
-    raise ImportError("Could not determine the package of the given " +
-                      "function. This should not happen.")
+from orges.invoker.util.determine_worker_count import determine_worker_count
 
 
 class WorkerProvider(Singleton):
@@ -47,7 +19,7 @@ class WorkerProvider(Singleton):
 
     def __init__(self):
         self._lock = threading.Lock()
-        self._cpu_count = cpu_count()
+        self._worker_count = determine_worker_count()  # use up to all CPUs
         self._workers = []
 
     def provision(self, queue_tasks, queue_results, queue_status,
@@ -56,7 +28,7 @@ class WorkerProvider(Singleton):
         Provision a given number worker processes for future use.
         """
         with self._lock:
-            if self._cpu_count < (len(self._workers) + number_of_workers):
+            if self._worker_count < (len(self._workers) + number_of_workers):
                 raise IndexError("Cannot provision so many worker processes.")
 
             worker_processes = []
