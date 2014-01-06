@@ -6,7 +6,6 @@ It provides two abstract base classes :class:`BaseOptimizer` and
 latter is for objects that call :meth:`orges.invoker.base.BaseInvoker.invoke`
 and need to be called back by the invoker. Usually the classes that implement
 :class:`BaseOptimizer` also implement :class:`BaseCaller`.
-
 """
 
 from __future__ import division, print_function, with_statement

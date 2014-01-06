@@ -169,5 +169,5 @@ class MultiProcessInvoker(BaseInvoker):
         # TODO: handle queue corruption, by swapping them out for new ones?
 
     def status(self):
-        """Reports the status of the workforce."""
+        """Reports the status of the work force."""
         raise NotImplementedError()  # TODO implement

@@ -1,4 +1,6 @@
-"""This module provides an abstract base class for invocation plugins"""
+"""
+This module provides an abstract base class for invocation plugins.
+"""
 
 
 from abc import ABCMeta, abstractmethod
