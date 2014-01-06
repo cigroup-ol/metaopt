@@ -6,26 +6,7 @@ from multiprocessing.queues import Queue
 
 import nose
 
-from orges.invoker.multiprocess_util import Singleton, WorkerProvider
-
-
-def test_singleton():
-    class ASingleton(Singleton):
-        """Mocks a singleton class."""
-        def __init__(self):
-            pass
-
-    class BSingleton(Singleton):
-        """Mocks a singleton class."""
-        def __init__(self):
-            pass
-
-    a_singleton, a2_singleton = ASingleton(), ASingleton()
-    b_singleton, b2_singleton = BSingleton(), BSingleton()
-
-    assert a_singleton is a2_singleton
-    assert b_singleton is b2_singleton
-    assert a_singleton is not b_singleton
+from orges.invoker.multiprocess_util import WorkerProvider
 
 
 def test_WorkerProvider_acts_as_singleton():

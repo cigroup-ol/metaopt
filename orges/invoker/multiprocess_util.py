@@ -11,6 +11,7 @@ from multiprocessing import cpu_count
 from multiprocessing.process import Process
 
 from orges.core.args import call
+from orges.util.singleton import Singleton
 
 
 def determine_package(function):
@@ -37,26 +38,6 @@ def determine_package(function):
             pass
     raise ImportError("Could not determine the package of the given " +
                       "function. This should not happen.")
-
-
-class _Singleton(type):
-    """Thread-safe singleton."""
-
-    _instances = {}
-    _instances_lock = threading.Lock()
-
-    def __call__(cls, *args, **kwargs):  # @NoSelf
-        try:
-            return cls._instances[cls]
-        except KeyError:
-            with cls._instances_lock:
-                cls._instances[cls] = super(_Singleton, cls).__call__(*args,
-                                                                      **kwargs)
-            return cls._instances[cls]
-
-
-class Singleton(_Singleton('SingletonMeta', (object,), {})):
-    pass
 
 
 class WorkerProvider(Singleton):
