@@ -7,7 +7,7 @@ from threading import Lock, Thread
 
 from orges.core.args import call
 from orges.invoker.base import BaseInvoker
-from orges.invoker.util import TaskHandle
+from orges.invoker.util.TaskHandle import TaskHandle
 
 
 class MultiThreadInvoker(BaseInvoker):

@@ -10,7 +10,7 @@ from threading import Lock
 from multiprocessing import Queue, cpu_count
 
 from orges.invoker.base import BaseInvoker
-from orges.invoker.util import TaskHandle
+from orges.invoker.util.TaskHandle import TaskHandle
 from orges.invoker.multiprocess_util import Task, WorkerProvider, \
     determine_package
 
