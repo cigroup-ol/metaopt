@@ -51,4 +51,4 @@ def l(a, b):
     """Function with two integer ranges of length 1."""
     return -(a + b)
 
-ALL_INTEGER_FUNCTIONS = [f, g, h, i, j, k, l]
+INTEGER_FUNCTIONS = [f, g, h, i, j, k, l]

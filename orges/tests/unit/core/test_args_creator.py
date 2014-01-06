@@ -11,7 +11,7 @@ from nose.tools import eq_
 
 from orges.core.args import ArgsCreator
 from orges.tests.unit.core.util import get_intervals_from_function
-from orges.tests.util.integer_functions import ALL_INTEGER_FUNCTIONS
+from orges.tests.util.integer_functions import INTEGER_FUNCTIONS
 
 try:
     xrange  # will work in python2, only
@@ -20,7 +20,7 @@ except NameError:
 
 
 def test_ArgsCreator_product_versus_itertools_product():
-    for function in ALL_INTEGER_FUNCTIONS:
+    for function in INTEGER_FUNCTIONS:
         # log
         print(function)
 
@@ -48,7 +48,7 @@ def test_ArgsCreator_product_versus_itertools_product():
 
 
 def test_ArgsCreator_args_versus_nested_loop():
-    for function in ALL_INTEGER_FUNCTIONS:
+    for function in INTEGER_FUNCTIONS:
         # log
         print(function)
 
