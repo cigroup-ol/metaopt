@@ -1,5 +1,7 @@
 .PHONY: clean-pyc clean-build docs
 
+IMPORT_TO_ADD = "from __future__ import division, print_function, with_statement"
+
 help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
@@ -56,8 +58,8 @@ install:
 	find . -wholename "./requirements_*.txt" -exec pip install -r {} \;
 
 isort:
-	find examples -name "*.py" -exec isort {} &> /dev/null +
-	find orges -name "*.py" -exec isort {} &> /dev/null +
+	find examples -name "*.py" -exec isort -a $(IMPORT_TO_ADD) {} &> /dev/null +
+	find orges -name "*.py" -exec isort -a $(IMPORT_TO_ADD) {} &> /dev/null +
 
 lint:
 	find orges -name '*.py' -exec flake8 {} +
