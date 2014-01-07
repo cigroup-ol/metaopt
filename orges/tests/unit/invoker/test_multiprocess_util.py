@@ -7,11 +7,11 @@ from multiprocessing.queues import Queue
 
 import nose
 
-from orges.invoker.multiprocess_util import WorkerProvider
+from orges.invoker.util.multiprocess import WorkerProcessProvider
 
 
 def test_WorkerProvider_acts_as_singleton():
-    wp0, wp1 = WorkerProvider(), WorkerProvider()
+    wp0, wp1 = WorkerProcessProvider(), WorkerProcessProvider()
 
     assert wp0 is wp1
 
@@ -23,7 +23,7 @@ def test_WorkerProvider_circle():
 
     worker_count = 2
 
-    worker_provider = WorkerProvider()
+    worker_provider = WorkerProcessProvider()
 
     # once
     workers = worker_provider.provision(number_of_workers=worker_count,

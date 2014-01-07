@@ -10,9 +10,9 @@ from threading import Lock
 from multiprocessing import Queue, cpu_count
 
 from orges.invoker.base import BaseInvoker
-from orges.invoker.util.TaskHandle import TaskHandle
-from orges.invoker.multiprocess_util import Task, WorkerProvider, \
-    determine_package
+from orges.invoker.util.worker_provider import Task, WorkerProcessProvider
+from orges.invoker.util.task_handle import TaskHandle
+from orges.invoker.util.determine_package import determine_package
 
 # TODO use Pool from multiprocess?
 # TODO ensure tasks can be cancelled that are waiting in the queue
@@ -46,7 +46,7 @@ class MultiProcessInvoker(BaseInvoker):
         self._queue_tasks = Queue()
 
         self._worker_handles = []
-        self._worker_provider = WorkerProvider()
+        self._worker_provider = WorkerProcessProvider()
 
         # initialize logging
         self._logger = multiprocessing.log_to_stderr(logging.INFO)
