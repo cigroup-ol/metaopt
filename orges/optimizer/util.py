@@ -1,5 +1,5 @@
 """
-Utilities for optimizers.
+Utilities for optimizer implementations.
 """
 from __future__ import division, print_function, with_statement
 

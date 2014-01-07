@@ -1,3 +1,3 @@
 """
-Unit tests for OrgES.
+Package of unit tests for OrgES.
 """

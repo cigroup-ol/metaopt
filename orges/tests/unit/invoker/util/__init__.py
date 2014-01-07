@@ -1,3 +1,3 @@
 """
-Tests utilities for invoker implementations.
+Utilities for tests of invoker implementations.
 """

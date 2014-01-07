@@ -1,5 +1,5 @@
 """
-Utilities for plugins.
+Utilities for plugin implementations.
 """
 from __future__ import division, print_function, with_statement
 

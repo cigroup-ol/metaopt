@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 """
-OrgES - Organic Computing for Evolution Strategies.
-
+Root package of OrgES - Organic Computing for Evolution Strategies.
 """
 __author__ = 'Renke Grunwald, Bengt Lüers, Jendrik Poloczek'
 __author_email__ = 'info@orges.org'

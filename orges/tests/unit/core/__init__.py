@@ -1,3 +1,3 @@
 """
-Package of tests for core functionality.
+Package of unit tests for core functionality.
 """

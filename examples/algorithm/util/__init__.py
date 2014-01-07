@@ -1,3 +1,3 @@
 """
-Utilities for algorithm implementations.
+Package of utilities for algorithm implementations.
 """

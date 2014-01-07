@@ -1,3 +1,3 @@
 """
-Package of algorithms.
+Package of example algorithms.
 """
