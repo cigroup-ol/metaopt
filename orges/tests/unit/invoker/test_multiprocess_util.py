@@ -7,7 +7,7 @@ from multiprocessing.queues import Queue
 
 import nose
 
-from orges.invoker.util.multiprocess import WorkerProcessProvider
+from orges.invoker.util.worker_provider import WorkerProcessProvider
 
 
 def test_WorkerProvider_acts_as_singleton():

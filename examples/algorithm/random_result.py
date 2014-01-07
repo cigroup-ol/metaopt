@@ -3,7 +3,7 @@ from __future__ import division, print_function, with_statement
 
 import random
 
-from orges.invoker.util.multiprocess import Result
+from orges.invoker.util.worker_provider import Result
 
 
 def get_worker(index, queue_tasks, queue_results):

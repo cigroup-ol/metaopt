@@ -10,8 +10,8 @@ from threading import Lock
 from multiprocessing import Queue, cpu_count
 
 from orges.invoker.base import BaseInvoker
-from orges.invoker.util.worker_provider import Task, WorkerProcessProvider
 from orges.invoker.util.task_handle import TaskHandle
+from orges.invoker.util.worker_provider import Task, WorkerProcessProvider
 from orges.invoker.util.determine_package import determine_package
 
 # TODO use Pool from multiprocess?
