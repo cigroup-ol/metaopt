@@ -4,7 +4,6 @@ from __future__ import division, print_function, with_statement
 
 from examples.algorithm.hang import hang
 
-
-def get_worker():
-    """Gets a get_worker function for hang from the builder and returns it."""
-    return hang
+if __name__ == '__main__':
+    AMOUNT_OF_SECONDS_TO_HANG = 3
+    hang(AMOUNT_OF_SECONDS_TO_HANG)
