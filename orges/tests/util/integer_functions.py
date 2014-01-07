@@ -1,4 +1,6 @@
 """Collection of functions with integer parameters for testing purposes."""
+from __future__ import division, print_function, with_statement
+
 from time import sleep
 
 from orges.core import param

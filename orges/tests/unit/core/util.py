@@ -1,6 +1,7 @@
 """
 Utilities for writing unit tests for the core.
 """
+from __future__ import division, print_function, with_statement
 
 
 def get_intervals_from_function(function):

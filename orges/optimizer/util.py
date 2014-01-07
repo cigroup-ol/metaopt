@@ -1,6 +1,8 @@
 """
 Utilities for optimizers.
 """
+from __future__ import division, print_function, with_statement
+
 from collections import namedtuple
 
 # Data structure for results returned by invoke calls and the arguments of such

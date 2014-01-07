@@ -1,6 +1,7 @@
 """
 Tests for the MutliProcess utilities.
 """
+from __future__ import division, print_function, with_statement
 
 from multiprocessing.queues import Queue
 

@@ -2,6 +2,8 @@
 Tests for the main module.
 """
 
+from __future__ import division, print_function, with_statement
+
 from nose.tools import raises
 
 from orges.core.main import custom_optimize, NoParamSpecError

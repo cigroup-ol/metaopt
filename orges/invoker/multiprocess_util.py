@@ -1,6 +1,8 @@
 """
 Various utilities for the multiprocess invoker.
 """
+from __future__ import division, print_function, with_statement
+
 import sys
 import uuid
 import threading
