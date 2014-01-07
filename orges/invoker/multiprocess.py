@@ -116,7 +116,7 @@ class MultiProcessInvoker(BaseInvoker):
                                 worker_handle.worker_id == result.worker_id
                                 and worker_handle.current_task_id ==
                                 result.task_id):
-                            worker_handle.cancel()
+                            worker_handle.stop()
                             self._worker_handles.remove(worker_handle)
 
                 # handle all other results
@@ -136,7 +136,7 @@ class MultiProcessInvoker(BaseInvoker):
         # shutdown all workers
         with self._lock:
             for worker_handle in self._worker_handles:
-                worker_handle.cancel()
+                worker_handle.stop()
                 self._worker_handles.remove(worker_handle)
             self._aborted = True
 
@@ -156,14 +156,14 @@ class MultiProcessInvoker(BaseInvoker):
 
         self.terminate_gracefully()
 
-    def cancel(self, worker_id, task_id):
+    def stop(self, worker_id, task_id):
         """Terminates a worker_handle given by id."""
 
         with self._lock:
             for worker_handle in self._worker_handles:
                 if worker_handle.worker_id == worker_id and \
                         worker_handle.current_task_id == task_id:
-                    worker_handle.cancel()
+                    worker_handle.stop()
                     self._worker_handles.remove(worker_handle)
                     return  # handle is unique, don't look any further
         # TODO: handle queue corruption, by swapping them out for new ones?

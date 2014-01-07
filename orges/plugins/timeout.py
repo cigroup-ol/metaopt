@@ -21,4 +21,4 @@ class TimeoutPlugin(DummyPlugin):
 
     def on_invoke(self, invocation):
         current_task = invocation.current_task
-        Timer(self.timeout, current_task.cancel).start()
+        Timer(self.timeout, current_task.stop).start()

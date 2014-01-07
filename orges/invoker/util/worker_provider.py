@@ -11,6 +11,7 @@ from multiprocessing.process import Process
 
 from orges.core.args import call
 from orges.util.singleton import Singleton
+from orges.util.stoppable import stoppable_method
 from orges.invoker.util.determine_worker_count import determine_worker_count
 
 
@@ -44,7 +45,7 @@ class WorkerProcessProvider(Singleton):
                 worker_process.start()
                 worker_processes.append(worker_process)
 
-            self._workers += worker_processes
+            self._workers.append(worker_processes)
         return [WorkerHandle(worker_process) for worker_process in
                 worker_processes]
 
@@ -65,21 +66,24 @@ class WorkerProcessProvider(Singleton):
 
 
 class WorkerHandle(object):
-    """A means to cancel a worker."""
+    """A means to stop a worker."""
 
     def __init__(self, worker):
         self._worker = worker
 
     @property
     def worker_id(self):
+        """Property for the worker_id attribute of this worker."""
         return self._worker.worker_id
 
     @property
     def current_task_id(self):
+        """Property for the current_task_id attribute of this worker."""
         return self._worker.current_task_id
 
-    def cancel(self):
-        """Cancels this worker."""
+    @stoppable_method
+    def stop(self):
+        """Stops this worker."""
         WorkerProcessProvider().release(self._worker)
 
 

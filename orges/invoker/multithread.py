@@ -52,7 +52,7 @@ class MultiThreadInvoker(BaseInvoker):
 
         return self.task, aborted
 
-    def cancel(self, task):
+    def stop(self, task):
         with self.lock:
             if self.task is not task:
                 return
@@ -85,4 +85,4 @@ class MultiThreadInvoker(BaseInvoker):
         with self.lock:
             self.aborted = True
 
-        self.cancel(self.current_task)
+        self.stop(self.current_task)
