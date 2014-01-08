@@ -3,6 +3,7 @@
 
 from __future__ import division, print_function, with_statement
 import os
+import sys
 
 try:
     from setuptools import setup, find_packages, Extension
@@ -72,9 +73,10 @@ setup(
     name='orges',
     packages=find_packages(exclude=('examples', 'docs', 'tests')),
     package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},
-    setup_requires='',
+    setup_requires=[],
     tests_require=find_requirements('requirements_tests.txt'),
-    test_suite="orges/tests/",
+    test_suite='orges.tests',
     url=orges.__url__,
+    use_2to3=(sys.version_info >= (3,)),
     version=orges.__version__,
 )
