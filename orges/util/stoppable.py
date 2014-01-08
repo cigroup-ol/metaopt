@@ -3,15 +3,15 @@ Interface definition and implementation of objects that can be stopped.
 """
 from __future__ import division, print_function, with_statement
 
-import abc
+from abc import ABCMeta, abstractmethod, abstractproperty
 
 
 class BaseStoppable(object):
     """Abstract object that can be stopped."""
 
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
-    @abc.abstractmethod
+    @abstractmethod
     def stop(self):
         """
         Stops this object.
@@ -24,7 +24,7 @@ class BaseStoppable(object):
         """
         pass
 
-    @abc.abstractproperty
+    @abstractproperty
     def stopped(self):
         """
         Indicates whether this object is stopped.
@@ -46,6 +46,7 @@ def stoppable_method(method):
         """The given method wrapped appended with test if self is stopped."""
         if self.stopped:
             raise StoppedException()
+        self._stopped = True  # Yes, access to the private attribute here
         return method(self, *args, **kwargs)
     return wrapped_method
 
@@ -59,7 +60,7 @@ class Stoppable(BaseStoppable):
     @stoppable_method
     def stop(self):
         """"Stops this object."""
-        self._stopped = True
+        pass  # implementations may overwrite this method or check for .stopped
 
     @property
     def stopped(self):
