@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 
 import abc
 
-from orges.util.stoppable import Stoppable
+from orges.util.stoppable import Stoppable, stoppable_method
 
 
 class BaseInvoker(Stoppable):
@@ -28,6 +28,7 @@ class BaseInvoker(Stoppable):
         super(BaseInvoker, self).__init__()
 
     @abc.abstractmethod
+    @stoppable_method
     def invoke(self, f, fargs, **kwargs):
         """
         Invoke an objective function with given arguments.

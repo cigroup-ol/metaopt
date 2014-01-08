@@ -46,6 +46,15 @@ def stoppable_method(method):
         """The given method wrapped appended with test if self is stopped."""
         if self.stopped:
             raise StoppedException()
+        return method(self, *args, **kwargs)
+    return wrapped_method
+
+
+def stopping_method(method):
+    """Decorator that notes that is stopped."""
+
+    def wrapped_method(self, *args, **kwargs):
+        """The given method wrapped appended with test if self is stopped."""
         self._stopped = True  # Yes, access to the private attribute here
         return method(self, *args, **kwargs)
     return wrapped_method
@@ -58,6 +67,7 @@ class Stoppable(BaseStoppable):
         self._stopped = False
 
     @stoppable_method
+    @stopping_method
     def stop(self):
         """"Stops this object."""
         pass  # implementations may overwrite this method or check for .stopped

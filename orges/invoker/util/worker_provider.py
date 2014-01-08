@@ -12,7 +12,7 @@ from multiprocessing.process import Process
 
 from orges.core.args import call
 from orges.util.singleton import Singleton
-from orges.util.stoppable import Stoppable, stoppable_method
+from orges.util.stoppable import Stoppable, stopping_method, stoppable_method
 from orges.invoker.util.determine_worker_count import determine_worker_count
 
 
@@ -204,6 +204,12 @@ class WorkerHandle(Stoppable):
     def __init__(self):
         super(WorkerHandle, self).__init__()
 
+    @stoppable_method
+    @stopping_method
+    def stop(self):
+        """Stops this worker."""
+        pass
+
 
 class WorkerProcessHandle(WorkerHandle):
     """A means to stop a worker."""
@@ -223,6 +229,7 @@ class WorkerProcessHandle(WorkerHandle):
         return self._worker_process.current_task_id
 
     @stoppable_method
+    @stopping_method
     def stop(self):
         """Stops this worker."""
         WorkerProcessProvider().release(self._worker_process)
