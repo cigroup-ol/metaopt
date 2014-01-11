@@ -33,13 +33,11 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
 
         return self.best[0]
 
-    # Wird aufgerufen wenn ein Aufruf von f beendet wurde.
     def on_result(self, fitness, args, *vargs):
         _, best_fitness = self.best
 
         if best_fitness is None or fitness < best_fitness:
             self.best = (args, fitness)
 
-    # Wird aufgerufen wenn beim Aufruf von f ein Fehler aufgetaucht ist.
     def on_error(self, args, **kwargs):
         pass

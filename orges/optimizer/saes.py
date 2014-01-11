@@ -44,6 +44,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.scored_population = []
         self.best_scored_indivual = (None, None)
 
+        self.abort = False
         self.generation = 1
 
     @property
@@ -65,6 +66,10 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         while not self.exit_condition():
             self.add_offspring()
             self.score_population()
+
+            if self.abort:
+                return self.best_scored_indivual[0]
+
             self.select_parents()
 
             self.generation += 1
@@ -116,7 +121,12 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
 
         for individual in self.population:
             args, _ = individual
-            self.invoker.invoke(self.f, args, individual=individual)
+
+            _, abort = self.invoker.invoke(self.f, args, individual=individual)
+
+            if abort:
+                self.abort = True
+                break
 
         self._invoker.wait()
 

@@ -43,6 +43,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         self.previous_best_fitness = None
 
         self.generation = 1
+        self.abort = False
 
     @property
     def invoker(self):
@@ -66,6 +67,10 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         while not self.exit_condition():
             self.add_offspring()
             self.score_population()
+
+            if self.abort:
+                return self.best_scored_indivual[0]
+
             self.select_parents()
             self.change_mutation_strength()
 
@@ -99,7 +104,11 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         self.scored_population = []
 
         for individual in self.population:
-            self.invoker.invoke(self.f, individual, individual=individual)
+            _, abort = self.invoker.invoke(self.f, individual)
+
+            if abort:
+                self.abort = True
+                break
 
         self._invoker.wait()
 
