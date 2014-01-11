@@ -36,9 +36,18 @@ def test_ArgsCreator_product_versus_itertools_product():
             pass  # forces execution of the range generators
         print(args_dummy)
 
+        # TODO look for a better way to determine the number of params
+        # than trying and failing.
+
         # use
-        args_product = [(a.value, b.value)
-                        for a, b in ArgsCreator(function.param_spec).product()]
+        try:
+            args_product = [(a.value, b.value)
+                            for a, b in
+                            ArgsCreator(function.param_spec).product()]
+        except ValueError:
+            args_product = [(a[0].value)
+                            for a in
+                            ArgsCreator(function.param_spec).product()]
         print(args_product)
 
         # compare
