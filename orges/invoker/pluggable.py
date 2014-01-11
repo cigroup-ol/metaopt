@@ -19,12 +19,11 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         """
         super(PluggableInvoker, self).__init__(self)
 
-        # define self._invoker attribute and initialize it using property
-        self._invoker = None
-        self.invoker = invoker
+        self._invoker = invoker
+        self._invoker.caller = self
 
-        self.invoker.caller = self
-        self._caller = None
+        self._caller = None # Set by the the calling optimizer
+
         self.plugins = plugins
 
     @property
@@ -42,18 +41,11 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         """Property for the invoker attribute."""
         return self._invoker
 
-    @invoker.setter
-    def invoker(self, invoker):
-        """Setter for the invoker attribute."""
-        invoker.caller = self
-        self._invoker = invoker
-
     def get_subinvoker(self, resources):
         pass
 
     def invoke(self, function, fargs, invocation=None, **kwargs):
         """Implementation of the inherited abstract invoke method."""
-        # TODO: Reuse existing invocation object
         if invocation is None:
             invocation = Invocation()
 
@@ -81,33 +73,24 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
     def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
         """Implementation of the inherited abstract on_result method."""
-        if invocation is None:
-            invocation = Invocation()
         invocation.current_result = result
-        invocation.fargs = fargs
-        invocation.vargs = vargs
-        invocation.kwargs = kwargs
 
         for plugin in self.plugins:
             plugin.on_result(invocation)
 
         if invocation.retry:
             # TODO: Maybe run this in its own thread
-            self.invoke(
-                invocation.function,
-                invocation.fargs,
-                invocation,
-                **invocation.kwargs)
+            self.invoke(invocation.function, invocation.fargs, invocation,
+                        **invocation.kwargs)
         else:
-            self.caller.on_result(fitness=result, args=fargs,
-                                  *invocation.vargs)
+            self.caller.on_result(result, fargs, **invocation.kwargs)
 
-    def on_error(self, fargs, invocation):
+    def on_error(self, error, fargs, invocation):
         """Implementation of the inherited abstract on_error method."""
         for plugin in self.plugins:
             plugin.on_error(invocation)
 
-        self.caller.on_error(fargs, **invocation.kwargs)
+        self.caller.on_error(error, fargs, **invocation.kwargs)
 
     def wait(self):
         """Implementation of the inherited abstract wait method."""
