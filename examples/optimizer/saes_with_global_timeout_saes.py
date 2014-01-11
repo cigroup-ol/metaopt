@@ -30,6 +30,6 @@ def f(mu, lambd, tau0, tau1):
 if __name__ == '__main__':
     GLOBAL_TIMEOUT = 5  # Global timeout after 5 seconds
 
-    print(optimize(function=f, optimizer=SAESOptimizer(),
+    print(optimize(f, optimizer=SAESOptimizer(),
                    timeout=GLOBAL_TIMEOUT,
                    plugins=[PrintPlugin()]))

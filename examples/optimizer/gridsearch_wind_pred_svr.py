@@ -66,5 +66,5 @@ def f(C_exp, neg_gamma_exp):
     return mse_y_hat
 
 if __name__ == '__main__':
-    print(optimize(function=f, optimizer=SingleInvokeOptimizer(),
+    print(optimize(f, optimizer=SingleInvokeOptimizer(),
                    plugins=[PrintPlugin()]))

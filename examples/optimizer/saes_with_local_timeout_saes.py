@@ -31,6 +31,6 @@ def f(mu, lambd, tau0, tau1):
 if __name__ == '__main__':
     LOCAL_TIMEOUT = 1  # Local timeout after 1 second
 
-    print(optimize(function=f, optimizer=SAESOptimizer(),
+    print(optimize(f, optimizer=SAESOptimizer(),
                    plugins=[TimeoutPlugin(LOCAL_TIMEOUT),
                             PrintPlugin()]))

@@ -33,6 +33,6 @@ if __name__ == '__main__':
     LOCAL_TIMEOUT = 1  # Local timeout after 1 second
     GLOBAL_TIMEOUT = 5  # GLOBAL timeout after 1 seconds
 
-    print(optimize(function=f, optimizer=GridSearchOptimizer(),
+    print(optimize(f, optimizer=GridSearchOptimizer(),
                    timeout=GLOBAL_TIMEOUT,
                    plugins=[TimeoutPlugin(LOCAL_TIMEOUT), PrintPlugin()]))

@@ -28,5 +28,5 @@ def f(mu, lambd, tau0, tau1):
     return saes(args)
 
 if __name__ == '__main__':
-    print(optimize(function=f, optimizer=RechenbergOptimizer(),
+    print(optimize(f, optimizer=RechenbergOptimizer(),
                    plugins=[PrintPlugin()]))

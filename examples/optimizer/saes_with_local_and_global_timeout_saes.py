@@ -32,7 +32,7 @@ if __name__ == '__main__':
     LOCAL_TIMEOUT = 1  # Local timeout after 1 second
     GLOBAL_TIMEOUT = 5  # Global timeout after 5 seconds
 
-    print(optimize(function=f, optimizer=SAESOptimizer(),
+    print(optimize(f, optimizer=SAESOptimizer(),
                    timeout=GLOBAL_TIMEOUT,
                    plugins=[TimeoutPlugin(LOCAL_TIMEOUT),
                             PrintPlugin()]))
