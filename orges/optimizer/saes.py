@@ -19,8 +19,8 @@ except NameError:
 
 class SAESOptimizer(BaseOptimizer, BaseCaller):
     """Optimization based on a self-adaptive evolution strategy (SAES)"""
-    MU = 3
-    LAMBDA = 3
+    MU = 100
+    LAMBDA = 100
     TAU0 = 0.5
     TAU1 = 0.5
 
@@ -125,7 +125,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, args, individual):
+    def on_result(self, result, args, individual=None):
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)

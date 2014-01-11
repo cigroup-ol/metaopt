@@ -16,8 +16,8 @@ except NameError:
 class RechenbergOptimizer(BaseOptimizer, BaseCaller):
     """Optimization based on an ES using Rechenberg's 1/5th success rule"""
     # TODO: Find good default values
-    MU = 3
-    LAMBDA = 3
+    MU = 100
+    LAMBDA = 100
     A = 0.1
 
     def __init__(self, mu=MU, lamb=LAMBDA, a=A):
@@ -125,7 +125,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
             self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
 
     def on_result(self, result, fargs, *vargs, **kwargs):
-        _, fitness = result
+        fitness = result
         individual = fargs
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
