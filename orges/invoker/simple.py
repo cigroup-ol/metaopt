@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 TODO document me
 """
@@ -5,7 +6,7 @@ from __future__ import division, print_function, with_statement
 
 from threading import Lock, Thread
 
-from orges.args import call
+from orges.core.args import call
 from orges.invoker.base import BaseInvoker
 
 
