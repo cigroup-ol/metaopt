@@ -49,8 +49,8 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None,
 
     invoker = PluggableInvoker(MultiProcessInvoker(), plugins=plugins)
 
-    return custom_optimize(f, param_spec, return_spec, timeout,
-                           optimizer, invoker)
+    return custom_optimize(f, invoker, param_spec, return_spec, timeout,
+                           optimizer)
 
 
 class NoParamSpecError(Exception):
