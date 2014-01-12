@@ -1,11 +1,3 @@
-.. OrgES documentation master file, created by
-   sphinx-quickstart on Tue Oct 15 05:32:18 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-TODO: Define "optimal"
-TODO: Computation vs Invocation vs Call
-
 OrgES
 =====
 
@@ -33,10 +25,12 @@ of time and utilizing multiple processors.
     args = optimize(f, timeout=60)
 
 
-OrgES also features:
+OrgES has the following notable features:
 
-- Bla
-- Bla bla
+- Custom optimization algorithms
+- Custom invocation strategies
+- A hook-based plugin system
+- Different levels of timeouts
 
 
 Getting Started
