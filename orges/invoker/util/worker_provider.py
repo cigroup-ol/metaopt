@@ -180,7 +180,8 @@ class WorkerProcess(Process, Worker):
         function = __import__(task.function, globals(), locals(), ['function'],
                               0).f
         # Note that the following is equivalent:
-        #from MyPackage.MyModule import f as function
+        #     from MyPackage.MyModule import f as function
+        # Also note this always imports the function "f" as "function".
 
         # make the actual call
         try:

@@ -10,7 +10,7 @@ from nose.tools.nontrivial import raises
 from orges.core.args import ArgsCreator
 from orges.util.stoppable import StoppedException
 from orges.invoker.stoppable import StoppableInvoker
-from orges.tests.util.integer_functions import f
+from orges.tests.util.functions import f
 
 f = f  # helps static code checkers identify attributes.
 

@@ -9,7 +9,7 @@ from nose.tools import eq_
 
 from orges.core.args import ArgsCreator
 from orges.invoker.pluggable import PluggableInvoker
-from orges.tests.util.integer_functions import f
+from orges.tests.util.functions import f
 
 f = f  # helps static code checkers identify attributes.
 

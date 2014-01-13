@@ -12,9 +12,9 @@ from multiprocessing.process import Process
 import nose
 
 from orges.core.args import ArgsCreator
+from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.worker_provider import Task, Result, Status, Worker, \
     WorkerProcess
-from orges.tests.util.integer_functions import INTEGER_FUNCTIONS
 from orges.invoker.util.determine_package import determine_package
 
 
@@ -95,7 +95,7 @@ def test_start_task_status_results_terminate():
     #logger = multiprocessing.get_logger()
     #logger.setLevel(logging.DEBUG)
 
-    for function in INTEGER_FUNCTIONS:
+    for function in FUNCTIONS_INTEGER_WORKING:
         # log
         print(function)
 
