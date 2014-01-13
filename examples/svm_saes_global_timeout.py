@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
-from sklearn import svm
-from sklearn import datasets
-from sklearn import cross_validation
+from sklearn import svm, datasets, cross_validation
 
 from orges.core import param
+
 
 @param.float("C", interval=[0.1, 2])
 @param.float("gamma", interval=[0, 2])

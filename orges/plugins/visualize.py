@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from orges.plugins.dummy import DummyPlugin
 
+
 class VisualizeLandscapePlugin(DummyPlugin):
     def __init__(self):
         self.individuals = []
