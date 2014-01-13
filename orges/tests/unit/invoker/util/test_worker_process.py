@@ -5,14 +5,11 @@ Tests for the worker process utility.
 from __future__ import division, print_function, with_statement
 
 import uuid
-import logging
 import multiprocessing
 from multiprocessing import Manager
 from multiprocessing.process import Process
 
 import nose
-from nose.tools.trivial import eq_
-from nose.tools.nontrivial import raises
 
 from orges.core.args import ArgsCreator
 from orges.invoker.util.worker_provider import Task, Result, Status, Worker, \
@@ -21,7 +18,8 @@ from orges.tests.util.integer_functions import INTEGER_FUNCTIONS
 from orges.invoker.util.determine_package import determine_package
 
 
-def _no_nose_setup():
+def get_default_worker_process():
+    """Returns a worker process with attached queues and set worker id."""
     manager = Manager()
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=manager.Queue(),
@@ -31,11 +29,11 @@ def _no_nose_setup():
 
 
 def test_instanciation():
-    _no_nose_setup()
+    get_default_worker_process()
 
 
 def test_superclasses():
-    worker_process = _no_nose_setup()
+    worker_process = get_default_worker_process()
     isinstance(worker_process, Process)
     isinstance(worker_process, Worker)
 
@@ -56,13 +54,13 @@ def test_properties_return_instanciation_values():
 
 
 def test_initialization_is_sane():
-    worker_process = _no_nose_setup()
+    worker_process = get_default_worker_process()
     assert not worker_process.current_task_id
     assert not worker_process.busy
 
 
 def test_start_terminate():
-    worker_process = _no_nose_setup()
+    worker_process = get_default_worker_process()
     worker_process.start()
     worker_process.terminate()
     worker_process.join()
@@ -70,7 +68,7 @@ def test_start_terminate():
 
 
 def test_start_notask_terminate():
-    worker_process = _no_nose_setup()
+    worker_process = get_default_worker_process()
     worker_process.start()
     worker_process.queue_tasks.put(None)
     worker_process.terminate()
@@ -79,7 +77,7 @@ def test_start_notask_terminate():
 
 
 def test_start_task_terminate():
-    worker_process = _no_nose_setup()
+    worker_process = get_default_worker_process()
     worker_process.start()
     worker_process.queue_tasks.put(Task(task_id=uuid.uuid4,
                                         function=print,
@@ -102,22 +100,20 @@ def test_start_task_status_results_terminate():
         print(function)
 
         # send task to worker process
-        worker_process = _no_nose_setup()
+        worker_process = get_default_worker_process()
         worker_process.start()
-        worker_process.queue_tasks.put(Task(task_id=uuid.uuid4,
-                                            function=determine_package(function),
-                                            args=ArgsCreator(function.param_spec).args(),
-                                            vargs=None,
-                                            kwargs=None))
-        #worker_process.queue_tasks.close()
+        task = Task(task_id=uuid.uuid4,
+                    function=determine_package(function),
+                    args=ArgsCreator(function.param_spec).args(),
+                    vargs=None,
+                    kwargs=None)
+        worker_process.queue_tasks.put(task)
 
         # check results
         status = worker_process.queue_status.get()
-        #worker_process.queue_status.close()
         assert status
         assert isinstance(status, Status)
         result = worker_process.queue_results.get()
-        #worker_process.queue_results.close()
         assert result
         assert isinstance(result, Result)
 
