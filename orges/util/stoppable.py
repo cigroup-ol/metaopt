@@ -40,8 +40,11 @@ class StoppedException(Exception):
 
 
 def stoppable_method(method):
-    """Decorator that raises an StoppedException if self is stopped."""
+    """
+    Decorator that raises an StoppedException if self is stopped.
 
+    Note that it needs to placed before an eventual stopping_method decorator.
+    """
     def wrapped_method(self, *args, **kwargs):
         """The given method wrapped appended with test if self is stopped."""
         if self.stopped:
@@ -51,8 +54,11 @@ def stoppable_method(method):
 
 
 def stopping_method(method):
-    """Decorator that notes that is stopped."""
+    """
+    Decorator that notes that is stopped.
 
+    Note that it needs to placed after an eventual stoppable_method decorator.
+    """
     def wrapped_method(self, *args, **kwargs):
         """The given method wrapped appended with test if self is stopped."""
         self._stopped = True  # Yes, access to the private attribute here

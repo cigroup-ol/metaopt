@@ -119,7 +119,6 @@ class WorkerProcess(Process, Worker):
         self._queue_results = queue_results
         self._queue_status = queue_status
         self._queue_tasks = queue_tasks
-        self._busy = False
         self._current_task_id = None
         super(WorkerProcess, self).__init__()
 
@@ -146,7 +145,7 @@ class WorkerProcess(Process, Worker):
     @property
     def busy(self):
         """Property for the results attribute of this class."""
-        return self._busy
+        return self._current_task_id is not None
 
     @property
     def current_task_id(self):
@@ -156,18 +155,21 @@ class WorkerProcess(Process, Worker):
     def run(self):
         """Makes this worker execute all tasks incoming from the task queue."""
         # Get tasks from the queue and trigger their execution
-        for task in iter(self.queue_tasks.get, None):
-            self._execute(task)
-
-        # send sentinel result back to propagate the end of the task queue
-        self._queue_results.put(Result(task_id=None, worker_id=self._worker_id,
-                                       function=None, args=None, vargs=None,
-                                       kwargs=None, value=None))
+        while True:
+            try:
+                self._execute(self.queue_tasks.get())
+            except EOFError:
+                return
 
     def _execute(self, task):
-        self._busy = True
-        self._current_task_id = task.task_id
+        """Executes the given task."""
+        # send sentinel to propagate the end of the task queue
+        if task is None:
+            self._queue_results.put(None)
+            return
+
         # announce start of work
+        self._current_task_id = task.task_id
         self._queue_status.put(Status(task_id=self._current_task_id,
                                       worker_id=self._worker_id,
                                       function=task.function,
@@ -193,7 +195,8 @@ class WorkerProcess(Process, Worker):
                                        args=task.args, value=value,
                                        vargs=task.vargs,
                                        kwargs=task.kwargs))
-        self._busy = False
+        # announce finish of work
+        self._current_task_id = None
 
 
 class WorkerHandle(Stoppable):
