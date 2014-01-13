@@ -19,10 +19,32 @@ def test_WorkerProcessProvider_acts_as_singleton():
     assert wpp0 is wpp1
 
 
-def test_WorkerProcessProvider_provision_and_stop():
-    queue_tasks = Manager().Queue()
-    queue_status = Manager().Queue()
-    queue_results = Manager().Queue()
+def test_WorkerProcessProvider_provision_and_stop_single_worker():
+    manager = Manager()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    queue_results = manager.Queue()
+
+    worker_provider = WorkerProcessProvider()
+
+    # once
+    worker = worker_provider.provision(queue_tasks=queue_tasks,
+                                       queue_results=queue_results,
+                                       queue_status=queue_status)
+    worker.stop()
+
+    # and once more
+    worker = worker_provider.provision(queue_tasks=queue_tasks,
+                                       queue_results=queue_results,
+                                       queue_status=queue_status)
+    worker.stop()
+
+
+def test_WorkerProcessProvider_provision_and_stop_multiple_workers():
+    manager = Manager()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    queue_results = manager.Queue()
 
     worker_count = 2
 
@@ -50,21 +72,21 @@ def test_WorkerHandle_inherits_stoppable():
 
 
 def test_WorkerHandle_is_stoppable():
-    queue_tasks = Manager().Queue()
-    queue_status = Manager().Queue()
-    queue_results = Manager().Queue()
+    manager = Manager()
     worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks, queue_results, queue_status)
+            provision(queue_tasks=manager.Queue(),
+                      queue_results=manager.Queue(),
+                      queue_status=manager.Queue())
     worker_process_handle.stop()
 
 
 @raises(StoppedException)
 def test_WorkerHandle_is_stoppable_only_once():
-    queue_tasks = Manager().Queue()
-    queue_status = Manager().Queue()
-    queue_results = Manager().Queue()
+    manager = Manager()
     worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks, queue_results, queue_status)
+            provision(queue_tasks=manager.Queue(),
+                      queue_results=manager.Queue(),
+                      queue_status=manager.Queue())
     worker_process_handle.stop()  # first time should work
     worker_process_handle.stop()  # second time should fail
 
