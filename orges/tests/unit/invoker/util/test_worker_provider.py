@@ -66,29 +66,5 @@ def test_WorkerProcessProvider_provision_and_stop_multiple_workers():
     for worker in workers:
         worker.stop()
 
-
-def test_WorkerHandle_inherits_stoppable():
-    assert issubclass(WorkerProcessHandle, Stoppable)
-
-
-def test_WorkerHandle_is_stoppable():
-    manager = Manager()
-    worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks=manager.Queue(),
-                      queue_results=manager.Queue(),
-                      queue_status=manager.Queue())
-    worker_process_handle.stop()
-
-
-@raises(StoppedException)
-def test_WorkerHandle_is_stoppable_only_once():
-    manager = Manager()
-    worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks=manager.Queue(),
-                      queue_results=manager.Queue(),
-                      queue_status=manager.Queue())
-    worker_process_handle.stop()  # first time should work
-    worker_process_handle.stop()  # second time should fail
-
 if __name__ == '__main__':
     nose.runmodule()
