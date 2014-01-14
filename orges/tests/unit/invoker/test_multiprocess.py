@@ -10,7 +10,7 @@ from nose.tools.nontrivial import raises
 from orges.core.args import ArgsCreator
 from orges.util.stoppable import StoppedException
 from orges.tests.util.functions import f
-from orges.invoker.multiprocess2 import MultiProcessInvoker
+from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.invoker.util.task_handle import TaskHandle
 from orges.invoker.util.worker_provider import WorkerProcessProvider
 
