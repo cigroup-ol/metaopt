@@ -34,3 +34,7 @@ def test_WorkerProcessHandle_is_stoppable_only_once():
                       queue_status=manager.Queue())
     worker_process_handle.stop()  # first time should work
     worker_process_handle.stop()  # second time should fail
+
+if __name__ == '__main__':
+    import nose
+    nose.runmodule()

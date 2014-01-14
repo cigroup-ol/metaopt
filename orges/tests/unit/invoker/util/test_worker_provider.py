@@ -6,11 +6,8 @@ from __future__ import division, print_function, with_statement
 from multiprocessing import Manager
 
 import nose
-from nose.tools.nontrivial import raises
 
-from orges.util.stoppable import Stoppable, StoppedException
-from orges.invoker.util.worker_provider import WorkerProcessHandle, \
-    WorkerProcessProvider
+from orges.invoker.util.worker_provider import WorkerProcessProvider
 
 
 def test_WorkerProcessProvider_acts_as_singleton():
