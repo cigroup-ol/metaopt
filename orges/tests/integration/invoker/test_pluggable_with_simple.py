@@ -30,10 +30,10 @@ ARGS = ArgsCreator(PARAM_SPEC).args()
 
 
 def test():  # TODO: Find some better name for these kind of tests
-    simple_invoker = DualThreadInvoker()
+    dual_thread_invoker = DualThreadInvoker()
 
     plugins = [TimeoutPlugin(INVOKER_TIMEOUT)]
-    invoker = PluggableInvoker(simple_invoker, plugins=plugins)
+    invoker = PluggableInvoker(dual_thread_invoker, plugins=plugins)
 
     caller = Mock()
 

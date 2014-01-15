@@ -136,15 +136,15 @@ class MultiProcessInvoker(BaseInvoker):
                 self._worker_handles.remove(worker_handle)
             return
 
-    def stop_task(self, worker_id, task_id):
+    def stop_task(self, task_id):
         """Terminates a worker_handle given by id."""
         with self._lock:
             for worker_handle in self._worker_handles:
-                if worker_handle.worker_id == worker_id and \
-                        worker_handle.current_task_id == task_id:
-                    worker_handle.stop()
-                    self._worker_handles.remove(worker_handle)
-                    return  # worker handle is unique, don't look any further
+                if worker_handle.current_task_id != task_id:
+                    continue
+                worker_handle.stop()
+                self._worker_handles.remove(worker_handle)
+                return  # worker handle is unique, don't look any further
 
     def wait(self):
         """Blocks until all tasks are done."""
