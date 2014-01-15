@@ -28,7 +28,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
     optimizer.invoker = invoker
 
     if timeout is not None:
-        Timer(timeout, invoker.abort).start()
+        Timer(timeout, invoker.stop).start()
 
     return optimizer.optimize(f, param_spec=param_spec,
                               return_spec=return_spec)

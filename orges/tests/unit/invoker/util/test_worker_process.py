@@ -14,7 +14,7 @@ import nose
 from orges.core.args import ArgsCreator
 from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.determine_package import determine_package
-from orges.invoker.util.worker_handle import WorkerProcess, Worker
+from orges.invoker.util.worker import WorkerProcess, Worker
 from orges.invoker.util.model import Task, Status, Result
 
 

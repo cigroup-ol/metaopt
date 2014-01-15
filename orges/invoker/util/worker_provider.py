@@ -7,9 +7,9 @@ import uuid
 import threading
 
 from orges.util.singleton import Singleton
-from orges.invoker.util.worker_handle import WorkerProcess
+from orges.invoker.util.worker import WorkerProcess
 from orges.invoker.util.determine_worker_count import determine_worker_count
-from orges.invoker.util.model import Result
+from orges.invoker.util.model import Error
 from orges.util.stoppable import Stoppable, stoppable_method, stopping_method
 from abc import ABCMeta, abstractmethod
 
@@ -57,11 +57,12 @@ class WorkerProcessProvider(Singleton):
     def release(self, worker_process):
         """Releases a worker process from the work force."""
         with self._lock:
-            # send manually constructed empty result
-            result = Result(worker_id=worker_process.worker_id, function=None,
-                            args=None, vargs=None, kwargs=None,
-                            task_id=worker_process.current_task_id,
-                            value=None)
+            # send manually construct error
+            result = Error(worker_id=worker_process.worker_id,
+                           function=None,
+                           args=None, vargs=None, kwargs=None,
+                           task_id=worker_process.current_task_id,
+                           value=None)
             worker_process.queue_results.put(result)
 
             # send kill signal and wait for the process to die
@@ -83,7 +84,7 @@ class WorkerHandle(Stoppable):
     @stopping_method
     def stop(self):
         """Stops this worker."""
-        raise NotImplementedError
+        raise NotImplementedError  # Implementations need to handle this
 
 
 class WorkerProcessHandle(WorkerHandle):
