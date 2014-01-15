@@ -75,7 +75,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         return task_handle
 
-    def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
+    def on_result(self, result, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_result method."""
         # TODO an invocation=None default makes no sense if the following fails
         invocation.current_result = result

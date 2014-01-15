@@ -134,7 +134,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         elif probablity < (1 / 5):
             self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
 
-    def on_result(self, result, fargs, *vargs, **kwargs):
+    def on_result(self, result, fargs, **kwargs):
         fitness = result
         individual = fargs
         scored_individual = (individual, fitness)
@@ -146,5 +146,5 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
             self.best_scored_indivual = scored_individual
             self.best_fitness = fitness
 
-    def on_error(self, args, individual):
+    def on_error(self, error, fargs, individual):
         pass

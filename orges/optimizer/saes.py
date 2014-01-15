@@ -136,7 +136,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, args, individual=None):
+    def on_result(self, result, args, individual, **kwargs):
         # _, fitness = result
         fitness = result
         scored_individual = (individual, fitness)
@@ -147,5 +147,5 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
 
-    def on_error(self, args, individual):
+    def on_error(self, args, individual, **kwargs):
         pass

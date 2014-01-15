@@ -37,7 +37,7 @@ class BaseCaller(object):
         self._invoker = invoker
 
     @abstractmethod
-    def on_result(self, result, fargs, *vargs, **kwargs):
+    def on_result(self, result, fargs, **kwargs):
         """
         Called when :meth:`orges.invoker.base.BaseInvoker.invoke` was
         successful.
@@ -48,7 +48,7 @@ class BaseCaller(object):
         pass
 
     @abstractmethod
-    def on_error(self, error, fargs, *vargs, **kwargs):
+    def on_error(self, error, fargs, **kwargs):
         """
         Called when :meth:`orges.invoker.base.BaseInvoker.invoke` was *not*
         successful.
