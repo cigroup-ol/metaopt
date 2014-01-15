@@ -102,7 +102,7 @@ class WorkerProcess(Process, Worker):
         self._queue_status.put(Status(task_id=self._current_task_id,
                                       worker_id=self._worker_id,
                                       function=task.function,
-                                      args=task.args, vargs=task.vargs,
+                                      args=task.args,
                                       kwargs=task.kwargs))
 
         # import function given by qualified package name
@@ -119,7 +119,6 @@ class WorkerProcess(Process, Worker):
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
-                                          vargs=task.vargs,
                                           kwargs=task.kwargs))
         except Exception:
             value = traceback.format_exc()
@@ -127,7 +126,6 @@ class WorkerProcess(Process, Worker):
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
-                                          vargs=task.vargs,
                                           kwargs=task.kwargs))
 
         # announce finish of work

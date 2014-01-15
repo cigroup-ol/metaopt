@@ -86,7 +86,7 @@ class MultiProcessInvoker(BaseInvoker):
             # schedule task for any worker to execute
             self._queue_tasks.put(Task(task_id=uuid.uuid4(),
                                        function=determine_package(function),
-                                       args=fargs, vargs=vargs, kwargs=kwargs))
+                                       args=fargs, kwargs=kwargs))
 
             # wait for any worker to start working on the task
             status = self._queue_status.get()

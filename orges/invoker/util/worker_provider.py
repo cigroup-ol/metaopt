@@ -60,7 +60,7 @@ class WorkerProcessProvider(Singleton):
             # send manually construct error
             result = Error(worker_id=worker_process.worker_id,
                            function=None,
-                           args=None, vargs=None, kwargs=None,
+                           args=None, kwargs=None,
                            task_id=worker_process.current_task_id,
                            value=None)
             worker_process.queue_results.put(result)

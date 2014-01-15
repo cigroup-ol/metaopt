@@ -104,7 +104,6 @@ def test_start_task_status_results_terminate():
         task = Task(task_id=uuid.uuid4,
                     function=determine_package(function),
                     args=ArgsCreator(function.param_spec).args(),
-                    vargs=None,
                     kwargs=None)
         worker_process.queue_tasks.put(task)
 
