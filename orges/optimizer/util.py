@@ -3,11 +3,6 @@ Utilities for optimizer implementations.
 """
 from __future__ import division, print_function, with_statement
 
-from collections import namedtuple
-
-# Data structure for results returned by invoke calls and the arguments of such
-InvokeResult = namedtuple("InvokeResult", ["arguments", "fitness"])
-
 
 def default_mutation_stength(param):
     """

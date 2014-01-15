@@ -5,6 +5,8 @@ from __future__ import division, print_function, with_statement
 from orges.invoker.base import BaseInvoker
 from orges.plugins.util import Invocation
 from orges.optimizer.base import BaseCaller
+from orges.util.stoppable import stopping_method, stoppable_method,\
+    StoppedException
 
 
 class PluggableInvoker(BaseInvoker, BaseCaller):
@@ -22,7 +24,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self._invoker = invoker
         self._invoker.caller = self
 
-        self._caller = None # Set by the the calling optimizer
+        self._caller = None  # Set by the the calling optimizer
 
         self.plugins = plugins
 
@@ -42,8 +44,11 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         return self._invoker
 
     def get_subinvoker(self, resources):
-        pass
+        """Returns a subinvoker using the given amount of resources of self."""
+        del resources
+        raise NotImplementedError()
 
+    @stoppable_method
     def invoke(self, function, fargs, invocation=None, **kwargs):
         """Implementation of the inherited abstract invoke method."""
         if invocation is None:
@@ -58,21 +63,21 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         invocation.tries += 1
 
-        task, aborted = self.invoker.invoke(function, fargs,
-                                            invocation=invocation)
+        try:
+            task_handle = self.invoker.invoke(function, fargs, invocation=invocation)
+        except StoppedException:
+            return task_handle
 
-        if aborted:
-            return task, aborted
-
-        invocation.current_task = task
+        invocation.current_task = task_handle
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
 
-        return task, aborted
+        return task_handle
 
     def on_result(self, result, fargs, invocation=None, *vargs, **kwargs):
         """Implementation of the inherited abstract on_result method."""
+        # TODO an invocation=None default makes no sense if the following fails
         invocation.current_result = result
 
         for plugin in self.plugins:
@@ -96,6 +101,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         """Implementation of the inherited abstract wait method."""
         return self.invoker.wait()
 
-    def abort(self):
-        # TODO rename this to stop
-        self.invoker.abort()
+    @stoppable_method
+    @stopping_method
+    def stop(self):
+        """Stops this invoker."""
+        self.invoker.stop()

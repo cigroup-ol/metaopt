@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 
 from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
-from orges.optimizer.util import InvokeResult
+from orges.util.stoppable import StoppedException
 
 
 class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
@@ -30,14 +30,17 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         del return_spec  # TODO implement me
         args = ArgsCreator(param_spec).args()
 
-        self._invoker.invoke(function, args)
-        self._invoker.wait()
+        try:
+            self._invoker.invoke(function, args)
+        except StoppedException:
+            return None
 
+        self._invoker.wait()
         return self._result
 
     def on_error(self, error, args, vargs):
-        #TODO
+        # TODO implement me
         pass
 
     def on_result(self, result, args, vargs):
-        self._result = InvokeResult(result=result, arguments=args)
+        self._result = result

@@ -2,6 +2,7 @@
 Utilities for plugin implementations.
 """
 from __future__ import division, print_function, with_statement
+from orges.invoker.util.task_handle import TaskHandle
 
 
 class Invocation(object):
@@ -28,6 +29,7 @@ class Invocation(object):
         self._args = None
         self._current_task = None
         self._current_result = None
+        self._function = None
         self._kwargs = None
         self._retry = False
         self._tries = 0
@@ -37,8 +39,7 @@ class Invocation(object):
         """
         The task of the current invocation
 
-        TODO: Document what exactly a task is
-
+        A task is in this context a TaskHandle.
         """
         return self._current_task
 
@@ -52,7 +53,6 @@ class Invocation(object):
         The result of the current invocation.
 
         This is always the result of the most recent invocation if any.
-
         """
         return self._current_result
 

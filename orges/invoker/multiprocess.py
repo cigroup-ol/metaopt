@@ -11,10 +11,10 @@ from multiprocessing import Manager
 from orges.invoker.base import BaseInvoker
 from orges.util.stoppable import stopping_method, stoppable_method
 from orges.invoker.util.task_handle import TaskHandle
-from orges.invoker.util.worker_provider import Task, Error, Result, \
-    WorkerProcessProvider
 from orges.invoker.util.determine_package import determine_package
 from orges.invoker.util.determine_worker_count import determine_worker_count
+from orges.invoker.util.worker_provider import WorkerProcessProvider
+from orges.invoker.util.model import Result, Error, Status, Task
 
 
 class MultiProcessInvoker(BaseInvoker):
@@ -92,7 +92,7 @@ class MultiProcessInvoker(BaseInvoker):
             status = self._queue_status.get()
 
             if status is None:
-                # WTF is going on here?
+                # TODO Why should status be None?
                 task_handle = None
             else:
                 task_handle = TaskHandle(invoker=self, task_id=status.task_id)
@@ -120,9 +120,9 @@ class MultiProcessInvoker(BaseInvoker):
                 # handle error results
                 if isinstance(result, Error):
                     self._caller.on_error(result=result.value,
-                                           fargs=result.args,
-                                           vargs=result.vargs,
-                                           kwargs=result.kwargs)
+                                          fargs=result.args,
+                                          vargs=result.vargs,
+                                          kwargs=result.kwargs)
 
             return task_handle
 
@@ -136,7 +136,7 @@ class MultiProcessInvoker(BaseInvoker):
                 self._worker_handles.remove(worker_handle)
             return
 
-    def stop_worker(self, worker_id, task_id):
+    def stop_task(self, worker_id, task_id):
         """Terminates a worker_handle given by id."""
         with self._lock:
             for worker_handle in self._worker_handles:
@@ -156,3 +156,8 @@ class MultiProcessInvoker(BaseInvoker):
                     busy = True
                     sleep(0.1)
                     break
+
+    def get_subinvoker(self, resources):
+        """Returns a subinvoker using the given amount of resources of self."""
+        del resources
+        raise NotImplementedError()

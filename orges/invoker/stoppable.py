@@ -21,4 +21,9 @@ class StoppableInvoker(BaseInvoker):
         call(f, fargs, **kwargs)
 
     def wait(self):
-        pass
+        raise NotImplementedError()
+
+    def get_subinvoker(self, resources):
+        """Returns a subinvoker using the given amount of resources of self."""
+        del resources
+        raise NotImplementedError()

@@ -8,7 +8,7 @@ from mock import Mock
 
 from orges.core import param
 from orges.core.args import ArgsCreator
-from orges.invoker.multithread import MultiThreadInvoker
+from orges.invoker.dualthread import DualThreadInvoker
 
 
 @param.int("a", interval=(1, 10))
@@ -20,7 +20,7 @@ ARGS = ArgsCreator(f.param_spec).args()
 
 
 def test_invoke_calls_on_result():
-    invoker = MultiThreadInvoker()
+    invoker = DualThreadInvoker()
 
     caller = Mock()
 
@@ -35,7 +35,7 @@ def test_invoke_calls_on_result():
 
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
-    invoker = MultiThreadInvoker()
+    invoker = DualThreadInvoker()
 
     caller = Mock()
 

@@ -5,6 +5,7 @@ from __future__ import division, print_function, with_statement
 
 from orges.core.args import call
 from orges.invoker.base import BaseInvoker
+from orges.util.stoppable import stopping_method, stoppable_method
 
 
 class SingleProcessInvoker(BaseInvoker):
@@ -26,19 +27,24 @@ class SingleProcessInvoker(BaseInvoker):
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""
-        pass
+        del resources
+        raise NotImplementedError()
 
-    def invoke(self, function, fargs, **vargs):
+    @stoppable_method
+    def invoke(self, function, fargs, **kwargs):
         """Calls back to self._caller.on_result() for call(f, fargs)."""
         try:
             result = call(function, fargs)
-            self._caller.on_result(result, fargs, vargs)
-        except Exception as exception:
-            self._caller.on_error(fargs, vargs, exception)
+            self._caller.on_result(result, fargs, kwargs)
+        except Exception as error:
+            self._caller.on_error(error, fargs, kwargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
         pass
 
-    def abort(self):
+    @stoppable_method
+    @stopping_method
+    def stop(self):
+        """Stops this invoker."""
         raise NotImplementedError()

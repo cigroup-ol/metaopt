@@ -10,6 +10,7 @@ from random import gauss, sample
 from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
 from orges.optimizer.util import default_mutation_stength
+from orges.util.stoppable import StoppedException
 
 try:
     xrange  # will work in python2, only
@@ -44,7 +45,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.scored_population = []
         self.best_scored_indivual = (None, None)
 
-        self.abort = False
+        self.aborted = False
         self.generation = 1
 
     @property
@@ -67,7 +68,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             self.add_offspring()
             self.score_population()
 
-            if self.abort:
+            if self.aborted:
                 return self.best_scored_indivual[0]
 
             self.select_parents()
@@ -122,10 +123,10 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         for individual in self.population:
             args, _ = individual
 
-            _, abort = self.invoker.invoke(self.f, args, individual=individual)
-
-            if abort:
-                self.abort = True
+            try:
+                self.invoker.invoke(self.f, args, individual=individual)
+            except StoppedException:
+                self.aborted = True
                 break
 
         self._invoker.wait()

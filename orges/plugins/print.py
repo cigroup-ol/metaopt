@@ -1,3 +1,6 @@
+"""
+Plugin that logs some events to standard output.
+"""
 from __future__ import division, print_function, with_statement
 
 from orges.plugins.dummy import DummyPlugin
@@ -5,7 +8,7 @@ from orges.plugins.dummy import DummyPlugin
 
 class PrintPlugin(DummyPlugin):
     """
-    Log all invocation events to the standard output.
+    Logs all invocation events to the standard output.
 
     For example::
 
@@ -23,4 +26,5 @@ class PrintPlugin(DummyPlugin):
                                         invocation.current_result))
 
     def on_error(self, invocation):
-        print("Failed", "f%s" % (tuple(invocation.fargs)))
+        print("Failed", "f%s, reason:\n%s" % (tuple(invocation.fargs,
+                                                    invocation.value)))

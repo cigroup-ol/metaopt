@@ -57,9 +57,9 @@ class BaseInvoker(Stoppable):
         :param fargs: Arguments `f` should be applied to
         :param kwargs: Additional data arguments
 
-        TODO: Return value
+        :rtype: TaskHandle with the task created for the given f and args.
         """
-        pass
+        raise NotImplementedError()
 
     @abc.abstractmethod
     def wait(self):
@@ -76,4 +76,8 @@ class BaseInvoker(Stoppable):
 
         TODO: Return value
         """
-        pass
+        raise NotImplementedError()
+
+    def get_subinvoker(self, resources):
+        """Returns a subinvoker using the given amount of resources of self."""
+        raise NotImplementedError()

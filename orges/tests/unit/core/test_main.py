@@ -7,7 +7,7 @@ from __future__ import division, print_function, with_statement
 from nose.tools import raises
 
 from orges.core.main import custom_optimize, NoParamSpecError
-from orges.invoker.simple import SimpleInvoker
+from orges.invoker.dualthread import DualThreadInvoker
 
 
 def f(x, y):
@@ -16,7 +16,7 @@ def f(x, y):
 
 @raises(NoParamSpecError)
 def test_custom_optimize_given_no_param_spec_complains():
-    custom_optimize(f, SimpleInvoker())
+    custom_optimize(f, DualThreadInvoker())
 
 if __name__ == '__main__':
     import nose

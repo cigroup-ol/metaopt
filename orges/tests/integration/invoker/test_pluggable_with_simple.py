@@ -11,7 +11,7 @@ from orges.core.args import ArgsCreator
 from orges.core.paramspec import ParamSpec
 from orges.plugins.timeout import TimeoutPlugin
 from orges.invoker.pluggable import PluggableInvoker
-from orges.invoker.multithread import MultiThreadInvoker
+from orges.invoker.dualthread import DualThreadInvoker
 
 FUNCTION_SLEEP = 2
 INVOKER_TIMEOUT = 1
@@ -30,7 +30,7 @@ ARGS = ArgsCreator(PARAM_SPEC).args()
 
 
 def test():  # TODO: Find some better name for these kind of tests
-    simple_invoker = MultiThreadInvoker()
+    simple_invoker = DualThreadInvoker()
 
     plugins = [TimeoutPlugin(INVOKER_TIMEOUT)]
     invoker = PluggableInvoker(simple_invoker, plugins=plugins)

@@ -1,16 +1,20 @@
 """
-Utilities for invokers.
+Means to stop tasks for invokers.
 """
 from __future__ import division, print_function, with_statement
+from orges.util.stoppable import stopping_method, Stoppable, stoppable_method
 
 
-class TaskHandle(object):
-    """A means to stop a task."""
+class TaskHandle(Stoppable):
+    """A means to stopped a task."""
 
     def __init__(self, invoker, task_id):
         self._invoker = invoker
         self._task_id = task_id
+        super(TaskHandle, self).__init__()
 
+    @stoppable_method
+    @stopping_method
     def stop(self):
-        """Cancels this task."""
-        self._invoker.stop(self._task_id)
+        """Cancels the worker executing this task."""
+        self._invoker.stop_task(self._task_id)

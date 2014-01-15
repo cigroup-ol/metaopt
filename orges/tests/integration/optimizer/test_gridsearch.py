@@ -5,7 +5,7 @@ from __future__ import division, print_function, with_statement
 
 from orges.core import param
 from orges.core.args import ArgsCreator
-from orges.invoker.multithread import MultiThreadInvoker
+from orges.invoker.dualthread import DualThreadInvoker
 from orges.optimizer.gridsearch import GridSearchOptimizer
 
 
@@ -18,7 +18,7 @@ ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
 
 def test_optimize_returns_result():
-    invoker = MultiThreadInvoker()
+    invoker = DualThreadInvoker()
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
 

@@ -93,7 +93,7 @@ def test_on_error_calls_plugins():
     invoker.caller = stub_caller
 
     def stub_invoke(f, fargs, **kwargs):
-        invoker.on_error(fargs, **kwargs)
+        invoker.on_error(None, fargs, **kwargs)
         return None, False
 
     stub_invoker.invoke = Mock(spec=[])

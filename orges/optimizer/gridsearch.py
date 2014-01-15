@@ -3,6 +3,7 @@ from __future__ import division, print_function, with_statement
 
 from orges.core.args import ArgsCreator
 from orges.optimizer.base import BaseCaller, BaseOptimizer
+from orges.util.stoppable import StoppedException
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):
@@ -24,9 +25,9 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
-            _, aborted = self._invoker.invoke(function, args)
-
-            if aborted:
+            try:
+                self._invoker.invoke(function, args)
+            except StoppedException:
                 return self.best[0]
 
         self._invoker.wait()

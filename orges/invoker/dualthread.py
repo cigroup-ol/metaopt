@@ -1,21 +1,24 @@
 """
-Invoker that runs tasks in threads.
+Invoker that runs tasks in an own thread.
 """
 from __future__ import division, print_function, with_statement
 
+import uuid
 from threading import Lock, Thread
 
 from orges.core.args import call
 from orges.invoker.base import BaseInvoker
+from orges.util.stoppable import stopping_method, stoppable_method
 from orges.invoker.util.task_handle import TaskHandle
 
 
-class MultiThreadInvoker(BaseInvoker):
-    """Invoker that runs tasks in threads."""
+class DualThreadInvoker(BaseInvoker):
+    """Invoker that runs tasks in an own thread."""
 
     def __init__(self):
-        super(MultiThreadInvoker, self).__init__(self)
+        super(DualThreadInvoker, self).__init__(self)
         self.thread = None
+        self.task = None
         self.lock = Lock()
 
         self.current_task = None
@@ -31,8 +34,11 @@ class MultiThreadInvoker(BaseInvoker):
         self._caller = value
 
     def get_subinvoker(self, resources):
-        return self
+        """Returns a subinvoker using the given amount of resources of self."""
+        del resources
+        raise NotImplementedError()
 
+    @stoppable_method
     def invoke(self, f, fargs, **kwargs):
         with self.lock:
             if self.aborted:
@@ -41,36 +47,28 @@ class MultiThreadInvoker(BaseInvoker):
         self.wait()
 
         with self.lock:
-            self.task = TaskHandle(self)
+            self.task = TaskHandle(invoker=self, task_id=uuid.uuid4())
 
         self.thread = Thread(target=self.target, args=(f, fargs),
                              kwargs=kwargs)
         self.thread.start()
 
-        with self.lock:
-            aborted = self.aborted
-
-        return self.task, aborted
-
-    def stop(self, task):
-        with self.lock:
-            if self.task is not task:
-                return
-
-        with self.lock:
-            self.cancelled = True
+        return self.task
 
     def target(self, f, fargs, **kwargs):
-        return_value = call(f, fargs)
+        """Target function/method for a thread to execute."""
+        # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
+        # (Symmetrically to the WorkerProcess)
+        value = call(f, fargs)
 
         with self.lock:
             cancelled = self.cancelled
             self.cancelled = False
 
         if not cancelled:
-            self._caller.on_result(return_value, fargs, **kwargs)
+            self._caller.on_result(value, fargs, **kwargs)
         else:
-            self._caller.on_error(fargs, **kwargs)
+            self._caller.on_error(value, fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:
@@ -81,8 +79,20 @@ class MultiThreadInvoker(BaseInvoker):
 
         return aborted
 
-    def abort(self):
+    @stoppable_method
+    @stopping_method
+    def stop(self):
+        """Stops this invoker."""
         with self.lock:
             self.aborted = True
 
-        self.stop(self.current_task)
+        self.stop_task(self.current_task)
+
+    def stop_task(self, task):
+        """Stops the given task."""
+        with self.lock:
+            if self.task is not task:
+                return
+
+        with self.lock:
+            self.cancelled = True
