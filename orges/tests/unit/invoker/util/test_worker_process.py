@@ -82,7 +82,6 @@ def test_start_task_terminate():
     worker_process.queue_tasks.put(Task(task_id=uuid.uuid4,
                                         function=print,
                                         args=None,
-                                        vargs=None,
                                         kwargs=None))
     worker_process.queue_tasks.put(None)
     worker_process.terminate()
