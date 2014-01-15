@@ -39,7 +39,7 @@ class DualThreadInvoker(BaseInvoker):
         raise NotImplementedError()
 
     @stoppable_method
-    def invoke(self, f, fargs, **kwargs):
+    def invoke(self, f, fargs, *vargs, **kwargs):
         with self.lock:
             if self.aborted:
                 return None, True
@@ -55,7 +55,7 @@ class DualThreadInvoker(BaseInvoker):
 
         return self.task
 
-    def target(self, f, fargs, **kwargs):
+    def target(self, f, fargs, *vargs, **kwargs):
         """Target function/method for a thread to execute."""
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
@@ -66,9 +66,10 @@ class DualThreadInvoker(BaseInvoker):
             self.cancelled = False
 
         if not cancelled:
-            self._caller.on_result(value, fargs, **kwargs)
+
+            self._caller.on_result(value, fargs, *vargs, **kwargs)
         else:
-            self._caller.on_error(value, fargs, **kwargs)
+            self._caller.on_error(value, fargs, *vargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:

@@ -42,5 +42,5 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         # TODO implement me
         pass
 
-    def on_result(self, result, args, vargs):
+    def on_result(self, result, fargs, *vargs, **kwargs):
         self._result = result

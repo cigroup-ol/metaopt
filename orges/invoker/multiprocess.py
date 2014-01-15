@@ -14,7 +14,7 @@ from orges.invoker.util.task_handle import TaskHandle
 from orges.invoker.util.determine_package import determine_package
 from orges.invoker.util.determine_worker_count import determine_worker_count
 from orges.invoker.util.worker_provider import WorkerProcessProvider
-from orges.invoker.util.model import Result, Error, Status, Task
+from orges.invoker.util.model import Result, Error, Task
 
 
 class MultiProcessInvoker(BaseInvoker):
