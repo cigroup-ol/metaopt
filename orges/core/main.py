@@ -30,9 +30,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
     if timeout is not None:
         Timer(timeout, invoker.stop).start()
 
-    return optimizer.optimize(f, param_spec=param_spec,
-                              return_spec=return_spec)
-
+    return optimizer.optimize(f, param_spec=param_spec, return_spec=return_spec)
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None,
              plugins=[TimeoutPlugin(1), PrintPlugin()],

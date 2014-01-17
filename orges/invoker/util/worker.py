@@ -7,7 +7,7 @@ import traceback
 from abc import ABCMeta, abstractmethod
 from multiprocessing.process import Process
 
-from orges.core.args import call
+from orges.core.call import call
 from orges.invoker.util.model import Error, Status, Result
 
 

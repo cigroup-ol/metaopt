@@ -16,46 +16,6 @@ from __future__ import division, print_function, with_statement
 import random
 import itertools
 from random import randint
-from inspect import getargspec
-
-
-def call(f, fargs):
-    """Call a function using a list of args"""
-
-    args, vargs, kwargs, _ = getargspec(f)
-
-    if vargs is not None:
-        raise CallNotPossibleError(
-            "Functions with variable arguments are not supported.")
-
-    if kwargs is not None:
-        fkwargs = dict()
-
-        for farg in fargs:
-            fkwargs[farg.param.name] = farg.value
-
-        return f(**fkwargs)
-
-    if vargs is None and kwargs is None:
-        if len(args) == len(fargs):
-            return f(*[farg.value for farg in fargs])
-
-        if len(args) == 1:
-            dargs = dict()
-
-            for farg in fargs:
-                dargs[farg.param.name] = farg.value
-
-            return f(dargs)
-        else:
-            raise CallNotPossibleError(
-                "Function expects %s arguments but %s were given."
-                % (len(args), len(fargs)))
-
-
-class CallNotPossibleError(Exception):
-    def __init__(self, msg):
-        Exception.__init__(self, msg)
 
 
 class ArgsCreator(object):

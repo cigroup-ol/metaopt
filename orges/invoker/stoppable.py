@@ -3,7 +3,7 @@ Invoker that can be stopped.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.core.args import call
+from orges.core.call import call
 from orges.invoker.base import BaseInvoker
 from orges.util.stoppable import stoppable_method
 

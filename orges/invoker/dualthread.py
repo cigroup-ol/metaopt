@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 import uuid
 from threading import Lock, Thread
 
-from orges.core.args import call
+from orges.core.call import call
 from orges.invoker.base import BaseInvoker
 from orges.util.stoppable import stopping_method, stoppable_method
 from orges.invoker.util.task_handle import TaskHandle
