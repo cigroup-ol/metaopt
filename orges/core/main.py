@@ -3,11 +3,12 @@ from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from orges.plugins.print import PrintPlugin
-from orges.optimizer.saes import SAESOptimizer
-from orges.plugins.timeout import TimeoutPlugin
-from orges.invoker.pluggable import PluggableInvoker
+from orges.core.returnspec import ReturnSpec
 from orges.invoker.multiprocess import MultiProcessInvoker
+from orges.invoker.pluggable import PluggableInvoker
+from orges.optimizer.saes import SAESOptimizer
+from orges.plugins.print import PrintPlugin
+from orges.plugins.timeout import TimeoutPlugin
 
 
 def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
@@ -24,6 +25,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
         param_spec = param_spec or f.param_spec
     except AttributeError:
         raise NoParamSpecError()
+
+    return_spec = return_spec or ReturnSpec(f)
 
     optimizer.invoker = invoker
 
