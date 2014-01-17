@@ -64,16 +64,14 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         try:
-            task_handle = self.invoker.invoke(function, fargs, invocation=invocation)
+            invocation.current_task = self.invoker.invoke(function, fargs, invocation=invocation)
         except StoppedException:
-            return task_handle
-
-        invocation.current_task = task_handle
+            return invocation.current_task
 
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
 
-        return task_handle
+        return invocation.current_task
 
     def on_result(self, result, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_result method."""
