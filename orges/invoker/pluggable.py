@@ -65,6 +65,9 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
             invocation.fargs = fargs
             invocation.kwargs = kwargs
 
+            for plugin in self.plugins:
+                plugin.setup(self.f, self.param_spec, self.return_spec)
+
         for plugin in self.plugins:
             plugin.before_invoke(invocation)
 

@@ -6,7 +6,7 @@ from inspect import getargspec
 
 from orges.core.returnspec import ReturnValuesWrapper
 
-def call(f, fargs, return_spec=None):
+def call(f, fargs, param_spec=None, return_spec=None):
     """Call a function using a list of args"""
 
     args, vargs, kwargs, _ = getargspec(f)

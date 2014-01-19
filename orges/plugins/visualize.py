@@ -11,6 +11,10 @@ class VisualizeLandscapePlugin(DummyPlugin):
         self.individuals = []
         self.fitnesses = []
 
+    def setup(self, f, param_spec, return_spec):
+        del f, param_spec
+        self.return_spec = return_spec
+
     def on_invoke(self, invocation):
         pass
 
@@ -30,7 +34,9 @@ class VisualizeLandscapePlugin(DummyPlugin):
 
         ax.set_xlabel(self.individuals[0][0].param.title)
         ax.set_ylabel(self.individuals[0][1].param.title)
-        ax.set_zlabel("Fitness")
+
+        z_label = self.return_spec.return_values[0]["name"]
+        ax.set_zlabel(z_label)
 
         X = map(lambda individual: individual[0].value, self.individuals)
         Y = map(lambda individual: individual[1].value, self.individuals)
@@ -43,6 +49,10 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
     def __init__(self):
         self.best_fitnesses = []
         self.current_best = None
+
+    def setup(self, f, param_spec, return_spec):
+        del f, param_spec
+        self.return_spec = return_spec
 
     def on_invoke(self, invocation):
         pass
@@ -63,7 +73,9 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
 
         ax = fig.add_subplot(111)
         ax.set_xlabel("Number of Invocations")
-        ax.set_ylabel("Fitness")
+
+        y_label = self.return_spec.return_values[0]["name"]
+        ax.set_ylabel(y_label)
 
         ax.plot(self.best_fitnesses)
         plt.show()

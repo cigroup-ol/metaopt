@@ -3,8 +3,10 @@ from __future__ import division, print_function, with_statement
 from sklearn import svm, datasets, cross_validation
 
 from orges.core import param
+from orges.core.returns import maximize
 
 
+@maximize("Score")
 @param.float("C", interval=[0.1, 1], step=0.05)
 @param.float("gamma", interval=[0.1, 1], step=0.05)
 def f(C, gamma):
@@ -39,7 +41,7 @@ if __name__ == '__main__':
         visualize_best_fitness_plugin
     ]
 
-    print(optimize(f, optimizer=optimizer, plugins=plugins))
+    print(optimize(f, timeout=1, optimizer=optimizer, plugins=plugins))
 
     visualize_landscape_plugin.save_visualization()
     visualize_best_fitness_plugin.save_visualization()

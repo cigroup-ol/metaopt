@@ -14,6 +14,32 @@ from orges.tests.util.functions import f
 f = f  # helps static code checkers identify attributes.
 
 
+def test_before_first_invoke_sets_up_plugins():
+    mock_plugin = Mock()
+    mock_plugin.setup = Mock()
+
+    plugins = [mock_plugin]
+    stub_invoker = Mock()
+
+    stub_invoker.f = f
+
+    stub_invoker.param_spec = object()
+    stub_invoker.return_spec = object()
+
+    stub_invoker.invoke = Mock(return_value=(None))
+    stub_invoker.wait = Mock(return_value=False)
+
+    invoker = PluggableInvoker(stub_invoker, plugins=plugins)
+
+    args = ArgsCreator(f.param_spec).args()
+    invoker.invoke(None, args)
+
+    mock_plugin.setup.assert_called_once_with(
+        stub_invoker.f,
+        stub_invoker.param_spec,
+        stub_invoker.return_spec,
+    )
+
 def test_before_invoke_calls_plugins():
     mock_plugin = Mock()
     mock_plugin.before_invoke = Mock(spec=[])

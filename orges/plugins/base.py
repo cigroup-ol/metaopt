@@ -21,6 +21,10 @@ class BasePlugin(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def setup(f, param_spec, return_spec):
+        pass
+
+    @abstractmethod
     def before_invoke(self, invocation):
         """
         Called right before the invoker calls the objective function

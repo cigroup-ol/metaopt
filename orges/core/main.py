@@ -29,7 +29,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
     except AttributeError:
         raise NoParamSpecError()
 
-    invoker.return_spec = return_spec or ReturnSpec(f)
+    invoker.return_spec = f.return_spec or ReturnSpec(f)
 
     if timeout is not None:
         Timer(timeout, invoker.stop).start()
