@@ -29,9 +29,9 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         invoker.wait()
         return self._result
 
-    def on_error(self, error, args, vargs):
+    def on_error(self, error, fargs, **kwargs):
         # TODO implement me
         pass
 
-    def on_result(self, result, fargs, *vargs, **kwargs):
+    def on_result(self, result, fargs, **kwargs):
         self._result = result

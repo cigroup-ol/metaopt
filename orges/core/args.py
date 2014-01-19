@@ -118,6 +118,12 @@ class Arg(object):
     def __repr__(self):
         return "%s=%s" % (self.param.title, self.value)
 
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __ne__(self, other):
+        return not self == other
+
 
 class IntArg(Arg):
     def __init__(self, param, value=None):

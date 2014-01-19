@@ -24,9 +24,9 @@ class SingleProcessInvoker(BaseInvoker):
         """Calls back to self._caller.on_result() for call(f, fargs)."""
         try:
             result = call(self.f, fargs)
-            caller.on_result(result, fargs, kwargs)
+            caller.on_result(result, fargs, **kwargs)
         except Exception as error:
-            caller.on_error(error, fargs, kwargs)
+            caller.on_error(error, fargs, **kwargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
