@@ -28,9 +28,9 @@ def test_invoke_calls_on_result():
 
         assert not caller.on_error.called
         caller.on_result.assert_called_once_with(
-                fargs=Matcher(ArgsCreator(function.param_spec).args()),
-                result=Matcher(0),
-                kwargs={})
+            0,
+            ArgsCreator(function.param_spec).args(),
+        )
 
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
@@ -51,9 +51,10 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
 
         assert not caller.on_error.called
         caller.on_result.assert_called_once_with(
-                fargs=Matcher(ArgsCreator(function.param_spec).args()),
-                result=Matcher(0),
-                data=Matcher(data))
+            0,
+            ArgsCreator(function.param_spec).args(),
+            data=data
+        )
 
 
 def test_invoke_not_successful_calls_on_error():

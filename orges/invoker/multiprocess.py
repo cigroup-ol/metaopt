@@ -112,13 +112,11 @@ class MultiProcessInvoker(BaseInvoker):
 
                 # handle regular results
                 if isinstance(result, Result):
-                    self._caller.on_result(result=result.value,
-                                           fargs=result.args,
+                    self._caller.on_result(result.value, result.args,
                                            **result.kwargs)
                 # handle error results
                 if isinstance(result, Error):
-                    self._caller.on_error(result=result.value,
-                                          fargs=result.args,
+                    self._caller.on_error(result.value, result.args,
                                           **result.kwargs)
 
             return task_handle
