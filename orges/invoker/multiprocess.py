@@ -30,9 +30,6 @@ class MultiProcessInvoker(BaseInvoker):
 
         self._worker_count_max = determine_worker_count(resources)
 
-        # set this using the property
-        self._caller = None
-
         # queues common to all worker processes
         manager = Manager()
         self._queue_results = manager.Queue()
@@ -49,7 +46,7 @@ class MultiProcessInvoker(BaseInvoker):
         # make this invoker thread-safe
         self._lock = Lock()
 
-        super(MultiProcessInvoker, self).__init__(self.caller)
+        super(MultiProcessInvoker, self).__init__()
 
     @property
     def caller(self):
@@ -64,7 +61,7 @@ class MultiProcessInvoker(BaseInvoker):
             self._caller = value
 
     @stoppable_method
-    def invoke(self, function, fargs, *vargs, **kwargs):
+    def invoke(self, caller, fargs, *vargs, **kwargs):
         """
         Invokes call(f, fargs) with the given function and the given arguments.
 
@@ -73,6 +70,8 @@ class MultiProcessInvoker(BaseInvoker):
         Can be called asynchronously, but will block if the call can not be
         executed immediately, especially when using multiple processes/threads.
         """
+        self.caller = caller
+
         with self._lock:
             # try to provision one new worker
             try:
@@ -85,7 +84,7 @@ class MultiProcessInvoker(BaseInvoker):
 
             # schedule task for any worker to execute
             self._queue_tasks.put(Task(task_id=uuid.uuid4(),
-                                       function=determine_package(function),
+                                       function=determine_package(self.f),
                                        args=fargs, kwargs=kwargs))
 
             # wait for any worker to start working on the task

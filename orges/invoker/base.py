@@ -24,12 +24,12 @@ class BaseInvoker(Stoppable):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def __init__(self, caller):
+    def __init__(self):
         super(BaseInvoker, self).__init__()
 
     @abc.abstractmethod
     @stoppable_method
-    def invoke(self, f, fargs, **kwargs):
+    def invoke(self, caller, fargs, **kwargs):
         """
         Invoke an objective function with given arguments.
 
@@ -53,7 +53,7 @@ class BaseInvoker(Stoppable):
         thus the invoker has to wait until these methods return before calling
         them again.
 
-        :param f: Objective function
+        :param caller: Caller
         :param fargs: Arguments `f` should be applied to
         :param kwargs: Additional data arguments
 
@@ -76,8 +76,4 @@ class BaseInvoker(Stoppable):
 
         TODO: Return value
         """
-        raise NotImplementedError()
-
-    def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amount of resources of self."""
         raise NotImplementedError()

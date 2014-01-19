@@ -21,19 +21,20 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
     :param timeout: Available time for optimization (in seconds)
     :param optimizer: Optimizer
     """
+
+    invoker.f = f
+
     try:
-        param_spec = param_spec or f.param_spec
+        invoker.param_spec = param_spec or f.param_spec
     except AttributeError:
         raise NoParamSpecError()
 
-    return_spec = return_spec or ReturnSpec(f)
-
-    optimizer.invoker = invoker
+    invoker.return_spec = return_spec or ReturnSpec(f)
 
     if timeout is not None:
         Timer(timeout, invoker.stop).start()
 
-    return optimizer.optimize(f, param_spec=param_spec, return_spec=return_spec)
+    return optimizer.optimize(invoker, param_spec=invoker.param_spec, return_spec=invoker.return_spec)
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None,
              plugins=[TimeoutPlugin(1), PrintPlugin()],

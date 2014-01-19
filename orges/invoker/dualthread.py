@@ -16,7 +16,7 @@ class DualThreadInvoker(BaseInvoker):
     """Invoker that runs tasks in an own thread."""
 
     def __init__(self):
-        super(DualThreadInvoker, self).__init__(self)
+        super(DualThreadInvoker, self).__init__()
         self.thread = None
         self.task = None
         self.lock = Lock()
@@ -25,21 +25,13 @@ class DualThreadInvoker(BaseInvoker):
         self.cancelled = False
         self.aborted = False
 
-    @property
-    def caller(self):
-        return self._caller
-
-    @caller.setter
-    def caller(self, value):
-        self._caller = value
-
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""
         del resources
         raise NotImplementedError()
 
     @stoppable_method
-    def invoke(self, f, fargs, *vargs, **kwargs):
+    def invoke(self, caller, fargs, *vargs, **kwargs):
         with self.lock:
             if self.aborted:
                 return None, True
@@ -49,7 +41,7 @@ class DualThreadInvoker(BaseInvoker):
         with self.lock:
             self.task = TaskHandle(invoker=self, task_id=uuid.uuid4())
 
-        self.thread = Thread(target=self.target, args=(f, fargs),
+        self.thread = Thread(target=self.target, args=(self.f, fargs),
                              kwargs=kwargs)
         self.thread.start()
 

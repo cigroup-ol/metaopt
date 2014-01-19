@@ -14,11 +14,11 @@ class StoppableInvoker(BaseInvoker):
     """Invoker that can be stopped."""
 
     def __init__(self):
-        super(StoppableInvoker, self).__init__(self)
+        super(StoppableInvoker, self).__init__()
 
     @stoppable_method
-    def invoke(self, f, fargs, **kwargs):
-        call(f, fargs, **kwargs)
+    def invoke(self, caller, fargs, **kwargs):
+        call(self.f, fargs, **kwargs)
 
     def wait(self):
         raise NotImplementedError()

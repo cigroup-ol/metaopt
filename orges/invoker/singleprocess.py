@@ -3,7 +3,7 @@ Invoker that uses a single core or CPU respectively.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.core.args import call
+from orges.core.call import call
 from orges.invoker.base import BaseInvoker
 from orges.util.stoppable import stopping_method, stoppable_method
 
@@ -12,18 +12,7 @@ class SingleProcessInvoker(BaseInvoker):
     """Invoker that does the work on its own."""
 
     def __init__(self):
-        super(SingleProcessInvoker, self).__init__(self)
-        self._caller = None
-
-    @property
-    def caller(self):
-        """Gets the caller."""
-        return self._caller
-
-    @caller.setter
-    def caller(self, value):
-        """Sets the caller."""
-        self._caller = value
+        super(SingleProcessInvoker, self).__init__()
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""
@@ -31,13 +20,13 @@ class SingleProcessInvoker(BaseInvoker):
         raise NotImplementedError()
 
     @stoppable_method
-    def invoke(self, function, fargs, **kwargs):
+    def invoke(self, caller, fargs, **kwargs):
         """Calls back to self._caller.on_result() for call(f, fargs)."""
         try:
-            result = call(function, fargs)
-            self._caller.on_result(result, fargs, kwargs)
+            result = call(self.f, fargs)
+            caller.on_result(result, fargs, kwargs)
         except Exception as error:
-            self._caller.on_error(error, fargs, kwargs)
+            caller.on_error(error, fargs, kwargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""
