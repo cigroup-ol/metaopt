@@ -25,11 +25,6 @@ class DualThreadInvoker(BaseInvoker):
         self.cancelled = False
         self.aborted = False
 
-    def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amount of resources of self."""
-        del resources
-        raise NotImplementedError()
-
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
         with self.lock:
@@ -41,17 +36,17 @@ class DualThreadInvoker(BaseInvoker):
         with self.lock:
             self.task = TaskHandle(invoker=self, task_id=uuid.uuid4())
 
-        self.thread = Thread(target=self.target, args=(caller, fargs),
+        self.thread = Thread(target=self.target, args=(self.f, caller, fargs),
                              kwargs=kwargs)
         self.thread.start()
 
         return self.task
 
-    def target(self, caller, fargs, **kwargs):
+    def target(self, f, caller, fargs, **kwargs):
         """Target function/method for a thread to execute."""
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
-        value = call(self.f, fargs, self.param_spec, self.return_spec)
+        value = call(f, fargs, self.param_spec, self.return_spec)
 
         with self.lock:
             cancelled = self.cancelled

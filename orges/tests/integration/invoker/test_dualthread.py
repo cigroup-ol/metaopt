@@ -21,32 +21,40 @@ ARGS = ArgsCreator(f.param_spec).args()
 
 def test_invoke_calls_on_result():
     invoker = DualThreadInvoker()
+    invoker.f = f
+
+    invoker.param_spec = f.param_spec
+
+    # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
+    invoker.return_spec = None
 
     caller = Mock()
 
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    invoker._caller = caller
-    invoker.invoke(f, ARGS)
+    invoker.invoke(caller, ARGS)
     invoker.wait()
 
     caller.on_result.assert_called_with(2, ARGS)
 
-
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = DualThreadInvoker()
+    invoker.f = f
+
+    invoker.param_spec = f.param_spec
+
+    # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
+    invoker.return_spec = None
 
     caller = Mock()
 
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    invoker._caller = caller
-
     data = object()
 
-    invoker.invoke(f, ARGS, data=data)
+    invoker.invoke(caller, ARGS, data=data)
     invoker.wait()
 
     caller.on_result.assert_called_with(2, ARGS, data=data)
