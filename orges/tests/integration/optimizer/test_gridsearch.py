@@ -19,10 +19,15 @@ ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
 def test_optimize_returns_result():
     invoker = DualThreadInvoker()
+
+    invoker.f = f
+    invoker.param_spec = f.param_spec
+    invoker.return_spec = None
+
     optimizer = GridSearchOptimizer()
     optimizer.invoker = invoker
 
-    args = optimizer.optimize(f, f.param_spec)
+    args = optimizer.optimize(invoker, f.param_spec)
     assert map(lambda arg: arg.value, args) == map(lambda arg: arg.value, ARGS)
 
 if __name__ == '__main__':
