@@ -19,42 +19,49 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         :param invoker: Other invoker
         :param plugins: List of plugins
         """
-        super(PluggableInvoker, self).__init__(self)
+        super(PluggableInvoker, self).__init__()
 
         self._invoker = invoker
-        self._invoker.caller = self
-
-        self._caller = None  # Set by the the calling optimizer
-
         self.plugins = plugins
 
     @property
-    def caller(self):
-        """Property for the caller attribute."""
-        return self._caller
+    def f(self):
+        return self.invoker.f
 
-    @caller.setter
-    def caller(self, value):
-        """Setter for the caller attribute."""
-        self._caller = value
+    @f.setter
+    def f(self, value):
+        self.invoker.f = value
+
+    @property
+    def param_spec(self):
+        return self.invoker.param_spec
+
+    @param_spec.setter
+    def param_spec(self, value):
+        self.invoker.param_spec = value
+
+    @property
+    def return_spec(self):
+        return self.invoker.return_spec
+
+    @return_spec.setter
+    def return_spec(self, value):
+        self.invoker.return_spec = value
 
     @property
     def invoker(self):
         """Property for the invoker attribute."""
         return self._invoker
 
-    def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amount of resources of self."""
-        del resources
-        raise NotImplementedError()
-
     @stoppable_method
-    def invoke(self, function, fargs, invocation=None, **kwargs):
+    def invoke(self, caller, fargs, invocation=None, **kwargs):
         """Implementation of the inherited abstract invoke method."""
+        self.caller = caller
+
         if invocation is None:
             invocation = Invocation()
 
-            invocation.function = function
+            invocation.function = self.f
             invocation.fargs = fargs
             invocation.kwargs = kwargs
 
@@ -64,7 +71,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         try:
-            invocation.current_task = self.invoker.invoke(function, fargs, invocation=invocation)
+            invocation.current_task = self.invoker.invoke(self, fargs, invocation=invocation)
         except StoppedException:
             return invocation.current_task
 
@@ -83,8 +90,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         if invocation.retry:
             # TODO: Maybe run this in its own thread
-            self.invoke(invocation.function, invocation.fargs, invocation,
-                        **invocation.kwargs)
+            self.invoke(self.caller, invocation.fargs, invocation, **invocation.kwargs)
         else:
             self.caller.on_result(result, fargs, **invocation.kwargs)
 

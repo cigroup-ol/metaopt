@@ -46,17 +46,8 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         self.generation = 1
         self.aborted = False
 
-    @property
-    def invoker(self):
-        return self._invoker
-
-    @invoker.setter
-    def invoker(self, invoker):
-        invoker.caller = self
-        self._invoker = invoker
-
-    def optimize(self, f, param_spec, return_spec=None, minimize=True):
-        self.f = f
+    def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
+        self.invoker = invoker
         self.param_spec = param_spec
 
         params = param_spec.params.values()
@@ -106,12 +97,12 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
 
         for individual in self.population:
             try:
-                self.invoker.invoke(self.f, individual)
+                self.invoker.invoke(self, individual)
             except StoppedException:
                 self.aborted = True
                 break
 
-        self._invoker.wait()
+        self.invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])

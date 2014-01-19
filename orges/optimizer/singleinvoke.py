@@ -17,25 +17,16 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         self._result = None
         super(SingleInvokeOptimizer, self).__init__()
 
-    @property
-    def invoker(self):
-        return self._invoker
-
-    @invoker.setter
-    def invoker(self, invoker):
-        invoker.caller = self
-        self._invoker = invoker
-
-    def optimize(self, function, param_spec, return_spec):
+    def optimize(self, invoker, param_spec, return_spec):
         del return_spec  # TODO implement me
         args = ArgsCreator(param_spec).args()
 
         try:
-            self._invoker.invoke(function, args)
+            invoker.invoke(self, args)
         except StoppedException:
             return None
 
-        self._invoker.wait()
+        invoker.wait()
         return self._result
 
     def on_error(self, error, args, vargs):

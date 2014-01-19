@@ -26,15 +26,13 @@ def test_optimize_returns_result():
     caller.on_error = Mock()
 
     invoker = SingleProcessInvoker()
+    invoker.f = f
+
     optimizer = SingleInvokeOptimizer()
+    optimizer.optimize(invoker, f.param_spec, None)
 
-    optimizer.invoker = invoker
-    optimizer.invoker.caller = caller
-
-    optimizer.optimize(f, f.param_spec, None)
-
-    assert not invoker.caller.on_error.called
-    invoker.caller.on_result.assert_called_with(Matcher(-3), Matcher(ARGS), {})
+    assert not caller.on_error.called
+    caller.on_result.assert_called_with(Matcher(-3), Matcher(ARGS), {})
 
 if __name__ == '__main__':
     import nose

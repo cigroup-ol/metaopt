@@ -12,25 +12,16 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
     def __init__(self):
         self.best = (None, None)
 
-    @property
-    def invoker(self):
-        return self._invoker
-
-    @invoker.setter
-    def invoker(self, invoker):
-        invoker.caller = self
-        self._invoker = invoker
-
-    def optimize(self, function, param_spec, return_spec=None):
+    def optimize(self, invoker, param_spec, return_spec=None):
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
             try:
-                self._invoker.invoke(function, args)
+                invoker.invoke(self, args)
             except StoppedException:
                 return self.best[0]
 
-        self._invoker.wait()
+        invoker.wait()
 
         return self.best[0]
 

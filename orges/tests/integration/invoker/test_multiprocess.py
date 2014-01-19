@@ -21,9 +21,9 @@ def test_invoke_calls_on_result():
         caller.on_result = Mock()
         caller.on_error = Mock()
         invoker = MultiProcessInvoker(resources=1)
-        invoker.caller = caller
+        invoker.f = function
 
-        invoker.invoke(function, ArgsCreator(function.param_spec).args())
+        invoker.invoke(caller, ArgsCreator(function.param_spec).args())
         invoker.wait()
 
         assert not caller.on_error.called
@@ -42,10 +42,10 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
         caller.on_error = Mock()
 
         invoker = MultiProcessInvoker(resources=1)  # TODO fails in parallel
-        invoker.caller = caller
+        invoker.f = function
 
         data = dict()
-        invoker.invoke(function, ArgsCreator(function.param_spec).args(),
+        invoker.invoke(caller, ArgsCreator(function.param_spec).args(),
                        data=data)
         invoker.wait()
 
@@ -64,10 +64,10 @@ def test_invoke_not_successful_calls_on_error():
         caller.on_result = Mock()
         caller.on_error = Mock()
         invoker = MultiProcessInvoker(resources=1)  # TODO fails in parallel
-        invoker.caller = caller
+        invoker.f = function
 
         data = dict()
-        invoker.invoke(function, ArgsCreator(function.param_spec).args(),
+        invoker.invoke(caller, ArgsCreator(function.param_spec).args(),
                        data=data)
         invoker.wait()
 

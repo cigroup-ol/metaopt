@@ -31,7 +31,8 @@ def test_sane_initiation():
 
 def test_protected_attributes():
     stoppable_invoker = StoppableInvoker()
-    assert stoppable_invoker._caller == None
+    stoppable_invoker.f = f
+
     assert stoppable_invoker._lock is not None
     assert stoppable_invoker._queue_results is not None
     assert stoppable_invoker._queue_status is not None
@@ -57,17 +58,19 @@ def test_repeated_stop_raises_exception():
 
 def test_invoke():
     stoppable_invoker = StoppableInvoker()
+    stoppable_invoker.f = f
     args = ArgsCreator(f.param_spec).args()
-    isinstance(stoppable_invoker.invoke(f, args), TaskHandle)
+    isinstance(stoppable_invoker.invoke(None, args), TaskHandle)
 
 
 @raises(StoppedException)
 def test_invoke_raises_exception_when_stopped():
     stoppable_invoker = StoppableInvoker()
+    stoppable_invoker.f = f
     args = ArgsCreator(f.param_spec).args()
-    isinstance(stoppable_invoker.invoke(f, args), TaskHandle)
+    isinstance(stoppable_invoker.invoke(None, args), TaskHandle)
     stoppable_invoker.stop()
-    eq_(stoppable_invoker.invoke(f, args), None)
+    eq_(stoppable_invoker.invoke(None, args), None)
 
 
 # TODO test invoker behavior
