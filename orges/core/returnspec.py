@@ -60,5 +60,8 @@ class ReturnValuesWrapper(object):
     def __str__(self):
         return str(self.values)
 
+    def __repr__(self):
+        return repr(self.values)
+
     def is_minimization(self):
         return self.return_spec.return_values[0]["minimize"]

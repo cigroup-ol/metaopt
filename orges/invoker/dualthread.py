@@ -41,27 +41,26 @@ class DualThreadInvoker(BaseInvoker):
         with self.lock:
             self.task = TaskHandle(invoker=self, task_id=uuid.uuid4())
 
-        self.thread = Thread(target=self.target, args=(self.f, fargs),
+        self.thread = Thread(target=self.target, args=(caller, fargs),
                              kwargs=kwargs)
         self.thread.start()
 
         return self.task
 
-    def target(self, f, fargs, *vargs, **kwargs):
+    def target(self, caller, fargs, **kwargs):
         """Target function/method for a thread to execute."""
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
-        value = call(f, fargs)
+        value = call(self.f, fargs, self.param_spec, self.return_spec)
 
         with self.lock:
             cancelled = self.cancelled
             self.cancelled = False
 
         if not cancelled:
-
-            self._caller.on_result(value, fargs, *vargs, **kwargs)
+            caller.on_result(value, fargs, **kwargs)
         else:
-            self._caller.on_error(value, fargs, *vargs, **kwargs)
+            caller.on_error(value, fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:
