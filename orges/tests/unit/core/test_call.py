@@ -23,7 +23,7 @@ def test_call_func_with_return_spec():
     def f(a):
         return a
 
-    result = call(f, [Arg(param_spec.params["a"], 1)], return_spec)
+    result = call(f, [Arg(param_spec.params["a"], 1)], param_spec, return_spec)
     assert isinstance(result, ReturnValuesWrapper)
 
 def test_call_func_with_return_spec_same_str():
