@@ -64,14 +64,20 @@ def test_ArgsCreator_args_versus_nested_loop():
 
         # mock
         intervals = get_intervals_from_function(function)
+
         args_dummy = []
         for a in intervals['a']:
             args_dummy.append(a)
-            for b in intervals['b']:
-                args_dummy.append(b)
+
+            try:
+                for b in intervals['b']:
+                    args_dummy.append(b)
+            except KeyError:
+                pass
 
         # use
         args_args = ArgsCreator(function.param_spec).args()
+        print(args_args)
 
         # compare
         for args, prod in zip(args_args, args_dummy):
