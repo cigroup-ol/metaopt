@@ -1,3 +1,6 @@
+.. toctree::
+   :maxdepth: 2
+
 OrgES
 =====
 
@@ -310,8 +313,6 @@ The following plugins are available in OrgES.
 
 For writing your own plugins, see [How to write a Plugin].
 
-Examples
-^^^^^^^^
 
 .. Plugin
 .. Available plugins
@@ -325,19 +326,8 @@ Examples
 .. Available invokers
 .. How to write invokers
 
-README
-======
-
-.. include:: ../README.rst
-
-License
-=======
-
-.. include:: ../LICENSE
-
-
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

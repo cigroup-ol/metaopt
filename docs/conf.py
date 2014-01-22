@@ -20,6 +20,15 @@ import os
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../orges'))
+sys.path.insert(0, os.path.abspath('../examples'))
+sys.path.insert(0, os.path.abspath('_extensions'))
+
+
+try:
+    import gen_rst
+except:
+    pass
 
 # -- General configuration -----------------------------------------------------
 
@@ -28,7 +37,20 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.coverage', 'sphinx.ext.pngmath']
+extensions = [
+    'gen_rst',
+
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.coverage',
+    'sphinx.ext.pngmath',
+]
+
+# Generate the plots for the gallery
+plot_gallery = True
+
+# Generate example gallery
+figure_gallery = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

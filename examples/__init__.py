@@ -1,3 +1,3 @@
 """
-Package of examples.
+Package of optimizers.
 """
