@@ -65,3 +65,4 @@ class ReturnValuesWrapper(object):
 
     def is_minimization(self):
         return self.return_spec.return_values[0]["minimize"]
+from __future__ import division, print_function, with_statement

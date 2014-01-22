@@ -5,7 +5,7 @@ from __future__ import division, print_function, with_statement
 from orges.invoker.base import BaseInvoker
 from orges.plugins.util import Invocation
 from orges.optimizer.base import BaseCaller
-from orges.util.stoppable import stopping_method, stoppable_method,\
+from orges.util.stoppable import stopping_method, stoppable_method, \
     StoppedException
 
 

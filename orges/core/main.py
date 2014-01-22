@@ -3,12 +3,12 @@ from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from orges.core.returnspec import ReturnSpec
-from orges.invoker.multiprocess import MultiProcessInvoker
-from orges.invoker.pluggable import PluggableInvoker
-from orges.optimizer.saes import SAESOptimizer
 from orges.plugins.print import PrintPlugin
+from orges.optimizer.saes import SAESOptimizer
+from orges.core.returnspec import ReturnSpec
 from orges.plugins.timeout import TimeoutPlugin
+from orges.invoker.pluggable import PluggableInvoker
+from orges.invoker.multiprocess import MultiProcessInvoker
 
 
 def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,

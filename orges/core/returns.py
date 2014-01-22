@@ -1,6 +1,9 @@
 """Decorators for easy creation of ReturnSpec objects"""
 
+from __future__ import division, print_function, with_statement
+
 from orges.core.returnspec import ReturnSpec
+
 
 def maximize(*vargs, **kwargs):
     def decorator(f):

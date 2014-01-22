@@ -4,14 +4,16 @@ Integration test for main.py.
 
 from __future__ import division, print_function, with_statement
 
-from nose.tools import eq_
 from time import sleep
+
+from nose.tools import eq_
 
 from orges.core import param
 from orges.core.main import custom_optimize
 from orges.core.returns import maximize, minimize
 from orges.invoker.dualthread import DualThreadInvoker
 from orges.optimizer.gridsearch import GridSearchOptimizer
+
 
 def test_custom_optimize_maximize_gridsearch_dualthread():
     invoker = DualThreadInvoker()

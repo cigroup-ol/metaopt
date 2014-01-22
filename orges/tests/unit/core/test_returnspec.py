@@ -4,10 +4,11 @@ Test for ReturnSpc
 """
 from __future__ import division, print_function, with_statement
 
-from orges.core.returnspec import MultiObjectivesNotSupportedError
-from orges.core.returnspec import ReturnSpec, ReturnValuesWrapper
-
 from nose.tools import raises
+
+from orges.core.returnspec import ReturnSpec, ReturnValuesWrapper, \
+    MultiObjectivesNotSupportedError
+
 
 def test_return_spec_maximize():
     return_spec = ReturnSpec()

@@ -2,9 +2,12 @@
 This module provides methods for calling objective functions
 """
 
+from __future__ import division, print_function, with_statement
+
 from inspect import getargspec
 
 from orges.core.returnspec import ReturnValuesWrapper
+
 
 def call(f, fargs, param_spec=None, return_spec=None):
     """Call a function using a list of args"""

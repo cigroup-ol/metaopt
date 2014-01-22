@@ -12,10 +12,10 @@ from multiprocessing.process import Process
 import nose
 
 from orges.core.args import ArgsCreator
+from orges.invoker.util.model import Task, Result, Status
+from orges.invoker.util.worker import Worker, WorkerProcess
 from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.determine_package import determine_package
-from orges.invoker.util.worker import WorkerProcess, Worker
-from orges.invoker.util.model import Task, Status, Result
 
 
 def get_default_worker_process():

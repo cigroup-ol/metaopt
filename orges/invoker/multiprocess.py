@@ -10,11 +10,11 @@ from multiprocessing import Manager
 
 from orges.invoker.base import BaseInvoker
 from orges.util.stoppable import stopping_method, stoppable_method
+from orges.invoker.util.model import Task, Error, Result
 from orges.invoker.util.task_handle import TaskHandle
+from orges.invoker.util.worker_provider import WorkerProcessProvider
 from orges.invoker.util.determine_package import determine_package
 from orges.invoker.util.determine_worker_count import determine_worker_count
-from orges.invoker.util.worker_provider import WorkerProcessProvider
-from orges.invoker.util.model import Result, Error, Task
 
 
 class MultiProcessInvoker(BaseInvoker):
