@@ -18,20 +18,22 @@ def test_WorkerProcessHandle_inherits_stoppable():
 
 def test_WorkerProcessHandle_is_stoppable():
     manager = Manager()
-    worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks=manager.Queue(),
-                      queue_results=manager.Queue(),
-                      queue_status=manager.Queue())
+    worker_process_handle = WorkerProcessProvider(
+        queue_tasks=manager.Queue(),
+        queue_results=manager.Queue(),
+        queue_status=manager.Queue()).\
+        provision()
     worker_process_handle.stop()
 
 
 @raises(StoppedException)
 def test_WorkerProcessHandle_is_stoppable_only_once():
     manager = Manager()
-    worker_process_handle = WorkerProcessProvider().\
-            provision(queue_tasks=manager.Queue(),
-                      queue_results=manager.Queue(),
-                      queue_status=manager.Queue())
+    worker_process_handle = WorkerProcessProvider(
+        queue_tasks=manager.Queue(),
+        queue_results=manager.Queue(),
+        queue_status=manager.Queue()).\
+        provision()
     worker_process_handle.stop()  # first time should work
     worker_process_handle.stop()  # second time should fail
 

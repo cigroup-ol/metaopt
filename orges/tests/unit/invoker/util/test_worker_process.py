@@ -12,28 +12,33 @@ from multiprocessing.process import Process
 import nose
 
 from orges.core.args import ArgsCreator
-from orges.invoker.util.model import Task, Result, Status
+from orges.invoker.util.model import Task, Result, Start, Finish
 from orges.invoker.util.worker import Worker, WorkerProcess
 from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.determine_package import determine_package
 
 
-def get_default_worker_process():
-    """Returns a worker process with attached queues and set worker id."""
-    manager = Manager()
-    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
-                                   queue_results=manager.Queue(),
-                                   queue_status=manager.Queue(),
-                                   queue_tasks=manager.Queue())
-    return worker_process
-
-
 def test_instanciation():
-    get_default_worker_process()
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
+    del worker_process
 
 
 def test_superclasses():
-    worker_process = get_default_worker_process()
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
     isinstance(worker_process, Process)
     isinstance(worker_process, Worker)
 
@@ -47,20 +52,30 @@ def test_properties_return_instanciation_values():
                                    queue_results=queue_results,
                                    queue_status=queue_status,
                                    queue_tasks=queue_tasks)
-    assert worker_process.queue_results is queue_results
-    assert worker_process.queue_status is queue_status
-    assert worker_process.queue_tasks is queue_tasks
     assert worker_process.worker_id is worker_id
 
 
 def test_initialization_is_sane():
-    worker_process = get_default_worker_process()
-    assert not worker_process.current_task_id
-    assert not worker_process.busy
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
+    assert worker_process.worker_id is not None
 
 
 def test_start_terminate():
-    worker_process = get_default_worker_process()
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
     worker_process.start()
     worker_process.terminate()
     worker_process.join()
@@ -68,7 +83,14 @@ def test_start_terminate():
 
 
 def test_start_notask_terminate():
-    worker_process = get_default_worker_process()
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
     worker_process.start()
     worker_process.queue_tasks.put(None)
     worker_process.terminate()
@@ -77,13 +99,42 @@ def test_start_notask_terminate():
 
 
 def test_start_task_terminate():
-    worker_process = get_default_worker_process()
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
     worker_process.start()
-    worker_process.queue_tasks.put(Task(task_id=uuid.uuid4,
-                                        function=print,
+    queue_tasks.put(Task(task_id=uuid.uuid4,
+                         function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
+                         args=None,
+                         kwargs=None))
+    queue_tasks.put(None)
+    worker_process.terminate()
+    worker_process.join()
+    assert not worker_process.is_alive()
+
+
+def test_start_task_attribute_terminate():
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
+    worker_process.start()
+    queue_tasks.put(Task(task_id=uuid.uuid4,
+                                        function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
                                         args=None,
                                         kwargs=None))
-    worker_process.queue_tasks.put(None)
+    queue_tasks.put(None)
+    queue_status.get()
+    assert worker_process._current_task_id is not None
     worker_process.terminate()
     worker_process.join()
     assert not worker_process.is_alive()
@@ -94,24 +145,32 @@ def test_start_task_status_results_terminate():
     #logger = multiprocessing.get_logger()
     #logger.setLevel(logging.DEBUG)
 
+    manager = Manager()
+    queue_results = manager.Queue()
+    queue_tasks = manager.Queue()
+    queue_status = manager.Queue()
+    worker_process = WorkerProcess(worker_id=uuid.uuid4(),
+                                   queue_results=queue_results,
+                                   queue_status=queue_status,
+                                   queue_tasks=queue_tasks)
+    worker_process.start()
+
     for function in FUNCTIONS_INTEGER_WORKING:
         # log
         print(function)
 
         # send task to worker process
-        worker_process = get_default_worker_process()
-        worker_process.start()
         task = Task(task_id=uuid.uuid4,
                     function=determine_package(function),
                     args=ArgsCreator(function.param_spec).args(),
                     kwargs=None)
-        worker_process.queue_tasks.put(task)
+        queue_tasks.put(task)
 
         # check results
-        status = worker_process.queue_status.get()
+        status = queue_status.get()
         assert status
-        assert isinstance(status, Status)
-        result = worker_process.queue_results.get()
+        assert isinstance(status, Start) or isinstance(status, Finish)
+        result = queue_results.get()
         assert result
         assert isinstance(result, Result)
 
@@ -121,8 +180,6 @@ def test_start_task_status_results_terminate():
 
         # check postcondition
         assert not worker_process.is_alive()
-        assert not worker_process.current_task_id
-        assert not worker_process.busy
 
 if __name__ == '__main__':
     nose.runmodule()

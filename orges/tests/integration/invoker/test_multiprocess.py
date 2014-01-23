@@ -3,6 +3,8 @@ Tests for the multiprocess invoker.
 """
 from __future__ import division, print_function, with_statement
 
+from time import sleep
+
 from mock import Mock
 
 from orges.core.args import ArgsCreator
@@ -10,7 +12,12 @@ from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.tests.util.functions import FUNCTIONS_INTEGER_FAILING, \
     FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.determine_package import determine_package
-from orges.tests.integration.invoker.util import EqualityMatcher as Matcher
+
+
+def f():
+    """Function that hangs indefinitely."""
+    while True:
+        sleep(1)
 
 
 def test_invoke_calls_on_result():

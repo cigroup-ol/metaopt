@@ -4,8 +4,8 @@ Various utilities for the multiprocess invoker.
 from __future__ import division, print_function, with_statement
 
 import uuid
-import threading
 from abc import ABCMeta, abstractmethod
+from multiprocessing.synchronize import Lock
 
 from orges.util.singleton import Singleton
 from orges.util.stoppable import Stoppable, stopping_method, stoppable_method
@@ -19,13 +19,15 @@ class WorkerProcessProvider(Singleton):
     Keeps track of as many worker processes as there are CPUs.
     """
 
-    def __init__(self):
-        self._lock = threading.Lock()
+    def __init__(self, queue_tasks, queue_results, queue_status):
+        self._queue_results = queue_results
+        self._queue_status = queue_status
+        self._queue_tasks = queue_tasks
+        self._lock = Lock()
         self._worker_count = determine_worker_count()  # use up to all CPUs
-        self._workers = []
+        self._worker_processes = []
 
-    def provision(self, queue_tasks, queue_results, queue_status,
-                  number_of_workers=1):
+    def provision(self, number_of_workers=1):
         """
         Provisions a given number worker processes for future use.
 
@@ -33,43 +35,54 @@ class WorkerProcessProvider(Singleton):
                 otherwise a single WorkerHandle.
         """
         with self._lock:
-            if self._worker_count < (len(self._workers) + number_of_workers):
+            if self._worker_count < (len(self._worker_processes) +
+                                     number_of_workers):
                 raise IndexError("Cannot provision so many worker processes.")
 
-            worker_processes = []
+            worker_handles = []
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
-                                               queue_tasks=queue_tasks,
-                                               queue_results=queue_results,
-                                               queue_status=queue_status)
+                                           queue_tasks=self._queue_tasks,
+                                           queue_results=self._queue_results,
+                                           queue_status=self._queue_status)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
-                worker_processes.append(worker_process)
+                self._worker_processes.append(worker_process)
 
-            self._workers.extend(worker_processes)
+                worker_handles.append(WorkerProcessHandle(worker_id))
+
         if number_of_workers > 1:
-            return [WorkerProcessHandle(worker_process) for worker_process in
-                    worker_processes]
+            return worker_handles
         else:
-            return WorkerProcessHandle(worker_processes[0])
+            return worker_handles[0]
 
-    def release(self, worker_process):
+    def release(self, worker_id):
         """Releases a worker process from the work force."""
         with self._lock:
+            worker_process = self._get_worker_process_for_id(worker_id)
+
             # send manually construct error
-            result = Error(worker_id=worker_process.worker_id,
-                           function=None,
-                           args=None, kwargs=None,
-                           task_id=worker_process.current_task_id,
-                           value=None)
-            worker_process.queue_results.put(result)
+            result = Error(worker_id=None, task_id=None,
+                           function=None, args=None, value=None,
+                           kwargs=None)
+            self._queue_results.put(result)
+            #worker_process.queue_results.join()
+            #worker_process.queue_status.join()
+            #worker_process.queue_error.join()
 
             # send kill signal and wait for the process to die
             worker_process.terminate()
             worker_process.join()
 
-            self._workers.remove(worker_process)
+            self._worker_processes.remove(worker_process)
+
+    def _get_worker_process_for_id(self, worker_id):
+        """Utility method to resolve a worker id to a worker process."""
+        for worker_process in self._worker_processes:
+            if worker_process.worker_id == worker_id:
+                return worker_process
+        raise KeyError("There is no worker with the given id.")
 
 
 class WorkerHandle(Stoppable):
@@ -84,33 +97,23 @@ class WorkerHandle(Stoppable):
     @stopping_method
     def stop(self):
         """Stops this worker."""
-        raise NotImplementedError  # Implementations need to handle this
+        raise NotImplementedError()  # Implementations need to overwrite
 
 
 class WorkerProcessHandle(WorkerHandle):
     """A means to stop a worker."""
 
-    def __init__(self, worker_process):
+    def __init__(self, worker_id):
         super(WorkerProcessHandle, self).__init__()
-        self._worker_process = worker_process
+        self._worker_id = worker_id
 
     @property
     def worker_id(self):
-        """Property for the worker_id attribute of this handle's worker."""
-        return self._worker_process.worker_id
-
-    @property
-    def current_task_id(self):
-        """Property for the current_task_id of this handle's worker."""
-        return self._worker_process.current_task_id
-
-    @property
-    def busy(self):
-        """Property for the busy attribute of this handle's worker."""
-        return self._worker_process.busy
+        """Property for the worker id attribute."""
+        return self._worker_id
 
     @stoppable_method
     @stopping_method
     def stop(self):
         """Stops this worker."""
-        WorkerProcessProvider().release(self._worker_process)
+        WorkerProcessProvider().release(self._worker_id)
