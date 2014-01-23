@@ -42,6 +42,15 @@ def test_return_spec_given_function_create_default_return_values():
 
     assert return_spec.return_values[0]["name"] == "Fitness"
 
+def test_is_minimization_without_return_spec():
+    returned_values = ReturnValuesWrapper(None, 1)
+    other_returned_values = ReturnValuesWrapper(None, 2)
+
+    assert returned_values < other_returned_values
+
+def test_raw_values():
+    returned_values = ReturnValuesWrapper(None, 1)
+    assert returned_values.raw_values == 1
 
 if __name__ == '__main__':
     import nose

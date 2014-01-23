@@ -45,9 +45,6 @@ def call(f, fargs, param_spec=None, return_spec=None):
 
 
 def wrap_return_values(values, return_spec=None):
-    if return_spec is None:
-        return values
-
     return ReturnValuesWrapper(return_spec, values)
 
 

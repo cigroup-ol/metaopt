@@ -67,5 +67,13 @@ class ReturnValuesWrapper(object):
     def __repr__(self):
         return repr(self.values)
 
+    @property
+    def raw_values(self):
+        """The unwrapped values"""
+        return self.values
+
     def is_minimization(self):
-        return self.return_spec.return_values[0]["minimize"]
+        if not self.return_spec:
+            return True
+        else:
+            return self.return_spec.return_values[0]["minimize"]

@@ -47,7 +47,7 @@ def test_call_func_without_return_spec():
         return a
 
     result = call(f, [Arg(param_spec.params["a"], 1)])
-    assert not isinstance(result, ReturnValuesWrapper)
+    assert isinstance(result, ReturnValuesWrapper)
 
 def test_call_func_with_args_works():
     param_spec = ParamSpec()
@@ -144,7 +144,7 @@ def test_call_func_with_args_returns_result():
     def f(a, b):    # That's a hack since getargspec doesn't work with mocks
         return a + b
 
-    assert arg_a.value + arg_b.value == call(f, [arg_a, arg_b])
+    assert arg_a.value + arg_b.value == call(f, [arg_a, arg_b]).raw_values
 
 
 @raises(CallNotPossibleError)

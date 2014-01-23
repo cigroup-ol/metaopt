@@ -36,7 +36,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
         self.individuals.append(invocation.fargs)
 
         fitness = invocation.current_result
-        self.fitnesses.append(fitness)
+        self.fitnesses.append(fitness.raw_values)
 
         if not self.best_fitness or fitness < self.best_fitness:
             self.best_fitness = fitness
@@ -65,8 +65,8 @@ class VisualizeLandscapePlugin(DummyPlugin):
         X, Y = meshgrid(xi, yi)
         Z = griddata((x, y), self.fitnesses, (X, Y))
 
-        vmax = max(self.best_fitness, self.worst_fitness)
-        vmin = min(self.best_fitness, self.worst_fitness)
+        vmax = max(self.best_fitness.raw_values, self.worst_fitness.raw_values)
+        vmin = min(self.best_fitness.raw_values, self.worst_fitness.raw_values)
 
         ax.plot_surface(X, Y, Z, cmap=cm.jet, vmax=vmax, vmin=vmin)
 
@@ -103,7 +103,7 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
         if self.current_best is None or fitness < self.current_best:
             self.current_best = fitness
 
-        self.best_fitnesses.append(self.current_best)
+        self.best_fitnesses.append(self.current_best.raw_values)
 
     def save_visualization(self):
         fig = plt.figure()
