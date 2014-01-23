@@ -54,6 +54,14 @@ DEFAULT_INDEX_TEMPLATE = """
         width: 180px;
     }
 
+    a.image-reference, a.reference {
+        border-bottom: None;
+    }
+
+    a.image-reference:hover, a.reference {
+        border-bottom: None;
+    }
+
     .figure img {
         display: inline;
         }

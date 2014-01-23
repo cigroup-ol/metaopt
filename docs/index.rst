@@ -1,3 +1,34 @@
+.. raw:: html
+
+    <style type="text/css">
+
+    a.image-reference {
+        border-bottom: None;
+    }
+
+    a.image-reference:hover {
+        border-bottom: None;
+    }
+
+    .figures {
+        float: left;
+    }
+
+    .figure {
+        float: left;
+        margin: 10px;
+        margin-bottom: 1px;
+        width: auto;
+        height: 140px;
+        width: 200px;
+    }
+
+    .figure img {
+        display: inline;
+    }
+
+    </style>
+
 .. toctree::
    :maxdepth: 2
 
@@ -35,6 +66,22 @@ OrgES has the following notable features:
 - A hook-based plugin system
 - Different levels of timeouts
 
+.. container:: figures
+
+    .. figure:: ./_images/svm_gridsearch_global_timeout_1_thumb.png
+        :target: ./examples/svm_gridsearch_global_timeout.html
+
+    .. figure:: ./_images/svm_saes_global_timeout_1_thumb.png
+        :target: ./examples/svm_saes_global_timeout.html
+
+    .. figure:: ./_images/svm_saes_global_timeout_1_thumb.png
+        :target: ./examples/svm_saes_global_timeout.html
+
+.. raw:: html
+
+    <div style="clear: both"></div>
+
+See :ref:`examples` for more.
 
 Getting Started
 ---------------

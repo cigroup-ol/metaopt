@@ -22,6 +22,13 @@ class BasePlugin(object):
 
     @abstractmethod
     def setup(f, param_spec, return_spec):
+        """
+        Called before the invoker calls the objective function the first time
+
+        :param f: Objective function
+        :param param_spec: Parameter specification
+        :param return_spec: Return value specification
+        """
         pass
 
     @abstractmethod
