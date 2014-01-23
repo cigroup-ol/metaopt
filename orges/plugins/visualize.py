@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, with_statement
 
+from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -12,6 +13,9 @@ from scipy.interpolate import griddata
 from orges.plugins.dummy import DummyPlugin
 
 NUMBER_OF_SAMPLES = 200
+
+COLORMAP = cm.jet
+REVERSED_COLORMAP =cm.jet_r
 
 class VisualizeLandscapePlugin(DummyPlugin):
     def __init__(self, x_param_index=0, y_param_index=1):
@@ -44,7 +48,10 @@ class VisualizeLandscapePlugin(DummyPlugin):
         if not self.worst_fitness or fitness > self.worst_fitness:
             self.worst_fitness = fitness
 
-    def save_visualization(self):
+    def show_image_plot(self):
+        pass
+
+    def show_surface_plot(self):
         fig = plt.figure()
 
         ax = fig.add_subplot(111, projection='3d')
@@ -68,9 +75,20 @@ class VisualizeLandscapePlugin(DummyPlugin):
         vmax = max(self.best_fitness.raw_values, self.worst_fitness.raw_values)
         vmin = min(self.best_fitness.raw_values, self.worst_fitness.raw_values)
 
-        ax.plot_surface(X, Y, Z, cmap=cm.jet, vmax=vmax, vmin=vmin)
+
+        cmap = self.choose_colormap()
+        ax.plot_surface(X, Y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
 
         plt.show()
+
+    def choose_colormap(self):
+        if self.is_minimization():
+            return REVERSED_COLORMAP
+        else:
+            return COLORMAP
+
+    def is_minimization(self):
+        return self.return_spec.return_values[0]["minimize"]
 
     def get_x_label(self):
         return self.param_spec.params.values()[self.x_param_index].title
@@ -91,11 +109,17 @@ class VisualizeLandscapePlugin(DummyPlugin):
 class VisualizeBestFitnessPlugin(DummyPlugin):
     def __init__(self):
         self.best_fitnesses = []
+        self.timestamps = []
+
+        self.start_time = None
         self.current_best = None
 
     def setup(self, f, param_spec, return_spec):
         del f, param_spec
         self.return_spec = return_spec
+
+        if not self.start_time:
+            self.start_time = datetime.now()
 
     def on_result(self, invocation):
         fitness = invocation.current_result
@@ -105,7 +129,10 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
 
         self.best_fitnesses.append(self.current_best.raw_values)
 
-    def save_visualization(self):
+        time_delta = datetime.now() - self.start_time
+        self.timestamps.append(time_delta.total_seconds())
+
+    def show_fitness_invocations_plot(self):
         fig = plt.figure()
 
         ax = fig.add_subplot(111)
@@ -115,6 +142,18 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
 
         ax.plot(self.best_fitnesses)
         plt.show()
+
+    def show_fitness_time_plot(self):
+        fig = plt.figure()
+
+        ax = fig.add_subplot(111)
+
+        ax.set_xlabel("Time")
+        ax.set_ylabel(self.get_y_label())
+
+        ax.plot(self.timestamps, self.best_fitnesses)
+        plt.show()
+
 
     def get_y_label(self):
         return self.return_spec.return_values[0]["name"]

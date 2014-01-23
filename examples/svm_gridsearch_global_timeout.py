@@ -12,8 +12,8 @@ from orges.core.returns import maximize
 
 
 @maximize("Score")
-@param.float("C", interval=[0.1, 1], step=0.05)
-@param.float("gamma", interval=[0.1, 1], step=0.05)
+@param.float("C", interval=[1, 10], step=0.5)
+@param.float("gamma", interval=[1, 10], step=0.5)
 def f(C, gamma):
     iris = datasets.load_iris()
 
@@ -24,28 +24,32 @@ def f(C, gamma):
 
     clf.fit(X_train, y_train)
 
-    return -clf.score(X_test, y_test)
+    return clf.score(X_test, y_test)
 
 
-from orges.core.main import optimize
-from orges.optimizer.gridsearch import GridSearchOptimizer
+if __name__ == '__main__':
+    from orges.core.main import optimize
+    from orges.optimizer.gridsearch import GridSearchOptimizer
 
-from orges.plugins.print import PrintPlugin
-from orges.plugins.visualize import VisualizeLandscapePlugin
-from orges.plugins.visualize import VisualizeBestFitnessPlugin
+    from orges.plugins.print import PrintPlugin
+    from orges.plugins.visualize import VisualizeLandscapePlugin
+    from orges.plugins.visualize import VisualizeBestFitnessPlugin
 
-optimizer = GridSearchOptimizer()
+    optimizer = GridSearchOptimizer()
 
-visualize_landscape_plugin = VisualizeLandscapePlugin()
-visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
+    visualize_landscape_plugin = VisualizeLandscapePlugin()
+    visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
-plugins = [
-    PrintPlugin(),
-    visualize_landscape_plugin,
-    visualize_best_fitness_plugin
-]
+    plugins = [
+        PrintPlugin(),
+        visualize_landscape_plugin,
+        visualize_best_fitness_plugin
+    ]
 
-print(optimize(f, timeout=3, optimizer=optimizer, plugins=plugins))
+    print(optimize(f, timeout=10, optimizer=optimizer, plugins=plugins))
 
-visualize_landscape_plugin.save_visualization()
-visualize_best_fitness_plugin.save_visualization()
+    visualize_landscape_plugin.show_surface_plot()
+    visualize_landscape_plugin.show_image_plot()
+
+    visualize_best_fitness_plugin.show_fitness_invocations_plot()
+    visualize_best_fitness_plugin.show_fitness_time_plot()
