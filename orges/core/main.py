@@ -39,6 +39,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
 
     return optimizer.optimize(invoker, param_spec=invoker.param_spec, return_spec=invoker.return_spec)
 
+
 def optimize(f, param_spec=None, return_spec=None, timeout=None,
              plugins=[TimeoutPlugin(1), PrintPlugin()],
              optimizer=SAESOptimizer()):

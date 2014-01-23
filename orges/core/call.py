@@ -43,6 +43,7 @@ def call(f, fargs, param_spec=None, return_spec=None):
                 "Function expects %s arguments but %s were given."
                 % (len(args), len(fargs)))
 
+
 def wrap_return_values(values, return_spec=None):
     if return_spec is None:
         return values

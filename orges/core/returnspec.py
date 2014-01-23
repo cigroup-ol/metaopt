@@ -5,6 +5,7 @@ from __future__ import division, print_function, with_statement
 
 DEFAULT_RETURN_VALUE_NAME = "Fitness"
 
+
 class ReturnSpec(object):
     """
     This class describes the return values of an objective function
@@ -41,8 +42,10 @@ class ReturnSpec(object):
         else:
             raise MultiObjectivesNotSupportedError()
 
+
 class MultiObjectivesNotSupportedError(Exception):
     pass
+
 
 class ReturnValuesWrapper(object):
     def __init__(self, return_spec, values):

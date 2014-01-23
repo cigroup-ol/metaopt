@@ -45,6 +45,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
         ax.scatter(X, Y, Z)
         plt.show()
 
+
 class VisualizeBestFitnessPlugin(DummyPlugin):
     def __init__(self):
         self.best_fitnesses = []
