@@ -60,13 +60,13 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             self.score_population()
 
             if self.aborted:
-                return self.best_scored_indivual[0]
+                return self.best_scored_indivual[0][0]
 
             self.select_parents()
 
             self.generation += 1
 
-        return self.best_scored_indivual[0]
+        return self.best_scored_indivual[0][0]
 
     def exit_condition(self):
         pass
