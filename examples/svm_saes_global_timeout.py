@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-TODO
-====
+SVM (SAES, global timeout)
+================================
 """
 from __future__ import division, print_function, with_statement
 
@@ -12,8 +12,8 @@ from orges.core.returns import maximize
 
 
 @maximize("Score")
-@param.float("C", interval=[1, 2], step=0.5)
-@param.float("gamma", interval=[1, 80], step=0.5)
+@param.float("C", interval=[1, 10], step=0.5)
+@param.float("gamma", interval=[1, 10], step=0.5)
 def f(C, gamma):
     iris = datasets.load_iris()
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         visualize_best_fitness_plugin
     ]
 
-    print(optimize(f, timeout=60, optimizer=optimizer, plugins=plugins))
+    print(optimize(f, timeout=3, optimizer=optimizer, plugins=plugins))
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()

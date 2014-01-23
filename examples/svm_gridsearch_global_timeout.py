@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-TODO
-====
+SVM (Gridsearch, global timeout)
+================================
 """
 from __future__ import division, print_function, with_statement
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         visualize_best_fitness_plugin
     ]
 
-    print(optimize(f, timeout=10, optimizer=optimizer, plugins=plugins))
+    print(optimize(f, timeout=3, optimizer=optimizer, plugins=plugins))
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()

@@ -49,7 +49,41 @@ class VisualizeLandscapePlugin(DummyPlugin):
             self.worst_fitness = fitness
 
     def show_image_plot(self):
-        pass
+        fig = plt.figure()
+
+        ax = fig.add_subplot(111)
+
+        ax.set_xlabel(self.get_x_label())
+        ax.set_ylabel(self.get_y_label())
+
+        x = map(lambda individual: individual[self.x_param_index].value,
+                self.individuals)
+
+        y = map(lambda individual: individual[self.y_param_index].value,
+                self.individuals)
+
+        xi = np.linspace(*self.get_x_interval(), num=NUMBER_OF_SAMPLES)
+        yi = np.linspace(*self.get_y_interval(), num=NUMBER_OF_SAMPLES)
+
+        X, Y = meshgrid(xi, yi)
+        Z = griddata((x, y), self.fitnesses, (X, Y))
+
+        vmax = max(self.best_fitness.raw_values, self.worst_fitness.raw_values)
+        vmin = min(self.best_fitness.raw_values, self.worst_fitness.raw_values)
+
+
+        cmap = self.choose_colormap()
+
+        extent = (
+            self.get_x_interval()[0], self.get_x_interval()[1],
+            self.get_y_interval()[0], self.get_y_interval()[1],
+        )
+
+        img = ax.imshow(Z, cmap=cmap, extent=extent, vmax=vmax, vmin=vmin,
+            origin="lower")
+
+        plt.colorbar(img)
+        plt.show()
 
     def show_surface_plot(self):
         fig = plt.figure()
