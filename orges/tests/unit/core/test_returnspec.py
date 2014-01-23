@@ -41,6 +41,7 @@ def test_return_spec_given_function_create_default_return_values():
     return_spec = ReturnSpec(f)
 
     assert return_spec.return_values[0]["name"] == "Fitness"
+    assert return_spec.return_values[0]["minimize"] == True
 
 def test_is_minimization_without_return_spec():
     returned_values = ReturnValuesWrapper(None, 1)

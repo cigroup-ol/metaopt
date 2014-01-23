@@ -22,7 +22,7 @@ class ReturnSpec(object):
             self.create_default_return_values(f)
 
     def create_default_return_values(self, f):
-        self.maximize(DEFAULT_RETURN_VALUE_NAME)
+        self.minimize(DEFAULT_RETURN_VALUE_NAME)
 
     def minimize(self, name):
         """Tells the optimizer to *minimize* the objective function"""
