@@ -127,7 +127,7 @@ function-rgx=([a-z_][a-z0-9_]{2,30})|(test_[a-z_][a-z0-9_]{2,50})|f$
 method-rgx=[a-z_][a-z0-9_]{2,30}|(test_[a-z_][a-z0-9_]{2,50})$$
 
 # Regular expression which should only match correct instance attribute names
-attr-rgx=[a-z_][a-z0-9_]{2,30}$
+attr-rgx=[a-z_][a-z0-9_]{2,30}|f|_f$
 
 # Regular expression which should only match correct argument names
 argument-rgx=[a-z_][a-z0-9_]{2,30}$

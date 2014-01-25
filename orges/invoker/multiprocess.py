@@ -36,7 +36,7 @@ class MultiProcessInvoker(BaseInvoker):
         self._queue_tasks = manager.Queue()
 
         self._worker_handles = []
-        self._worker_dict = dict()
+        self._worker_task_dict = dict()
         wpp = WorkerProcessProvider(queue_results=self._queue_results,
                                     queue_status=self._queue_status,
                                     queue_tasks=self._queue_tasks)
@@ -49,6 +49,12 @@ class MultiProcessInvoker(BaseInvoker):
         # we can not prohibit others to use us in parallel, so
         # make this invoker thread-safe
         self._lock = Lock()
+
+        # set by the pluggable invoker or another caller
+        self._f = None  # objective function
+        self._param_spec = None  # parameter specification
+        self._return_spec = None  # return specification
+        self._caller = None  # we call back for each worker result
 
         super(MultiProcessInvoker, self).__init__()
 
@@ -64,6 +70,42 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             self._caller = value
 
+    @property
+    def f(self):
+        """Property for the function attribute."""
+        with self._lock:
+            return self._f
+
+    @f.setter
+    def f(self, function):
+        """Property for the function attribute."""
+        with self._lock:
+            self._f = function
+
+    @property
+    def param_spec(self):
+        """Property for the parameter specification attribute."""
+        with self._lock:
+            return self._param_spec
+
+    @param_spec.setter
+    def param_spec(self, param_spec):
+        """Setter for the parameter specification attribute."""
+        with self._lock:
+            self._param_spec = param_spec
+
+    @property
+    def return_spec(self):
+        """Property for the return specification attribute."""
+        with self._lock:
+            return self._return_spec
+
+    @return_spec.setter
+    def return_spec(self, return_spec):
+        """Setter for the return specification attribute."""
+        with self._lock:
+            self._return_spec = return_spec
+
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
         """
@@ -77,34 +119,38 @@ class MultiProcessInvoker(BaseInvoker):
         self.caller = caller
 
         with self._lock:
-            # try to provision one new worker
             try:
+                # provision an new worker
                 worker_handle = self._worker_provider.provision()
+                # store new worker
                 self._worker_handles.append(worker_handle)
-                self._worker_dict[worker_handle.worker_id] = None
+                self._worker_task_dict[worker_handle.worker_id] = None
             except IndexError:
+                # no worker could be provisioned
                 pass  # give the task to one of the busy workers
 
             # schedule task for any worker to execute
             task_id = uuid.uuid4()
             self._queue_tasks.put(Task(task_id=task_id,
-                                       function=determine_package(self.f),
-                                       args=fargs, kwargs=kwargs))
+                                       function=determine_package(self._f),
+                                       args=fargs,
+                                       param_spec=self._param_spec,
+                                       return_spec=self._return_spec,
+                                       kwargs=kwargs))
 
             # wait for any worker to start working on the task
             started = False
             while not started:
                 status = self._queue_status.get()
-
                 if status is None:
-                    # TODO Why should status be None?
+                    # the worker terminated gracefully
                     assert False
                 if isinstance(status, Start):
-                    self._worker_dict[status.worker_id] = status.task_id
+                    self._worker_task_dict[status.worker_id] = status.task_id
                     assert status.task_id == task_id
                     started = True
                 if isinstance(status, Finish):
-                    self._worker_dict[status.worker_id] = None
+                    self._worker_task_dict[status.worker_id] = None
 
             task_handle = TaskHandle(invoker=self, task_id=status.task_id)
 
@@ -118,18 +164,18 @@ class MultiProcessInvoker(BaseInvoker):
                         if (worker_handle.worker_id == result.worker_id and
                             worker_handle.current_task_id == result.task_id):
                             worker_handle.stop()
-                            self._worker_dict[status.worker_id] = None
+                            self._worker_task_dict[status.worker_id] = None
                             self._worker_handles.remove(worker_handle)
 
                 # handle regular results
                 if isinstance(result, Result):
-                    self._worker_dict[status.worker_id] = None
+                    self._worker_task_dict[status.worker_id] = None
                     self._caller.on_result(result.value, result.args,
                                            **result.kwargs)
 
                 # handle error results
                 if isinstance(result, Error):
-                    self._worker_dict[status.worker_id] = None
+                    self._worker_task_dict[status.worker_id] = None
                     try:
                         self._caller.on_error(result.value, result.args,
                                               **result.kwargs)
@@ -153,7 +199,7 @@ class MultiProcessInvoker(BaseInvoker):
         """Terminates a worker_handle given by id."""
         with self._lock:
             for worker_handle in self._worker_handles:
-                if self._worker_dict[worker_handle.worker_id] != task_id:
+                if self._worker_task_dict[worker_handle.worker_id] != task_id:
                     continue
                 worker_handle.stop()
                 self._worker_handles.remove(worker_handle)

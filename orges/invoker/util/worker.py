@@ -99,7 +99,9 @@ class WorkerProcess(Process, Worker):
 
         # make the actual call
         try:
-            value = call(function, task.args)
+            value = call(f=function, fargs=task.args,
+                         param_spec=task.param_spec,
+                         return_spec=task.return_spec)
             self._queue_results.put(Result(task_id=task.task_id,
                                           worker_id=self._worker_id,
                                           function=task.function,

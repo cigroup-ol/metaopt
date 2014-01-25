@@ -56,7 +56,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
     @stoppable_method
     def invoke(self, caller, fargs, invocation=None, **kwargs):
         """Implementation of the inherited abstract invoke method."""
-        self.caller = caller
+        self._caller = caller
 
         if invocation is None:
             invocation = Invocation()
@@ -93,16 +93,16 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         if invocation.retry:
             # TODO: Maybe run this in its own thread
-            self.invoke(self.caller, invocation.fargs, invocation, **invocation.kwargs)
+            self.invoke(self._caller, invocation.fargs, invocation, **invocation.kwargs)
         else:
-            self.caller.on_result(result, fargs, **invocation.kwargs)
+            self._caller.on_result(result, fargs, **invocation.kwargs)
 
     def on_error(self, error, fargs, invocation):
         """Implementation of the inherited abstract on_error method."""
         for plugin in self.plugins:
             plugin.on_error(invocation)
 
-        self.caller.on_error(error, fargs, **invocation.kwargs)
+        self._caller.on_error(error, fargs, **invocation.kwargs)
 
     def wait(self):
         """Implementation of the inherited abstract wait method."""

@@ -77,3 +77,43 @@ class BaseInvoker(Stoppable):
         TODO: Return value
         """
         raise NotImplementedError()
+
+    @property
+    def caller(self):
+        """Property for the private caller attribute."""
+        raise NotImplementedError()
+
+    @caller.setter
+    def caller(self, value):
+        """Setter for the private caller attribute."""
+        raise NotImplementedError()
+
+    @property
+    def f(self):
+        """Property for the function attribute."""
+        raise NotImplementedError()
+
+    @f.setter
+    def f(self, function):
+        """Property for the function attribute."""
+        raise NotImplementedError()
+
+    @property
+    def param_spec(self):
+        """Property for the parameter specification attribute."""
+        raise NotImplementedError()
+
+    @param_spec.setter
+    def param_spec(self, param_spec):
+        """Setter for the parameter specification attribute."""
+        raise NotImplementedError()
+
+    @property
+    def return_spec(self):
+        """Property for the return specification attribute."""
+        raise NotImplementedError()
+
+    @return_spec.setter
+    def return_spec(self, return_spec):
+        """Setter for the return specification attribute."""
+        raise NotImplementedError()
