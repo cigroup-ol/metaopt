@@ -8,6 +8,7 @@ from mock import Mock
 
 from orges.core import param
 from orges.core.args import ArgsCreator
+from orges.core.returnspec import ReturnValuesWrapper
 from orges.invoker.dualthread import DualThreadInvoker
 
 
@@ -36,7 +37,7 @@ def test_invoke_calls_on_result():
     invoker.invoke(caller, ARGS)
     invoker.wait()
 
-    caller.on_result.assert_called_with(2, ARGS)
+    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 2), ARGS)
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = DualThreadInvoker()
@@ -57,7 +58,8 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker.invoke(caller, ARGS, data=data)
     invoker.wait()
 
-    caller.on_result.assert_called_with(2, ARGS, data=data)
+    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 2),
+        ARGS, data=data)
 
 if __name__ == '__main__':
     import nose

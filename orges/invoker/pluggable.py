@@ -49,6 +49,14 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         self.invoker.return_spec = value
 
     @property
+    def caller(self):
+        return self._caller
+
+    @caller.setter
+    def caller(self, value):
+        self._caller = value
+
+    @property
     def invoker(self):
         """Property for the invoker attribute."""
         return self._invoker
