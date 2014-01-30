@@ -17,6 +17,11 @@ class DualThreadInvoker(BaseInvoker):
 
     def __init__(self):
         super(DualThreadInvoker, self).__init__()
+
+        self._f = None
+        self._param_spec = None
+        self._return_spec = None
+
         self.thread = None
         self.task = None
         self.lock = Lock()
@@ -24,6 +29,31 @@ class DualThreadInvoker(BaseInvoker):
         self.current_task = None
         self.cancelled = False
         self.aborted = False
+
+    @property
+    def f(self):
+        return self._f
+
+    @f.setter
+    def f(self, value):
+        self._f = value
+
+    @property
+    def param_spec(self):
+        return self._param_spec
+
+    @param_spec.setter
+    def param_spec(self, value):
+        self._param_spec = value
+
+    @property
+    def return_spec(self):
+        return self._return_spec
+
+    @return_spec.setter
+    def return_spec(self, value):
+        self._return_spec = value
+
 
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
