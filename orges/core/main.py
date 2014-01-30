@@ -3,12 +3,11 @@ from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from orges.plugins.print import PrintPlugin
-from orges.optimizer.saes import SAESOptimizer
 from orges.core.returnspec import ReturnSpec
-from orges.plugins.timeout import TimeoutPlugin
-from orges.invoker.pluggable import PluggableInvoker
 from orges.invoker.multiprocess import MultiProcessInvoker
+from orges.invoker.pluggable import PluggableInvoker
+from orges.optimizer.saes import SAESOptimizer
+from orges.util.stoppable import StoppedException
 
 
 def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
@@ -40,13 +39,15 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
     result = optimizer.optimize(invoker, param_spec=invoker.param_spec,
         return_spec=invoker.return_spec)
 
-    invoker.stop()
+    try:
+        invoker.stop()
+    except StoppedException:
+        pass
 
     return result
 
 
-def optimize(f, param_spec=None, return_spec=None, timeout=None,
-             plugins=[TimeoutPlugin(1), PrintPlugin()],
+def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
              optimizer=SAESOptimizer()):
     """
     Optimize the given objective function.

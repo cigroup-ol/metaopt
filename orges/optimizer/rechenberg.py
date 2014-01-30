@@ -15,7 +15,13 @@ except NameError:
 
 
 class RechenbergOptimizer(BaseOptimizer, BaseCaller):
-    """Optimization based on an ES using Rechenberg's 1/5th success rule"""
+    """
+    Optimization based on an ES using Rechenberg's 1/5th success rule
+
+    This optimizer should be combined with a global timeout, otherwise it will
+    run indefinitely.
+
+    """
     # TODO: Find good default values
     MU = 100
     LAMBDA = 100

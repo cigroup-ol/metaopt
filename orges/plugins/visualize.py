@@ -19,6 +19,7 @@ REVERSED_COLORMAP =cm.jet_r
 
 class VisualizeLandscapePlugin(DummyPlugin):
     def __init__(self, x_param_index=0, y_param_index=1):
+        """Visualize fitness landscape"""
         self.x_param_index = x_param_index
         self.y_param_index = y_param_index
 
@@ -49,6 +50,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
             self.worst_fitness = fitness
 
     def show_image_plot(self):
+        """Show an image plot"""
         fig = plt.figure()
 
         ax = fig.add_subplot(111)
@@ -86,6 +88,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
         plt.show()
 
     def show_surface_plot(self):
+        """Show a surface plot"""
         fig = plt.figure()
 
         ax = fig.add_subplot(111, projection='3d')
@@ -141,6 +144,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
 
 
 class VisualizeBestFitnessPlugin(DummyPlugin):
+    """Visualize optimization progess"""
     def __init__(self):
         self.best_fitnesses = []
         self.timestamps = []
@@ -167,6 +171,7 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
         self.timestamps.append(time_delta.total_seconds())
 
     def show_fitness_invocations_plot(self):
+        """Show a fitness--invocations plot"""
         fig = plt.figure()
 
         ax = fig.add_subplot(111)
@@ -178,6 +183,7 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
         plt.show()
 
     def show_fitness_time_plot(self):
+        """Show a fitness--time plot"""
         fig = plt.figure()
 
         ax = fig.add_subplot(111)

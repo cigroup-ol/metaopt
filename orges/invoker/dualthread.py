@@ -1,5 +1,5 @@
 """
-Invoker that runs tasks in an own thread.
+This module provides a rather simple sequential invoker implementation
 """
 from __future__ import division, print_function, with_statement
 
@@ -13,7 +13,7 @@ from orges.invoker.util.task_handle import TaskHandle
 
 
 class DualThreadInvoker(BaseInvoker):
-    """Invoker that runs tasks in an own thread."""
+    """Invoker that invokes objective functions sequentially."""
 
     def __init__(self):
         super(DualThreadInvoker, self).__init__()

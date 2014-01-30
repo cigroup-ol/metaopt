@@ -19,7 +19,13 @@ except NameError:
 
 
 class SAESOptimizer(BaseOptimizer, BaseCaller):
-    """Optimization based on a self-adaptive evolution strategy (SAES)"""
+    """
+    Optimization based on a self-adaptive evolution strategy (SAES)
+
+    This optimizer should be combined with a global timeout, otherwise it will
+    run indefinitely.
+
+    """
     MU = 100
     LAMBDA = 100
     TAU0 = 0.5
