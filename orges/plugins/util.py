@@ -3,8 +3,6 @@ Utilities for plugin implementations.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.invoker.util.task_handle import TaskHandle
-
 
 class Invocation(object):
     """

@@ -64,12 +64,6 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             return self._caller
 
-    @caller.setter
-    def caller(self, value):
-        """Setter for the private caller attribute."""
-        with self._lock:
-            self._caller = value
-
     @property
     def f(self):
         """Property for the function attribute."""
@@ -116,9 +110,9 @@ class MultiProcessInvoker(BaseInvoker):
         Can be called asynchronously, but will block if the call can not be
         executed immediately, especially when using multiple processes/threads.
         """
-        self.caller = caller
-
         with self._lock:
+            self._caller = caller
+
             try:
                 # provision an new worker
                 worker_handle = self._worker_provider.provision()
@@ -129,14 +123,12 @@ class MultiProcessInvoker(BaseInvoker):
                 # no worker could be provisioned
                 pass  # give the task to one of the busy workers
 
-            # schedule task for any worker to execute
-            task_id = uuid.uuid4()
-            self._queue_tasks.put(Task(task_id=task_id,
-                                       function=determine_package(self._f),
-                                       args=fargs,
-                                       param_spec=self._param_spec,
-                                       return_spec=self._return_spec,
-                                       kwargs=kwargs))
+            # issue task for any worker to execute
+            task = Task(id=uuid.uuid4(),
+                        function=determine_package(self._f), args=fargs,
+                        param_spec=self._param_spec,
+                        return_spec=self._return_spec, kwargs=kwargs)
+            self._queue_tasks.put(task)
 
             # wait for any worker to start working on the task
             started = False
@@ -147,7 +139,7 @@ class MultiProcessInvoker(BaseInvoker):
                     assert False
                 if isinstance(status, Start):
                     self._worker_task_dict[status.worker_id] = status.task_id
-                    assert status.task_id == task_id
+                    assert status.task_id == task.id
                     started = True
                 if isinstance(status, Finish):
                     self._worker_task_dict[status.worker_id] = None

@@ -84,7 +84,7 @@ class WorkerProcess(Process, Worker):
         """Executes the given task."""
 
         # announce start of work
-        self._queue_status.put(Start(task_id=task.task_id,
+        self._queue_status.put(Start(task_id=task.id,
                                       worker_id=self._worker_id,
                                       function=task.function,
                                       args=task.args,
@@ -109,14 +109,14 @@ class WorkerProcess(Process, Worker):
                                           kwargs=task.kwargs))
         except Exception:  # objective function may raise any exception
             value = traceback.format_exc()
-            self._queue_results.put(Error(task_id=task.task_id,
+            self._queue_results.put(Error(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
 
         # announce finish of work
-        self._queue_status.put(Finish(task_id=task.task_id,
+        self._queue_status.put(Finish(task_id=task.id,
                                       worker_id=self._worker_id,
                                       function=task.function,
                                       args=task.args,

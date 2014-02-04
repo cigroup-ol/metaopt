@@ -26,7 +26,7 @@ Finish = namedtuple("Finish", ["worker_id", "task_id",
                                "kwargs"])
 
 # data structure for tasks given to the workers
-Task = namedtuple("Task", ["task_id",
+Task = namedtuple("Task", ["id",
                            "function", "args",
                            "param_spec", "return_spec",
                            "kwargs"])
