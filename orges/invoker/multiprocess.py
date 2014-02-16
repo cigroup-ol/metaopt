@@ -174,7 +174,7 @@ class MultiProcessInvoker(BaseInvoker):
                     except TypeError:
                         # result.kwargs was None
                         self._caller.on_error(result.value, result.args,
-                                              result.kwargs)
+                                              **result.kwargs)
 
             return task_handle
 

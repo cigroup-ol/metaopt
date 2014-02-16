@@ -105,12 +105,16 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         else:
             self._caller.on_result(result, fargs, **invocation.kwargs)
 
-    def on_error(self, error, fargs, invocation):
+    def on_error(self, error, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_error method."""
+        invocation.error = error
+
         for plugin in self.plugins:
             plugin.on_error(invocation)
 
         self._caller.on_error(error, fargs, **invocation.kwargs)
+
+        invocation.error = None
 
     def wait(self):
         """Implementation of the inherited abstract wait method."""

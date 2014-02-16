@@ -32,6 +32,7 @@ class Invocation(object):
         self._kwargs = None
         self._retry = False
         self._tries = 0
+        self._error = None
 
     @property
     def current_task(self):
@@ -104,6 +105,15 @@ class Invocation(object):
     @tries.setter
     def tries(self, value):
         self._tries = value
+
+    @property
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, value):
+        self._error = value
+
 
     def __repr__(self):
         return str(self.fargs)
