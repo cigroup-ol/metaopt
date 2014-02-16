@@ -76,7 +76,12 @@ class DualThreadInvoker(BaseInvoker):
         """Target function/method for a thread to execute."""
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
-        value = call(f, fargs, self.param_spec, self.return_spec)
+        try:
+            value = call(f, fargs, self.param_spec, self.return_spec)
+        except Exception as e:
+            with self.lock:
+                self.cancelled = True
+            error = e
 
         with self.lock:
             cancelled = self.cancelled
@@ -85,7 +90,7 @@ class DualThreadInvoker(BaseInvoker):
         if not cancelled:
             caller.on_result(value, fargs, **kwargs)
         else:
-            caller.on_error(value, fargs, **kwargs)
+            caller.on_error(error, fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:
