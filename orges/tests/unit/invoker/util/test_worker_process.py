@@ -4,18 +4,18 @@ Tests for the worker process utility.
 
 from __future__ import division, print_function, with_statement
 
-import uuid
 import multiprocessing
+import uuid
 from multiprocessing import Manager
 from multiprocessing.process import Process
 
 import nose
 
 from orges.core.args import ArgsCreator
-from orges.invoker.util.model import Task, Result, Start, Finish
+from orges.invoker.util.determine_package import determine_package
+from orges.invoker.util.model import Finish, Result, Start, Task
 from orges.invoker.util.worker import Worker, WorkerProcess
 from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
-from orges.invoker.util.determine_package import determine_package
 
 
 def test_instanciation():

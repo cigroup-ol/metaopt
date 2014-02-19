@@ -4,10 +4,10 @@ Tests for the main module.
 
 from __future__ import division, print_function, with_statement
 
-from nose.tools import raises
 from mock import Mock
+from nose.tools import raises
 
-from orges.core.main import custom_optimize, NoParamSpecError
+from orges.core.main import NoParamSpecError, custom_optimize
 from orges.invoker.dualthread import DualThreadInvoker
 
 

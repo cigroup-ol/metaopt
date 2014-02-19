@@ -9,7 +9,7 @@ from mock import Mock
 from nose.tools import eq_, raises
 
 from orges.core.args import Arg, BoolArg, NoStepArgIterError
-from orges.core.call import call, CallNotPossibleError
+from orges.core.call import CallNotPossibleError, call
 from orges.core.paramspec import ParamSpec
 
 

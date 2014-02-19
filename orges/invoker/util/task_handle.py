@@ -3,7 +3,7 @@ Means to stop tasks for invokers.
 """
 from __future__ import division, print_function, with_statement
 
-from orges.util.stoppable import Stoppable, stopping_method, stoppable_method
+from orges.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class TaskHandle(Stoppable):

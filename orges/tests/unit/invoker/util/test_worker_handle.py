@@ -7,9 +7,9 @@ from multiprocessing import Manager
 
 from nose.tools.nontrivial import raises
 
-from orges.util.stoppable import Stoppable, StoppedException
 from orges.invoker.util.worker_provider import WorkerProcessHandle, \
     WorkerProcessProvider
+from orges.util.stoppable import Stoppable, StoppedException
 
 
 def test_WorkerProcessHandle_inherits_stoppable():

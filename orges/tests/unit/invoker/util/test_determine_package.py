@@ -8,8 +8,8 @@ import string
 import nose
 from nose.tools.trivial import eq_
 
-from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 from orges.invoker.util.determine_package import determine_package
+from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 
 
 def local_function():

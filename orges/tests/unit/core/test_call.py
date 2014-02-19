@@ -8,7 +8,7 @@ from mock import Mock
 from nose.tools import raises
 
 from orges.core.args import Arg
-from orges.core.call import call, CallNotPossibleError
+from orges.core.call import CallNotPossibleError, call
 from orges.core.paramspec import ParamSpec
 from orges.core.returnspec import ReturnSpec, ReturnValuesWrapper
 

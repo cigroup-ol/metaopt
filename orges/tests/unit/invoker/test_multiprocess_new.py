@@ -6,12 +6,12 @@ from __future__ import division, print_function, with_statement
 
 from mock import Mock
 
-from orges.invoker.multiprocess import MultiProcessInvoker
-from orges.core.returnspec import ReturnValuesWrapper
 from orges.core.args import ArgsCreator
-
+from orges.core.returnspec import ReturnValuesWrapper
+from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.tests.util.functions import f as f
 from orges.tests.util.functions import m as failing_f
+
 
 def test_invoke_calls_on_result():
     invoker = MultiProcessInvoker()

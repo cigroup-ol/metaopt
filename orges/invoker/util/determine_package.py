@@ -3,8 +3,8 @@ Utility that detects the package of a given object.
 """
 from __future__ import division, print_function, with_statement
 
-import os
 import inspect
+import os
 
 
 def determine_package(some_object):

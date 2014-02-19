@@ -10,9 +10,9 @@ from orges.core import param
 from orges.core.args import ArgsCreator
 from orges.core.returnspec import ReturnValuesWrapper
 from orges.invoker.dualthread import DualThreadInvoker
-
 from orges.tests.util.functions import f as f
 from orges.tests.util.functions import m as failing_f
+
 
 def test_invoke_calls_on_result():
     invoker = DualThreadInvoker()

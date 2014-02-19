@@ -1,7 +1,7 @@
 from __future__ import division, print_function, with_statement
 
-from numbers import Integral
 from collections import OrderedDict
+from numbers import Integral
 
 
 class ParamSpec(object):

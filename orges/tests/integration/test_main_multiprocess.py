@@ -14,6 +14,7 @@ from orges.core.returns import maximize, minimize
 from orges.invoker.multiprocess import MultiProcessInvoker
 from orges.optimizer.gridsearch import GridSearchOptimizer
 
+
 @maximize("y")
 @param.int("x", interval=[0, 10])
 def f(x):

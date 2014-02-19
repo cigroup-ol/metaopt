@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.process import Process
 
 from orges.core.call import call
-from orges.invoker.util.model import Error, Start, Finish, Result
+from orges.invoker.util.model import Error, Finish, Result, Start
 
 
 class BaseWorker(object):

@@ -8,8 +8,8 @@ from threading import Lock, Thread
 
 from orges.core.call import call
 from orges.invoker.base import BaseInvoker
-from orges.util.stoppable import stopping_method, stoppable_method
 from orges.invoker.util.task_handle import TaskHandle
+from orges.util.stoppable import stoppable_method, stopping_method
 
 
 class DualThreadInvoker(BaseInvoker):

@@ -6,8 +6,8 @@ from __future__ import division, print_function, with_statement
 
 from nose.tools import raises
 
-from orges.core.paramspec import ParamSpec, NonIntStepError, \
-    DuplicateParamError, NonIntIntervalError, InvalidIntervalError
+from orges.core.paramspec import DuplicateParamError, InvalidIntervalError, \
+    NonIntIntervalError, NonIntStepError, ParamSpec
 
 
 @raises(Exception)

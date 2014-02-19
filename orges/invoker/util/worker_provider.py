@@ -7,11 +7,11 @@ import uuid
 from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
-from orges.util.singleton import Singleton
-from orges.util.stoppable import Stoppable, stopping_method, stoppable_method
+from orges.invoker.util.determine_worker_count import determine_worker_count
 from orges.invoker.util.model import Error
 from orges.invoker.util.worker import WorkerProcess
-from orges.invoker.util.determine_worker_count import determine_worker_count
+from orges.util.singleton import Singleton
+from orges.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class WorkerProcessProvider(Singleton):

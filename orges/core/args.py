@@ -13,8 +13,8 @@ a corresponding arg could be something like ``a=1``.
 """
 from __future__ import division, print_function, with_statement
 
-import random
 import itertools
+import random
 from random import randint
 
 

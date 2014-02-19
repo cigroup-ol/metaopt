@@ -6,8 +6,8 @@ from __future__ import division, print_function, with_statement
 
 from nose.tools import raises
 
-from orges.core.returnspec import ReturnSpec, ReturnValuesWrapper, \
-    MultiObjectivesNotSupportedError
+from orges.core.returnspec import MultiObjectivesNotSupportedError, \
+    ReturnSpec, ReturnValuesWrapper
 
 
 def test_return_spec_maximize():

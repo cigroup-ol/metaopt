@@ -10,9 +10,9 @@ import itertools
 from nose.tools import eq_
 
 from orges.core.args import ArgsCreator
+from orges.invoker.util.determine_package import determine_package
 from orges.tests.unit.core.util import get_intervals_from_function
 from orges.tests.util.functions import FUNCTIONS_INTEGER_WORKING
-from orges.invoker.util.determine_package import determine_package
 
 try:
     xrange  # will work in python2, only

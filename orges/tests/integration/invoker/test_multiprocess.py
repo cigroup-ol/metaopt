@@ -10,9 +10,9 @@ from mock import Mock
 from orges.core.args import ArgsCreator
 from orges.core.returnspec import ReturnValuesWrapper
 from orges.invoker.multiprocess import MultiProcessInvoker
+from orges.invoker.util.determine_package import determine_package
 from orges.tests.util.functions import FUNCTIONS_INTEGER_FAILING, \
     FUNCTIONS_INTEGER_WORKING
-from orges.invoker.util.determine_package import determine_package
 
 
 def f():

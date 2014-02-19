@@ -4,16 +4,16 @@ Invoker that uses multiple processes.
 from __future__ import division, print_function, with_statement
 
 import uuid
-from threading import Lock
 from multiprocessing import Manager
+from threading import Lock
 
 from orges.invoker.base import BaseInvoker
-from orges.util.stoppable import stopping_method, stoppable_method
-from orges.invoker.util.model import Task, Error, Result, Start, Finish
-from orges.invoker.util.task_handle import TaskHandle
-from orges.invoker.util.worker_provider import WorkerProcessProvider
 from orges.invoker.util.determine_package import determine_package
 from orges.invoker.util.determine_worker_count import determine_worker_count
+from orges.invoker.util.model import Error, Finish, Result, Start, Task
+from orges.invoker.util.task_handle import TaskHandle
+from orges.invoker.util.worker_provider import WorkerProcessProvider
+from orges.util.stoppable import stoppable_method, stopping_method
 
 
 class MultiProcessInvoker(BaseInvoker):
