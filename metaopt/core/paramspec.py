@@ -4,7 +4,7 @@ try:
     from collections import OrderedDict
 except ImportError:
     # Python < 2.7
-    import ordereddict as OrderedDict
+    from ordereddict import OrderedDict
 from numbers import Integral
 
 
