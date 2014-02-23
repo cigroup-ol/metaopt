@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""setup.py script for OrgES."""
+"""setup.py script for MetaOpt."""
 
 from __future__ import division, print_function, with_statement
 import os
@@ -23,7 +23,7 @@ def extract_package_name(requirement):
 def find_requirements(req_file='requirements.txt'):
     return [extract_package_name(r) for r in parse_requirements(req_file)]
 
-DESCRIPTION = 'OrgES Package - Organic Computing for Evolution Strategies'
+DESCRIPTION = 'MetaOpt Package'
 if os.path.isfile('README.rst'):
     LONG_DESCRIPTION = open('README.rst').read()
 else:

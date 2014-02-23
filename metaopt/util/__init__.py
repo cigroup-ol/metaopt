@@ -1,3 +1,3 @@
 """
-Utilities for OrgES.
+Utilities for MetaOpt.
 """

@@ -1,5 +1,5 @@
-OrgES – Organic Computing for Evolution Strategies
-==================================================
+MetaOpt
+=======
 
 Branch `master`
 
@@ -13,10 +13,10 @@ Branch `develop`
 .. image:: https://drone.io/github.com/cigroup-ol/metaopt/status.png
   :target: https://drone.io/github.com/cigroup-ol/metaopt
 
-OrgES is a Python-based organic computing framework for difficult blackbox optimization problems. It allows easy self-configuration of complex optimization heuristics.
+MetaOpt is a Python-based organic computing framework for difficult blackbox optimization problems. It allows easy self-configuration of complex optimization heuristics.
 
-Run OrgES
----------
+Run MetaOpt
+-----------
 
 .. code:: bash
 

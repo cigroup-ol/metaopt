@@ -1,3 +1,3 @@
 """
-Package of tests for OrgES.
+Package of tests for MetaOpt.
 """

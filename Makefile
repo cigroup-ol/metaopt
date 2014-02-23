@@ -37,7 +37,7 @@ clean-pyc:
 	find . -name '*.pyo' -exec rm -f {} +
 
 clean-reverse:
-	rm classes_OrgES.png packages_OrgES.png &> /dev/null || exit 0
+	rm classes_MetaOpt.png packages_MetaOpt.png &> /dev/null || exit 0
 
 coverage:
 	coverage run --source metaopt setup.py nosetests
@@ -73,13 +73,13 @@ release: clean
 	python setup.py sdist upload
 
 reverse: clean-reverse
-	pyreverse --ignore tests -o png -p OrgES metaopt
-	open ./classes_OrgES.png &> /dev/null || echo "";  # works under MacOS
-	open ./packages_OrgES.png &> /dev/null || echo "";  # works under MacOS
-	start ./classes_OrgES.png &> /dev/null || echo "";  # works under Windows
-	start ./packages_OrgES.png &> /dev/null || echo "";  # works under Windows
-	xdg-open ./classes_OrgES.png &> /dev/null || echo "";  # works under Linux
-	xdg-open ./packages_OrgES.png &> /dev/null || echo "";  # works under Linux
+	pyreverse --ignore tests -o png -p MetaOpt metaopt
+	open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
+	open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
+	start ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Windows
+	start ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Windows
+	xdg-open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Linux
+	xdg-open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Linux
 
 sdist: clean
 	python setup.py sdist

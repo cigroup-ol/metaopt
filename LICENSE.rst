@@ -1,4 +1,4 @@
-Copyright (c) 2013 by the OrgES authors (see AUTHORS.rst file).
+Copyright (c) 2013 by the MetaOpt authors (see AUTHORS.rst file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,

@@ -28,8 +28,8 @@ def f(C, gamma):
 
 
 def main():
-    from orges.core.main import optimize
-    from orges.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.core.main import optimize
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
     from metaopt.plugins.print import PrintPlugin
     from metaopt.plugins.visualize import VisualizeLandscapePlugin

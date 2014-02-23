@@ -3,4 +3,4 @@
 Examples
 ========
 
-The following examples show the capabilities of OrgES.
+The following examples show the capabilities of MetaOpt.
