@@ -1,6 +1,10 @@
 from __future__ import division, print_function, with_statement
 
-from collections import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    # Python < 2.7
+    import ordereddict as OrderedDict
 from numbers import Integral
 
 
