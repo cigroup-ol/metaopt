@@ -5,7 +5,10 @@ python:
   - "3.2"
   - "3.3"
 install:
-  - "pip install -r requirements_py`$envpython -c 'import sys; print(str(sys.version_info[0]) + str(sys.version_info[1]))'`.txt"
+    - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install requirements_py2.6.txt; fi"
+    - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install requirements_py2.7.txt; fi"
+    - "if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install requirements_py3.2.txt; fi"
+    - "if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then pip install requirements_py3.3.txt; fi"
 script:
   # Temporary solution to travis issue #155
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
