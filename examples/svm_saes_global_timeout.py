@@ -27,7 +27,7 @@ def f(C, gamma):
     return clf.score(X_test, y_test)
 
 
-if __name__ == '__main__':
+def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.saes import SAESOptimizer
 
@@ -53,3 +53,6 @@ if __name__ == '__main__':
 
     visualize_best_fitness_plugin.show_fitness_invocations_plot()
     visualize_best_fitness_plugin.show_fitness_time_plot()
+
+if __name__ == '__main__':
+    main()

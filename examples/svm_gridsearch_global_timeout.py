@@ -27,9 +27,9 @@ def f(C, gamma):
     return clf.score(X_test, y_test)
 
 
-if __name__ == '__main__':
-    from metaopt.core.main import optimize
-    from metaopt.optimizer.gridsearch import GridSearchOptimizer
+def main():
+    from orges.core.main import optimize
+    from orges.optimizer.gridsearch import GridSearchOptimizer
 
     from metaopt.plugins.print import PrintPlugin
     from metaopt.plugins.visualize import VisualizeLandscapePlugin
@@ -53,3 +53,6 @@ if __name__ == '__main__':
 
     visualize_best_fitness_plugin.show_fitness_invocations_plot()
     visualize_best_fitness_plugin.show_fitness_time_plot()
+
+if __name__ == '__main__':
+    main()
