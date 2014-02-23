@@ -20,6 +20,7 @@ from metaopt.optimizer.gridsearch import GridSearchOptimizer
 def f(x):
     return x
 
+
 def test_custom_optimize_maximize_gridsearch_multiprocess():
     invoker = MultiProcessInvoker()
     optimizer = GridSearchOptimizer()
@@ -27,10 +28,12 @@ def test_custom_optimize_maximize_gridsearch_multiprocess():
     result = custom_optimize(f, invoker, optimizer=optimizer)
     eq_(result[0].value, 10)
 
+
 @minimize("y")
 @param.int("x", interval=[0, 10])
 def f(x):
     return x
+
 
 def test_custom_optimize_minimize_gridsearch_multiprocess():
     invoker = MultiProcessInvoker()
@@ -39,11 +42,13 @@ def test_custom_optimize_minimize_gridsearch_multiprocess():
     result = custom_optimize(f, invoker, optimizer=optimizer)
     eq_(result[0].value, 0)
 
+
 @maximize("y")
 @param.int("x", interval=[0, 10])
 def f(x):
     sleep(1)
     return x
+
 
 def test_custom_optimize_maximize_gridsearch_multiprocess_global_timeout():
     invoker = MultiProcessInvoker()

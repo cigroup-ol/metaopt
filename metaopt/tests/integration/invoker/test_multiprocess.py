@@ -11,8 +11,7 @@ from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.tests.util.functions import FUNCTIONS_INTEGER_FAILING, \
-    FUNCTIONS_INTEGER_WORKING
+from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 
 
 def f():

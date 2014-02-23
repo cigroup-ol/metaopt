@@ -18,6 +18,7 @@ def f(a, b):
 
 ARGS = ArgsCreator(f.param_spec).args()
 
+
 def test_optimize_returns_result():
     invoker = SingleProcessInvoker()
     invoker.f = f

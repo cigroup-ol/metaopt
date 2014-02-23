@@ -27,6 +27,7 @@ def test_custom_optimize_maximize_gridsearch_dualthread():
     result = custom_optimize(f, invoker, optimizer=optimizer)
     eq_(result[0].value, 10)
 
+
 def test_custom_optimize_minimize_gridsearch_dualthread():
     invoker = DualThreadInvoker()
     optimizer = GridSearchOptimizer()
@@ -38,6 +39,7 @@ def test_custom_optimize_minimize_gridsearch_dualthread():
 
     result = custom_optimize(f, invoker, optimizer=optimizer)
     eq_(result[0].value, 0)
+
 
 def test_custom_optimize_maximize_gridsearch_dualthread_global_timeout():
     invoker = DualThreadInvoker()
