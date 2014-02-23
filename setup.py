@@ -30,9 +30,9 @@ def find_requirements(req_file='requirements.txt'):
 
 DESCRIPTION = 'OrgES Package - Organic Computing for Evolution Strategies'
 if os.path.isfile('README.rst'):
-    long_description = open('README.rst').read()
+    LONG_DESCRIPTION = open('README.rst').read()
 else:
-    long_description = DESCRIPTION
+    LONG_DESCRIPTION = DESCRIPTION
 
 setup(
     author=metaopt.__author__,
@@ -66,7 +66,7 @@ setup(
     data_files=[("", ["README.rst", "LICENSE.rst", "requirements_cli.txt",
                       "requirements_examples.txt", "requirements_lint.txt",
                       "requirements_tests.txt"])],
-    description=DESCRIPTION,
+    description=LONG_DESCRIPTION,
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=[],
     license=metaopt.__license__,
