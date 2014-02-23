@@ -2,9 +2,9 @@
 from __future__ import division, print_function, with_statement
 
 from datetime import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
-
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D  # Load 3d plots capabilities
 from numpy import meshgrid

@@ -5,7 +5,7 @@ SVM (Gridsearch, global timeout)
 """
 from __future__ import division, print_function, with_statement
 
-from sklearn import svm, datasets, cross_validation
+from sklearn import cross_validation, datasets, svm
 
 from orges.core import param
 from orges.core.returns import maximize
