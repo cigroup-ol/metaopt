@@ -15,7 +15,8 @@ from orges.plugins.dummy import DummyPlugin
 NUMBER_OF_SAMPLES = 200
 
 COLORMAP = cm.jet
-REVERSED_COLORMAP =cm.jet_r
+REVERSED_COLORMAP = cm.jet_r
+
 
 class VisualizeLandscapePlugin(DummyPlugin):
     def __init__(self, x_param_index=0, y_param_index=1):
@@ -73,7 +74,6 @@ class VisualizeLandscapePlugin(DummyPlugin):
         vmax = max(self.best_fitness.raw_values, self.worst_fitness.raw_values)
         vmin = min(self.best_fitness.raw_values, self.worst_fitness.raw_values)
 
-
         cmap = self.choose_colormap()
 
         extent = (
@@ -111,7 +111,6 @@ class VisualizeLandscapePlugin(DummyPlugin):
 
         vmax = max(self.best_fitness.raw_values, self.worst_fitness.raw_values)
         vmin = min(self.best_fitness.raw_values, self.worst_fitness.raw_values)
-
 
         cmap = self.choose_colormap()
         ax.plot_surface(X, Y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
@@ -193,7 +192,6 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
 
         ax.plot(self.timestamps, self.best_fitnesses)
         plt.show()
-
 
     def get_y_label(self):
         return self.return_spec.return_values[0]["name"]
