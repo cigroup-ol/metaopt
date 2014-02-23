@@ -7,8 +7,8 @@ from __future__ import division, print_function, with_statement
 
 from sklearn import cross_validation, datasets, svm
 
-from orges.core import param
-from orges.core.returns import maximize
+from metaopt.core import param
+from metaopt.core.returns import maximize
 
 
 @maximize("Score")
@@ -28,12 +28,12 @@ def f(C, gamma):
 
 
 if __name__ == '__main__':
-    from orges.core.main import optimize
-    from orges.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.core.main import optimize
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
-    from orges.plugins.print import PrintPlugin
-    from orges.plugins.visualize import VisualizeLandscapePlugin
-    from orges.plugins.visualize import VisualizeBestFitnessPlugin
+    from metaopt.plugins.print import PrintPlugin
+    from metaopt.plugins.visualize import VisualizeLandscapePlugin
+    from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
 
     optimizer = GridSearchOptimizer()
 
