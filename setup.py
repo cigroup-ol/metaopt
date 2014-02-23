@@ -6,19 +6,14 @@ import os
 import sys
 
 try:
-    from setuptools import setup, find_packages, Extension
+    from setuptools import setup, find_packages
 except ImportError:
     import ez_setup
     ez_setup.use_setuptools()
-    from setuptools import setup, find_packages, Extension
+    from setuptools import setup, find_packages
 from pip.req import parse_requirements
 
 import metaopt
-
-HANG_MODULE_EXTENSION = Extension(
-    'examples.algorithm.hang',
-    sources=['examples/algorithm/hangmodule.c']
-)
 
 
 def extract_package_name(requirement):
@@ -67,7 +62,7 @@ setup(
                       "requirements_examples.txt", "requirements_lint.txt",
                       "requirements_tests.txt"])],
     description=LONG_DESCRIPTION,
-    ext_modules=[HANG_MODULE_EXTENSION],
+    ext_modules=[],
     install_requires=[],
     license=metaopt.__license__,
     name='metaopt',
