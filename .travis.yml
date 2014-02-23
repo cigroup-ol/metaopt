@@ -5,7 +5,7 @@ python:
   - "3.2"
   - "3.3"
 install:
-  - "pip install -r requirements_py`python -c 'import sys; print(str(sys.version_info[0]) + str(sys.version_info[1]))'`.txt --use-mirrors"
+  - "pip install -r requirements_py`{envpython} -c 'import sys; print(str(sys.version_info[0]) + str(sys.version_info[1]))'`.txt --use-mirrors"
 script:
   # Temporary solution to travis issue #155
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
