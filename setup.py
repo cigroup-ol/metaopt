@@ -13,7 +13,7 @@ except ImportError:
     from setuptools import setup, find_packages, Extension
 from pip.req import parse_requirements
 
-import orges
+import metaopt
 
 HANG_MODULE_EXTENSION = Extension(
     'examples.algorithm.hang',
@@ -35,8 +35,8 @@ else:
     long_description = DESCRIPTION
 
 setup(
-    author=orges.__author__,
-    author_email=orges.__author_email__,
+    author=metaopt.__author__,
+    author_email=metaopt.__author_email__,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
@@ -69,14 +69,14 @@ setup(
     description=DESCRIPTION,
     ext_modules=[HANG_MODULE_EXTENSION],
     install_requires=[],
-    license=orges.__license__,
-    name='orges',
+    license=metaopt.__license__,
+    name='metaopt',
     packages=find_packages(exclude=('examples', 'docs', 'tests')),
     package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},
     setup_requires=[],
     tests_require=find_requirements('requirements_tests.txt'),
-    test_suite='orges.tests',
-    url=orges.__url__,
+    test_suite='metaopt.tests',
+    url=metaopt.__url__,
     use_2to3=(sys.version_info >= (3,)),
-    version=orges.__version__,
+    version=metaopt.__version__,
 )

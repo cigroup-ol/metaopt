@@ -7,7 +7,7 @@ help:
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
-	@echo "install - install orges and all dependencies"
+	@echo "install - install metaopt and all dependencies"
 	@echo "isort - sanititize imports with isort"
 	@echo "lint - check style with flake8"	
 	@echo "release - package and upload a release"
@@ -40,13 +40,13 @@ clean-reverse:
 	rm classes_OrgES.png packages_OrgES.png &> /dev/null || exit 0
 
 coverage:
-	coverage run --source orges setup.py nosetests
+	coverage run --source metaopt setup.py nosetests
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs:
-	sphinx-apidoc -o docs/ orges
+	sphinx-apidoc -o docs/ metaopt
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html &> /dev/null || echo "";  # works under MacOS
@@ -59,21 +59,21 @@ install:
 
 isort:
 	find examples -name "*.py" -exec isort -a $(IMPORT_TO_ADD) {} &> /dev/null +
-	find orges -name "*.py" -exec isort -a $(IMPORT_TO_ADD) {} &> /dev/null +
+	find metaopt -name "*.py" -exec isort -a $(IMPORT_TO_ADD) {} &> /dev/null +
 
 lint:
-	find orges -name '*.py' -exec flake8 {} +
+	find metaopt -name '*.py' -exec flake8 {} +
 	python3 setup.py flake8
-	pylint orges
+	pylint metaopt
 
 reindent:
-	find orges -name "*.py" -exec python `locate reindent.py` {} +
+	find metaopt -name "*.py" -exec python `locate reindent.py` {} +
 
 release: clean
 	python setup.py sdist upload
 
 reverse: clean-reverse
-	pyreverse --ignore tests -o png -p OrgES orges
+	pyreverse --ignore tests -o png -p OrgES metaopt
 	open ./classes_OrgES.png &> /dev/null || echo "";  # works under MacOS
 	open ./packages_OrgES.png &> /dev/null || echo "";  # works under MacOS
 	start ./classes_OrgES.png &> /dev/null || echo "";  # works under Windows
