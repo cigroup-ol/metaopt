@@ -4,8 +4,9 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+install:
+  - install: "a=(`python --version 2>&1`); a=(`echo ${a[1]} | cut -c -3`); pip install -r requirements_`python -c 'import sys; print(str(sys.version_info.major) + str(sys.version_info.minor))'`.txt --use-mirrors"
 script:
-  - python setup.py build_ext --inplace
   # Temporary solution to travis issue #155
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
   - make test
