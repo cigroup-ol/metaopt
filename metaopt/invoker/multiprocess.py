@@ -154,7 +154,7 @@ class MultiProcessInvoker(BaseInvoker):
                 if result is None:
                     for worker_handle in self._worker_handles:
                         if (worker_handle.worker_id == result.worker_id and
-                            worker_handle.current_task_id == result.task_id):
+                                worker_handle.current_task_id == result.task_id):
                             worker_handle.stop()
                             self._worker_task_dict[status.worker_id] = None
                             self._worker_handles.remove(worker_handle)
