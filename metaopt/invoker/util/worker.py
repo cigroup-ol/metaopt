@@ -62,23 +62,12 @@ class WorkerProcess(Process, Worker):
             try:
                 task = self._queue_tasks.get()
             except EOFError:
-                pass
-
-            # handle poison pill given by the optimizer
-            if task is None:
-                # send sentinel to propagate termination
-                #self._queue_results.put(None)
-
-                #self._queue_results.close()
-                # wait for the queues
-                #self._queue_results.join()
-                #self._queue_status.join()
-                #self._queue_tasks.join()
-
-                # terminate
+                # the queue was terminated on the other end by the invoker
+                # break, so we can terminate
                 break
-
-            self._execute(task)
+            finally:
+                # always execute task, even if None
+                self._execute(task)
 
     def _execute(self, task):
         """Executes the given task."""
@@ -102,12 +91,15 @@ class WorkerProcess(Process, Worker):
             value = call(f=function, fargs=task.args,
                          param_spec=task.param_spec,
                          return_spec=task.return_spec)
-            self._queue_results.put(Result(task_id=task.task_id,
+            self._queue_results.put(Result(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
-        except Exception:  # objective function may raise any exception
+        except Exception:
+            # the objective function may raise any exception
+            # we can not do anything more helpful than propagate the exception
+            # the receiving invoker is another process, so send it as a string
             value = traceback.format_exc()
             self._queue_results.put(Error(task_id=task.id,
                                           worker_id=self._worker_id,
@@ -115,7 +107,7 @@ class WorkerProcess(Process, Worker):
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
 
-        # announce finish of work
+        # announce finish of work to invoker
         self._queue_status.put(Finish(task_id=task.id,
                                       worker_id=self._worker_id,
                                       function=task.function,

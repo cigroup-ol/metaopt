@@ -11,7 +11,7 @@ def determine_worker_count(request=None):
     Determines the maximum number of worker processes or threads.
 
     If there are more physical or virtual CPUs available on this machine than
-    the number of requested request, that is returned.
+    the number of requested request, the latter is returned.
     """
     if request is None:
         try:

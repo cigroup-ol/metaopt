@@ -3,6 +3,7 @@ Invoker that uses multiple processes.
 """
 from __future__ import division, print_function, with_statement
 
+import time
 import uuid
 from multiprocessing import Manager
 from threading import Lock
@@ -14,6 +15,11 @@ from metaopt.invoker.util.model import Error, Finish, Result, Start, Task
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import stoppable_method, stopping_method
+from Queue import Empty
+
+
+class TimeoutError(BaseException):
+    pass
 
 
 class MultiProcessInvoker(BaseInvoker):
@@ -100,6 +106,73 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             self._return_spec = return_spec
 
+    def _handle_error(self, error):
+        self._worker_task_dict[error.worker_id] = None
+        try:
+            self._caller.on_error(error.value, error.args, **error.kwargs)
+        except TypeError:
+            # error.kwargs was None
+            self._caller.on_error(error.value, error.args, **error.kwargs)
+
+    def _handle_result(self, result):
+        self._worker_task_dict[result.worker_id] = None
+        self._caller.on_result(result.value, result.args, **result.kwargs)
+
+    def _handle_start(self, start):
+        self._worker_task_dict[start.worker_id] = start.task_id
+
+    def _handle_finish(self, finish):
+        print(self._worker_handles)  # TODO
+
+        # remove done task
+        print(self._worker_task_dict)
+        self._worker_task_dict.delete(finish.worker_id)
+        print(self._worker_task_dict)  # TODO
+
+        # stop done worker
+        for worker_handle in self._worker_handles:
+            if (worker_handle.worker_id == finish.worker_id and
+                    worker_handle.current_task_id == finish.task_id):
+                worker_handle.stop()
+                self._worker_handles.remove(worker_handle)
+
+        print(self._worker_handles)  # TODO
+
+    def _wait_for_one_result(self, timeout=None):
+        if timeout is None:
+            result = self._queue_results.get()
+        else:
+            try:
+                result = self._queue_results.get(timeout=timeout)
+            except Empty:
+                raise TimeoutError()
+        print(result)  # TODO
+
+        # handle successful results
+        if isinstance(result, Result):
+            self._handle_result(result=result)
+            return
+
+        # handle error results
+        elif isinstance(result, Error):
+            self._handle_error(error=result)
+            return
+
+        raise NotImplementedError()
+
+    def _wait_for_start(self, timeout=None):
+        while True:
+            status = self._queue_status.get()
+            # handle worker starting a task
+            if isinstance(status, Start):
+                self._handle_start(start=status)
+                return status.task_id
+                break
+            # handle worker finishing a task
+            elif isinstance(status, Finish):
+                self._handle_finish(finish=status)
+            raise NotImplementedError()
+
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
         """
@@ -114,16 +187,16 @@ class MultiProcessInvoker(BaseInvoker):
             self._caller = caller
 
             try:
-                # provision an new worker
+                # provision one new worker
                 worker_handle = self._worker_provider.provision()
-                # store new worker
+                # store the new worker
                 self._worker_handles.append(worker_handle)
                 self._worker_task_dict[worker_handle.worker_id] = None
             except IndexError:
                 # no worker could be provisioned
-                pass  # give the task to one of the busy workers
+                pass
 
-            # issue task for any worker to execute
+            # issue task, the first worker to become idle will execute it
             task = Task(id=uuid.uuid4(),
                         function=determine_package(self._f), args=fargs,
                         param_spec=self._param_spec,
@@ -131,52 +204,15 @@ class MultiProcessInvoker(BaseInvoker):
             self._queue_tasks.put(task)
 
             # wait for any worker to start working on the task
-            started = False
-            while not started:
-                status = self._queue_status.get()
-                if status is None:
-                    # the worker terminated gracefully
-                    assert False
-                if isinstance(status, Start):
-                    self._worker_task_dict[status.worker_id] = status.task_id
-                    assert status.task_id == task.id
-                    started = True
-                if isinstance(status, Finish):
-                    self._worker_task_dict[status.worker_id] = None
+            # there is always only one task in the queue
+            # so the task that gets started is the one we just issued
+            task_id = self._wait_for_start()
 
-            task_handle = TaskHandle(invoker=self, task_id=status.task_id)
-
-            # if at worker limit, wait for an result
+            # if at worker limit, wait for one result before returning
             if len(self._worker_handles) is self._worker_count_max:
-                result = self._queue_results.get()
+                self._wait_for_one_result(1)
 
-                # handle finished worker
-                if result is None:
-                    for worker_handle in self._worker_handles:
-                        if (worker_handle.worker_id == result.worker_id and
-                                worker_handle.current_task_id == result.task_id):
-                            worker_handle.stop()
-                            self._worker_task_dict[status.worker_id] = None
-                            self._worker_handles.remove(worker_handle)
-
-                # handle regular results
-                if isinstance(result, Result):
-                    self._worker_task_dict[status.worker_id] = None
-                    self._caller.on_result(result.value, result.args,
-                                           **result.kwargs)
-
-                # handle error results
-                if isinstance(result, Error):
-                    self._worker_task_dict[status.worker_id] = None
-                    try:
-                        self._caller.on_error(result.value, result.args,
-                                              **result.kwargs)
-                    except TypeError:
-                        # result.kwargs was None
-                        self._caller.on_error(result.value, result.args,
-                                              **result.kwargs)
-
-            return task_handle
+            return TaskHandle(invoker=self, task_id=task_id)
 
     @stoppable_method
     @stopping_method
@@ -197,10 +233,20 @@ class MultiProcessInvoker(BaseInvoker):
                 self._worker_handles.remove(worker_handle)
                 return  # worker handle is unique, don't look any further
 
-    def wait(self):
-        """Blocks until all tasks are done."""
-        # TODO
-        pass
+    def wait(self, timeout=None):
+        """Blocks until all workers terminate or the given timeout occurs."""
+
+        start_time = time.time()
+        while len(self._worker_handles) > 0:
+            try:
+                self._wait_for_one_result(1)
+            except TimeoutError:
+                pass
+
+            if timeout is not None and time.time() - timeout >= start_time:
+                raise TimeoutError()
+            time.sleep(1)
+        return
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""

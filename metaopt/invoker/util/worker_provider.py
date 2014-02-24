@@ -23,6 +23,7 @@ class WorkerProcessProvider(Singleton):
         self._queue_results = queue_results
         self._queue_status = queue_status
         self._queue_tasks = queue_tasks
+
         self._lock = Lock()
         self._worker_count = determine_worker_count()  # use up to all CPUs
         self._worker_processes = []

@@ -26,6 +26,7 @@ def test_custom_optimize_maximize_gridsearch_multiprocess():
     optimizer = GridSearchOptimizer()
 
     result = custom_optimize(f, invoker, optimizer=optimizer)
+    assert result is not None
     eq_(result[0].value, 10)
 
 

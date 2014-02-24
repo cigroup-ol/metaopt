@@ -25,13 +25,14 @@ def test_invoke_calls_on_result():
     caller.on_result = Mock()
     caller.on_error = Mock()
 
-    args = ArgsCreator(f.param_spec)
+    args = ArgsCreator(f.param_spec).args()
 
     invoker.invoke(caller, args)
-    invoker.wait()
+    invoker.wait(timeout=3)
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
     assert not caller.on_error.called
+
 
 def test_invoke_multiple_times_calls_on_result():
     invoker = MultiProcessInvoker()
@@ -59,9 +60,11 @@ def test_invoke_multiple_times_calls_on_result():
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
 
+
 def test_invoke_different_invokers_calls_on_result():
     test_invoke_calls_on_result()
     test_invoke_calls_on_result()
+
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = MultiProcessInvoker()
@@ -87,6 +90,7 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args,
         data=data)
 
+
 def test_invoke_calls_on_error():
     invoker = MultiProcessInvoker()
     invoker.f = failing_f
@@ -105,7 +109,7 @@ def test_invoke_calls_on_error():
     invoker.wait()
 
     assert not caller.on_result.called
-    assert caller.on_error.called # TODO: Also test arguments
+    assert caller.on_error.called  # TODO: Also test arguments
 
 
 if __name__ == '__main__':
