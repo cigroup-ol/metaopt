@@ -113,7 +113,7 @@ class MultiProcessInvoker(BaseInvoker):
             if worker_handle.worker_id != worker_id:
                 continue
             if self._worker_task_dict[worker_handle.worker_id] != task_id:
-                continue
+                continue  # TODO
             return worker_handle
         raise KeyError("No worker handle for worker %s and task %s." %
                        (worker_id, task_id))
@@ -153,27 +153,23 @@ class MultiProcessInvoker(BaseInvoker):
         print("handle finish")  # TODO
 
         # stop finished worker
-        print(self._worker_handles)  # TODO
-        worker_handle = self._get_worker_handle(task_id=finish.task_id,
-                                                worker_id=finish.worker_id)
-        worker_handle.stop()
-        self._worker_handles.remove(worker_handle)
-        print(self._worker_handles)  # TODO
+        #worker_handle = self._get_worker_handle(task_id=finish.task_id,
+         #                                       worker_id=finish.worker_id)
+        #worker_handle.stop()
+        #self._worker_handles.remove(worker_handle)
 
         # remove done task
         print(self._worker_task_dict)  # TODO
-        self._worker_task_dict[finish.worker_id] = None
+        if self._worker_task_dict[finish.worker_id] == finish.task_id:
+            self._worker_task_dict[finish.worker_id] = None
+        else:
+            # another start has occurred
+            pass
         print(self._worker_task_dict)  # TODO
 
-    def _wait_for_one_result(self, timeout=None):
+    def _wait_for_one_result(self):
         print("wait for one result")
-        if timeout is None:
-            result = self._queue_results.get()
-        else:
-            try:
-                result = self._queue_results.get(timeout=timeout)
-            except Empty:
-                raise Empty()
+        result = self._queue_results.get()
         print(result)  # TODO
 
         # handle successful results
@@ -243,7 +239,7 @@ class MultiProcessInvoker(BaseInvoker):
 
             # if at worker limit, wait for one result before returning
             if len(self._worker_handles) is self._worker_count_max:
-                self._wait_for_one_result(timeout=1)
+                self._wait_for_one_result()
 
             return TaskHandle(invoker=self, task_id=task_id)
 
@@ -268,36 +264,26 @@ class MultiProcessInvoker(BaseInvoker):
                 del self._worker_task_dict[worker_handle.worker_id]
                 return  # worker handle is unique, don't look any further
 
-    def wait(self, timeout=None):
-        """Blocks until all workers terminate or the given timeout occurs."""
+    def _count_active_workers(self):
+        count = 0
+        for task in self._worker_task_dict.values():
+            if task is not None:
+                count += 1
+        return count
 
-        if not self._stopped:
-            raise NotStoppedException("Stop this invoker before calling wait.")
-
-        # empty queues
-        while True:
+    def wait(self):
+        """Blocks until all currently invoked tasks terminate."""
+        while self._count_active_workers() > 0:
+        #while len([task for task in self._worker_task_dict.values() if task is not None]) > 0:
             try:
-                self._wait_for_one_result(timeout=1)
+                self._wait_for_one_result()
             except Empty:
-                break
+                continue
 
-        while True:
             try:
-                self._wait_for_one_start(timeout=1)
+                self._wait_for_one_start()
             except Empty:
-                break
-
-        start_time = time.time()
-        while len(self._worker_handles) > 0:
-            try:
-                self._wait_for_one_result(timeout=1)
-            except Empty:
-                pass
-
-            if timeout is not None and time.time() - timeout >= start_time:
-                raise TimeoutError()
-            time.sleep(1)
-        return
+                continue
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""

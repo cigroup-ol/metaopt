@@ -70,13 +70,13 @@ class WorkerProcess(Process, Worker):
             task = None
             try:
                 task = self._queue_tasks.get()
-            except EOFError:
+            except EOFError as e:
                 # the queue was terminated on the other end by the invoker
                 # break, so we can terminate
+                print(e)
                 break
-            finally:
-                # always execute task, even if None
-                self._execute(task)
+
+            self._execute(task)
 
     def _execute(self, task):
         """Executes the given task."""
