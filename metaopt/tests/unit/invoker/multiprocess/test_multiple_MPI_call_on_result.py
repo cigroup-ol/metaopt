@@ -13,4 +13,3 @@ def test_invoke_different_invokers_calls_on_result():
 if __name__ == '__main__':
     import nose
     nose.runmodule()
-

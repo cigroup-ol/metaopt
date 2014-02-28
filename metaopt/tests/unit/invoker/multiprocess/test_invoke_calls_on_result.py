@@ -3,8 +3,6 @@ Tests that a multiprocess invoker's invoke calls on_result of its caller.
 """
 from __future__ import division, print_function, with_statement
 
-import time
-
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator

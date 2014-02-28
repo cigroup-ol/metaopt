@@ -45,4 +45,3 @@ def test_invokes_call_on_result():
 if __name__ == '__main__':
     import nose
     nose.runmodule()
-
