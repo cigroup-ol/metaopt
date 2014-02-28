@@ -33,8 +33,8 @@ def test_invoke_passes_kwargs_result():
     args = ArgsCreator(f.param_spec).args()
 
     invoker.invoke(caller, args, data=data)
-    invoker.stop()
     invoker.wait()
+    invoker.stop()
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args,
         data=data)

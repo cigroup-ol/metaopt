@@ -31,8 +31,8 @@ def test_invokes_call_on_result():
     args = ArgsCreator(f.param_spec).args()
 
     invoker.invoke(caller, args)
-    invoker.stop()
     invoker.wait()
+    invoker.stop()
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
 
