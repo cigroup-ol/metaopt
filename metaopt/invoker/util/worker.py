@@ -37,6 +37,15 @@ class Worker(BaseWorker):
         return self._worker_id
 
 
+def import_function(function):
+    """Imports function given by qualified package name"""
+    function = __import__(function, globals(), locals(), ['function'], 0).f
+    # Note that the following is equivalent:
+    #     from MyPackage.MyModule import f as function
+    # Also note this always imports the function "f" as "function".
+    return function
+
+
 class WorkerProcess(Process, Worker):
     """Calls functions with arguments, both given by a queue."""
 
@@ -79,17 +88,10 @@ class WorkerProcess(Process, Worker):
                                       args=task.args,
                                       kwargs=task.kwargs))
 
-        # import function given by qualified package name
-        function = __import__(task.function, globals(), locals(), ['function'],
-                              0).f
-        # Note that the following is equivalent:
-        #     from MyPackage.MyModule import f as function
-        # Also note this always imports the function "f" as "function".
-
         # make the actual call
         try:
-            value = call(f=function, fargs=task.args,
-                         param_spec=task.param_spec,
+            value = call(f=import_function(function=task.function),
+                         fargs=task.args, param_spec=task.param_spec,
                          return_spec=task.return_spec)
             self._queue_results.put(Result(task_id=task.id,
                                           worker_id=self._worker_id,

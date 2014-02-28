@@ -7,7 +7,7 @@ from metaopt.util.stoppable import StoppedException
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):
-    """TODO: Document"""
+    """TODO: Document me"""
 
     def __init__(self):
         self.best = (None, None)

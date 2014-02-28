@@ -6,6 +6,7 @@ from __future__ import division, print_function, with_statement
 import time
 import uuid
 from multiprocessing import Manager
+from Queue import Empty
 from threading import Lock
 
 from metaopt.invoker.base import BaseInvoker
@@ -14,8 +15,8 @@ from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Error, Finish, Result, Start, Task
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
-from metaopt.util.stoppable import stoppable_method, stopping_method
-from Queue import Empty
+from metaopt.util.stoppable import NotStoppedException, stoppable_method, \
+    stopping_method
 
 
 class TimeoutError(BaseException):
@@ -106,72 +107,104 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             self._return_spec = return_spec
 
+    def _get_worker_handle(self, worker_id, task_id):
+        """Returns the handle from self's worker handles for the given ids."""
+        for worker_handle in self._worker_handles:
+            if worker_handle.worker_id != worker_id:
+                continue
+            if self._worker_task_dict[worker_handle.worker_id] != task_id:
+                continue
+            return worker_handle
+        raise KeyError("No worker handle for worker %s and task %s." %
+                       (worker_id, task_id))
+        print(self._worker_task_dict)
+
     def _handle_error(self, error):
-        self._worker_task_dict[error.worker_id] = None
+        """Handles an error received from the worker via the result queue."""
+        print("handle error")  # TODO
+        if error.task_id is None:
+            # the invoker has closed the queue, so the worker has terminated
+            # delete the worker's entry
+            print(error)
+            del self._worker_task_dict[error.worker_id]
+        else:
+            # an error has occurred in the objective function
+            # remove the task's entry
+            self._worker_task_dict[error.worker_id] = None
         try:
             self._caller.on_error(error.value, error.args, **error.kwargs)
         except TypeError:
             # error.kwargs was None
-            self._caller.on_error(error.value, error.args, **error.kwargs)
+            self._caller.on_error(error.value, error.args)
 
     def _handle_result(self, result):
+        """Handles a result received from the worker via the result queue."""
+        print("handle result")  # TODO
         self._worker_task_dict[result.worker_id] = None
         self._caller.on_result(result.value, result.args, **result.kwargs)
 
     def _handle_start(self, start):
+        """Handles a start received from the worker via the status queue."""
+        print("handle start")  # TODO
         self._worker_task_dict[start.worker_id] = start.task_id
 
     def _handle_finish(self, finish):
+        """Handles a finish received from the worker via the status queue."""
+        print("handle finish")  # TODO
+
+        # stop finished worker
+        print(self._worker_handles)  # TODO
+        worker_handle = self._get_worker_handle(task_id=finish.task_id,
+                                                worker_id=finish.worker_id)
+        worker_handle.stop()
+        self._worker_handles.remove(worker_handle)
         print(self._worker_handles)  # TODO
 
         # remove done task
-        print(self._worker_task_dict)
-        self._worker_task_dict.delete(finish.worker_id)
+        print(self._worker_task_dict)  # TODO
+        self._worker_task_dict[finish.worker_id] = None
         print(self._worker_task_dict)  # TODO
 
-        # stop done worker
-        for worker_handle in self._worker_handles:
-            if (worker_handle.worker_id == finish.worker_id and
-                    worker_handle.current_task_id == finish.task_id):
-                worker_handle.stop()
-                self._worker_handles.remove(worker_handle)
-
-        print(self._worker_handles)  # TODO
-
     def _wait_for_one_result(self, timeout=None):
+        print("wait for one result")
         if timeout is None:
             result = self._queue_results.get()
         else:
             try:
                 result = self._queue_results.get(timeout=timeout)
             except Empty:
-                raise TimeoutError()
+                raise Empty()
         print(result)  # TODO
 
         # handle successful results
         if isinstance(result, Result):
+            print("Result.")  # TODO
             self._handle_result(result=result)
             return
 
         # handle error results
         elif isinstance(result, Error):
+            print("Error.")  # TODO
             self._handle_error(error=result)
             return
 
-        raise NotImplementedError()
+        raise TypeError("%s objects are not allowed in the result queue" %
+                            type(result))
 
-    def _wait_for_start(self, timeout=None):
+    def _wait_for_one_start(self, timeout=None):
+        print("wait for one start")
         while True:
-            status = self._queue_status.get()
+            status = self._queue_status.get(timeout=timeout)
             # handle worker starting a task
             if isinstance(status, Start):
                 self._handle_start(start=status)
-                return status.task_id
-                break
+                return status.task_id  # found a start
             # handle worker finishing a task
             elif isinstance(status, Finish):
                 self._handle_finish(finish=status)
-            raise NotImplementedError()
+                continue  # keep waiting for a start
+            raise TypeError("%s objects are not allowed in the status queue" %
+                            type(status))
 
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
@@ -206,11 +239,11 @@ class MultiProcessInvoker(BaseInvoker):
             # wait for any worker to start working on the task
             # there is always only one task in the queue
             # so the task that gets started is the one we just issued
-            task_id = self._wait_for_start()
+            task_id = self._wait_for_one_start()
 
             # if at worker limit, wait for one result before returning
             if len(self._worker_handles) is self._worker_count_max:
-                self._wait_for_one_result(1)
+                self._wait_for_one_result(timeout=1)
 
             return TaskHandle(invoker=self, task_id=task_id)
 
@@ -222,6 +255,7 @@ class MultiProcessInvoker(BaseInvoker):
             for worker_handle in self._worker_handles:
                 worker_handle.stop()
                 self._worker_handles.remove(worker_handle)
+                del self._worker_task_dict[worker_handle.worker_id]
 
     def stop_task(self, task_id):
         """Terminates a worker_handle given by id."""
@@ -231,16 +265,33 @@ class MultiProcessInvoker(BaseInvoker):
                     continue
                 worker_handle.stop()
                 self._worker_handles.remove(worker_handle)
+                del self._worker_task_dict[worker_handle.worker_id]
                 return  # worker handle is unique, don't look any further
 
     def wait(self, timeout=None):
         """Blocks until all workers terminate or the given timeout occurs."""
 
+        if not self._stopped:
+            raise NotStoppedException("Stop this invoker before calling wait.")
+
+        # empty queues
+        while True:
+            try:
+                self._wait_for_one_result(timeout=1)
+            except Empty:
+                break
+
+        while True:
+            try:
+                self._wait_for_one_start(timeout=1)
+            except Empty:
+                break
+
         start_time = time.time()
         while len(self._worker_handles) > 0:
             try:
-                self._wait_for_one_result(1)
-            except TimeoutError:
+                self._wait_for_one_result(timeout=1)
+            except Empty:
                 pass
 
             if timeout is not None and time.time() - timeout >= start_time:

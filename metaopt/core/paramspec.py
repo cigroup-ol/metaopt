@@ -1,11 +1,12 @@
 from __future__ import division, print_function, with_statement
 
+from numbers import Integral
+
 try:
     from collections import OrderedDict
 except ImportError:
     # Python < 2.7
     from ordereddict import OrderedDict
-from numbers import Integral
 
 
 class ParamSpec(object):

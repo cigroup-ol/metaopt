@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Error
+from metaopt.invoker.util.model import Error, Finish
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.singleton import Singleton
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
@@ -63,18 +63,19 @@ class WorkerProcessProvider(Singleton):
         with self._lock:
             worker_process = self._get_worker_process_for_id(worker_id)
 
-            # send manually construct error
-            result = Error(worker_id=None, task_id=None,
-                           function=None, args=None, value=None,
-                           kwargs=None)
-            self._queue_results.put(result)
-            #worker_process.queue_results.join()
-            #worker_process.queue_status.join()
-            #worker_process.queue_error.join()
-
             # send kill signal and wait for the process to die
             worker_process.terminate()
             worker_process.join()
+
+            # send manually constructed error result
+            result = Error(worker_id=worker_id, task_id=None, function=None,
+                           value=None, args=None, kwargs=None)
+            self._queue_results.put(result)
+
+            # send manually constructed finish status
+            finish = Finish(worker_id=worker_id, task_id=None, function=None,
+                            args=None, kwargs=None)
+            self._queue_status.put(finish)
 
             self._worker_processes.remove(worker_process)
 

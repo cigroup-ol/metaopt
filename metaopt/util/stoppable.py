@@ -35,7 +35,12 @@ class BaseStoppable(object):
 
 
 class StoppedException(Exception):
-    """Indicates that a call was made to a stopped object."""
+    """Indicates a call to an object that should *not* have been stopped before."""
+    pass
+
+
+class NotStoppedException(BaseException):
+    """Indicates a call to an object that should have been stopped before."""
     pass
 
 
