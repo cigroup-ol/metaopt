@@ -38,3 +38,8 @@ def test_invoke_passes_kwargs_result():
 
     caller.on_error.assert_called_with(ReturnValuesWrapper(None, 0), args,
         data=data)
+
+if __name__ == '__main__':
+    import nose
+    nose.runmodule()
+

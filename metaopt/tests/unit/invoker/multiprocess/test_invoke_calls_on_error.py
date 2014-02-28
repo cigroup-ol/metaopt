@@ -32,3 +32,7 @@ def test_invoke_calls_on_error():
 
     assert not caller.on_result.called
     assert caller.on_error.called  # TODO: Also test arguments
+
+if __name__ == '__main__':
+    import nose
+    nose.runmodule()

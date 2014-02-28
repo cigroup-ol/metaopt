@@ -41,3 +41,8 @@ def test_invokes_call_on_result():
     invoker.wait()
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
+
+if __name__ == '__main__':
+    import nose
+    nose.runmodule()
+
