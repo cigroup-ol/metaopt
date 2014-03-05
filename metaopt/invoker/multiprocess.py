@@ -3,7 +3,6 @@ Invoker that uses multiple processes.
 """
 from __future__ import division, print_function, with_statement
 
-import time
 import uuid
 from multiprocessing import Manager
 from Queue import Empty
@@ -12,11 +11,12 @@ from threading import Lock
 from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Error, Finish, Result, Start, Task
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
-from metaopt.util.stoppable import NotStoppedException, stoppable_method, \
-    stopping_method
+from metaopt.util.stoppable import stoppable_method, stopping_method
+from metaopt.invoker.util.model import Task, Error, Result
+from metaopt.invoker.util.task_worker_db import TaskWorkerDB
+from multiprocessing import Queue
 
 
 class TimeoutError(BaseException):
@@ -37,18 +37,24 @@ class MultiProcessInvoker(BaseInvoker):
         self._worker_count_max = determine_worker_count(resources)
 
         # managed queues common to all worker processes
-        manager = Manager()
-        self._queue_results = manager.Queue()
-        self._queue_status = manager.Queue()
-        self._queue_tasks = manager.Queue()
+        self._manager = Manager()
+        self._queue_outcome = self._manager.Queue()
+        self._queue_status = self._manager.Queue()
+        self._queue_tasks = self._manager.Queue()
+
+        #self._queue_outcome = self._manager.Queue()
+        #self._queue_status = self._manager.Queue()
+        #self._queue_tasks = self._manager.Queue()
 
         self._worker_handles = []
-        self._worker_task_dict = dict()
-        wpp = WorkerProcessProvider(queue_results=self._queue_results,
+        wpp = WorkerProcessProvider(queue_results=self._queue_outcome,
                                     queue_status=self._queue_status,
                                     queue_tasks=self._queue_tasks)
         self._worker_provider = wpp
         del wpp
+
+        self._task_worker_db = TaskWorkerDB(queue_outcome=self._queue_outcome,
+                                   queue_status=self._queue_status)
 
         # initialize logging
         #self._logger = multiprocessing.log_to_stderr(logging.INFO)
@@ -107,100 +113,20 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             self._return_spec = return_spec
 
-    def _get_worker_handle(self, worker_id, task_id):
-        """Returns the handle from self's worker handles for the given ids."""
-        for worker_handle in self._worker_handles:
-            if worker_handle.worker_id != worker_id:
-                continue
-            if self._worker_task_dict[worker_handle.worker_id] != task_id:
-                continue  # TODO
-            return worker_handle
-        raise KeyError("No worker handle for worker %s and task %s." %
-                       (worker_id, task_id))
-        print(self._worker_task_dict)
-
-    def _handle_error(self, error):
-        """Handles an error received from the worker via the result queue."""
-        print("handle error")  # TODO
-        if error.task_id is None:
-            # the invoker has closed the queue, so the worker has terminated
-            # delete the worker's entry
-            print(error)
-            del self._worker_task_dict[error.worker_id]
-        else:
-            # an error has occurred in the objective function
-            # remove the task's entry
-            self._worker_task_dict[error.worker_id] = None
-        try:
-            self._caller.on_error(error.value, error.args, **error.kwargs)
-        except TypeError:
-            # error.kwargs was None
-            self._caller.on_error(error.value, error.args)
-
-    def _handle_result(self, result):
-        """Handles a result received from the worker via the result queue."""
-        print("handle result")  # TODO
-        self._worker_task_dict[result.worker_id] = None
-        self._caller.on_result(result.value, result.args, **result.kwargs)
-
-    def _handle_start(self, start):
-        """Handles a start received from the worker via the status queue."""
-        print("handle start")  # TODO
-        self._worker_task_dict[start.worker_id] = start.task_id
-
-    def _handle_finish(self, finish):
-        """Handles a finish received from the worker via the status queue."""
-        print("handle finish")  # TODO
-
-        # stop finished worker
-        #worker_handle = self._get_worker_handle(task_id=finish.task_id,
-         #                                       worker_id=finish.worker_id)
-        #worker_handle.stop()
-        #self._worker_handles.remove(worker_handle)
-
-        # remove done task
-        print(self._worker_task_dict)  # TODO
-        if self._worker_task_dict[finish.worker_id] == finish.task_id:
-            self._worker_task_dict[finish.worker_id] = None
-        else:
-            # another start has occurred
-            pass
-        print(self._worker_task_dict)  # TODO
-
-    def _wait_for_one_result(self):
-        print("wait for one result")
-        result = self._queue_results.get()
-        print(result)  # TODO
-
-        # handle successful results
-        if isinstance(result, Result):
-            print("Result.")  # TODO
-            self._handle_result(result=result)
-            return
-
-        # handle error results
-        elif isinstance(result, Error):
-            print("Error.")  # TODO
-            self._handle_error(error=result)
-            return
-
-        raise TypeError("%s objects are not allowed in the result queue" %
-                            type(result))
-
-    def _wait_for_one_start(self, timeout=None):
-        print("wait for one start")
-        while True:
-            status = self._queue_status.get(timeout=timeout)
-            # handle worker starting a task
-            if isinstance(status, Start):
-                self._handle_start(start=status)
-                return status.task_id  # found a start
-            # handle worker finishing a task
-            elif isinstance(status, Finish):
-                self._handle_finish(finish=status)
-                continue  # keep waiting for a start
-            raise TypeError("%s objects are not allowed in the status queue" %
-                            type(status))
+    def _handle_outcome(self, outcome):
+        """"""
+        if isinstance(outcome, Error):
+            try:
+                self._caller.on_error(outcome.value, outcome.args, **outcome.kwargs)
+            except TypeError:
+                # error.kwargs was None
+                self._caller.on_error(outcome.value, outcome.args)
+        elif isinstance(outcome, Result):
+            try:
+                self._caller.on_result(outcome.value, outcome.args, **outcome.kwargs)
+            except TypeError:
+                # error.kwargs was None
+                self._caller.on_result(outcome.value, outcome.args)
 
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
@@ -220,7 +146,6 @@ class MultiProcessInvoker(BaseInvoker):
                 worker_handle = self._worker_provider.provision()
                 # store the new worker
                 self._worker_handles.append(worker_handle)
-                self._worker_task_dict[worker_handle.worker_id] = None
             except IndexError:
                 # no worker could be provisioned
                 pass
@@ -235,55 +160,70 @@ class MultiProcessInvoker(BaseInvoker):
             # wait for any worker to start working on the task
             # there is always only one task in the queue
             # so the task that gets started is the one we just issued
-            task_id = self._wait_for_one_start()
+            self._task_worker_db.wait_for_one_start()
 
             # if at worker limit, wait for one result before returning
             if len(self._worker_handles) is self._worker_count_max:
-                self._wait_for_one_result()
+                outcome = self._task_worker_db.wait_for_one_outcome()
+                print("outcome:", outcome)
+                if isinstance(outcome, Result):
+                    self._caller.on_result(outcome.value, outcome.args, **outcome.kwargs)
+                elif isinstance(outcome, Error):
+                    self._caller.on_error(outcome.value, outcome.args, **outcome.kwargs)
 
-            return TaskHandle(invoker=self, task_id=task_id)
+            return TaskHandle(invoker=self, task_id=task.id)
 
     @stoppable_method
     @stopping_method
     def stop(self):
         """Terminates all worker processes for immediate shutdown."""
         with self._lock:
+            print(self._worker_handles)
             for worker_handle in self._worker_handles:
+                # stop worker via worker provider
+                # this will put an error into the outcome queue
                 worker_handle.stop()
-                self._worker_handles.remove(worker_handle)
-                del self._worker_task_dict[worker_handle.worker_id]
+                # the worker provider will issue one error message per stop()
+                print(123123)
+                #self._task_worker_db.wait_for_one_outcome()
+                # there is noting more to be done with that worker
+                # so we can delete it
+            self._worker_handles = []
+
+            #self._queue_outcome.close()
+            #self._queue_status.close()
+            #self._queue_tasks.close()
+            #self._manager.shutdown()
 
     def stop_task(self, task_id):
         """Terminates a worker_handle given by id."""
         with self._lock:
             for worker_handle in self._worker_handles:
-                if self._worker_task_dict[worker_handle.worker_id] != task_id:
+                if self._task_worker_db.get_worker_id(task_id) != worker_handle.worker_id:
                     continue
                 worker_handle.stop()
                 self._worker_handles.remove(worker_handle)
-                del self._worker_task_dict[worker_handle.worker_id]
                 return  # worker handle is unique, don't look any further
 
-    def _count_active_workers(self):
-        count = 0
-        for task in self._worker_task_dict.values():
-            if task is not None:
-                count += 1
-        return count
-
     def wait(self):
-        """Blocks until all currently invoked tasks terminate."""
-        while self._count_active_workers() > 0:
-        #while len([task for task in self._worker_task_dict.values() if task is not None]) > 0:
+        """Blocks till all currently invoked tasks terminate."""
+        while self._task_worker_db.count_running_tasks() > 0:
             try:
-                self._wait_for_one_result()
+                self._task_worker_db.wait_for_one_outcome()
             except Empty:
                 continue
 
-            try:
-                self._wait_for_one_start()
-            except Empty:
+    def _get_worker_handle(self, worker_id, task_id):
+        """Returns the handle from self's worker handles for the given ids."""
+        for worker_handle in self._worker_handles:
+            if worker_handle.worker_id != worker_id:
                 continue
+            if self._task_worker_db.get_worker_id(task_id=task_id) != \
+                    worker_handle.worker_id:
+                continue  # TODO
+            return worker_handle
+        raise KeyError("No worker handle for worker %s and task %s." %
+                       (worker_id, task_id))
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""

@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Error, Finish
+from metaopt.invoker.util.model import Error
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.singleton import Singleton
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
@@ -20,7 +20,7 @@ class WorkerProcessProvider(Singleton):
     """
 
     def __init__(self, queue_tasks, queue_results, queue_status):
-        self._queue_results = queue_results
+        self._queue_outcome = queue_results
         self._queue_status = queue_status
         self._queue_tasks = queue_tasks
 
@@ -45,7 +45,7 @@ class WorkerProcessProvider(Singleton):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
                                            queue_tasks=self._queue_tasks,
-                                           queue_results=self._queue_results,
+                                           queue_results=self._queue_outcome,
                                            queue_status=self._queue_status)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
@@ -64,18 +64,14 @@ class WorkerProcessProvider(Singleton):
             worker_process = self._get_worker_process_for_id(worker_id)
 
             # send kill signal and wait for the process to die
+            assert worker_process.is_alive()
             worker_process.terminate()
             worker_process.join()
 
             # send manually constructed error result
-            result = Error(worker_id=worker_id, task_id=None, function=None,
+            error = Error(worker_id=worker_id, task_id=None, function=None,
                            value=None, args=None, kwargs=None)
-            self._queue_results.put(result)
-
-            # send manually constructed finish status
-            finish = Finish(worker_id=worker_id, task_id=None, function=None,
-                            args=None, kwargs=None)
-            self._queue_status.put(finish)
+            self._queue_outcome.put(error)
 
             self._worker_processes.remove(worker_process)
 

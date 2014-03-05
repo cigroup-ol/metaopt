@@ -34,7 +34,7 @@ def test_protected_attributes():
     stoppable_invoker.f = f
 
     assert stoppable_invoker._lock is not None
-    assert stoppable_invoker._queue_results is not None
+    assert stoppable_invoker._queue_outcome is not None
     assert stoppable_invoker._queue_status is not None
     assert stoppable_invoker._queue_tasks is not None
     assert stoppable_invoker._worker_count_max >= 1

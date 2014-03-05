@@ -20,11 +20,6 @@ Start = namedtuple("Start", ["worker_id", "task_id",
                              "function", "args",
                              "kwargs"])
 
-# data structure for declaring the end of an execution by the workers
-Finish = namedtuple("Finish", ["worker_id", "task_id",
-                               "function", "args",
-                               "kwargs"])
-
 # data structure for tasks given to the workers
 Task = namedtuple("Task", ["id",
                            "function", "args",

@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.process import Process
 
 from metaopt.core.call import call
-from metaopt.invoker.util.model import Error, Finish, Result, Start
+from metaopt.invoker.util.model import Error, Result, Start
 
 
 class BaseWorker(object):
@@ -52,7 +52,7 @@ class WorkerProcess(Process, Worker):
     def __init__(self, worker_id, queue_results, queue_status,
                  queue_tasks):
         self._worker_id = worker_id
-        self._queue_results = queue_results
+        self._queue_outcome = queue_results
         self._queue_status = queue_status
         self._queue_tasks = queue_tasks
         super(WorkerProcess, self).__init__()
@@ -68,13 +68,20 @@ class WorkerProcess(Process, Worker):
         while True:
             # Get tasks from the queue and trigger their execution
             task = None
-            try:
-                task = self._queue_tasks.get()
-            except EOFError as e:
+            #try:
+            print("before task get")
+            task = self._queue_tasks.get()
+            print("after task get")
+         #   except IOError as e:
+         #       print("==================")
+          #      print(e)
+          #      break
+           
+            #except (EOFError) as e:
                 # the queue was terminated on the other end by the invoker
                 # break, so we can terminate
-                print(e)
-                break
+             #   print(e)
+              #  break
 
             self._execute(task)
 
@@ -93,7 +100,7 @@ class WorkerProcess(Process, Worker):
             value = call(f=import_function(function=task.function),
                          fargs=task.args, param_spec=task.param_spec,
                          return_spec=task.return_spec)
-            self._queue_results.put(Result(task_id=task.id,
+            self._queue_outcome.put(Result(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
@@ -103,15 +110,8 @@ class WorkerProcess(Process, Worker):
             # we can not do anything more helpful than propagate the exception
             # the receiving invoker is another process, so send it as a string
             value = traceback.format_exc()
-            self._queue_results.put(Error(task_id=task.id,
+            self._queue_outcome.put(Error(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
-
-        # announce finish of work to invoker
-        self._queue_status.put(Finish(task_id=task.id,
-                                      worker_id=self._worker_id,
-                                      function=task.function,
-                                      args=task.args,
-                                      kwargs=task.kwargs))
