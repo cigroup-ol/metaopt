@@ -86,6 +86,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         except StoppedException:
             return invocation.current_task
 
+        # FIXME: This should not be required somehow
+        if not invocation.current_task:
+            return
+
         for plugin in self.plugins:
             plugin.on_invoke(invocation)
 
