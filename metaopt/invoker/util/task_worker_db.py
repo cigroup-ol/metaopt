@@ -50,7 +50,7 @@ class TaskWorkerDB():
 
     def _handle_start(self, start):
         """Handles a start received from the worker via the status queue."""
-        print("handle start")  # TODO
+        print("handle start:", start)  # TODO
         print(self._task_worker_dict)  # TODO
 
         try:
@@ -128,25 +128,13 @@ class TaskWorkerDB():
         print("wait for one status")  # TODO
 
         status = self._queue_status.get()
-        print(status)
         if isinstance(status, Start):
             self._handle_start(start=status)
-            print("returning start status")
-            return status
+            self._queue_status.task_done()
+            return
+
         raise TypeError("%s objects are not allowed in the status queue" %
                         type(status))
-
-    def wait_for_one_start(self):
-        """
-        Blocks till one start was gotten from the status queue and processed.
-        """
-        print("wait for one start")  # TODO
-        while True:
-            status = self.wait_for_one_status()
-            if isinstance(status, Start):
-                # a worker started a task
-                # so we are done
-                break
 
     def count_running_tasks(self):
         """Returns the number of tasks currently executed by workers."""

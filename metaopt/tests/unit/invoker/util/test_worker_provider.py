@@ -37,12 +37,12 @@ def test_WorkerProcessProvider_provision_and_stop_single_worker():
                                  queue_status=queue_status)
 
     # once
-    worker = worker_provider.provision()
-    worker.stop()
+    worker_provider.provision()
+    worker_provider.release_all()
 
     # and once more
-    worker = worker_provider.provision()
-    worker.stop()
+    worker_provider.provision()
+    worker_provider.release_all()
 
 
 def test_WorkerProcessProvider_provision_and_stop_multiple_workers():
@@ -58,14 +58,12 @@ def test_WorkerProcessProvider_provision_and_stop_multiple_workers():
                                  queue_status=queue_status)
 
     # once
-    workers = worker_provider.provision(number_of_workers=worker_count)
-    for worker in workers:
-        worker.stop()
+    worker_provider.provision(number_of_workers=worker_count)
+    worker_provider.release_all()
 
     # and once more
-    workers = worker_provider.provision(number_of_workers=worker_count)
-    for worker in workers:
-        worker.stop()
+    worker_provider.provision(number_of_workers=worker_count)
+    worker_provider.release_all()
 
 if __name__ == '__main__':
     nose.runmodule()

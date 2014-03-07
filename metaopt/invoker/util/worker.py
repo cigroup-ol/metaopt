@@ -54,7 +54,7 @@ class WorkerProcess(Process, Worker):
         self._worker_id = worker_id
         self._queue_outcome = queue_results
         self._queue_status = queue_status
-        self._queue_tasks = queue_tasks
+        self._queue_task = queue_tasks
         super(WorkerProcess, self).__init__()
 
     @property
@@ -66,24 +66,22 @@ class WorkerProcess(Process, Worker):
         """Makes this worker execute all tasks incoming from the task queue."""
 
         while True:
-            # Get tasks from the queue and trigger their execution
-            task = None
-            #try:
-            print("before task get")
-            task = self._queue_tasks.get()
-            print("after task get")
-         #   except IOError as e:
-         #       print("==================")
-          #      print(e)
-          #      break
-           
-            #except (EOFError) as e:
-                # the queue was terminated on the other end by the invoker
-                # break, so we can terminate
-             #   print(e)
-              #  break
-
-            self._execute(task)
+            try:
+                self._queue_task.qsize()
+            except Exception as e:
+                print("Queue.qsize():", e)
+                # task queue seems closed, so terminate
+                break
+            try:
+                # get task from the queue, execute task and report back
+                task = self._queue_task.get()
+                self._execute(task)
+                self._queue_task.task_done()
+            except EOFError as e:
+                # the queue was closed by the invoker, so terminate
+                print("Queue.get():", e)
+                # task queue seems closed, so terminate
+                break
 
     def _execute(self, task):
         """Executes the given task."""

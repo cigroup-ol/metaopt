@@ -84,8 +84,8 @@ def test_handle_status_start_result_duplicate_raises():
     _ = task_base.wait_for_one_outcome()
 
 
-def test_handle_status_passes_outcome_of_start():
-    task_base = TaskWorkerDB(queue_status=queue_status,
+def test_handle_status_start_wait():
+    task_worker_db = TaskWorkerDB(queue_status=queue_status,
                          queue_outcome=queue_outcome)
 
     worker_id = uuid4()
@@ -96,10 +96,7 @@ def test_handle_status_passes_outcome_of_start():
     start = Start(worker_id=worker_id, task_id=task_id, function=function,
                   args=args, kwargs=kwargs)
     queue_status.put(start)
-    outcome = task_base.wait_for_one_status()
-
-    assert isinstance(outcome, Start)
-    assert outcome is start
+    task_worker_db.wait_for_one_status()
 
 
 def test_handle_status_increments_active_tasks_upon_start_once():

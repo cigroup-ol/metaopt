@@ -13,7 +13,7 @@ import nose
 
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.invoker.util.model import Finish, Result, Start, Task
+from metaopt.invoker.util.model import Result, Start, Task
 from metaopt.invoker.util.worker import Worker, WorkerProcess
 from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 
@@ -92,7 +92,7 @@ def test_start_notask_terminate():
                                    queue_status=queue_status,
                                    queue_tasks=queue_tasks)
     worker_process.start()
-    worker_process.queue_tasks.put(None)
+    queue_tasks.put(None)
     worker_process.terminate()
     worker_process.join()
     assert not worker_process.is_alive()
@@ -108,9 +108,9 @@ def test_start_task_terminate():
                                    queue_status=queue_status,
                                    queue_tasks=queue_tasks)
     worker_process.start()
-    queue_tasks.put(Task(task_id=uuid.uuid4,
+    queue_tasks.put(Task(id=uuid.uuid4,
                          function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
-                         args=None,
+                         args=None, param_spec=None, return_spec=None,
                          kwargs=None))
     queue_tasks.put(None)
     worker_process.terminate()
@@ -128,13 +128,12 @@ def test_start_task_attribute_terminate():
                                    queue_status=queue_status,
                                    queue_tasks=queue_tasks)
     worker_process.start()
-    queue_tasks.put(Task(task_id=uuid.uuid4,
-                                        function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
-                                        args=None,
-                                        kwargs=None))
+    queue_tasks.put(Task(id=uuid.uuid4,
+                         function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
+                         args=None, param_spec=None, return_spec=None,
+                         kwargs=None))
     queue_tasks.put(None)
     queue_status.get()
-    assert worker_process._current_task_id is not None
     worker_process.terminate()
     worker_process.join()
     assert not worker_process.is_alive()
@@ -160,16 +159,17 @@ def test_start_task_status_results_terminate():
         print(function)
 
         # send task to worker process
-        task = Task(task_id=uuid.uuid4,
+        task = Task(id=uuid.uuid4,
                     function=determine_package(function),
                     args=ArgsCreator(function.param_spec).args(),
+                    param_spec=None, return_spec=None,
                     kwargs=None)
         queue_tasks.put(task)
 
         # check results
         status = queue_status.get()
         assert status
-        assert isinstance(status, Start) or isinstance(status, Finish)
+        assert isinstance(status, Start)
         result = queue_results.get()
         assert result
         assert isinstance(result, Result)

@@ -25,11 +25,11 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
 
         return self.best[0]
 
-    def on_result(self, fitness, args, **kwargs):
+    def on_result(self, fitness, fargs, **kwargs):
         _, best_fitness = self.best
 
         if best_fitness is None or fitness < best_fitness:
-            self.best = (args, fitness)
+            self.best = (fargs, fitness)
 
-    def on_error(self, error, args, **kwargs):
+    def on_error(self, error, fargs, **kwargs):
         pass

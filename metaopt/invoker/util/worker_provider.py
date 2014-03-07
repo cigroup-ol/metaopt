@@ -10,7 +10,7 @@ from multiprocessing.synchronize import Lock
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Error
 from metaopt.invoker.util.worker import WorkerProcess
-from metaopt.util.singleton import Singleton
+from metaopt.util.singleton import Singleton, _Singleton
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
@@ -22,21 +22,20 @@ class WorkerProcessProvider(Singleton):
     def __init__(self, queue_tasks, queue_results, queue_status):
         self._queue_outcome = queue_results
         self._queue_status = queue_status
-        self._queue_tasks = queue_tasks
+        self._queue_task = queue_tasks
 
         self._lock = Lock()
-        self._worker_count = determine_worker_count()  # use up to all CPUs
+        self._worker_count_max = determine_worker_count()  # use up to all CPUs
         self._worker_processes = []
+
+        super(WorkerProcessProvider, self).__init__()
 
     def provision(self, number_of_workers=1):
         """
         Provisions a given number worker processes for future use.
-
-        :rtype: A list of WorkerHandles if number_of_workers > 1,
-                otherwise a single WorkerHandle.
         """
         with self._lock:
-            if self._worker_count < (len(self._worker_processes) +
+            if self._worker_count_max < (len(self._worker_processes) +
                                      number_of_workers):
                 raise IndexError("Cannot provision so many worker processes.")
 
@@ -44,7 +43,7 @@ class WorkerProcessProvider(Singleton):
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
-                                           queue_tasks=self._queue_tasks,
+                                           queue_tasks=self._queue_task,
                                            queue_results=self._queue_outcome,
                                            queue_status=self._queue_status)
                 worker_process.daemon = True  # workers don't spawn processes
@@ -53,27 +52,43 @@ class WorkerProcessProvider(Singleton):
 
                 worker_handles.append(WorkerProcessHandle(worker_id))
 
-        if number_of_workers > 1:
-            return worker_handles
-        else:
-            return worker_handles[0]
-
     def release(self, worker_id):
         """Releases a worker process from the work force."""
+        print("WPP.release(%s)" % worker_id)
         with self._lock:
             worker_process = self._get_worker_process_for_id(worker_id)
+            self._release(worker_process)
 
-            # send kill signal and wait for the process to die
-            assert worker_process.is_alive()
-            worker_process.terminate()
-            worker_process.join()
+    def _release(self, worker_process):
+        print("WPP._release(%s)" % worker_process)
 
-            # send manually constructed error result
-            error = Error(worker_id=worker_id, task_id=None, function=None,
-                           value=None, args=None, kwargs=None)
-            self._queue_outcome.put(error)
+        # send kill signal and wait for the process to die
+        assert worker_process.is_alive()
+        worker_process.terminate()
+        worker_process.join()
 
-            self._worker_processes.remove(worker_process)
+        # send manually constructed error result
+        error = Error(worker_id=worker_process.worker_id, task_id=None, function=None,
+                       value=None, args={'worker_terminated':None,},
+                       kwargs={'worker_terminated':None})
+        self._queue_outcome.put(error)
+
+        print(self._worker_processes)
+        self._worker_processes.remove(worker_process)
+        print(self._worker_processes)
+
+    def release_all(self):
+        """
+        Stops this worker provider.
+
+        Releases all worker processes and prohibits future calls to provision.
+        """
+        print("WPP.release_all()")
+        with self._lock:
+            # copy worker processes so that _release does not modify
+            worker_processes = self._worker_processes[:]
+            for worker_process in worker_processes:
+                self._release(worker_process)
 
     def _get_worker_process_for_id(self, worker_id):
         """Utility method to resolve a worker id to a worker process."""
@@ -81,6 +96,11 @@ class WorkerProcessProvider(Singleton):
             if worker_process.worker_id == worker_id:
                 return worker_process
         raise KeyError("There is no worker with the given id.")
+
+    def worker_count(self):
+        """Returns the number of currently running worker processes."""
+        with self._lock:
+            return len(self._worker_processes)
 
 
 class WorkerHandle(Stoppable):
@@ -93,7 +113,7 @@ class WorkerHandle(Stoppable):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def release_all(self):
         """Stops this worker."""
         raise NotImplementedError()  # Implementations need to overwrite
 
@@ -112,6 +132,6 @@ class WorkerProcessHandle(WorkerHandle):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def release_all(self):
         """Stops this worker."""
         WorkerProcessProvider().release(self._worker_id)

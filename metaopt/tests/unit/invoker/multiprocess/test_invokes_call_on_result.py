@@ -32,15 +32,13 @@ def test_invokes_call_on_result():
 
     invoker.invoke(caller, args)
     invoker.wait()
-    invoker.stop()
-
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
 
     invoker.invoke(caller, args)
-    invoker.stop()
     invoker.wait()
-
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
+
+    invoker.stop()
 
 if __name__ == '__main__':
     import nose
