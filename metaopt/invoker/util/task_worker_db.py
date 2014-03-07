@@ -3,7 +3,7 @@ Database that keeps track of worker task relations.
 """
 from __future__ import division, print_function, with_statement
 
-from metaopt.invoker.util.model import Start, Error, Result
+from metaopt.invoker.util.model import Error, Result, Start
 
 
 class TaskWorkerDB():

@@ -5,6 +5,7 @@ from __future__ import division, print_function, with_statement
 
 from time import sleep
 
+import nose
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator
@@ -12,7 +13,6 @@ from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
-import nose
 
 
 def f():

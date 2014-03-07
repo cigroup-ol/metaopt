@@ -4,15 +4,15 @@ Test for the Task Database that keeps track of task worker relations.
 
 from __future__ import division, print_function, with_statement
 
-import nose
-
-from metaopt.invoker.util.task_worker_db import TaskWorkerDB
 from multiprocessing.dummy import Manager
-from metaopt.invoker.util.model import Start, Result
 from uuid import uuid4
-from metaopt.tests.util.function.integer.working.f import f
+
+import nose
 from nose.tools.nontrivial import raises
 
+from metaopt.invoker.util.model import Result, Start
+from metaopt.invoker.util.task_worker_db import TaskWorkerDB
+from metaopt.tests.util.function.integer.working.f import f
 
 manager = Manager()
 queue_status = manager.Queue()

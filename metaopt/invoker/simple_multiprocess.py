@@ -3,12 +3,14 @@ TODO
 """
 from __future__ import division, print_function, with_statement
 
-from metaopt.core.call import call
-from metaopt.invoker.base import BaseInvoker
-from metaopt.util.stoppable import stoppable_method, stopping_method, StoppedException
-
 from multiprocessing import Process, Queue
 from uuid import uuid4
+
+from metaopt.core.call import call
+from metaopt.invoker.base import BaseInvoker
+from metaopt.util.stoppable import StoppedException, stoppable_method, \
+    stopping_method
+
 
 class SimpleMultiprocessInvoker(BaseInvoker):
     """Invoker that invokes objective functions sequentially."""
@@ -135,4 +137,3 @@ class WorkerResult(object):
     @actual_result.setter
     def actual_result(self, value):
         self._actual_result = value
-

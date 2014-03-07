@@ -5,6 +5,7 @@ Tests for the stoppable invoker.
 from __future__ import division, print_function, with_statement
 
 import nose
+from mock import Mock
 from nose.tools.nontrivial import raises
 from nose.tools.trivial import eq_
 
@@ -14,7 +15,6 @@ from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.tests.util.functions import f
 from metaopt.util.stoppable import StoppedException
-from mock import Mock
 
 f = f  # helps static code checkers identify attributes.
 

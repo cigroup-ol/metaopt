@@ -11,12 +11,12 @@ from threading import Lock
 from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
+from metaopt.invoker.util.model import Error, Result, Task
 from metaopt.invoker.util.task_handle import TaskHandle
-from metaopt.invoker.util.worker_provider import WorkerProcessProvider
-from metaopt.util.stoppable import stoppable_method, stopping_method
-from metaopt.invoker.util.model import Task, Error, Result
 from metaopt.invoker.util.task_worker_db import TaskWorkerDB
+from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.plugins.util import Invocation
+from metaopt.util.stoppable import stoppable_method, stopping_method
 
 
 class TimeoutError(BaseException):
