@@ -20,9 +20,9 @@ from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 
 def test_instanciation():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -32,9 +32,9 @@ def test_instanciation():
 
 def test_superclasses():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -45,9 +45,10 @@ def test_superclasses():
 
 def test_properties_return_instanciation_values():
     worker_id = uuid.uuid4()
-    queue_results = multiprocessing.Queue()
-    queue_status = multiprocessing.Queue()
-    queue_tasks = multiprocessing.Queue()
+    manager = Manager()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=worker_id,
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -57,9 +58,9 @@ def test_properties_return_instanciation_values():
 
 def test_initialization_is_sane():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -69,9 +70,9 @@ def test_initialization_is_sane():
 
 def test_start_terminate():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -84,15 +85,14 @@ def test_start_terminate():
 
 def test_start_notask_terminate():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
                                    queue_tasks=queue_tasks)
     worker_process.start()
-    queue_tasks.put(None)
     worker_process.terminate()
     worker_process.join()
     assert not worker_process.is_alive()
@@ -100,9 +100,9 @@ def test_start_notask_terminate():
 
 def test_start_task_terminate():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -112,7 +112,6 @@ def test_start_task_terminate():
                          function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
                          args=None, param_spec=None, return_spec=None,
                          kwargs=None))
-    queue_tasks.put(None)
     worker_process.terminate()
     worker_process.join()
     assert not worker_process.is_alive()
@@ -120,9 +119,9 @@ def test_start_task_terminate():
 
 def test_start_task_attribute_terminate():
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -132,7 +131,6 @@ def test_start_task_attribute_terminate():
                          function=determine_package(FUNCTIONS_INTEGER_WORKING[0]),
                          args=None, param_spec=None, return_spec=None,
                          kwargs=None))
-    queue_tasks.put(None)
     queue_status.get()
     worker_process.terminate()
     worker_process.join()
@@ -140,14 +138,16 @@ def test_start_task_attribute_terminate():
 
 
 def test_start_task_status_results_terminate():
-    #multiprocessing.log_to_stderr()
-    #logger = multiprocessing.get_logger()
-    #logger.setLevel(logging.DEBUG)
+    """
+    Tests that a worker process correctly reports its start and result.
+
+    This test uses all available functions.
+    """
 
     manager = Manager()
-    queue_results = manager.Queue()
-    queue_tasks = manager.Queue()
-    queue_status = manager.Queue()
+    queue_results = manager.Queue()  # ignore error, this actually works.
+    queue_tasks = manager.Queue()  # ignore error, this actually works.
+    queue_status = manager.Queue()  # ignore error, this actually works.
     worker_process = WorkerProcess(worker_id=uuid.uuid4(),
                                    queue_results=queue_results,
                                    queue_status=queue_status,
@@ -174,12 +174,12 @@ def test_start_task_status_results_terminate():
         assert result
         assert isinstance(result, Result)
 
-        # tear down
-        worker_process.terminate()
-        worker_process.join()
+    # tear down
+    worker_process.terminate()
+    worker_process.join()
 
-        # check postcondition
-        assert not worker_process.is_alive()
+    # check postcondition
+    assert not worker_process.is_alive()
 
 if __name__ == '__main__':
     nose.runmodule()
