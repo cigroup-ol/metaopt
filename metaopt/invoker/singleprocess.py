@@ -12,7 +12,16 @@ class SingleProcessInvoker(BaseInvoker):
     """Invoker that does the work on its own."""
 
     def __init__(self):
+        self._f = None
         super(SingleProcessInvoker, self).__init__()
+
+    @property
+    def f(self):
+        return self._f
+
+    @f.setter
+    def f(self, f):
+        self._f = f
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""

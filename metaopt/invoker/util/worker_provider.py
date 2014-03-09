@@ -10,25 +10,28 @@ from multiprocessing.synchronize import Lock
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Error
 from metaopt.invoker.util.worker import WorkerProcess
-from metaopt.util.singleton import Singleton, _Singleton
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
-class WorkerProcessProvider(Singleton):
+class WorkerProcessProvider(object):
     """
-    Keeps track of as many worker processes as there are CPUs.
+    Keeps track of up to as many worker processes as there are CPUs.
     """
+
+    # There are a fixed and limited number of CPUs on a computer.
+    # These are a shared resource for all process provider instances.
+    # So we keep them in a shared space, by implementing the borg pattern.
+    _lock = Lock()
+    _worker_processes = []
 
     def __init__(self, queue_tasks, queue_results, queue_status):
-        self._queue_outcome = queue_results
-        self._queue_status = queue_status
-        self._queue_task = queue_tasks
-
-        self._lock = Lock()
-        self._worker_count_max = determine_worker_count()  # use up to all CPUs
-        self._worker_processes = []
-
-        super(WorkerProcessProvider, self).__init__()
+        with self._lock:
+            # use the given queues
+            self._queue_outcome = queue_results
+            self._queue_status = queue_status
+            self._queue_task = queue_tasks
+            # use up to all CPUs
+            self._worker_count_max = determine_worker_count()
 
     def provision(self, number_of_workers=1):
         """
@@ -91,6 +94,7 @@ class WorkerProcessProvider(Singleton):
                 return worker_process
         raise KeyError("There is no worker with the given id.")
 
+    @property
     def worker_count(self):
         """Returns the number of currently running worker processes."""
         with self._lock:

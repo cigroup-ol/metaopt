@@ -11,6 +11,8 @@ from metaopt.core.returnspec import ReturnValuesWrapper
 
 def call(f, fargs, param_spec=None, return_spec=None):
     """Call a function using a list of args"""
+    if fargs is None:
+        fargs = []
 
     args, vargs, kwargs, _ = getargspec(f)
 

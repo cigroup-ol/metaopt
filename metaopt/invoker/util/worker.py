@@ -8,6 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.process import Process
 
 from metaopt.core.call import call
+from metaopt.invoker.util.import_function import import_function
 from metaopt.invoker.util.model import Error, Result, Start
 
 
@@ -35,15 +36,6 @@ class Worker(BaseWorker):
     @property
     def worker_id(self):
         return self._worker_id
-
-
-def import_function(function):
-    """Imports function given by qualified package name"""
-    function = __import__(function, globals(), locals(), ['function'], 0).f
-    # Note that the following is equivalent:
-    #     from MyPackage.MyModule import f as function
-    # Also note this always imports the function "f" as "function".
-    return function
 
 
 class WorkerProcess(Process, Worker):

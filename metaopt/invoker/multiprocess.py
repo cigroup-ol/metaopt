@@ -176,7 +176,7 @@ class MultiProcessInvoker(BaseInvoker):
             self._task_worker_db.wait_for_one_status()
 
             # if at worker limit, wait for one result before returning
-            if self._worker_provider.worker_count() is self._worker_count_max:
+            if self._worker_provider.worker_count is self._worker_count_max:
                 outcome = self._task_worker_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
 
@@ -188,7 +188,7 @@ class MultiProcessInvoker(BaseInvoker):
         """Terminates all worker processes for immediate shutdown."""
         with self._lock:
 
-            count_workers_killed = self._worker_provider.worker_count()
+            count_workers_killed = self._worker_provider.worker_count
             self._worker_provider.release_all()
             for _ in xrange(count_workers_killed - 1):
                 outcome = self._task_worker_db.wait_for_one_outcome()

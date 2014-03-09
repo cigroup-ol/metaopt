@@ -7,6 +7,7 @@ from mock import Mock
 
 from metaopt.core import param
 from metaopt.core.args import ArgsCreator
+from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 
@@ -30,7 +31,7 @@ def test_optimize_returns_result():
     optimizer.optimize(invoker, f.param_spec, None)
 
     assert not optimizer.on_error.called
-    optimizer.on_result.assert_called_with(-3, ARGS)
+    optimizer.on_result.assert_called_with(ReturnValuesWrapper(None, -3), ARGS)
 
 if __name__ == '__main__':
     import nose

@@ -7,12 +7,14 @@ from __future__ import division, print_function, with_statement
 import nose
 from mock import Mock
 
-from metaopt.core import param
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.dualthread import DualThreadInvoker
 from metaopt.tests.util.functions import f as f
 from metaopt.tests.util.functions import m as failing_f
+
+f = f  # helps static code checkers
+failing_f = failing_f  # helps static code checkers
 
 
 def test_invoke_calls_on_result():

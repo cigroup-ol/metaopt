@@ -5,63 +5,54 @@ Tests for the stoppable invoker.
 from __future__ import division, print_function, with_statement
 
 import nose
-from mock import Mock
 from nose.tools.nontrivial import raises
-from nose.tools.trivial import eq_
 
-from metaopt.core.args import ArgsCreator
 from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.invoker.util.task_handle import TaskHandle
-from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.tests.util.functions import f
 from metaopt.util.stoppable import StoppedException
 
 f = f  # helps static code checkers identify attributes.
 
 
-def test_instanciation():
-    stoppable_invoker = MultiProcessInvoker()
-    del stoppable_invoker
+class TestMultiProcessInvoker(object):
+    """"Tests for the multi-process invoker."""
+    def __init__(self):
+        pass
 
+    def setup(self):
+        self.invoker = MultiProcessInvoker()
 
-def test_sane_initiation():
-    stoppable_invoker = MultiProcessInvoker()
-    assert not stoppable_invoker.stopped
+    def teardown(self):
+        del self.invoker
 
+    def test_instanciation(self):
+        pass
 
-def test_protected_attributes():
-    stoppable_invoker = MultiProcessInvoker()
-    stoppable_invoker.f = f
+    def test_sane_initiation(self):
+        assert not self.invoker.stopped
 
-    assert stoppable_invoker._lock is not None
-    assert stoppable_invoker._queue_outcome is not None
-    assert stoppable_invoker._queue_status is not None
-    assert stoppable_invoker._queue_task is not None
-    assert stoppable_invoker._worker_count_max >= 1
-    assert isinstance(stoppable_invoker._worker_provider,
-                      WorkerProcessProvider)
+    def test_protected_attributes(self):
+        self.invoker.f = f
 
+        assert self.invoker._lock is not None
+        assert self.invoker._queue_outcome is not None
+        assert self.invoker._queue_status is not None
+        assert self.invoker._queue_task is not None
+        assert self.invoker._worker_count_max >= 1
 
-def test_stop():
-    stoppable_invoker = MultiProcessInvoker()
-    stoppable_invoker.stop()
-    assert stoppable_invoker.stopped
+    def test_stop(self):
+        self.invoker.stop()
+        assert self.invoker.stopped
 
+    @raises(StoppedException)
+    def test_repeated_stop_raises_exception(self):
+        self.invoker.stop()
+        self.invoker.stop()
 
-@raises(StoppedException)
-def test_repeated_stop_raises_exception():
-    stoppable_invoker = MultiProcessInvoker()
-    stoppable_invoker.stop()
-    stoppable_invoker.stop()
-
-
-@raises(StoppedException)
-def test_invoke_raises_exception_when_stopped():
-    invoker = MultiProcessInvoker()
-    invoker.stop()
-    invoker.invoke()
-
+    @raises(StoppedException)
+    def test_invoke_raises_exception_when_stopped(self):
+        self.invoker.stop()
+        self.invoker.invoke()
 
 if __name__ == '__main__':
     nose.runmodule()
-    #test_invoke()
