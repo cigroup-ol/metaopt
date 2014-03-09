@@ -1,9 +1,10 @@
 """
-Tests for the multithreaded invoker.
+Tests for the dual-threaded invoker.
 """
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from mock import Mock
 
 from metaopt.core import param
@@ -35,6 +36,7 @@ def test_invoke_calls_on_result():
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
 
+
 def test_invoke_multiple_times_calls_on_result():
     invoker = DualThreadInvoker()
     invoker.f = f
@@ -61,9 +63,11 @@ def test_invoke_multiple_times_calls_on_result():
 
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
 
+
 def test_invoke_different_invokers_calls_on_result():
     test_invoke_calls_on_result()
     test_invoke_calls_on_result()
+
 
 def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker = DualThreadInvoker()
@@ -89,6 +93,7 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args,
         data=data)
 
+
 def test_invoke_calls_on_error():
     invoker = DualThreadInvoker()
     invoker.f = failing_f
@@ -110,5 +115,4 @@ def test_invoke_calls_on_error():
     assert caller.on_error.called # TODO: Also test arguments
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

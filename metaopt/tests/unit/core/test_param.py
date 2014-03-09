@@ -3,6 +3,7 @@ Test for param
 """
 from __future__ import division, print_function, with_statement
 
+import nose
 from nose.tools import eq_
 
 import metaopt.core.param as param
@@ -35,5 +36,4 @@ def test_int_multiple_params_are_saved_in_order():
     eq_(list(f.param_spec.params), ["a", "b"])
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

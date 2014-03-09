@@ -5,7 +5,6 @@ from __future__ import division, print_function, with_statement
 
 import uuid
 from multiprocessing import Manager
-from Queue import Empty
 from threading import Lock
 
 from metaopt.invoker.base import BaseInvoker
@@ -17,10 +16,6 @@ from metaopt.invoker.util.task_worker_db import TaskWorkerDB
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.plugins.util import Invocation
 from metaopt.util.stoppable import stoppable_method, stopping_method
-
-
-class TimeoutError(BaseException):
-    pass
 
 
 class MultiProcessInvoker(BaseInvoker):
@@ -44,7 +39,6 @@ class MultiProcessInvoker(BaseInvoker):
         self._queue_status = self._manager.Queue()
         self._queue_task = self._manager.Queue(maxsize=1)
 
-        #self._worker_handles = []
         wpp = WorkerProcessProvider(queue_results=self._queue_outcome,
                                     queue_status=self._queue_status,
                                     queue_tasks=self._queue_task)
@@ -53,9 +47,6 @@ class MultiProcessInvoker(BaseInvoker):
 
         self._task_worker_db = TaskWorkerDB(queue_outcome=self._queue_outcome,
                                    queue_status=self._queue_status)
-
-        # initialize logging
-        #self._logger = multiprocessing.log_to_stderr(logging.INFO)
 
         # we can not prohibit others to use us in parallel, so
         # make this invoker thread-safe
@@ -113,7 +104,6 @@ class MultiProcessInvoker(BaseInvoker):
 
     def _handle_error(self, error):
         """"""
-        print("MPI._handle_error(%s)" % str(error))
 
         # TODO This seems redundant.
         # TODO Can't the pluggable invoker construct the invocation itself?
@@ -122,14 +112,11 @@ class MultiProcessInvoker(BaseInvoker):
         invocation.fargs = error.args
         invocation.kwargs = error.kwargs
 
-        print("MPI before _caller.on_error")
         self._caller.on_error(error=error.value, fargs=error.args,
                               invocation=invocation, **error.kwargs)
-        print("MPI after _caller.on_error")
 
     def _handle_result(self, result):
         """"""
-        print("MPI._handle_result(%s)" % str(result))
         try:
             self._caller.on_result(result.value, result.args, **result.kwargs)
         except TypeError:
@@ -138,19 +125,22 @@ class MultiProcessInvoker(BaseInvoker):
 
     def _handle_outcome(self, outcome):
         """"""
-        print("MPI._handle outcome(%s)" % str(outcome))
         if isinstance(outcome, Error):
-            print("MPI._handle_outcome before MPI_handle_error")
             self._handle_error(error=outcome)
-            print("MPI._handle_outcome after MPI_handle_error")
         elif isinstance(outcome, Result):
             self._handle_result(result=outcome)
-        print("MPI._handle_outcome before task_done")
         self._queue_outcome.task_done()
-        print("MPI._handle_outcome after task_done")
-        print("MPI._handle_outcome before outcome count increment")
         self._count_outcome += 1
-        print("MPI._handle_outcome after outcome count increment")
+
+    def _empty_outcome_queue(self):
+        """Empties the outcome queue, handling all outcomes."""
+        while not self._queue_outcome.empty():
+            outcome = self._queue_outcome.get()
+            self._handle_outcome(outcome)
+
+    def _empty_status_queue(self):
+        """Empties the status queue, handling all """
+        raise NotImplementedError()
 
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
@@ -196,55 +186,31 @@ class MultiProcessInvoker(BaseInvoker):
     @stopping_method
     def stop(self):
         """Terminates all worker processes for immediate shutdown."""
-        print("MPI.stop()")
         with self._lock:
 
             count_workers_killed = self._worker_provider.worker_count()
             self._worker_provider.release_all()
             for _ in xrange(count_workers_killed - 1):
-                print("waiting for killed worker:", _)
                 outcome = self._task_worker_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
 
-            #for worker_handle in self._worker_handles:
-                # stop worker via worker provider
-                # this will put an error into the outcome queue
-                #worker_handle.stop()
-                # the worker provider will issue one error message per stop()
-                #print(123123)
-                #self._task_worker_db.wait_for_one_outcome()
-                # there is noting more to be done with that worker
-                # so we can delete it
-            #self._worker_handles = []
-
-            print(self._count_task, "+", count_workers_killed, ">", self._count_outcome, "+", self._worker_count_max, "?")
-            while self._count_task + count_workers_killed > self._count_outcome + self._worker_count_max:
+            while self._count_task + count_workers_killed > \
+                    self._count_outcome + self._worker_count_max:
                 self._task_worker_db.wait_for_one_status()
-                #self._queue_status.task_done()
 
-            print("MPI.stop before join outcome")
-            if not self._queue_outcome.empty():
-                outcome = self._queue_outcome.get()
-                self._handle_outcome(outcome)
+            self._empty_outcome_queue()
             assert self._queue_outcome.empty()
-            self._queue_outcome.join()  # works
-            print("MPI.stop after join outcome")
+            self._queue_outcome.join()
 
-            print("MPI.stop before join status")
             assert self._queue_status.empty()
-            self._queue_status.join()  # works
-            print("MPI.stop after join status")
+            self._queue_status.join()
 
-            print("MPI.stop before join task")
             assert self._queue_task.empty()
             try:
                 self._queue_task.task_done()  # one more for good measure o.0
-                pass
             except Exception as e:
                 print("e:", e)
-
-            self._queue_task.join()  # fails sometimes
-            print("MPI.stop after join task")
+            self._queue_task.join()
 
             self._manager.shutdown()
 
@@ -256,27 +222,11 @@ class MultiProcessInvoker(BaseInvoker):
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""
-        print("MPI.wait()")
         with self._lock:
-            # empty status queue
-            print(self._count_task, ">", self._count_outcome, "?")
             while self._count_task > self._count_outcome:
-                print(self._count_task, ">", self._count_outcome)
+                # we are still expecting another outcome
                 outcome = self._task_worker_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
-
-#            found = True
-#            while found:
-#                found = False
-#                if self._queue_status
-##            print("MPI.wait() running tasks:", self._task_worker_db.count_running_tasks())
- #           while self._task_worker_db.count_running_tasks() > 0:
- #               print("MPI.wait() running tasks:", self._task_worker_db.count_running_tasks())
- #               try:
- #                   outcome = self._task_worker_db.wait_for_one_outcome()
- #                   self._handle_outcome(outcome)
- #               except Empty:
- #                   continue
 
     def get_subinvoker(self, resources):
         """Returns a subinvoker using the given amount of resources of self."""

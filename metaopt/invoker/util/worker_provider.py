@@ -54,14 +54,11 @@ class WorkerProcessProvider(Singleton):
 
     def release(self, worker_id):
         """Releases a worker process from the work force."""
-        print("WPP.release(%s)" % worker_id)
         with self._lock:
             worker_process = self._get_worker_process_for_id(worker_id)
             self._release(worker_process)
 
     def _release(self, worker_process):
-        print("WPP._release(%s)" % worker_process)
-
         # send kill signal and wait for the process to die
         assert worker_process.is_alive()
         worker_process.terminate()
@@ -73,9 +70,7 @@ class WorkerProcessProvider(Singleton):
                        kwargs={'worker_terminated':None})
         self._queue_outcome.put(error)
 
-        print(self._worker_processes)
         self._worker_processes.remove(worker_process)
-        print(self._worker_processes)
 
     def release_all(self):
         """
@@ -83,7 +78,6 @@ class WorkerProcessProvider(Singleton):
 
         Releases all worker processes and prohibits future calls to provision.
         """
-        print("WPP.release_all()")
         with self._lock:
             # copy worker processes so that _release does not modify
             worker_processes = self._worker_processes[:]

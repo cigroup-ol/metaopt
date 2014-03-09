@@ -23,7 +23,7 @@ def f():
 
 def test_invoke_calls_on_result():
     for function in FUNCTIONS_INTEGER_WORKING[:1]:  # TODO test all functions
-        print(function, determine_package(function))
+        print(function)  # log
 
         caller = Mock()
         caller.on_result = Mock()
@@ -43,7 +43,7 @@ def test_invoke_calls_on_result():
 # THIS TEST DOESN'T WORK
 # def test_invoke_given_extra_args_calls_on_result_with_them():
 #     for function in FUNCTIONS_INTEGER_WORKING[:1]:  # TODO test all functions
-#         print(function, determine_package(function))
+#         print(function)  # log
 
 #         caller = Mock()
 #         caller.on_result = Mock()
@@ -67,7 +67,7 @@ def test_invoke_calls_on_result():
 
 # def test_invoke_not_successful_calls_on_error():
 #     for function in FUNCTIONS_INTEGER_FAILING[:1]:  # TODO test all functions
-#         print(function, determine_package(function))
+#         print(function)  # log
 
 #         caller = Mock()
 #         caller.on_result = Mock()

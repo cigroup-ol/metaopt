@@ -4,6 +4,7 @@ Tests for the pluggable invoker.
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from mock import Mock
 from nose.tools import eq_
 
@@ -201,5 +202,4 @@ def test_invocation_tries_is_saved():
     invoker.invoke(stub_caller, args)
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

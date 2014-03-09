@@ -4,6 +4,7 @@ Tests for the pluggable invoker.
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from nose.tools.nontrivial import raises
 from nose.tools.trivial import eq_
 
@@ -49,5 +50,4 @@ def test_invoke_raises_exception_when_stopped():
 
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

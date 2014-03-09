@@ -144,8 +144,6 @@ def test_handle_status_increments_active_tasks_upon_start_twice():
     _ = task_base.wait_for_one_status()
 
     count_tasks = task_base.count_running_tasks()
-
-    print(count_tasks)
     assert count_tasks == 2
 
 
@@ -176,7 +174,7 @@ def test_handle_status_passes_outcome_of_result_following_start():
     worker_id = uuid4()
     task_id = uuid4()
     function = f
-    value=None
+    value = None
     args = None
     kwargs = None
     start = Start(worker_id=worker_id, task_id=task_id, function=function,

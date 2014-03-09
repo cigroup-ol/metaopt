@@ -16,7 +16,7 @@ def test_determine_worker_count():
 
 
 def test_determine_worker_count_none():
-    assert determine_worker_count(None) >= 1
+    assert determine_worker_count(request=None) >= 1
 
 
 def test_determine_worker_count_named_param():
@@ -24,17 +24,17 @@ def test_determine_worker_count_named_param():
 
 
 def test_determine_worker_count_one():
-    assert determine_worker_count(1) is 1
+    assert determine_worker_count(request=1) is 1
 
 
 @raises(NotImplementedError)
 def test_determine_worker_count_no_core():
-    determine_worker_count(0)
+    determine_worker_count(request=0)
 
 
 @raises(NotImplementedError)
 def test_determine_worker_count_string():
-    determine_worker_count("a")
+    determine_worker_count(request="a")
 
 if __name__ == '__main__':
     nose.runmodule()

@@ -3,6 +3,8 @@ Tests for the singleton utility.
 """
 from __future__ import division, print_function, with_statement
 
+import nose
+
 from metaopt.util.singleton import Singleton
 
 
@@ -66,5 +68,4 @@ def test_instance_attribute():
     assert instance_0.own_knowledge == instance_1.own_knowledge
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

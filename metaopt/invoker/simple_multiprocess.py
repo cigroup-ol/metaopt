@@ -8,8 +8,7 @@ from uuid import uuid4
 
 from metaopt.core.call import call
 from metaopt.invoker.base import BaseInvoker
-from metaopt.util.stoppable import StoppedException, stoppable_method, \
-    stopping_method
+from metaopt.util.stoppable import stoppable_method
 
 
 class SimpleMultiprocessInvoker(BaseInvoker):
@@ -116,6 +115,7 @@ class SimpleMultiprocessInvoker(BaseInvoker):
 
     def stop(self):
         self.result_queue.put(None)
+
 
 class WorkerResult(object):
     def __init__(self):

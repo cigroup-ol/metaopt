@@ -13,6 +13,7 @@ def maximize(*vargs, **kwargs):
 
     return decorator
 
+
 def minimize(*vargs, **kwargs):
     def decorator(f):
         return_spec = make_return_spec(f)
@@ -20,6 +21,7 @@ def minimize(*vargs, **kwargs):
         return f
 
     return decorator
+
 
 def make_return_spec(f):
     """Create a new return_spec object for ``f`` or retrieves it if it exists"""

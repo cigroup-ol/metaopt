@@ -17,11 +17,9 @@ class TaskWorkerDB():
 
     def _handle_error(self, error):
         """Handles an error received from the worker via the result queue."""
-        print("handle error")  # TODO
         if error.task_id is None:
             # the invoker has closed the queue, so the worker has terminated
             # delete the worker's entry
-            print(error)  # TODO
             self._task_worker_dict[error.task_id] = None
         else:
             # an error has occurred in the objective function
@@ -30,15 +28,10 @@ class TaskWorkerDB():
 
     def _handle_result(self, result):
         """Handles a result received from the worker via the result queue."""
-        print("handle result")  # TODO
-        print(self._task_worker_dict)  # TODO
 
         if not result.task_id in self._task_worker_dict.keys():
-            print(self._task_worker_dict)
-            print(self._task_worker_dict.keys())
-            print(result.task_id)
-
             raise KeyError("No task to be stopped for ID %s" % result.task_id)
+
         if self._task_worker_dict[result.task_id] == None:
             # we got multiple results for the same task
             # that does not make any sense
@@ -46,12 +39,8 @@ class TaskWorkerDB():
                              " Make sure the IDs are unique.")
         self._task_worker_dict[result.task_id] = None
 
-        print(self._task_worker_dict)  # TODO
-
     def _handle_start(self, start):
         """Handles a start received from the worker via the status queue."""
-        print("handle start:", start)  # TODO
-        print(self._task_worker_dict)  # TODO
 
         try:
             if self._task_worker_dict[start.task_id] == start.worker_id:
@@ -66,12 +55,8 @@ class TaskWorkerDB():
 
         self._task_worker_dict[start.task_id] = start.worker_id
 
-        print(self._task_worker_dict)  # TODO
-
     def _handle_finish(self, finish):
         """Handles a finish received from the worker via the status queue."""
-        print("handle finish")  # TODO
-        print(self._task_worker_dict)  # TODO
 
         try:
             if self._task_worker_dict[finish.task_id] == None:
@@ -95,26 +80,20 @@ class TaskWorkerDB():
             # Do nothing.
             pass
 
-        print(self._task_worker_dict)  # TODO
-
     def wait_for_one_outcome(self):
         """
         Blocks till one Error or one Result was gotten from the outcome queue
         and processed.
         """
-        print("wait for one outcome")
         outcome = self._queue_outcome.get()
-        print(outcome)  # TODO
 
         # handle successful results
         if isinstance(outcome, Result):
-            print("Result.")  # TODO
             self._handle_result(result=outcome)
             return outcome
 
         # handle error results
         elif isinstance(outcome, Error):
-            print("Error.")  # TODO
             self._handle_error(error=outcome)
             return outcome
 
@@ -125,7 +104,6 @@ class TaskWorkerDB():
         """
         Blocks till one status was gotten from the status queue and processed.
         """
-        print("wait for one status")  # TODO
 
         status = self._queue_status.get()
         if isinstance(status, Start):

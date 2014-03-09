@@ -24,7 +24,6 @@ class EqualityMatcher(object):
             try:
                 for x, y in zip(self.one, other):
                     if x != y:
-                        print("unequal:", x, y)
                         return False
                 return True
             except TypeError:

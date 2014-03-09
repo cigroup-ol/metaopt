@@ -22,7 +22,6 @@ def determine_package(some_object):
     for directory in module_path.split(os.sep)[::-1]:
         prefix.append(directory)
         candidate = ".".join(prefix[::-1] + [module_name])
-        #print(candidate)
         try:
             __import__(candidate, globals(), locals(), [], 0)
             some_object = candidate

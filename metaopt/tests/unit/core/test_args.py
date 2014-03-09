@@ -5,11 +5,10 @@ Tests for the args module.
 
 from __future__ import division, print_function, with_statement
 
-from mock import Mock
+import nose
 from nose.tools import eq_, raises
 
 from metaopt.core.args import Arg, BoolArg, NoStepArgIterError
-from metaopt.core.call import CallNotPossibleError, call
 from metaopt.core.paramspec import ParamSpec
 
 
@@ -66,5 +65,4 @@ def test_arg_repr_title_shows_title_and_value():
 
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

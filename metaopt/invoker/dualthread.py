@@ -54,7 +54,6 @@ class DualThreadInvoker(BaseInvoker):
     def return_spec(self, value):
         self._return_spec = value
 
-
     @stoppable_method
     def invoke(self, caller, fargs, *vargs, **kwargs):
         with self.lock:

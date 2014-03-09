@@ -4,6 +4,7 @@ Tests for the stoppable.
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from nose.tools.nontrivial import raises
 
 from metaopt.util.stoppable import Stoppable, StoppedException, \
@@ -69,5 +70,4 @@ def test_stoppable_decorator_raises_exception_when_called_after_stopping():
     mock_stoppable.run()
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

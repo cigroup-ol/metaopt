@@ -4,6 +4,7 @@ Tests for the main module.
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from mock import Mock
 from nose.tools import raises
 
@@ -13,6 +14,7 @@ from metaopt.invoker.dualthread import DualThreadInvoker
 
 def f(x, y):
     pass
+
 
 def test_custom_optimize_stops_invoker():
     invoker = Mock()
@@ -28,10 +30,10 @@ def test_custom_optimize_stops_invoker():
 
     assert invoker.stop.called
 
+
 @raises(NoParamSpecError)
 def test_custom_optimize_given_no_param_spec_complains():
     custom_optimize(f, DualThreadInvoker())
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

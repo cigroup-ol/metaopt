@@ -3,6 +3,7 @@ Tests that a multiprocess invoker's invoke calls its caller's on_error.
 """
 from __future__ import division, print_function, with_statement
 
+import nose
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator
@@ -34,5 +35,4 @@ def test_invoke_calls_on_error():
     assert caller.on_error.called  # TODO: Also test arguments
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

@@ -4,6 +4,7 @@ Tests that multiprocess invoker's invokes calls on_result of its caller.
 
 from __future__ import division, print_function, with_statement
 
+import nose
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator
@@ -41,5 +42,4 @@ def test_invokes_call_on_result():
     invoker.stop()
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

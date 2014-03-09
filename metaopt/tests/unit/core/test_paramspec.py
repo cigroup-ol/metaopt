@@ -4,6 +4,7 @@ Test for param_spec
 """
 from __future__ import division, print_function, with_statement
 
+import nose
 from nose.tools import raises
 
 from metaopt.core.paramspec import DuplicateParamError, InvalidIntervalError, \
@@ -129,5 +130,4 @@ def test_given_title_saves_it():
     assert param_spec.params["g"].title == "γ"
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()
