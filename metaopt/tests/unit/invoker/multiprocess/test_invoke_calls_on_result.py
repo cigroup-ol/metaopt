@@ -11,6 +11,12 @@ from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.tests.util.functions import f as f
 
+try:
+    xrange  # will work in python2, only @UndefinedVariable
+except NameError:
+    xrange = range  # rename range to xrange in python3
+
+
 f = f  # helps static code checkers
 
 

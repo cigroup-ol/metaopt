@@ -9,7 +9,7 @@ from metaopt.optimizer.util import default_mutation_stength
 from metaopt.util.stoppable import StoppedException
 
 try:
-    xrange  # will work in python2, only
+    xrange  # will work in python2, only @UndefinedVariable
 except NameError:
     xrange = range  # rename range to xrange in python3
 

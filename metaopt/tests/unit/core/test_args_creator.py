@@ -16,7 +16,7 @@ from metaopt.tests.unit.core.util import get_intervals_from_function
 from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 
 try:
-    xrange  # will work in python2, only
+    xrange  # will work in python2, only @UndefinedVariable
 except NameError:
     xrange = range  # rename range to xrange in python3
 

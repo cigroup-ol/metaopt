@@ -17,6 +17,11 @@ from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.plugins.util import Invocation
 from metaopt.util.stoppable import stoppable_method, stopping_method
 
+try:
+    xrange  # will work in python2, only @UndefinedVariable
+except NameError:
+    xrange = range  # rename range to xrange in python3
+
 
 class MultiProcessInvoker(BaseInvoker):
     """

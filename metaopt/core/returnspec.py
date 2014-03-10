@@ -3,6 +3,12 @@ Classes to describe an work with the return ReturnValuesWrapper of objective fun
 """
 from __future__ import division, print_function, with_statement
 
+try:
+    cmp(0, 1)  # @UndefinedVariable
+except NameError:
+    # python 3
+    from metaopt.core.util.cmp import cmp
+
 DEFAULT_RETURN_VALUE_NAME = "Fitness"
 
 
