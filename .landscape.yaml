@@ -1,8 +1,9 @@
 doc-warnings: false
 test-warnings: true
-strictness: medium # veryhigh, high, medium, low, verylow>
+strictness: medium # veryhigh, high, medium, low, verylow
 max-line-length: 80
 uses: []
 autodetect: true
-ignore-paths: []
+ignore-paths:
+   - docs
 ignore-patterns: []
