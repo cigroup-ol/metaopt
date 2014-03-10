@@ -26,7 +26,7 @@ def test_custom_optimize_maximize_gridsearch_multiprocess_global_timeout():
     optimizer = GridSearchOptimizer()
 
     result = custom_optimize(f, invoker, timeout=1, optimizer=optimizer)
-    assert result[0].value < 10
+    assert result[0].value <= 10
 
 if __name__ == '__main__':
     nose.runmodule()
