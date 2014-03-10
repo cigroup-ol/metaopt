@@ -61,6 +61,9 @@ class ReturnValuesWrapper(object):
         else:
             return reverse_cmp
 
+    def __lt__(self, other):
+        return self.__cmp__(other)
+
     def __str__(self):
         return str(self.values)
 
