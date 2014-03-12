@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 from metaopt.invoker.util.model import Error, Result, Start
 
 
-class TaskWorkerDB():
+class TaskWorkerDB(object):
     """Database that keeps track of worker task relations."""
 
     def __init__(self, queue_status, queue_outcome):
@@ -126,4 +126,5 @@ class TaskWorkerDB():
         return count
 
     def get_worker_id(self, task_id):
+        """Returns the worker id for a given task id."""
         return self._task_worker_dict[task_id]

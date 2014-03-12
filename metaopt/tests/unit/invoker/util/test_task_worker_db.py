@@ -1,5 +1,5 @@
 """
-Test for the Task Database that keeps track of task worker relations.
+Tests for the Task Database which keeps track of task worker relations.
 """
 
 from __future__ import division, print_function, with_statement
@@ -14,295 +14,274 @@ from metaopt.invoker.util.model import Result, Start
 from metaopt.invoker.util.task_worker_db import TaskWorkerDB
 from metaopt.tests.util.function.integer.working.f import f
 
-manager = Manager()
-queue_status = manager.Queue()
-queue_outcome = manager.Queue()
 
+class TestTaskWorkerDB(object):
+    """
+    Tests for the Task Database which keeps track of task worker relations.
+    """
 
-def test_handle_status_start_once():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+    def __init__(self):
+        self._queue_outcome = None
+        self._queue_status = None
+        self._task_worker_db = None
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+    def setup(self):
+        """Nose executes this method before each test."""
+        manager = Manager()
+        self._queue_status = manager.Queue()
+        self._queue_outcome = manager.Queue()
+        self._task_worker_db = TaskWorkerDB(queue_status=self._queue_status,
+                                            queue_outcome=self._queue_outcome)
 
+    def teardown(self):
+        """Nose executes this method after each test."""
+        pass
 
-@raises(ValueError)
-def test_handle_status_start_duplicate_raises():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+    def test_handle_status_start_once(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    # once
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-    # once again
-    # will raise error because it makes no sense to issue the same task twice
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+    @raises(ValueError)
+    def test_handle_status_start_duplicate_raises(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        # once
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
+        # once again
+        # will raise error because issuing the same task twice makes no sense
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
+    @raises(ValueError)
+    def test_handle_status_start_result_duplicate_raises(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-@raises(ValueError)
-def test_handle_status_start_result_duplicate_raises():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        # once
+        self._queue_outcome.put(result)
+        # once again
+        self._queue_outcome.put(result)
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+        # will work
+        _ = self._task_worker_db.wait_for_one_outcome()
+        # will error because it makes no sense to issue the same task twice
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    # once
-    queue_outcome.put(result)
-    # once again
-    queue_outcome.put(result)
+    def test_handle_status_start_wait(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        self._task_worker_db.wait_for_one_status()
 
-    # will work
-    _ = task_base.wait_for_one_outcome()
-    # will raise error because it makes no sense to issue the same task twice
-    _ = task_base.wait_for_one_outcome()
+    def test_handle_status_increments_active_tasks_upon_start_once(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
+        count_tasks = self._task_worker_db.count_running_tasks()
 
+        assert count_tasks == 1
 
-def test_handle_status_start_wait():
-    task_worker_db = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+    def test_handle_status_increments_active_tasks_upon_start_twice(self):
+        # once
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    task_worker_db.wait_for_one_status()
+        # twice
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
+        count_tasks = self._task_worker_db.count_running_tasks()
+        assert count_tasks == 2
 
-def test_handle_status_increments_active_tasks_upon_start_once():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+    @raises(KeyError)
+    def test_handle_status_passes_outcome_of_immediate_result(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        args = None
+        kwargs = None
+        value = None
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-    count_tasks = task_base.count_running_tasks()
+        # there is no task that could have been finished
+        # so a key error is risen
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-    assert count_tasks == 1
+    def test_handle_status_passes_outcome_of_result_following_start(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
+        outcome = self._task_worker_db.wait_for_one_outcome()
 
-def test_handle_status_increments_active_tasks_upon_start_twice():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+        assert isinstance(outcome, Result)
+        assert outcome is result
 
-    # once
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+    def test_handle_status_decrements_active_tasks_upon_result_once(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
 
-    # twice
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    count_tasks = task_base.count_running_tasks()
-    assert count_tasks == 2
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
+        count_tasks = self._task_worker_db.count_running_tasks()
 
-@raises(KeyError)
-def test_handle_status_passes_outcome_of_immediate_result():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+        assert count_tasks == 0
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    args = None
-    kwargs = None
-    value = None
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
+    def test_handle_status_decrements_active_tasks_upon_result_twice(self):
+        # once
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
 
-    # there is no task that could have been finished
-    # so a key error is risen
-    _ = task_base.wait_for_one_outcome()
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-def test_handle_status_passes_outcome_of_result_following_start():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+        # twice
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
-    outcome = task_base.wait_for_one_outcome()
+        count_tasks = self._task_worker_db.count_running_tasks()
 
-    assert isinstance(outcome, Result)
-    assert outcome is result
+        assert count_tasks == 0
 
+    def test_handle_outcome_start_result_once(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
 
-def test_handle_status_decrements_active_tasks_upon_result_once():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
+    @raises(ValueError)
+    def test_handle_outcome_start_result_twice(self):
+        worker_id = uuid4()
+        task_id = uuid4()
+        function = f
+        value = None
+        args = None
+        kwargs = None
 
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
+        start = Start(worker_id=worker_id, task_id=task_id, function=function,
+                      args=args, kwargs=kwargs)
+        self._queue_status.put(start)
+        _ = self._task_worker_db.wait_for_one_status()
 
-    count_tasks = task_base.count_running_tasks()
+        result = Result(worker_id=worker_id, task_id=task_id,
+                        function=function, value=value, args=args,
+                        kwargs=kwargs)
+        # once
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
-    assert count_tasks == 0
-
-
-def test_handle_status_decrements_active_tasks_upon_result_twice():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
-
-    # once
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
-
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
-
-    # twice
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
-
-    count_tasks = task_base.count_running_tasks()
-
-    assert count_tasks == 0
-
-
-def test_handle_outcome_start_result_once():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
-
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
-
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
-
-
-@raises(ValueError)
-def test_handle_outcome_start_result_twice():
-    task_base = TaskWorkerDB(queue_status=queue_status,
-                         queue_outcome=queue_outcome)
-
-    worker_id = uuid4()
-    task_id = uuid4()
-    function = f
-    value = None
-    args = None
-    kwargs = None
-
-    start = Start(worker_id=worker_id, task_id=task_id, function=function,
-                  args=args, kwargs=kwargs)
-    queue_status.put(start)
-    _ = task_base.wait_for_one_status()
-
-    result = Result(worker_id=worker_id, task_id=task_id, function=function,
-                    value=value, args=args, kwargs=kwargs)
-    # once
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
-
-    # twice
-    queue_outcome.put(result)
-    _ = task_base.wait_for_one_outcome()
+        # twice
+        self._queue_outcome.put(result)
+        _ = self._task_worker_db.wait_for_one_outcome()
 
 if __name__ == "__main__":
     nose.runmodule()
