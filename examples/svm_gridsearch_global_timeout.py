@@ -12,8 +12,8 @@ from metaopt.core.returns import maximize
 
 
 @maximize("Score")
-@param.float("C", interval=[1, 10], step=0.5)
-@param.float("gamma", interval=[1, 10], step=0.5)
+@param.float("C", interval=[1, 10], step=0.25)
+@param.float("gamma", interval=[1, 10], step=0.25)
 def f(C, gamma):
     iris = datasets.load_iris()
 
