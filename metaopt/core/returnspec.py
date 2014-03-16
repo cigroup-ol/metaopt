@@ -3,11 +3,6 @@ Classes to describe an work with the return ReturnValuesWrapper of objective fun
 """
 from __future__ import division, print_function, with_statement
 
-try:
-    cmp(0, 1)  # @UndefinedVariable
-except NameError:
-    # python 3
-    from metaopt.core.util.cmp import cmp
 
 DEFAULT_RETURN_VALUE_NAME = "Fitness"
 
@@ -58,17 +53,27 @@ class ReturnValuesWrapper(object):
         self.return_spec = return_spec
         self.values = values
 
-    def __cmp__(self, other):
-        real_cmp = cmp(self.values, other.values)
-        reverse_cmp = -1 * real_cmp
-
-        if self.is_minimization():
-            return real_cmp
-        else:
-            return reverse_cmp
-
+    # TODO: Use something like functools.total_ordering
     def __lt__(self, other):
-        return self.__cmp__(other)
+        if self.minimization:
+            return self.values < other.values
+        else:
+            return self.values > other.values
+
+    def __eq__(self, other):
+        return not self < other and not other < self
+
+    def __ne__(self, other):
+        return self < other or other < self
+
+    def __gt__(self, other):
+        return other < self
+
+    def __ge__(self, other):
+        return not self < other
+
+    def __le__(self, other):
+        return not other < self
 
     def __str__(self):
         return str(self.values)
@@ -81,7 +86,8 @@ class ReturnValuesWrapper(object):
         """The unwrapped values"""
         return self.values
 
-    def is_minimization(self):
+    @property
+    def minimization(self):
         if not self.return_spec:
             return True
         else:
