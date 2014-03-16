@@ -109,16 +109,8 @@ class MultiProcessInvoker(BaseInvoker):
 
     def _handle_error(self, error):
         """"""
-
-        # TODO This seems redundant.
-        # TODO Can't the pluggable invoker construct the invocation itself?
-        invocation = Invocation()
-        invocation.error = error.value
-        invocation.fargs = error.args
-        invocation.kwargs = error.kwargs
-
         self._caller.on_error(error=error.value, fargs=error.args,
-                              invocation=invocation, **error.kwargs)
+            **error.kwargs)
 
     def _handle_result(self, result):
         """"""

@@ -95,11 +95,11 @@ class WorkerProcess(Process, Worker):
                                           function=task.function,
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
-        except Exception:
+        except Exception as exception:
             # the objective function may raise any exception
             # we can not do anything more helpful than propagate the exception
             # the receiving invoker is another process, so send it as a string
-            value = traceback.format_exc()
+            value = exception
             self._queue_outcome.put(Error(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,

@@ -143,5 +143,5 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
 
-    def on_error(self, fargs, individual, **kwargs):
+    def on_error(self, error, fargs, individual, **kwargs):
         pass

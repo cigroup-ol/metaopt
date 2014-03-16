@@ -114,6 +114,5 @@ class Invocation(object):
     def error(self, value):
         self._error = value
 
-
     def __repr__(self):
-        return str(self.fargs)
+        return str({"fargs": self.fargs, "kwargs": self.kwargs})
