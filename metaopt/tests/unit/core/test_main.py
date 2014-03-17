@@ -21,6 +21,8 @@ def test_custom_optimize_stops_invoker():
     invoker.stop = Mock()
 
     optimizer = Mock()
+    optimizer.optimize = Mock()
+    optimizer.optimize.return_value = (1, 0)
 
     param_spec = Mock()
     return_spec = Mock()
