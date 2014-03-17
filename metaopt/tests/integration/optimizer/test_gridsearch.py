@@ -28,7 +28,8 @@ def test_optimize_returns_result():
     optimizer.invoker = invoker
 
     args = optimizer.optimize(invoker, f.param_spec)
-    assert map(lambda arg: arg.value, args) == map(lambda arg: arg.value, ARGS)
+    for arg0, arg1 in zip(args, ARGS):
+        assert arg0 == arg1
 
 if __name__ == '__main__':
     import nose
