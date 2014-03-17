@@ -5,7 +5,7 @@ from __future__ import division, print_function, with_statement
 
 import traceback
 from abc import ABCMeta, abstractmethod
-from multiprocessing.process import Process
+from multiprocessing import Process
 
 from metaopt.core.call import call
 from metaopt.invoker.util.import_function import import_function

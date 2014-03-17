@@ -5,15 +5,15 @@ Tests for the multi process invoker.
 from __future__ import division, print_function, with_statement
 
 import nose
+from mock import Mock
 from nose.tools.nontrivial import raises
 
-from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.tests.util.functions import f
-from metaopt.tests.util.functions import m as failing_f
-from metaopt.util.stoppable import StoppedException
-from mock import Mock
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
+from metaopt.invoker.multiprocess import MultiProcessInvoker
+from metaopt.tests.util.functions import m as failing_f
+from metaopt.tests.util.functions import f
+from metaopt.util.stoppable import StoppedException
 
 f = f  # helps static code checkers identify attributes.
 failing_f = failing_f
