@@ -23,18 +23,7 @@ class BaseCaller(object):
 
     @abstractmethod
     def __init__(self):
-        self._invoker = None
-
-    @property
-    @abstractmethod
-    def invoker(self):
-        "The invoker that is used by this caller."
-        return self._invoker
-
-    @invoker.setter
-    @abstractmethod
-    def invoker(self, invoker):
-        self._invoker = invoker
+        pass
 
     @abstractmethod
     def on_result(self, result, fargs, **kwargs):
@@ -67,7 +56,7 @@ class BaseOptimizer(BaseCaller):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def optimize(self, function, param_spec, return_spec):
+    def optimize(self, invoker, function, param_spec, return_spec):
         """
         Optimize objective function for a given parameters specification.
 
@@ -80,4 +69,3 @@ class BaseOptimizer(BaseCaller):
         :returns: Optimal arguments
         """
         pass
-    # TODO: Include invoker property

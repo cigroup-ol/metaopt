@@ -44,7 +44,6 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.tau0 = tau0
         self.tau1 = tau1
 
-        self.invoker = None
         self.param_spec = None
 
         self.population = []
