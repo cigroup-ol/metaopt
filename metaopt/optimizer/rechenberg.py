@@ -32,7 +32,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         :param mu: Number of parent arguments
         :param lamb: Number of offspring arguments
         """
-        self._invoker = None
+        self.invoker = None
 
         # TODO: Make sure these value are sane
         self.mu = mu
