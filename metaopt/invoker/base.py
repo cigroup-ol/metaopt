@@ -79,16 +79,6 @@ class BaseInvoker(Stoppable):
         raise NotImplementedError()
 
     @property
-    def caller(self):
-        """Property for the private caller attribute."""
-        raise NotImplementedError()
-
-    @caller.setter
-    def caller(self, value):
-        """Setter for the private caller attribute."""
-        raise NotImplementedError()
-
-    @property
     def f(self):
         """Property for the function attribute."""
         raise NotImplementedError()

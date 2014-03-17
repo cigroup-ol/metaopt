@@ -60,15 +60,8 @@ class MultiProcessInvoker(BaseInvoker):
         self._f = None  # objective function
         self._param_spec = None  # parameter specification
         self._return_spec = None  # return specification
-        self._caller = None  # we call back for each worker result
 
         super(MultiProcessInvoker, self).__init__()
-
-    @property
-    def caller(self):
-        """Property for the private caller attribute."""
-        with self._lock:
-            return self._caller
 
     @property
     def f(self):
