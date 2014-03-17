@@ -23,7 +23,8 @@ def determine_package(some_object):
         prefix.append(directory)
         candidate = ".".join(prefix[::-1] + [module_name])
         try:
-            __import__(candidate, globals(), locals(), [], 0)
+            __import__(name=candidate, globals=globals(), locals=locals(),
+                       fromlist=[], level=0)
             some_object = candidate
             return some_object
         except ImportError:

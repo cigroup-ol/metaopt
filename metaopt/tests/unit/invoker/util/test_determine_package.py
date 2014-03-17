@@ -24,27 +24,63 @@ class LocalClass(object):
         """Stub method as determination target."""
         pass
 
+    def foo_method(self):
+        """Stub method as determination target."""
+        pass
 
-def test_determine_local_function():
-    eq_(determine_package(local_function),
-        "metaopt.tests.unit.invoker.util.test_determine_package")
-
-
-def test_determine_local_class():
-    eq_(determine_package(LocalClass),
-        "metaopt.tests.unit.invoker.util.test_determine_package")
+    def bar_method(self):
+        """Stub method as determination target."""
+        pass
 
 
-def test_determine_local_method():
-    eq_(determine_package(LocalClass.local_method),
-        "metaopt.tests.unit.invoker.util.test_determine_package")
+class TestDeterminePackage(object):
+    """Tests for the determine package utility."""
 
+    def __init__(self):
+        self._package_local_class = None
+        self._package_local_method = None
+        self._package_local_function = None
 
-def test_determine_imported():
-    for index, function in enumerate(FUNCTIONS_INTEGER_WORKING):
-        eq_(determine_package(function),
-           ("metaopt.tests.util.function.integer.working." +
-            string.ascii_lowercase[5 + index]))
+    def setup(self):
+        """Nose will run this method before every test method."""
+        self._package_local_function = determine_package(local_function)
+        self._package_local_class = determine_package(LocalClass)
+        self._package_local_method = determine_package(LocalClass.local_method)
+
+    def teardown(self):
+        """Nose will run this method after every test method."""
+        pass
+
+    def test_determine_local_function(self):
+        eq_(self._package_local_function,
+            "metaopt.tests.unit.invoker.util.test_determine_package")
+
+        __import__(name=self._package_local_function, globals=globals(),
+                   locals=locals(), fromlist=())
+
+    def test_determine_local_class(self):
+        eq_(self._package_local_class,
+            "metaopt.tests.unit.invoker.util.test_determine_package")
+
+        __import__(name=self._package_local_class, globals=globals(),
+                   locals=locals(), fromlist=())
+
+    def test_determine_local_method(self):
+        eq_(self._package_local_method,
+            "metaopt.tests.unit.invoker.util.test_determine_package")
+
+        __import__(name=self._package_local_method, globals=globals(),
+                   locals=locals(), fromlist=())
+
+    def test_determine_imported(self):
+        for index, function in enumerate(FUNCTIONS_INTEGER_WORKING):
+            package_remote_function = determine_package(function)
+            eq_(package_remote_function,
+               ("metaopt.tests.util.function.integer.working." +
+                string.ascii_lowercase[5 + index]))
+
+            __import__(name=package_remote_function, globals=globals(),
+                   locals=locals(), fromlist=())
 
 if __name__ == '__main__':
     nose.runmodule()
