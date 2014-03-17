@@ -11,7 +11,6 @@ import nose
 from nose.tools import eq_
 
 from metaopt.core.args import ArgsCreator
-from metaopt.invoker.util.determine_package import determine_package
 from metaopt.tests.unit.core.util import get_intervals_from_function
 from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
 

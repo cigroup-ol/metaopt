@@ -35,7 +35,9 @@ class BaseStoppable(object):
 
 
 class StoppedException(Exception):
-    """Indicates a call to an object that should *not* have been stopped before."""
+    """
+    Indicates a call to an object that should *not* have been stopped before.
+    """
     pass
 
 

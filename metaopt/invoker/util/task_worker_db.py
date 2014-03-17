@@ -117,7 +117,7 @@ class TaskWorkerDB(object):
     def count_running_tasks(self):
         """Returns the number of tasks currently executed by workers."""
         # alternate formulation
-        #while len([task for task in self._task_worker_dict.values() if task is not None]) > 0:
+        #while len([f for f in self._task_worker_dict.values() if t]) > 0:
 
         count = 0
         for worker_id in self._task_worker_dict.values():

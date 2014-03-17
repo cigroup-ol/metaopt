@@ -4,8 +4,8 @@ This module provides an abstract base class for implementing optimizer.
 It provides two abstract base classes :class:`BaseOptimizer` and
 :class:`BaseCaller`. All optimizers should implement :class:`BaseOptimizer`
 and by that :class:`BaseCaller`. Objects that only call
-:meth:`metaopt.invoker.base.BaseInvoker.invoke` and need to be called back by the
-invoker but do not offer an :meth:`optimize`, may implement
+:meth:`metaopt.invoker.base.BaseInvoker.invoke` and need to be called back by
+the invoker but do not offer an :meth:`optimize`, may implement
 :class:`BaseCaller`, only.
 """
 

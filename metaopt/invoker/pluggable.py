@@ -82,7 +82,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         try:
-            invocation.current_task = self.invoker.invoke(self, fargs, invocation=invocation)
+            invocation.current_task = self.invoker.invoke(self, fargs,
+                invocation=invocation)
         except StoppedException:
             return invocation.current_task
 
@@ -105,7 +106,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         if invocation.retry:
             # TODO: Maybe run this in its own thread
-            self.invoke(self._caller, invocation.fargs, invocation, **invocation.kwargs)
+            self.invoke(self._caller, invocation.fargs, invocation,
+                        **invocation.kwargs)
         else:
             self._caller.on_result(result, fargs, **invocation.kwargs)
 

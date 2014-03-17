@@ -150,6 +150,7 @@ class VisualizeBestFitnessPlugin(DummyPlugin):
 
         self.start_time = None
         self.current_best = None
+        self.return_spec = None
 
     def setup(self, f, param_spec, return_spec):
         del f, param_spec

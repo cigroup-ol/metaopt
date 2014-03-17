@@ -41,6 +41,7 @@ def test_before_first_invoke_sets_up_plugins():
         stub_invoker.return_spec,
     )
 
+
 def test_before_invoke_calls_plugins():
     mock_plugin = Mock()
     mock_plugin.before_invoke = Mock(spec=[])

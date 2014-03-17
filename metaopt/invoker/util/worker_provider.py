@@ -56,30 +56,31 @@ class WorkerProcessProvider(object):
                 worker_handles.append(WorkerProcessHandle(worker_id))
 
     def release(self, worker_id):
-        """Releases a worker process from the work force."""
+        """Releases a worker process."""
         with self._lock:
             worker_process = self._get_worker_process_for_id(worker_id)
             self._release(worker_process)
 
     def _release(self, worker_process):
+        """Releases the given worker process."""
         # send kill signal and wait for the process to die
         assert worker_process.is_alive()
         worker_process.terminate()
         worker_process.join()
 
         # send manually constructed error result
-        error = Error(worker_id=worker_process.worker_id, task_id=None, function=None,
-                       value=None, args={'worker_terminated':None,},
-                       kwargs={'worker_terminated':None})
+        error = Error(worker_id=worker_process.worker_id, task_id=None,
+                      function=None, value=None,
+                      args={'worker_terminated': None, },
+                      kwargs={'worker_terminated': None})
         self._queue_outcome.put(error)
 
+        # bookkeeping
         self._worker_processes.remove(worker_process)
 
     def release_all(self):
         """
-        Stops this worker provider.
-
-        Releases all worker processes and prohibits future calls to provision.
+        Releases all worker processes.
         """
         with self._lock:
             # copy worker processes so that _release does not modify

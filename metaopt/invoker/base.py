@@ -16,8 +16,8 @@ class BaseInvoker(Stoppable):
     Invoker implementations also need to be a Stoppable, where the semantic of
     stopping is as follows:
 
-    The invoker calls :meth:`metaopt.optimizer.base.BaseCaller.on_error` as soon
-    as possible for each past call to :meth:`invoke` and raises
+    The invoker calls :meth:`metaopt.optimizer.base.BaseCaller.on_error` as
+    soon as possible for each past call to :meth:`invoke` and raises
     StoppedException for any additional calls to :meth:`invoke`.
     """
 
@@ -43,9 +43,9 @@ class BaseInvoker(Stoppable):
         applied.
 
         After `f` was applied successfully the invoker should call
-        :meth:`metaopt.optimizer.base.BaseCaller.on_result` on the caller passing
-        the result of the application, `fargs` and `kwargs`. If the application
-        of `f` was not successful the invoker should call
+        :meth:`metaopt.optimizer.base.BaseCaller.on_result` on the caller
+        passing the result of the application, `fargs` and `kwargs`. If the
+        application of `f` was not successful the invoker should call
         :meth:`metaopt.optimizer.base.BaseCaller.on_error` passing an error,
         `fargs` and `kwargs`.
 

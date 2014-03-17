@@ -15,8 +15,8 @@ class Invocation(object):
 
     Certain properties of this object provide control over the actual objective
     function invocations. Generally, changes to properties only persist until
-    the next call of  :meth:`metaopt.plugins.base.BasePlugin.before_invoke` where
-    they are changed to their default values.
+    the next call of  :meth:`metaopt.plugins.base.BasePlugin.before_invoke`
+    where they are changed to their default values.
 
     Other properties provide information about the current invocation and their
     values will change whenever the object function is invoked again. These

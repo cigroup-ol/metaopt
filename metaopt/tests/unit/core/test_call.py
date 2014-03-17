@@ -26,6 +26,7 @@ def test_call_func_with_return_spec():
     result = call(f, [Arg(param_spec.params["a"], 1)], param_spec, return_spec)
     assert isinstance(result, ReturnValuesWrapper)
 
+
 def test_call_func_with_return_spec_same_str():
     param_spec = ParamSpec()
     param_spec.int("a", interval=(1, 2))
@@ -39,6 +40,7 @@ def test_call_func_with_return_spec_same_str():
     result = call(f, [Arg(param_spec.params["a"], 1)], return_spec)
     assert str(result) == str(1)
 
+
 def test_call_func_without_return_spec():
     param_spec = ParamSpec()
     param_spec.int("a", interval=(1, 2))
@@ -48,6 +50,7 @@ def test_call_func_without_return_spec():
 
     result = call(f, [Arg(param_spec.params["a"], 1)])
     assert isinstance(result, ReturnValuesWrapper)
+
 
 def test_call_func_with_args_works():
     param_spec = ParamSpec()

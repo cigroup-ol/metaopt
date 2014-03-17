@@ -108,7 +108,8 @@ class SimpleMultiprocessInvoker(BaseInvoker):
                 break
 
     def call_on_result(self, result):
-        caller, worker_fargs, worker_kwargs = self.workers_data[result.worker_name]
+        caller, worker_fargs, worker_kwargs = \
+            self.workers_data[result.worker_name]
 
         actual_result = result.actual_result
         caller.on_result(actual_result, worker_fargs, **worker_kwargs)

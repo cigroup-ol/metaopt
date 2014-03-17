@@ -17,6 +17,7 @@ try:
 except NameError:
     xrange = range  # rename range to xrange in python3
 
+
 class SAESOptimizer(BaseOptimizer, BaseCaller):
     """
     Optimization based on a self-adaptive evolution strategy (SAES)

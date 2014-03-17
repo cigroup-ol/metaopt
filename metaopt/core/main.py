@@ -10,8 +10,8 @@ from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.util.stoppable import StoppedException
 
 
-def custom_optimize(f, invoker, param_spec=None, return_spec=None, timeout=None,
-                    optimizer=SAESOptimizer()):
+def custom_optimize(f, invoker, param_spec=None, return_spec=None,
+                    timeout=None, optimizer=SAESOptimizer()):
     """
     Optimize the given objective function using the specified invoker.
 

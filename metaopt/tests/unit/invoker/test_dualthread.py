@@ -114,7 +114,7 @@ def test_invoke_calls_on_error():
     invoker.wait()
 
     assert not caller.on_result.called
-    assert caller.on_error.called # TODO: Also test arguments
+    assert caller.on_error.called  # TODO: Also test arguments
 
 if __name__ == '__main__':
     nose.runmodule()
