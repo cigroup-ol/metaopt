@@ -1,5 +1,5 @@
 """
-Classes to describe an work with the return ReturnValuesWrapper of objective functions
+Classes to describe and work with the return values of objective functions
 """
 from __future__ import division, print_function, with_statement
 

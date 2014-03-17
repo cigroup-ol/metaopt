@@ -14,7 +14,6 @@ from metaopt.invoker.util.model import Error, Result, Task
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.task_worker_db import TaskWorkerDB
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
-from metaopt.plugins.util import Invocation
 from metaopt.util.stoppable import stoppable_method, stopping_method
 
 try:
@@ -110,7 +109,7 @@ class MultiProcessInvoker(BaseInvoker):
     def _handle_error(self, error):
         """"""
         self._caller.on_error(error=error.value, fargs=error.args,
-            **error.kwargs)
+                              **error.kwargs)
 
     def _handle_result(self, result):
         """"""

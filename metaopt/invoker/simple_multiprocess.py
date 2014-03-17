@@ -1,5 +1,5 @@
 """
-TODO
+Invoker that invokes objective functions sequentially.
 """
 from __future__ import division, print_function, with_statement
 
