@@ -54,6 +54,8 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.aborted = False
         self.generation = 1
 
+        super(SAESOptimizer, self).__init__()
+
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
         self.invoker = invoker
         self.param_spec = param_spec
