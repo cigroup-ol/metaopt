@@ -3,7 +3,6 @@ Classes to describe an work with the return ReturnValuesWrapper of objective fun
 """
 from __future__ import division, print_function, with_statement
 
-
 DEFAULT_RETURN_VALUE_NAME = "Fitness"
 
 
