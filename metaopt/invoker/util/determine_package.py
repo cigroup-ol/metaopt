@@ -22,6 +22,10 @@ def determine_package(some_object):
     for directory in module_path.split(os.sep)[::-1]:
         prefix.append(directory)
         candidate = ".".join(prefix[::-1] + [module_name])
+
+        if candidate.startswith("."):
+            candidate = candidate[1:]
+
         try:
             __import__(name=candidate, globals=globals(), locals=locals(),
                        fromlist=[], level=0)
