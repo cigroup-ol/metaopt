@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Error
+from metaopt.invoker.util.model import Release
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
@@ -56,9 +56,13 @@ class WorkerProcessProvider(object):
                 worker_handles.append(WorkerProcessHandle(worker_id))
 
     def release(self, worker_id):
-        """Releases a worker process."""
+        """Releases a worker process given by id."""
         with self._lock:
-            worker_process = self._get_worker_process_for_id(worker_id)
+            try:
+                worker_process = self._get_worker_process_for_id(worker_id)
+            except KeyError:
+                # nothing to do
+                return
             self._release(worker_process)
 
     def _release(self, worker_process):
@@ -69,11 +73,8 @@ class WorkerProcessProvider(object):
         worker_process.join()
 
         # send manually constructed error result
-        error = Error(worker_id=worker_process.worker_id, task_id=None,
-                      function=None, value=None,
-                      args={'worker_terminated': None, },
-                      kwargs={'worker_terminated': None})
-        self._queue_outcome.put(error)
+        release = Release(worker_id=worker_process.worker_id)
+        self._queue_outcome.put(release)
 
         # bookkeeping
         self._worker_processes.remove(worker_process)
@@ -93,7 +94,7 @@ class WorkerProcessProvider(object):
         for worker_process in self._worker_processes:
             if worker_process.worker_id == worker_id:
                 return worker_process
-        raise KeyError("There is no worker with the given id.")
+        raise KeyError("There is no worker with the given worker id: %s" % worker_id)
 
     @property
     def worker_count(self):

@@ -3,7 +3,7 @@ Database that keeps track of worker task relations.
 """
 from __future__ import division, print_function, with_statement
 
-from metaopt.invoker.util.model import Error, Result, Start
+from metaopt.invoker.util.model import Error, Result, Start, Release
 
 
 class TaskWorkerDB(object):
@@ -80,25 +80,36 @@ class TaskWorkerDB(object):
             # Do nothing.
             pass
 
+    def _handle_release(self, release):
+        for task_id in self._task_worker_dict.keys():
+            if self._task_worker_dict[task_id] == release.worker_id:
+                self._task_worker_dict[task_id] = None
+
     def wait_for_one_outcome(self):
         """
         Blocks till one Error or one Result was gotten from the outcome queue
         and processed.
         """
-        outcome = self._queue_outcome.get()
+        while True:
+            outcome = self._queue_outcome.get()
 
-        # handle successful results
-        if isinstance(outcome, Result):
-            self._handle_result(result=outcome)
-            return outcome
+            # handle successful results
+            if isinstance(outcome, Result):
+                self._handle_result(result=outcome)
+                return outcome
 
-        # handle error results
-        elif isinstance(outcome, Error):
-            self._handle_error(error=outcome)
-            return outcome
+            # handle error results
+            elif isinstance(outcome, Error):
+                self._handle_error(error=outcome)
+                return outcome
 
-        raise TypeError("%s objects are not allowed in the result queue" %
-                            type(outcome))
+            # handle release results
+            elif isinstance(outcome, Release):
+                self._handle_release(release=outcome)
+                return outcome
+
+            raise TypeError("%s objects are not allowed in the result queue" %
+                                type(outcome))
 
     def wait_for_one_status(self):
         """

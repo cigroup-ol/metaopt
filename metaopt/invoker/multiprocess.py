@@ -205,8 +205,10 @@ class MultiProcessInvoker(BaseInvoker):
 
     def stop_task(self, task_id):
         """Terminates a worker_handle given by id."""
+        #print(self._task_worker_db.count_running_tasks())
         with self._lock:
-            worker_id = self._task_worker_db.get_worker_id(task_id)
+            assert task_id is not None
+            worker_id = self._task_worker_db.get_worker_id(task_id=task_id)
             self._worker_provider.release(worker_id=worker_id)
 
     def wait(self):

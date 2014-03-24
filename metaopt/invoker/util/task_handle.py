@@ -18,4 +18,4 @@ class TaskHandle(Stoppable):
     @stopping_method
     def stop(self):
         """Cancels the worker executing this task."""
-        self._invoker.stop_task(self._task_id)
+        self._invoker.stop_task(task_id=self._task_id)

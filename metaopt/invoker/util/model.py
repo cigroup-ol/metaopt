@@ -15,6 +15,9 @@ Result = namedtuple("Result", ["worker_id", "task_id",
                                "function", "args", "value",
                                "kwargs"])
 
+# data structure for workers leaving the work force
+Release = namedtuple("Release", ["worker_id"])
+
 # data structure for declaring the start of an execution by the workers
 Start = namedtuple("Start", ["worker_id", "task_id",
                              "function", "args",
