@@ -3,9 +3,12 @@ Utilities around the worker handle.
 """
 from __future__ import division, print_function, with_statement
 
+import pickle
 import traceback
 from abc import ABCMeta, abstractmethod
 from multiprocessing import Process
+from pickle import PicklingError
+from tempfile import TemporaryFile
 
 from metaopt.core.call import call
 from metaopt.invoker.util.import_function import import_function
@@ -95,11 +98,19 @@ class WorkerProcess(Process, Worker):
                                           function=task.function,
                                           args=task.args, value=value,
                                           kwargs=task.kwargs))
-        except Exception as exception:
+        except Exception as value:
             # the objective function may raise any exception
             # we can not do anything more helpful than propagate the exception
-            # the receiving invoker is another process, so send it as a string
-            value = exception
+            # we need to send the exception to the main process via a queue
+            # we need to make sure the exception is pickleable for the queue
+            # so test pickleability and fall back to sending the exception
+
+            with TemporaryFile() as tmp_file:
+                try:
+                    pickle.dump(value, tmp_file)
+                except PicklingError:
+                    value = traceback.format_exc()
+
             self._queue_outcome.put(Error(task_id=task.id,
                                           worker_id=self._worker_id,
                                           function=task.function,

@@ -13,7 +13,8 @@ from nose.tools import eq_
 from metaopt.core.args import ArgsCreator
 from metaopt.tests.unit.core.util import get_intervals_from_function
 from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
-from metaopt.tests.util.function.integer.fast.explicit import FUNCTIONS_FAST_EXPLICIT
+from metaopt.tests.util.function.integer.fast. \
+    explicit import FUNCTIONS_FAST_EXPLICIT
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
