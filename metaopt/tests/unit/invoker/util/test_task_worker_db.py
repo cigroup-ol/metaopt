@@ -12,7 +12,7 @@ from nose.tools.nontrivial import raises
 
 from metaopt.invoker.util.model import Result, Start
 from metaopt.invoker.util.task_worker_db import TaskWorkerDB
-from metaopt.tests.util.function.integer.working.f import f
+from metaopt.tests.util.function.integer.fast.explicit.f import f
 
 
 class TestTaskWorkerDB(object):

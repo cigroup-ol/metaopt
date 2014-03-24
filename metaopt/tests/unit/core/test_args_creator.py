@@ -12,7 +12,8 @@ from nose.tools import eq_
 
 from metaopt.core.args import ArgsCreator
 from metaopt.tests.unit.core.util import get_intervals_from_function
-from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
+from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
+from metaopt.tests.util.function.integer.fast.explicit import FUNCTIONS_FAST_EXPLICIT
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -21,7 +22,7 @@ except NameError:
 
 
 def test_ArgsCreator_product_versus_itertools_product():
-    for function in FUNCTIONS_INTEGER_WORKING:
+    for function in FUNCTIONS_FAST:
         # log
         print(function)
 
@@ -56,7 +57,7 @@ def test_ArgsCreator_product_versus_itertools_product():
 
 
 def test_ArgsCreator_args_versus_nested_loop():
-    for function in FUNCTIONS_INTEGER_WORKING:
+    for function in FUNCTIONS_FAST_EXPLICIT:
         # log
         print(function)
 
@@ -64,12 +65,12 @@ def test_ArgsCreator_args_versus_nested_loop():
         intervals = get_intervals_from_function(function)
 
         args_dummy = []
-        for a in intervals['a']:
-            args_dummy.append(a)
+        for x in intervals['x']:
+            args_dummy.append(x)
 
             try:
-                for b in intervals['b']:
-                    args_dummy.append(b)
+                for y in intervals['y']:
+                    args_dummy.append(y)
             except KeyError:
                 pass
 

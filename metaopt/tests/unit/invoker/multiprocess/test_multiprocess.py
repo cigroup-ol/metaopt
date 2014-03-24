@@ -11,11 +11,12 @@ from nose.tools.nontrivial import raises
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.tests.util.functions import m as failing_f
-from metaopt.tests.util.functions import f
+from metaopt.tests.util.function.integer.failing import f as failing_f
+from metaopt.tests.util.function.integer.fast.implicit.f import f
 from metaopt.util.stoppable import StoppedException
 
-f = f  # helps static code checkers identify attributes.
+# helps static code checkers identify attributes.
+f = f
 failing_f = failing_f
 
 try:

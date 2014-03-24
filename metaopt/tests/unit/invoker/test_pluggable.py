@@ -10,7 +10,7 @@ from nose.tools import eq_
 
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.pluggable import PluggableInvoker
-from metaopt.tests.util.functions import f
+from metaopt.tests.util.function.integer.fast.implicit.f import f
 
 f = f  # helps static code checkers identify attributes.
 

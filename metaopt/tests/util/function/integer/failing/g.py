@@ -9,6 +9,6 @@ from metaopt.core import param
 @param.int("a", interval=(1, 10))
 @param.int("b", interval=(1, 10))
 def f(a, b):
-    """Function that fails, rising an exception."""
+    """Function with two integer parameters that fails, rising an exception."""
     del a, b
     raise Exception()

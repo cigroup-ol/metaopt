@@ -10,7 +10,7 @@ from nose.tools.trivial import eq_
 
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.stoppable import StoppableInvoker
-from metaopt.tests.util.functions import f
+from metaopt.tests.util.function.integer.fast.implicit.f import f
 from metaopt.util.stoppable import StoppedException
 
 f = f  # helps static code checkers identify attributes.

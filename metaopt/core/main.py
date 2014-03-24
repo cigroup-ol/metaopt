@@ -13,7 +13,7 @@ from metaopt.util.stoppable import StoppedException
 def custom_optimize(f, invoker, param_spec=None, return_spec=None,
                     timeout=None, optimizer=SAESOptimizer()):
     """
-    Optimize the given objective function using the specified invoker.
+    Optimizes the given objective function using the specified invoker.
 
     :param f: Objective function
     :param invoker: Invoker
@@ -50,7 +50,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
 def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
              optimizer=SAESOptimizer()):
     """
-    Optimize the given objective function.
+    Optimizes the given objective function.
 
     :param f: Objective function
     :param timeout: Available time for optimization (in seconds)

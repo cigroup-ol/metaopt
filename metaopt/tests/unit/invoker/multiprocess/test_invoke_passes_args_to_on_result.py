@@ -10,17 +10,17 @@ from mock import Mock
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.tests.util.functions import m as failing_f
+from metaopt.tests.util.function.integer.failing.f import f as f_failing
 
-failing_f = failing_f  # helps static code checkers
+f_failing = f_failing  # helps static code checkers
 
 
 def test_invoke_passes_kwargs_result():
     return  # TODO
     invoker = MultiProcessInvoker()
-    invoker.f = failing_f
+    invoker.f = f_failing
 
-    invoker.param_spec = failing_f.param_spec
+    invoker.param_spec = f_failing.param_spec
 
     # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
     invoker.return_spec = None
@@ -32,7 +32,7 @@ def test_invoke_passes_kwargs_result():
 
     data = object()
 
-    args = ArgsCreator(failing_f.param_spec).args()
+    args = ArgsCreator(f_failing.param_spec).args()
 
     invoker.invoke(caller, args, data=data)
     invoker.wait()

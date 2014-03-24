@@ -9,7 +9,7 @@ import nose
 from nose.tools.trivial import eq_
 
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
+from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
 
 
 def local_function():
@@ -73,11 +73,15 @@ class TestDeterminePackage(object):
                    locals=locals(), fromlist=())
 
     def test_determine_imported(self):
-        for index, function in enumerate(FUNCTIONS_INTEGER_WORKING):
+        for index, function in enumerate(FUNCTIONS_FAST):
             package_remote_function = determine_package(function)
-            eq_(package_remote_function,
-               ("metaopt.tests.util.function.integer.working." +
-                string.ascii_lowercase[5 + index]))
+            print(package_remote_function)
+            assert package_remote_function == \
+               ("metaopt.tests.util.function.integer.fast.explicit." +
+                string.ascii_lowercase[5 + index]) or\
+                package_remote_function == \
+               ("metaopt.tests.util.function.integer.fast.implicit." +
+                string.ascii_lowercase[3 + index])
 
             __import__(name=package_remote_function, globals=globals(),
                    locals=locals(), fromlist=())

@@ -1,5 +1,5 @@
 """
-Tests for the multiprocess invoker.
+Integration tests for the multiprocess invoker.
 """
 from __future__ import division, print_function, with_statement
 
@@ -11,17 +11,12 @@ from mock import Mock
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.tests.util.functions import FUNCTIONS_INTEGER_WORKING
-
-
-def f():
-    """Function that hangs indefinitely."""
-    while True:
-        sleep(1)
+from metaopt.tests.util.function.integer.fast. \
+    implicit import FUNCTIONS_FAST_IMPLICIT
 
 
 def test_invoke_calls_on_result():
-    for function in FUNCTIONS_INTEGER_WORKING[:1]:  # TODO test all functions
+    for function in FUNCTIONS_FAST_IMPLICIT[:1]:  # TODO test all functions
         print(function)  # log
 
         caller = Mock()
@@ -41,7 +36,7 @@ def test_invoke_calls_on_result():
 
 # THIS TEST DOESN'T WORK
 # def test_invoke_given_extra_args_calls_on_result_with_them():
-#     for function in FUNCTIONS_INTEGER_WORKING[:1]:  # TODO test all functions
+#     for function in FUNCTIONS_INTEGER_FAST[:1]:  # TODO test all functions
 #         print(function)  # log
 
 #         caller = Mock()
