@@ -247,11 +247,8 @@ class ExecFile(object):
             sys.stdout = self
 
             # execute the file
-
-            execfile(os.path.basename(self.filename), {'pl' : plt,
-                                                       'plt' : plt,
-                                                       'pylab' : plt,
-                                                       '__name__' : "__main__"})
+            import __main__
+            execfile(os.path.basename(self.filename), __main__.__dict__)
 
             fig_mgr_list = matplotlib._pylab_helpers.Gcf.get_all_fig_managers()
             self.figlist = [manager.canvas.figure for manager in fig_mgr_list]
