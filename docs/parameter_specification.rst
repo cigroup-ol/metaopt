@@ -1,8 +1,8 @@
 Parameter Specification
 =======================
 
-There are two different ways to specify parameters in OrgES. You can either use
-decorators or specify an :class:`orges.core.paramspec.ParamSpec` object manually.
+There are two different ways to specify parameters in MetaOpt. You can either use
+decorators or specify an :class:`metaopt.core.paramspec.ParamSpec` object manually.
 While decorators are the preferred way of specifying parameters, manually
 creating this object can be useful in some situations.
 
@@ -14,12 +14,12 @@ storing it the ``param_spec`` attribute).
 Defining a ``ParamSpec`` this way, however, means that an objective function can
 only have a single specification. In some cases it's useful to have different
 specifications. To allow this, it's possible to construct ``ParamSpec`` objects
-manually and pass them to :func:`orges.core.main.optimize`.
+manually and pass them to :func:`metaopt.core.main.optimize`.
 
 .. code-block:: python
 
-    from orges.main import optimize
-    from orges.paramspec import ParamSpec
+    from metaopt.main import optimize
+    from metaopt.paramspec import ParamSpec
 
     def f(a):
         return do_something(a)
@@ -33,7 +33,7 @@ The above would be same as this.
 
 .. code-block:: python
 
-    from orges.core import param
+    from metaopt.core import param
 
     @param.float("a", interval=[0, 1])
     def f(a):

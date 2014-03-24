@@ -32,25 +32,25 @@
 .. toctree::
    :maxdepth: 2
 
-OrgES
-=====
+MetaOpt
+=======
 
-**OrgES** is a library that optimizes black-box functions using a limited amount
-of time and utilizing multiple processors. The main focus of OrgES is the
+**MetaOpt** is a library that optimizes black-box functions using a limited amount
+of time and utilizing multiple processors. The main focus of MetaOpt is the
 parameter tuning for machine learning and heuristic optimization.
 
-.. **OrgES** is a library that assists in finding optimal arguments for black-box
-.. functions in a limited amount of time and utilizing multiple processors. OrgES
+.. **MetaOpt** is a library that assists in finding optimal arguments for black-box
+.. functions in a limited amount of time and utilizing multiple processors. MetaOpt
 .. provides a range of optimization algorithms for different kind of problems.
 
-.. OrgES is designed for (but not limited to) black-box objective functions with a
-.. few parameters that possibly take a long time to compute. OrgES also provides a
+.. MetaOpt is designed for (but not limited to) black-box objective functions with a
+.. few parameters that possibly take a long time to compute. MetaOpt also provides a
 .. framework for writing your own parallel optimization algorithms.
 
 .. code-block:: python
 
-    from orges import param
-    from orges.main import optimize
+    from metaopt import param
+    from metaopt.main import optimize
 
     @param.float("a", interval=[-1, 1])
     @param.float("b", interval=[0, 1])
@@ -60,14 +60,14 @@ parameter tuning for machine learning and heuristic optimization.
     args = optimize(f, timeout=60)
 
 
-OrgES has the following notable features:
+MetaOpt has the following notable features:
 
 - Custom optimization algorithms
 - Custom invocation strategies
 - A hook-based plugin system
 - Different levels of timeouts
 
-To get started with OrgES, we recommend reading the :doc:`getting_started` page.
+To get started with MetaOpt, we recommend reading the :doc:`getting_started` page.
 For some examples see below or visit the :ref:`examples` page.
 
 .. container:: figures

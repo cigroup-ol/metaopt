@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# OrgES documentation build configuration file, created by
+# MetaOpt documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 15 05:32:18 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -20,7 +20,7 @@ import os
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../orges'))
+sys.path.insert(0, os.path.abspath('../metaopt'))
 sys.path.insert(0, os.path.abspath('../examples'))
 sys.path.insert(0, os.path.abspath('_extensions'))
 
@@ -65,7 +65,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OrgES'
+project = u'MetaOpt'
 copyright = u'2013, Renke Grunwald, Bengt Lüers, Jendrik Poloczek'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -190,7 +190,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'OrgESdoc'
+htmlhelp_basename = 'MetaOptdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -209,7 +209,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'OrgES.tex', u'OrgES Documentation',
+  ('index', 'MetaOpt.tex', u'MetaOpt Documentation',
    u'Renke Grunwald, Bengt Lüers, Jendrik Poloczek', 'manual'),
 ]
 
@@ -239,7 +239,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'orges', u'OrgES Documentation',
+    ('index', 'metaopt', u'MetaOpt Documentation',
      [u'Renke Grunwald, Bengt Lüers, Jendrik Poloczek'], 1)
 ]
 
@@ -253,8 +253,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'OrgES', u'OrgES Documentation',
-   u'Renke Grunwald, Bengt Lüers, Jendrik Poloczek', 'OrgES', 'One line description of project.',
+  ('index', 'MetaOpt', u'MetaOpt Documentation',
+   u'Renke Grunwald, Bengt Lüers, Jendrik Poloczek', 'MetaOpt', 'One line description of project.',
    'Miscellaneous'),
 ]
 

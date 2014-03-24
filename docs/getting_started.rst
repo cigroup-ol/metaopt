@@ -4,15 +4,15 @@ Getting Started
 Quick Overview
 ^^^^^^^^^^^^^^
 
-The example below shows how OrgES can be used to find optimal arguments for a
-(rather simple) objective function ``f``. OrgES needs no information about the
+The example below shows how MetaOpt can be used to find optimal arguments for a
+(rather simple) objective function ``f``. MetaOpt needs no information about the
 function ``f`` other than it has two float parameters ``a`` and ``b`` (taking
 values between -1 and 1) and returns *some* value.
 
 .. code-block:: python
 
-    from orges.core import param
-    from orges.main import optimize
+    from metaopt.core import param
+    from metaopt.main import optimize
 
     @param.float("a", interval=[-1, 1], step=0.2)
     @param.float("b", interval=[-1, 1], step=0.5)
@@ -21,16 +21,16 @@ values between -1 and 1) and returns *some* value.
 
     args = optimize(f)
 
-OrgES will optimize ``f`` in parellel and then return a list of arguments for
+MetaOpt will optimize ``f`` in parellel and then return a list of arguments for
 which ``f`` is minimal.
 
-By default, OrgES uses the :class:`orges.optimizer.saes.SAESOptimizer` as
+By default, MetaOpt uses the :class:`metaopt.optimizer.saes.SAESOptimizer` as
 optimizer. Other optimizers like
-the :class:`orges.optimizer.gridsearch.GridSearchOptimizer` can also be used.
+the :class:`metaopt.optimizer.gridsearch.GridSearchOptimizer` can also be used.
 
 .. code-block:: python
 
-    from orges.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
     args = optimize(f, optimizer=GridSearchOptimizer())
 
@@ -39,27 +39,27 @@ seconds.
 
 .. code-block:: python
 
-    from orges.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
     args = optimize(f, timeout=60, optimizer=GridSearchOptimizer())
 
-OrgES will return the optimal arguments it found after 60 seconds.
+MetaOpt will return the optimal arguments it found after 60 seconds.
 
 To also limit the time of an individual computation of ``f`` we can pass a
-timeout in seconds by using the :class:`orges.plugins.timeout.TimeoutPlugin`.
+timeout in seconds by using the :class:`metaopt.plugins.timeout.TimeoutPlugin`.
 
 .. code-block:: python
 
-    from orges.optimizer.gridsearch import GridSearchOptimizer
-    from orges.plugins.timeout import TimeoutPlugin
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.plugins.timeout import TimeoutPlugin
 
     args = optimize(f, timeout=60, optimizer=GridSearchOptimizer(),
                     plugins=[TimeoutPlugin(5)])
 
-OrgES will abort computations of ``f`` that take longer than 5 seconds and
+MetaOpt will abort computations of ``f`` that take longer than 5 seconds and
 return the optimal arguments it found after 60 seconds.
 
-This should explain the most basic use cases of OrgES. For more details we
+This should explain the most basic use cases of MetaOpt. For more details we
 recommend reading the next sections.
 
 Installation
@@ -71,26 +71,26 @@ Installation
 Objective functions
 ^^^^^^^^^^^^^^^^^^^
 
-Before OrgES can be used, an objective function has to be defined. This includes
+Before MetaOpt can be used, an objective function has to be defined. This includes
 a specification of its parameters (and optionally its return values). An
-objective function in OrgES is just a regular Python function that is augmented
+objective function in MetaOpt is just a regular Python function that is augmented
 with a number of available [decorators] that describe its parameters (and return
 values).
 
 .. note::
 
-    In OrgES formal parameters and actual parameters are called *parameters* and
+    In MetaOpt formal parameters and actual parameters are called *parameters* and
     *arguments*, respectively.
 
 Let's say a particular objective function takes three parameters ``a``, ``b``
 and ``g``, where ``a`` is an integer between -10 and 10, ``b`` is a float
 between 0.0 and 1.0 and ``g`` is a boolean. To specify these, the decorators
-:func:`orges.core.param.int`, :func:`orges.core.param.float` and
-:func:`orges.core.param.bool` have to be used as follows.
+:func:`metaopt.core.param.int`, :func:`metaopt.core.param.float` and
+:func:`metaopt.core.param.bool` have to be used as follows.
 
 .. code-block:: python
 
-    from orges.core import param
+    from metaopt.core import param
 
     @param.int("a", interval=[-10, 10])
     @param.float("b", interval=[0, 1])
@@ -110,15 +110,15 @@ given arguments), it should raise a meaningful exception. You should also make
 sure that your objective function can run in parallel by avoiding global state
 and similar things.
 
-OrgES can both maximize and minimize objective functions. To do this, the
-:func:`orges.core.retuns.maximize` and :func:`orges.core.retuns.minimize`
+MetaOpt can both maximize and minimize objective functions. To do this, the
+:func:`metaopt.core.retuns.maximize` and :func:`metaopt.core.retuns.minimize`
 decorators can be used. For example, to maximize the objective function, we use
 the `maximize` decorator as follows.
 
 .. code-block:: python
 
-    from orges.core.returns import maximize
-    from orges.core import param
+    from metaopt.core.returns import maximize
+    from metaopt.core import param
 
     @maximize("Fitness") # Also give the return value a descriptive name
     @param.int("a", interval=[-10, 10])
@@ -127,7 +127,7 @@ the `maximize` decorator as follows.
     def f(a, b, g):
         return some_expensive_computation(a, b, g)
 
-By default, OrgES minimizes objective functions and using `minimize` is only
+By default, MetaOpt minimizes objective functions and using `minimize` is only
 required to give the return value a descriptive name.
 
 To also give parameters more descriptive names, the ``title`` option supported
@@ -136,7 +136,7 @@ the name whenever its parameter or argument is shown to the user.
 
 .. code-block:: python
 
-    from orges.core import param
+    from metaopt.core import param
 
     @param.int("a", interval=[-10, 10], title="α")
     @param.float("b", interval=[0, 1], title="β")
@@ -144,14 +144,14 @@ the name whenever its parameter or argument is shown to the user.
     def f(a, b, g):
         return some_expensive_computation(a, b, g)
 
-The following parameter decorators are available in OrgES. More types may be
-added in future versions of OrgES.
+The following parameter decorators are available in MetaOpt. More types may be
+added in future versions of MetaOpt.
 
-.. autofunction:: orges.param.int
+.. autofunction:: metaopt.core.param.int
 
-.. autofunction:: orges.param.float
+.. autofunction:: metaopt.core.param.float
 
-.. autofunction:: orges.param.bool
+.. autofunction:: metaopt.core.param.bool
 
 For more details about specifying the parameters of an objective function, see
 :doc:`parameter_specification`.
@@ -163,39 +163,39 @@ Optimization
 
 With an objective function defined it can be finally optimized. Given an
 objective function ``f``, the easiest way to optimize it is using the function
-:func:`orges.core.main.optimize`.
+:func:`metaopt.core.main.optimize`.
 
 .. code-block:: python
 
-    from orges.main import optimize
+    from metaopt.main import optimize
 
     args = optimize(f)
 
 The result of ``optimize`` is a list of arguments (see
-:class:`orges.core.args.Arg`) for which the objective function is optimal
+:class:`metaopt.core.args.Arg`) for which the objective function is optimal
 (either minimial or maximal).
 
-OrgES runs multiple computations of the objective functions in parallel (via the
-:class:`orges.invoker.multiprocess.MultiProcessInvoker`). However, other
+MetaOpt runs multiple computations of the objective functions in parallel (via the
+:class:`metaopt.invoker.multiprocess.MultiProcessInvoker`). However, other
 invokers can choose different ways to compute objective functions. For more
 details, see :ref:`invokers-label`.
 
-By default, OrgES uses :class:`orges.optimizer.saes.SAESOptimizer` for the
+By default, MetaOpt uses :class:`metaopt.optimizer.saes.SAESOptimizer` for the
 optimization. Other optimizers can be selected by passing them to ``optimize``
 (see :ref:`optimizers-label`).
 
 .. code-block:: python
 
-    from orges.main import optimize
-    from orges.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.main import optimize
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
     args = optimize(f, optimizer=GridSearchOptimizer())
 
 Generally, to optimize an objective function use a suitable function from below.
 
-.. autofunction:: orges.core.main.optimize(f, timeout=None, plugins=[], optimizer=SAESOptimizer())
+.. autofunction:: metaopt.core.main.optimize(f, timeout=None, plugins=[], optimizer=SAESOptimizer())
 
-.. autofunction:: orges.core.main.custom_optimize(f, invoker, timeout=None, optimizer=SAESOptimizer())
+.. autofunction:: metaopt.core.main.custom_optimize(f, invoker, timeout=None, optimizer=SAESOptimizer())
 
 .. _optimizers-label:
 
@@ -207,48 +207,45 @@ then try to find the optimal parameters. Optimizers are using invokers to
 actually compute the result of objective functions and are therefore by default
 parallelized.
 
-OrgES comes a range of built-in optimizers that are suitable for most types of
+MetaOpt comes a range of built-in optimizers that are suitable for most types of
 objective functions. These are listed below.
 
 
-.. autoclass:: orges.optimizer.saes.SAESOptimizer
+.. autoclass:: metaopt.optimizer.saes.SAESOptimizer
 
-.. autoclass:: orges.optimizer.rechenberg.RechenbergOptimizer
+.. autoclass:: metaopt.optimizer.rechenberg.RechenbergOptimizer
 
-.. autoclass:: orges.optimizer.gridsearch.GridSearchOptimizer
-
-.. autoclass:: orges.optimizer.random.RandomOptimizer
+.. autoclass:: metaopt.optimizer.gridsearch.GridSearchOptimizer
 
 For writing your own optimizers see [How to write an Optimizer].
-
 
 .. _invokers-label:
 
 Invokers
 ^^^^^^^^
 
-To find optimal parameters OrgES has to compare the results of objective
+To find optimal parameters MetaOpt has to compare the results of objective
 function computations for various differing arguments. While optimizers decide
 for which arguments the objective function is computed, invokers choose the way
 *how* it is actually computed (or as we call it: invoked).
 
 Other invokers can be used by passing them to
-:func:`orges.core.main.custom_optimize`.
+:func:`metaopt.core.main.custom_optimize`.
 
 .. code-block:: python
 
-    from orges.main import custom_optimize
-    from orges.invoker.multiprocess import MultiProcessInvoker
+    from metaopt.main import custom_optimize
+    from metaopt.invoker.multiprocess import MultiProcessInvoker
 
     args = custom_optimize(f, invoker=invoker)
 
-The following invokers are available in OrgES.
+The following invokers are available in MetaOpt.
 
-.. autoclass:: orges.invoker.multiprocess.MultiProcessInvoker
+.. autoclass:: metaopt.invoker.multiprocess.MultiProcessInvoker
 
-.. autoclass:: orges.invoker.dualthread.DualThreadInvoker
+.. autoclass:: metaopt.invoker.dualthread.DualThreadInvoker
 
-.. autoclass:: orges.invoker.pluggable.PluggableInvoker
+.. autoclass:: metaopt.invoker.pluggable.PluggableInvoker
 
 For writing your own invokers, see [How to write an Invoker] for more
 
@@ -259,45 +256,45 @@ Plugins
 
 Plugins change the way objective functions are invoked. They attach handlers to
 various events that occur when an optimizer wants to invoke an objective
-functions via the :class:`orges.invoker.pluggable.PluggableInvoker`.
+functions via the :class:`metaopt.invoker.pluggable.PluggableInvoker`.
 
-Plugins can be used by passing them to :func:`orges.core.main.optimize`.
+Plugins can be used by passing them to :func:`metaopt.core.main.optimize`.
 
 .. code-block:: python
 
-    from orges.main import optimize
+    from metaopt.main import optimize
 
-    from orges.plugins.timeout import TimeoutPlugin
-    from orges.plugins.print import PrintPlugin
+    from metaopt.plugins.timeout import TimeoutPlugin
+    from metaopt.plugins.print import PrintPlugin
 
     args = optimize(f, plugins=[PrintPlugin(), TimeoutPlugin(2)])
 
-If you use your own custom invoker, :func:`orges.main.custom_optimize` can be
+If you use your own custom invoker, :func:`metaopt.main.custom_optimize` can be
 used.
 
 .. code-block:: python
 
-    from orges.main import custom_optimize
-    from orges.invoker.pluggable import PluggableInvoker
+    from metaopt.main import custom_optimize
+    from metaopt.invoker.pluggable import PluggableInvoker
 
-    from orges.plugins.timeout import TimeoutPlugin
-    from orges.plugins.print import PrintPlugin
+    from metaopt.plugins.timeout import TimeoutPlugin
+    from metaopt.plugins.print import PrintPlugin
 
     invoker = PluggableInvoker(CustomInvoker(),
                                plugins=[PrintPlugin(), TimeoutPlugin(2)])
 
     args = custom_optimize(f, invoker=invoker)
 
-The following plugins are available in OrgES.
+The following plugins are available in MetaOpt.
 
-.. autoclass:: orges.plugins.timeout.TimeoutPlugin
+.. autoclass:: metaopt.plugins.timeout.TimeoutPlugin
 
-.. autoclass:: orges.plugins.print.PrintPlugin
+.. autoclass:: metaopt.plugins.print.PrintPlugin
 
-.. autoclass:: orges.plugins.visualize.VisualizeLandscapePlugin
+.. autoclass:: metaopt.plugins.visualize.VisualizeLandscapePlugin
    :members: show_image_plot, show_surface_plot
 
-.. autoclass:: orges.plugins.visualize.VisualizeBestFitnessPlugin
+.. autoclass:: metaopt.plugins.visualize.VisualizeBestFitnessPlugin
    :members: show_fitness_invocations_plot, show_fitness_time_plot
 
 For writing your own plugins, see [How to write a Plugin].
