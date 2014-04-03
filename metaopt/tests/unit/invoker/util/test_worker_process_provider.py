@@ -9,6 +9,7 @@ import nose
 from nose.tools.nontrivial import raises
 
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
+from metaopt.invoker.util.status_db import StatusDB
 
 
 class TestWorkerProcessProvider(object):
@@ -17,7 +18,7 @@ class TestWorkerProcessProvider(object):
     """
 
     def __init__(self):
-        self.queue_results = None
+        self.queue_outcome = None
         self.queue_status = None
         self.queue_tasks = None
         self.provider = None
@@ -27,11 +28,14 @@ class TestWorkerProcessProvider(object):
         manager = Manager()
         self.queue_tasks = manager.Queue()  # ignore error, this works
         self.queue_status = manager.Queue()  # ignore error, this works
-        self.queue_results = manager.Queue()  # ignore error, this works
+        self.queue_outcome = manager.Queue()  # ignore error, this works
 
+        self._status_db = StatusDB(queue_outcome=self.queue_outcome,
+                                   queue_status=self.queue_status)
         self.provider = WorkerProcessProvider(queue_tasks=self.queue_tasks,
-                                              queue_results=self.queue_results,
-                                              queue_status=self.queue_status)
+                                              queue_outcome=self.queue_outcome,
+                                              queue_status=self.queue_status,
+                                              status_db=self._status_db)
 
     def teardown(self):
         """Nose will run this method after every test method."""
@@ -115,7 +119,7 @@ class TestWorkerProcessProvider(object):
     def test_worker_process_provider_is_borg(self):
         """There can only be one instance of a worker process provider."""
         my_provider = WorkerProcessProvider(queue_tasks=self.queue_tasks,
-                                            queue_results=self.queue_results,
+                                            queue_outcome=self.queue_outcome,
                                             queue_status=self.queue_status)
 
         number_of_workers = 1
@@ -143,4 +147,9 @@ class TestWorkerProcessProvider(object):
         self.provider.release_all()
 
 if __name__ == '__main__':
-    nose.runmodule()
+    #import pdb; pdb.set_trace()
+    twpp = TestWorkerProcessProvider()
+    twpp.setup()
+    twpp.test_worker_process_provider_counts_up()
+    twpp.teardown()
+    #nose.runmodule()

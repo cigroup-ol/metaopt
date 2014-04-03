@@ -12,7 +12,7 @@ from tempfile import TemporaryFile
 
 from metaopt.core.call import call
 from metaopt.invoker.util.import_function import import_function
-from metaopt.invoker.util.model import Error, Result, Start
+from metaopt.invoker.util.model import Error, Result, Start, Task
 
 
 class BaseWorker(object):
@@ -44,10 +44,10 @@ class Worker(BaseWorker):
 class WorkerProcess(Process, Worker):
     """Calls functions with arguments, both given by a queue."""
 
-    def __init__(self, worker_id, queue_results, queue_status,
+    def __init__(self, worker_id, queue_outcome, queue_status,
                  queue_tasks):
         self._worker_id = worker_id
-        self._queue_outcome = queue_results
+        self._queue_outcome = queue_outcome
         self._queue_status = queue_status
         self._queue_task = queue_tasks
         super(WorkerProcess, self).__init__()
@@ -82,22 +82,24 @@ class WorkerProcess(Process, Worker):
         """Executes the given task."""
 
         # announce start of work
-        self._queue_status.put(Start(task_id=task.id,
-                                      worker_id=self._worker_id,
-                                      function=task.function,
-                                      args=task.args,
-                                      kwargs=task.kwargs))
+        self._queue_status.put(Start(worker_id=self._worker_id,
+                                     task=Task(id=task.id,
+                                               function=task.function,
+                                               args=task.args,
+                                               kwargs=task.kwargs)))
 
         # make the actual call
+        function = import_function(function=task.function)
         try:
-            value = call(f=import_function(function=task.function),
-                         fargs=task.args, param_spec=task.param_spec,
-                         return_spec=task.return_spec)
-            self._queue_outcome.put(Result(task_id=task.id,
-                                          worker_id=self._worker_id,
-                                          function=task.function,
-                                          args=task.args, value=value,
-                                          kwargs=task.kwargs))
+            value = call(f=function,
+                         fargs=task.args, param_spec=function.param_spec,
+                         return_spec=function.return_spec)
+            self._queue_outcome.put(Result(worker_id=self._worker_id,
+                                           task=Task(id=task.id,
+                                                     function=task.function,
+                                                     args=task.args,
+                                                     kwargs=task.kwargs),
+                                           value=value))
         except Exception as value:
             # the objective function may raise any exception
             # we can not do anything more helpful than propagate the exception
@@ -111,8 +113,9 @@ class WorkerProcess(Process, Worker):
                 except PicklingError:
                     value = traceback.format_exc()
 
-            self._queue_outcome.put(Error(task_id=task.id,
-                                          worker_id=self._worker_id,
-                                          function=task.function,
-                                          args=task.args, value=value,
-                                          kwargs=task.kwargs))
+            self._queue_outcome.put(Error(worker_id=self._worker_id,
+                                          task=Task(id=task.id,
+                                                    function=task.function,
+                                                    args=task.args,
+                                                    kwargs=task.kwargs),
+                                          value=value))

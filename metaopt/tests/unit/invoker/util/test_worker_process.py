@@ -21,7 +21,7 @@ class TestWorkerProcess(object):
     """Tests for the worker process."""
 
     def __init__(self):
-        self.queue_results = None
+        self.queue_outcome = None
         self.queue_status = None
         self.queue_tasks = None
         self.worker_process = None
@@ -32,11 +32,11 @@ class TestWorkerProcess(object):
         manager = Manager()
         self.queue_tasks = manager.Queue()  # ignore error, this works
         self.queue_status = manager.Queue()  # ignore error, this works
-        self.queue_results = manager.Queue()  # ignore error, this works
+        self.queue_outcome = manager.Queue()  # ignore error, this works
 
         worker_id = uuid.uuid4()
         self.worker_process = WorkerProcess(worker_id=worker_id,
-                                            queue_results=self.queue_results,
+                                            queue_outcome=self.queue_outcome,
                                             queue_status=self.queue_status,
                                             queue_tasks=self.queue_tasks)
         self.worker_process.start()
@@ -93,7 +93,6 @@ class TestWorkerProcess(object):
         function = determine_package(FUNCTIONS_FAST[0])
         task_id = uuid.uuid4()
         self.queue_tasks.put(Task(id=task_id, function=function, args=None,
-                                  param_spec=None, return_spec=None,
                                   kwargs=None))
 
     def test_worker_process_start_task_status_repeated(self):
@@ -110,8 +109,7 @@ class TestWorkerProcess(object):
             # run
             function = determine_package(function)
             task_id = uuid.uuid4()
-            task = Task(id=task_id, function=function, args=None,
-                        param_spec=None, return_spec=None, kwargs=None)
+            task = Task(id=task_id, function=function, args=None, kwargs=None)
             self.queue_tasks.put(task)
 
             # check status
@@ -119,7 +117,7 @@ class TestWorkerProcess(object):
             assert status
             assert isinstance(status, Start)
             assert status.worker_id == self.worker_process.worker_id
-            assert status.task_id == task_id
+            assert status.task.id == task_id
 
     def test_worker_process_start_task_status_outcome_repeated(self):
         """
@@ -135,8 +133,7 @@ class TestWorkerProcess(object):
             # run
             function = determine_package(function)
             task_id = uuid.uuid4()
-            task = Task(id=task_id, function=function, args=None,
-                        param_spec=None, return_spec=None, kwargs=None)
+            task = Task(id=task_id, function=function, args=None, kwargs=None)
             self.queue_tasks.put(task)
 
             # check status
@@ -144,10 +141,10 @@ class TestWorkerProcess(object):
             assert status
             assert isinstance(status, Start)
             assert status.worker_id == self.worker_process.worker_id
-            assert status.task_id == task_id
+            assert status.task.id == task_id
 
             # check outcome
-            outcome = self.queue_results.get()
+            outcome = self.queue_outcome.get()
             assert outcome
 
             # TODO avoid Errors
@@ -156,7 +153,7 @@ class TestWorkerProcess(object):
             #assert isinstance(outcome, Result)
 
             assert outcome.worker_id == self.worker_process.worker_id
-            assert outcome.task_id == task_id
+            assert outcome.task.id == task_id
 
 if __name__ == '__main__':
     nose.runmodule()

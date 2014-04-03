@@ -12,9 +12,10 @@ from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Error, Result, Task
 from metaopt.invoker.util.task_handle import TaskHandle
-from metaopt.invoker.util.task_worker_db import TaskWorkerDB
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import stoppable_method, stopping_method
+from metaopt.invoker.util.status_db import StatusDB
+import time
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -43,14 +44,15 @@ class MultiProcessInvoker(BaseInvoker):
         self._queue_status = self._manager.Queue()
         self._queue_task = self._manager.Queue(maxsize=1)
 
-        wpp = WorkerProcessProvider(queue_results=self._queue_outcome,
+        self._status_db = StatusDB(queue_outcome=self._queue_outcome,
+                                            queue_status=self._queue_status)
+
+        wpp = WorkerProcessProvider(queue_outcome=self._queue_outcome,
                                     queue_status=self._queue_status,
-                                    queue_tasks=self._queue_task)
+                                    queue_tasks=self._queue_task,
+                                    status_db=self._status_db)
         self._worker_provider = wpp
         del wpp
-
-        self._task_worker_db = TaskWorkerDB(queue_outcome=self._queue_outcome,
-                                   queue_status=self._queue_status)
 
         # we can not prohibit others to use us in parallel, so
         # make this invoker thread-safe
@@ -101,13 +103,14 @@ class MultiProcessInvoker(BaseInvoker):
 
     def _handle_error(self, error):
         """"""
-        self._caller.on_error(error=error.value, fargs=error.args,
-                              **error.kwargs)
+        self._caller.on_error(error=error.value, fargs=error.task.args,
+                              **error.task.kwargs)
 
     def _handle_result(self, result):
         """"""
+        assert isinstance(result, Result)
         try:
-            self._caller.on_result(result.value, result.args, **result.kwargs)
+            self._caller.on_result(result.value, result.task.args, **result.task.kwargs)
         except TypeError:
             # outcome.kwargs was None
             self._caller.on_result(result.value, result.args)
@@ -144,6 +147,11 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             self._caller = caller
 
+            # if at worker limit, wait for one result before returning
+            if self._worker_provider.worker_count >= self._worker_count_max:
+                outcome = self._status_db.wait_for_one_outcome()
+                self._handle_outcome(outcome)
+
             try:
                 # provision one new worker
                 self._worker_provider.provision()
@@ -153,39 +161,40 @@ class MultiProcessInvoker(BaseInvoker):
 
             # issue task, the first worker to become idle will execute it
             task = Task(id=uuid.uuid4(),
-                        function=determine_package(self._f), args=fargs,
-                        param_spec=self._param_spec,
-                        return_spec=self._return_spec, kwargs=kwargs)
+                        #function={"module": determine_package(self._f), "name": self._f.__name__},
+                        function=determine_package(self._f),
+                        args=fargs, kwargs=kwargs)
             self._queue_task.put(task)
             self._count_task += 1
+
+            #time.sleep(1) #import pdb; pdb.set_trace() #TODO
 
             # wait for any worker to start working on the task
             # there is always only one task in the queue
             # so the task that gets started is the one we just issued
-            self._task_worker_db.wait_for_one_status()
-
-            # if at worker limit, wait for one result before returning
-            if self._worker_provider.worker_count is self._worker_count_max:
-                outcome = self._task_worker_db.wait_for_one_outcome()
-                self._handle_outcome(outcome)
+            self._status_db.wait_for_one_status()
 
             return TaskHandle(invoker=self, task_id=task.id)
 
     @stoppable_method
     @stopping_method
     def stop(self):
-        """Terminates all worker processes for immediate shutdown."""
+        """Terminates all worker processes for immediate shutdown.
+
+        Gets called by a timer in an individual thread."""
         with self._lock:
 
             count_workers_killed = self._worker_provider.worker_count
             self._worker_provider.release_all()
+            #for worker_id in self._status_db.workers:
+            #    self._worker_provider.release(worker_id)
             for _ in xrange(count_workers_killed - 1):
-                outcome = self._task_worker_db.wait_for_one_outcome()
+                outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
 
             while self._count_task + count_workers_killed > \
                     self._count_outcome + self._worker_count_max:
-                self._task_worker_db.wait_for_one_status()
+                self._status_db.wait_for_one_status()
 
             self._empty_outcome_queue()
             assert self._queue_outcome.empty()
@@ -204,19 +213,23 @@ class MultiProcessInvoker(BaseInvoker):
             self._manager.shutdown()
 
     def stop_task(self, task_id):
-        """Terminates a worker_handle given by id."""
-        #print(self._task_worker_db.count_running_tasks())
+        """
+        Terminates a worker_handle given by id.
+
+        Gets called by a timer in an individual thread.
+        """
+        #print(self._status_db.count_running_tasks())
         with self._lock:
             assert task_id is not None
-            worker_id = self._task_worker_db.get_worker_id(task_id=task_id)
-            self._worker_provider.release(worker_id=worker_id)
+
+            self._worker_provider.release(task_id=task_id)
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""
         with self._lock:
             while self._count_task > self._count_outcome:
                 # we are still expecting another outcome
-                outcome = self._task_worker_db.wait_for_one_outcome()
+                outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
 
     def get_subinvoker(self, resources):

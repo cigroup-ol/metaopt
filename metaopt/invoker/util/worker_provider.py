@@ -11,6 +11,7 @@ from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Release
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
+from metaopt.invoker.util.model import Task
 
 
 class WorkerProcessProvider(object):
@@ -24,14 +25,16 @@ class WorkerProcessProvider(object):
     _lock = Lock()
     _worker_processes = []
 
-    def __init__(self, queue_tasks, queue_results, queue_status):
+    def __init__(self, queue_tasks, queue_outcome, queue_status,
+                 status_db):
         with self._lock:
             # use the given queues
-            self._queue_outcome = queue_results
+            self._queue_outcome = queue_outcome
             self._queue_status = queue_status
             self._queue_task = queue_tasks
             # use up to all CPUs
             self._worker_count_max = determine_worker_count()
+            self._status_db = status_db
 
     def provision(self, number_of_workers=1):
         """
@@ -42,22 +45,23 @@ class WorkerProcessProvider(object):
                                      number_of_workers):
                 raise IndexError("Cannot provision so many worker processes.")
 
-            worker_handles = []
+            #worker_handles = []
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
                                            queue_tasks=self._queue_task,
-                                           queue_results=self._queue_outcome,
+                                           queue_outcome=self._queue_outcome,
                                            queue_status=self._queue_status)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
                 self._worker_processes.append(worker_process)
 
-                worker_handles.append(WorkerProcessHandle(worker_id))
+                #worker_handles.append(WorkerProcessHandle(worker_id))
 
-    def release(self, worker_id):
+    def release(self, task_id):
         """Releases a worker process given by id."""
         with self._lock:
+            worker_id = self._status_db.get_worker_id(task_id=task_id)
             try:
                 worker_process = self._get_worker_process_for_id(worker_id)
             except KeyError:
@@ -67,13 +71,21 @@ class WorkerProcessProvider(object):
 
     def _release(self, worker_process):
         """Releases the given worker process."""
+        import pdb; pdb.set_trace()
+
         # send kill signal and wait for the process to die
         assert worker_process.is_alive()
         worker_process.terminate()
         worker_process.join()
 
+        task = self._status_db.get_running_task(worker_process.worker_id)
+
         # send manually constructed error result
-        release = Release(worker_id=worker_process.worker_id)
+        release = Release(worker_id=worker_process.worker_id,
+                          task=Task(id=task.id,
+                                    function=task.function,
+                                    args=task.args,
+                                    kwargs=task.kwargs))
         self._queue_outcome.put(release)
 
         # bookkeeping
@@ -113,7 +125,7 @@ class WorkerHandle(Stoppable):
 
     @stoppable_method
     @stopping_method
-    def release_all(self):
+    def release(self):
         """Stops this worker."""
         raise NotImplementedError()  # Implementations need to overwrite
 
@@ -132,6 +144,6 @@ class WorkerProcessHandle(WorkerHandle):
 
     @stoppable_method
     @stopping_method
-    def release_all(self):
+    def release(self):
         """Stops this worker."""
         WorkerProcessProvider().release(self._worker_id)
