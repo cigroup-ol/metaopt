@@ -114,8 +114,8 @@ class MultiProcessInvoker(BaseInvoker):
             self._caller.on_result(result.value, result.args)
 
     def _handle_release(self, release):
-        self._caller.on_error(error="release", fargs=release.task.args,
-                              kwargs=release.task.kwargs)
+        self._caller.on_error(error=release.value, fargs=release.task.args,
+                              **release.task.kwargs)
 
     def _handle_outcome(self, outcome):
         """"""
@@ -222,9 +222,13 @@ class MultiProcessInvoker(BaseInvoker):
         #print(self._status_db.count_running_tasks())
         with self._lock:
             assert task_id is not None
-            worker_id = self._task_worker_db.get_worker_id(task_id=task_id)
-            self._worker_provider.release(worker_id=worker_id)
-            self._worker_provider.provision(number_of_workers=1)
+            self._worker_provider.release(task_id=task_id)
+            try:
+                self._worker_provider.provision(number_of_workers=1)
+            except IndexError:
+                # A call to invoke caused another worker to be provisioned already.
+                # That is OK.
+                pass
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""

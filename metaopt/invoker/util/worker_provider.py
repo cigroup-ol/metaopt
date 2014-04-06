@@ -84,10 +84,10 @@ class WorkerProcessProvider(object):
             # We still need to kill the worker process.
             # So construct an empty task to send in the Release message.
             task = Task(id=None, function=None,
-                        args=None, kwargs=None)
+                        args=None, kwargs={"None": "None"})
         # send manually constructed error result
         release = Release(worker_id=worker_process.worker_id,
-                          task=task)
+                          task=task, value="release")
         self._queue_outcome.put(release)
 
         # bookkeeping

@@ -12,7 +12,7 @@ Error = namedtuple("Error", ["worker_id", "task", "value"])
 Result = namedtuple("Result", ["worker_id", "task", "value"])
 
 # data structure for workers leaving the work force
-Release = namedtuple("Release", ["worker_id", "task"])
+Release = namedtuple("Release", ["worker_id", "task", "value"])
 
 # data structure for declaring the start of an execution by the workers
 Start = namedtuple("Start", ["worker_id", "task"])
