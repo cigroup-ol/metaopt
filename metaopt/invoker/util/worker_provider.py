@@ -8,10 +8,9 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Release
+from metaopt.invoker.util.model import Release, Task
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
-from metaopt.invoker.util.model import Task
 
 
 class WorkerProcessProvider(object):

@@ -9,12 +9,12 @@ from mock import Mock
 from nose.tools.nontrivial import raises
 
 from metaopt.core.args import ArgsCreator
-from metaopt.core.returnspec import ReturnValuesWrapper, ReturnSpec
+from metaopt.core.paramspec import ParamSpec
+from metaopt.core.returnspec import ReturnSpec, ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.tests.util.function.integer.failing import f as failing_f
 from metaopt.tests.util.function.integer.fast.implicit.f import f
 from metaopt.util.stoppable import StoppedException
-from metaopt.core.paramspec import ParamSpec
 
 # helps static code checkers identify attributes.
 f = f

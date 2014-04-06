@@ -8,8 +8,8 @@ from multiprocessing import Manager
 import nose
 from nose.tools.nontrivial import raises
 
-from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.invoker.util.status_db import StatusDB
+from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 
 
 class TestWorkerProcessProvider(object):

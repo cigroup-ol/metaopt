@@ -10,11 +10,11 @@ from threading import Lock
 from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Error, Result, Task, Release
+from metaopt.invoker.util.model import Error, Release, Result, Task
+from metaopt.invoker.util.status_db import StatusDB
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import stoppable_method, stopping_method
-from metaopt.invoker.util.status_db import StatusDB
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
