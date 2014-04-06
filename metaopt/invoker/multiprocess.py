@@ -210,6 +210,7 @@ class MultiProcessInvoker(BaseInvoker):
             assert task_id is not None
             worker_id = self._task_worker_db.get_worker_id(task_id=task_id)
             self._worker_provider.release(worker_id=worker_id)
+            self._worker_provider.provision(number_of_workers=1)
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""
