@@ -15,7 +15,6 @@ from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import stoppable_method, stopping_method
 from metaopt.invoker.util.status_db import StatusDB
-import time
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -53,6 +52,9 @@ class MultiProcessInvoker(BaseInvoker):
                                     status_db=self._status_db)
         self._worker_provider = wpp
         del wpp
+
+        self._task_worker_db = TaskWorkerDB(queue_outcome=self._queue_outcome,
+                                   queue_status=self._queue_status)
 
         # we can not prohibit others to use us in parallel, so
         # make this invoker thread-safe
@@ -161,13 +163,11 @@ class MultiProcessInvoker(BaseInvoker):
 
             # issue task, the first worker to become idle will execute it
             task = Task(id=uuid.uuid4(),
-                        #function={"module": determine_package(self._f), "name": self._f.__name__},
-                        function=determine_package(self._f),
-                        args=fargs, kwargs=kwargs)
+                        function=determine_package(self._f), args=fargs,
+                        param_spec=self._param_spec,
+                        return_spec=self._return_spec, kwargs=kwargs)
             self._queue_task.put(task)
             self._count_task += 1
-
-            #time.sleep(1) #import pdb; pdb.set_trace() #TODO
 
             # wait for any worker to start working on the task
             # there is always only one task in the queue
@@ -221,8 +221,9 @@ class MultiProcessInvoker(BaseInvoker):
         #print(self._status_db.count_running_tasks())
         with self._lock:
             assert task_id is not None
-
-            self._worker_provider.release(task_id=task_id)
+            worker_id = self._task_worker_db.get_worker_id(task_id=task_id)
+            self._worker_provider.release(worker_id=worker_id)
+            self._worker_provider.provision(number_of_workers=1)
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""
