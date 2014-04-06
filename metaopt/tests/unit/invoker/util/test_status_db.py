@@ -22,15 +22,15 @@ class TestStatusDB(object):
 
     def __init__(self):
         self._queue_outcome = None
-        self._queue_status = None
+        self._queue_start = None
         self._status_db = None
 
     def setup(self):
         """Nose executes this method before each test."""
         manager = Manager()
-        self._queue_status = manager.Queue()
+        self._queue_start = manager.Queue()
         self._queue_outcome = manager.Queue()
-        self._status_db = StatusDB(queue_status=self._queue_status,
+        self._status_db = StatusDB(queue_status=self._queue_start,
                                             queue_outcome=self._queue_outcome)
 
     def teardown(self):
@@ -47,8 +47,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, task=task)
 
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
     @raises(KeyError)
     def test_handle_status_start_duplicate_raises(self):
@@ -62,12 +62,12 @@ class TestStatusDB(object):
         start = Start(worker_id=worker_id, task=task)
 
         # once
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
         # once again
         # will raise error because issuing the same task twice makes no sense
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
     @raises(ValueError)
     def test_handle_status_start_result_duplicate_raises(self):
@@ -81,8 +81,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, task=task)
 
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
         # once
@@ -105,8 +105,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, task=task)
 
-        self._queue_status.put(start)
-        self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        self._status_db.wait_for_one_start()
 
     def test_handle_status_increments_active_tasks_upon_start_once(self):
         worker_id = uuid4()
@@ -118,8 +118,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, task=task)
 
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
         count_tasks = self._status_db.count_running_tasks()
 
         assert count_tasks == 1
@@ -139,12 +139,12 @@ class TestStatusDB(object):
         start1 = Start(worker_id=worker_id, task=task1)
 
         # once
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         # twice
-        self._queue_status.put(start1)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start1)
+        _ = self._status_db.wait_for_one_start()
 
         count_tasks = self._status_db.count_running_tasks()
         assert count_tasks == 2
@@ -177,8 +177,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, task=task)
 
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
         self._queue_outcome.put(result)
@@ -197,8 +197,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
 
         start = Start(worker_id=worker_id, task=task)
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
         self._queue_outcome.put(result)
@@ -224,16 +224,16 @@ class TestStatusDB(object):
         start1 = Start(worker_id=worker_id, task=task1)
 
         # once
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
         self._queue_outcome.put(result)
         _ = self._status_db.wait_for_one_outcome()
 
         # twice
-        self._queue_status.put(start1)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start1)
+        _ = self._status_db.wait_for_one_start()
 
         result1 = Result(worker_id=worker_id, task=task1, value=value)
         self._queue_outcome.put(result1)
@@ -254,8 +254,8 @@ class TestStatusDB(object):
         task = Task(id=task_id, function=function, args=args, kwargs=kwargs)
 
         start = Start(worker_id=worker_id, task=task)
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
         self._queue_outcome.put(result)
@@ -274,8 +274,8 @@ class TestStatusDB(object):
         value = None
 
         start = Start(worker_id=worker_id, task=task)
-        self._queue_status.put(start)
-        _ = self._status_db.wait_for_one_status()
+        self._queue_start.put(start)
+        _ = self._status_db.wait_for_one_start()
 
         result = Result(worker_id=worker_id, task=task, value=value)
 

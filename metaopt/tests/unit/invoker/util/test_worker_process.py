@@ -21,24 +21,24 @@ class TestWorkerProcess(object):
     """Tests for the worker process."""
 
     def __init__(self):
-        self.queue_outcome = None
-        self.queue_status = None
-        self.queue_tasks = None
+        self._queue_outcome = None
+        self._queue_start = None
+        self._queue_tasks = None
         self.worker_process = None
 
     def setup(self):
         """Nose will run this method before every test method."""
 
         manager = Manager()
-        self.queue_tasks = manager.Queue()  # ignore error, this works
-        self.queue_status = manager.Queue()  # ignore error, this works
-        self.queue_outcome = manager.Queue()  # ignore error, this works
+        self._queue_tasks = manager.Queue()  # ignore error, this works
+        self._queue_start = manager.Queue()  # ignore error, this works
+        self._queue_outcome = manager.Queue()  # ignore error, this works
 
         worker_id = uuid.uuid4()
         self.worker_process = WorkerProcess(worker_id=worker_id,
-                                            queue_outcome=self.queue_outcome,
-                                            queue_status=self.queue_status,
-                                            queue_tasks=self.queue_tasks)
+                                            queue_outcome=self._queue_outcome,
+                                            queue_status=self._queue_start,
+                                            queue_tasks=self._queue_tasks)
         self.worker_process.start()
 
     def teardown(self):
@@ -92,7 +92,7 @@ class TestWorkerProcess(object):
 
         function = determine_package(FUNCTIONS_FAST[0])
         task_id = uuid.uuid4()
-        self.queue_tasks.put(Task(id=task_id, function=function, args=None,
+        self._queue_tasks.put(Task(id=task_id, function=function, args=None,
                                   kwargs=None))
 
     def test_worker_process_start_task_status_repeated(self):
@@ -110,10 +110,10 @@ class TestWorkerProcess(object):
             function = determine_package(function)
             task_id = uuid.uuid4()
             task = Task(id=task_id, function=function, args=None, kwargs=None)
-            self.queue_tasks.put(task)
+            self._queue_tasks.put(task)
 
             # check status
-            status = self.queue_status.get()
+            status = self._queue_start.get()
             assert status
             assert isinstance(status, Start)
             assert status.worker_id == self.worker_process.worker_id
@@ -134,17 +134,17 @@ class TestWorkerProcess(object):
             function = determine_package(function)
             task_id = uuid.uuid4()
             task = Task(id=task_id, function=function, args=None, kwargs=None)
-            self.queue_tasks.put(task)
+            self._queue_tasks.put(task)
 
             # check status
-            status = self.queue_status.get()
+            status = self._queue_start.get()
             assert status
             assert isinstance(status, Start)
             assert status.worker_id == self.worker_process.worker_id
             assert status.task.id == task_id
 
             # check outcome
-            outcome = self.queue_outcome.get()
+            outcome = self._queue_outcome.get()
             assert outcome
 
             # TODO avoid Errors

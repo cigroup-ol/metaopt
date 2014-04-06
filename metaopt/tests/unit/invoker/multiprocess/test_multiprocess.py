@@ -9,11 +9,12 @@ from mock import Mock
 from nose.tools.nontrivial import raises
 
 from metaopt.core.args import ArgsCreator
-from metaopt.core.returnspec import ReturnValuesWrapper
+from metaopt.core.returnspec import ReturnValuesWrapper, ReturnSpec
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.tests.util.function.integer.failing import f as failing_f
 from metaopt.tests.util.function.integer.fast.implicit.f import f
 from metaopt.util.stoppable import StoppedException
+from metaopt.core.paramspec import ParamSpec
 
 # helps static code checkers identify attributes.
 f = f
@@ -50,7 +51,7 @@ class TestMultiProcessInvoker(object):
 
         assert self._invoker._lock is not None
         assert self._invoker._queue_outcome is not None
-        assert self._invoker._queue_status is not None
+        assert self._invoker._queue_start is not None
         assert self._invoker._queue_task is not None
         assert self._invoker._worker_count_max >= 1
 
@@ -69,17 +70,16 @@ class TestMultiProcessInvoker(object):
         self._invoker.invoke()
 
     def test_invoke_calls_on_error(self):
-        self._invoker.f = failing_f
-
-        self._invoker.param_spec = failing_f.param_spec
-        self._invoker.return_spec = None
-
         caller = Mock()
         caller.on_result = Mock()
         caller.on_error = Mock()
 
-        args = ArgsCreator(failing_f.param_spec).args()
+        self._invoker.f = failing_f
+        self._invoker.param_spec = f.param_spec
+        self._invoker.return_spec = ReturnSpec(f)
 
+        # use
+        args = ArgsCreator(failing_f.param_spec).args()
         self._invoker.invoke(caller, args)
         self._invoker.wait()
         self._invoker.stop()
@@ -89,9 +89,6 @@ class TestMultiProcessInvoker(object):
 
     def test_invoke_calls_on_result(self, resources=1, invokes=1):
         self._invoker.f = f
-
-        self._invoker.param_spec = f.param_spec
-        self._invoker.return_spec = None
 
         caller = Mock()
         caller.on_result = Mock()
@@ -113,11 +110,6 @@ class TestMultiProcessInvoker(object):
     def test_invokes_call_on_result(self):
         self._invoker.f = f
 
-        self._invoker.param_spec = f.param_spec
-
-        # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
-        self._invoker.return_spec = None
-
         caller = Mock()
         caller.on_result = Mock()
         caller.on_error = Mock()
@@ -136,10 +128,7 @@ class TestMultiProcessInvoker(object):
 
     def test_invoke_passes_kwargs_result(self):
         self._invoker.f = f
-        self._invoker.param_spec = f.param_spec
 
-        # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
-        self._invoker.return_spec = None
         # data = dict()
         data = None  # None is a singleton, so we an identical back
         args = ArgsCreator(f.param_spec).args()
@@ -162,4 +151,12 @@ class TestMultiProcessInvoker(object):
         self.test_invoke_calls_on_result()
 
 if __name__ == '__main__':
+#     tmpi = TestMultiProcessInvoker()
+#     tmpi.setup()
+#     tmpi.test_invoke_calls_on_error()
+#     tmpi.teardown()
+#     
+#     tmpi.setup()
+#     tmpi.test_invoke_calls_on_result()
+#     tmpi.teardown()
     nose.runmodule()

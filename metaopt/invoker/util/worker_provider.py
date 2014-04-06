@@ -30,7 +30,7 @@ class WorkerProcessProvider(object):
         with self._lock:
             # use the given queues
             self._queue_outcome = queue_outcome
-            self._queue_status = queue_status
+            self._queue_start = queue_status
             self._queue_task = queue_tasks
             # use up to all CPUs
             self._worker_count_max = determine_worker_count()
@@ -51,7 +51,7 @@ class WorkerProcessProvider(object):
                 worker_process = WorkerProcess(worker_id=worker_id,
                                            queue_tasks=self._queue_task,
                                            queue_outcome=self._queue_outcome,
-                                           queue_status=self._queue_status)
+                                           queue_status=self._queue_start)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
                 self._worker_processes.append(worker_process)
@@ -71,21 +71,23 @@ class WorkerProcessProvider(object):
 
     def _release(self, worker_process):
         """Releases the given worker process."""
-        import pdb; pdb.set_trace()
 
         # send kill signal and wait for the process to die
         assert worker_process.is_alive()
         worker_process.terminate()
         worker_process.join()
 
-        task = self._status_db.get_running_task(worker_process.worker_id)
-
+        try:
+            task = self._status_db.get_running_task(worker_process.worker_id)
+        except KeyError:
+            # No task was started for this worker process, yet.
+            # We still need to kill the worker process.
+            # So construct an empty task to send in the Release message.
+            task = Task(id=None, function=None,
+                        args=None, kwargs=None)
         # send manually constructed error result
         release = Release(worker_id=worker_process.worker_id,
-                          task=Task(id=task.id,
-                                    function=task.function,
-                                    args=task.args,
-                                    kwargs=task.kwargs))
+                          task=task)
         self._queue_outcome.put(release)
 
         # bookkeeping

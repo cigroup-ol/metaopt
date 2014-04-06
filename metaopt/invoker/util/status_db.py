@@ -10,7 +10,7 @@ class StatusDB(object):
     """Database that keeps track of worker task relations."""
 
     def __init__(self, queue_status, queue_outcome):
-        self._queue_status = queue_status
+        self._queue_start = queue_status
         self._queue_outcome = queue_outcome
 
         self._task_status_dict = dict()
@@ -54,33 +54,6 @@ class StatusDB(object):
 
         self._task_status_dict[start.task.id] = start
 
-    def _handle_finish(self, finish):
-        """Handles a finish received from the worker via the status queue."""
-
-#         try:
-#             if self._task_status_dict[finish.task.id] == None:
-#                 # we got the same start repeatedly
-#                 # that does not make any sense
-#                 raise ValueError("Tasks may not be issued repeatedly." +
-#                              " Make sure the IDs are unique.")
-#         except KeyError:
-#             # we could not find the task id in the database
-#             # that is OK, moving on
-#             pass
-
-        # remove done task
-#         if self._task_status_dict[finish.task.id] == finish.worker_id:
-#             # always true
-#             self._task_status_dict[finish.task.id] = None
-#         else:
-#             # wont happen
-#             # Another start has occurred in the mean time.
-#             # The dictionary entry is already up to date.
-#             # Do nothing.
-#             pass
-
-        self._task_status_dict[finish.task.id] = finish
-
     def _handle_release(self, release):
         for (task_id, status) in self._task_status_dict.iteritems():
             if release.worker_id == status.worker_id:
@@ -91,44 +64,43 @@ class StatusDB(object):
         Blocks till one Error or one Result was gotten from the outcome queue
         and processed.
         """
-        while True:
-            outcome = self._queue_outcome.get()
+        outcome = self._queue_outcome.get()
 
-            # handle successful results
-            if isinstance(outcome, Result):
-                self._handle_result(result=outcome)
-                return outcome
+        # handle successful results
+        if isinstance(outcome, Result):
+            self._handle_result(result=outcome)
+            return outcome
 
-            # handle error results
-            elif isinstance(outcome, Error):
-                self._handle_error(error=outcome)
-                return outcome
+        # handle error results
+        if isinstance(outcome, Error):
+            self._handle_error(error=outcome)
+            return outcome
 
-            # handle release results
-            elif isinstance(outcome, Release):
-                self._handle_release(release=outcome)
-                return outcome
+        # handle release results
+        if isinstance(outcome, Release):
+            self._handle_release(release=outcome)
+            return outcome
 
-            raise TypeError("%s objects are not allowed in the result queue" %
-                                type(outcome))
+        raise TypeError("%s objects are not allowed in the result queue" %
+                        type(outcome))
 
-    def wait_for_one_status(self):
+    def wait_for_one_start(self):
         """
-        Blocks till one status was gotten from the status queue and processed.
+        Blocks till one start was gotten from the start queue and processed.
         """
-        status = self._queue_status.get()
+        start = self._queue_start.get()
 
-        if not isinstance(status, Start):
-            raise TypeError("%s objects are not allowed in the status queue" %
-                            type(status))
+        if not isinstance(start, Start):
+            raise TypeError("%s objects are not allowed in the start queue" %
+                            type(start))
 
-        if status.task.id in self._task_status_dict.keys():
-            raise KeyError("Got duplicate start for task %s" % status.task.id +
+        if start.task.id in self._task_status_dict.keys():
+            raise KeyError("Got duplicate start for task %s" % start.task.id +
                            "Make sure IDs are unique.")
 
-        print(status)
-        self._handle_start(start=status)
-        self._queue_status.task_done()
+        print(start)
+        self._handle_start(start=start)
+        self._queue_start.task_done()
         return
 
     def count_running_tasks(self):
@@ -148,22 +120,26 @@ class StatusDB(object):
         return status.worker_id
 
     def get_running_task(self, worker_id):
-        statuses = []
-        import pdb; pdb.set_trace()
-        while len(statuses) != 1:
+        #assert False
+        #import pdb; pdb.set_trace()
+        #while True:
             #print("statuses:", len(statuses)) # TODO
             #raise
 
-            self.wait_for_one_outcome()
+        #self.wait_for_one_start()
+        task_found = False
+        for status in self._task_status_dict.values():
+            if not status.worker_id == worker_id:
+                continue
+            if not isinstance(status, Start):
+                continue
+            task_found = True
+            break
 
-            statuses = []
-            for status in self._task_status_dict.values():
-                if not status.worker_id == worker_id:
-                    continue
-                if  isinstance(status, (Result, Error, Release)):
-                    continue
-                statuses.append(status)
+        if not task_found:
+            raise KeyError("No status for the worker with id: %s" % worker_id)
 
-        assert len(statuses) == 1
-        assert statuses[0].task is not None
-        return statuses[0].task
+#         if len(statuses) == 1:
+#             break
+
+        return status.task

@@ -48,7 +48,7 @@ class WorkerProcess(Process, Worker):
                  queue_tasks):
         self._worker_id = worker_id
         self._queue_outcome = queue_outcome
-        self._queue_status = queue_status
+        self._queue_start = queue_status
         self._queue_task = queue_tasks
         super(WorkerProcess, self).__init__()
 
@@ -82,7 +82,7 @@ class WorkerProcess(Process, Worker):
         """Executes the given task."""
 
         # announce start of work
-        self._queue_status.put(Start(worker_id=self._worker_id,
+        self._queue_start.put(Start(worker_id=self._worker_id,
                                      task=Task(id=task.id,
                                                function=task.function,
                                                args=task.args,
@@ -91,9 +91,13 @@ class WorkerProcess(Process, Worker):
         # make the actual call
         function = import_function(function=task.function)
         try:
-            value = call(f=function,
-                         fargs=task.args, param_spec=function.param_spec,
-                         return_spec=function.return_spec)
+            try:
+                value = call(f=function,
+                             fargs=task.args, param_spec=function.param_spec,
+                             return_spec=function.return_spec)
+            except AttributeError:
+                value = call(f=function,
+                             fargs=task.args, param_spec=function.param_spec)
             self._queue_outcome.put(Result(worker_id=self._worker_id,
                                            task=Task(id=task.id,
                                                      function=task.function,
