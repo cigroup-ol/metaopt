@@ -117,13 +117,12 @@ class TaskWorkerDB(object):
         """
 
         status = self._queue_status.get()
-        if isinstance(status, Start):
-            self._handle_start(start=status)
-            self._queue_status.task_done()
-            return
-
-        raise TypeError("%s objects are not allowed in the status queue" %
+        if not isinstance(status, Start):
+            raise TypeError("%s objects are not allowed in the status queue" %
                         type(status))
+
+        self._handle_start(start=status)
+        self._queue_status.task_done()
 
     def count_running_tasks(self):
         """Returns the number of tasks currently executed by workers."""
