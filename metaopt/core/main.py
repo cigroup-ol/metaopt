@@ -34,7 +34,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         invoker.return_spec = ReturnSpec(f)
 
     if timeout is not None:
-        Timer(timeout, invoker.stop).start()
+        timer = Timer(timeout, invoker.stop)
+        timer.start()
 
     result = optimizer.optimize(invoker=invoker, function=f,
                                 param_spec=invoker.param_spec,
@@ -44,6 +45,12 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         invoker.stop()
     except StoppedException:
         pass
+
+    if timeout is not None:
+        timer.cancel()
+
+    if result is None:
+        return None
 
     return tuple(result)
 
