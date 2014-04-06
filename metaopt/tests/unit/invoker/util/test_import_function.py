@@ -33,6 +33,16 @@ class TestImportFunction(object):
         import_function(determine_package(f))
         assert f() == "My name is f."
 
+    def _test_import_local_class(self): # TODO
+        """A function can be imported by the package of a class next to it."""
+        module = determine_package(LocalClass)
+        name = f.__name__
+
+        function = {"module": module, "name": name}
+
+        import_function(function)
+        assert f() == "My name is f."
+
     def test_import_local_class(self):
         """A function can be imported by the package of a class next to it."""
         import_function(determine_package(LocalClass))
