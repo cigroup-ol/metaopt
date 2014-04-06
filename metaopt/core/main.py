@@ -34,7 +34,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         invoker.return_spec = ReturnSpec(f)
 
     if timeout is not None:
-        Timer(timeout, invoker.stop).start()
+        timer = Timer(timeout, invoker.stop)
+        timer.start()
 
     result = optimizer.optimize(invoker, param_spec=invoker.param_spec,
         return_spec=invoker.return_spec)
@@ -43,6 +44,12 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         invoker.stop()
     except StoppedException:
         pass
+
+    if timeout is not None:
+        timer.cancel()
+
+    if result is None:
+        return None
 
     return tuple(result)
 
@@ -59,7 +66,7 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
 
     """
 
-    invoker = PluggableInvoker(MultiProcessInvoker(), plugins=plugins)
+    invoker = PluggableInvoker(MultiProcessInvoker(resources=3), plugins=plugins)
 
     return custom_optimize(f, invoker, param_spec, return_spec, timeout,
                            optimizer)
