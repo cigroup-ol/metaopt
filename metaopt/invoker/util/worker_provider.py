@@ -11,6 +11,7 @@ from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Release, Task
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
+from metaopt.plugins.util import Invocation
 
 
 class WorkerProcessProvider(object):
@@ -60,7 +61,13 @@ class WorkerProcessProvider(object):
     def release(self, task_id):
         """Releases a worker process given by id."""
         with self._lock:
-            worker_id = self._status_db.get_worker_id(task_id=task_id)
+            try:
+                worker_id = self._status_db.get_worker_id(task_id=task_id)
+            except KeyError:
+                # All workers were killed before one could start the task.
+                # The worker for the given task (None) is already terminated.
+                # So we have nothing to do here.
+                return
             try:
                 worker_process = self._get_worker_process_for_id(worker_id)
             except KeyError:
@@ -79,11 +86,24 @@ class WorkerProcessProvider(object):
         try:
             task = self._status_db.get_running_task(worker_process.worker_id)
         except KeyError:
+            task_id = None
+            task_function = None
+            task_args = (0, 1)
+            task_kwargs = {"a": "0"}
+
+            # The pluggable invoker expects an invocation object.
+            # So create an invocation object manually from the task.
+            # TODO The pluggable invoker should handle NoneType invocations.
+            invocation = Invocation()
+            invocation.fargs = task_args
+            invocation.kwargs = task_kwargs
+            invocation.function = task_function
+
             # No task was started for this worker process, yet.
             # We still need to kill the worker process.
             # So construct an empty task to send in the Release message.
-            task = Task(id=None, function=None,
-                        args=None, kwargs={"None": "None"})
+            task = Task(id=task_id, function=task_function,
+                        args=task_args, kwargs={"invocation": invocation})
         # send manually constructed error result
         release = Release(worker_id=worker_process.worker_id,
                           task=task, value="release")

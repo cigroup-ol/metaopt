@@ -115,7 +115,12 @@ class StatusDB(object):
         return count
 
     def get_worker_id(self, task_id):
-        """Returns the worker id for a given task id."""
+        """
+        Returns the worker id for a given task id.
+
+        Raises KeyError if there was no worker for that task id. That means,
+        all workers were killed before one could start working on the task.
+        """
         status = self._task_status_dict[task_id]
         return status.worker_id
 

@@ -15,6 +15,7 @@ from metaopt.invoker.util.status_db import StatusDB
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import stoppable_method, stopping_method
+from metaopt.plugins.util import Invocation
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -114,8 +115,12 @@ class MultiProcessInvoker(BaseInvoker):
             self._caller.on_result(result.value, result.args)
 
     def _handle_release(self, release):
-        self._caller.on_error(error=release.value, fargs=release.task.args,
-                              **release.task.kwargs)
+        try:
+            self._caller.on_error(error=release.value, fargs=release.task.args,
+                                  **release.task.kwargs)
+        except TypeError:
+            self._caller.on_error(error=release.value, fargs=release.task.args,
+                                  **release.task.kwargs)
 
     def _handle_outcome(self, outcome):
         """"""
@@ -148,34 +153,39 @@ class MultiProcessInvoker(BaseInvoker):
         Can be called asynchronously, but will block if the call can not be
         executed immediately, especially when using multiple processes/threads.
         """
-        with self._lock:
-            self._caller = caller
+        self._caller = caller
 
-            # if at worker limit, wait for one result before returning
+        # if at worker limit, wait for one result before returning
 #            if self._worker_provider.worker_count >= self._worker_count_max:
 #                outcome = self._status_db.wait_for_one_outcome()
 #                self._handle_outcome(outcome)
 
-            try:
-                # provision one new worker
+        try:
+            # provision one new worker
+            with self._lock:
                 self._worker_provider.provision()
-            except IndexError:
-                # no worker could be provisioned
-                pass
+        except IndexError:
+            # no worker could be provisioned
+            pass
 
-            # issue task, the first worker to become idle will execute it
-            task = Task(id=uuid.uuid4(),
-                        function=determine_package(self._f), args=fargs,
-                        kwargs=kwargs)
-            self._queue_task.put(task)
-            self._count_task += 1
+        # issue task, the first worker to become idle will execute it
+        task = Task(id=uuid.uuid4(),
+                    function=determine_package(self._f), args=fargs,
+                    kwargs=kwargs)
+        self._queue_task.put(task)
+        self._count_task += 1
 
-            # wait for any worker to start working on the task
-            # there is always only one task in the queue
-            # so the task that gets started is the one we just issued
+        # wait for any worker to start working on the task
+        # there is always only one task in the queue
+        # so the task that gets started is the one we just issued
+        try:
             self._status_db.wait_for_one_start()
+        except EOFError:
+            # All workers were stopped before this task was started.
+            # That is OK, just return a regular task handle anyway.
+            pass
 
-            return TaskHandle(invoker=self, task_id=task.id)
+        return TaskHandle(invoker=self, task_id=task.id)
 
     @stoppable_method
     @stopping_method
@@ -184,18 +194,16 @@ class MultiProcessInvoker(BaseInvoker):
 
         Gets called by a timer in an individual thread."""
         with self._lock:
-
+            # terminate all workers and handle their release outcomes
             count_workers_killed = self._worker_provider.worker_count
             self._worker_provider.release_all()
-            #for worker_id in self._status_db.workers:
-            #    self._worker_provider.release(worker_id)
             for _ in xrange(count_workers_killed - 1):
                 outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome)
 
-            while self._count_task + count_workers_killed > \
-                    self._count_outcome + self._worker_count_max:
-                self._status_db.wait_for_one_start()
+#             while self._count_task + count_workers_killed > \
+#                     self._count_outcome + self._worker_count_max:
+#                 self._status_db.wait_for_one_start()
 
             self._empty_outcome_queue()
             assert self._queue_outcome.empty()
@@ -204,11 +212,19 @@ class MultiProcessInvoker(BaseInvoker):
             assert self._queue_start.empty()
             self._queue_start.join()
 
+            # *One* task may got issued after all workers were terminated.
+            # So try to get this last task.
+            if not self._queue_task.empty():
+                task = self._queue_task.get()
             assert self._queue_task.empty()
-            try:
-                self._queue_task.task_done()  # one more for good measure o.0
-            except Exception as e:
-                print("e:", e)
+
+            # issue task done for all unchecked messages of the task queue
+            while True:
+                try:
+                    self._queue_task.task_done()
+                except Exception as e:
+                    # no more task done allowed, we are done here
+                    break
             self._queue_task.join()
 
             self._manager.shutdown()
@@ -235,7 +251,14 @@ class MultiProcessInvoker(BaseInvoker):
         with self._lock:
             while self._count_task > self._count_outcome:
                 # we are still expecting another outcome
-                outcome = self._status_db.wait_for_one_outcome()
+                try:
+                    outcome = self._status_db.wait_for_one_outcome()
+                except IOError:
+                    # This invoker was stopped via self.stop()
+                    # All workers were killed and the queue closed.
+                    # We will never get the expected outcome.
+                    # That is OK, just do nothing.
+                    return
                 self._handle_outcome(outcome)
 
     def get_subinvoker(self, resources):
