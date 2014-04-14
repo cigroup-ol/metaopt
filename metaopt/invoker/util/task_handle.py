@@ -10,9 +10,9 @@ class CallHandle(Stoppable):
     """A means to stopped a task."""
 
     def __init__(self, invoker, call_id):
+        super(CallHandle, self).__init__()
         self._invoker = invoker
         self._call_id = call_id
-        super(CallHandle, self).__init__()
 
     @stoppable_method
     @stopping_method

@@ -44,13 +44,12 @@ class Worker(BaseWorker):
 class WorkerProcess(Process, Worker):
     """Calls functions with arguments, both given by a queue."""
 
-    def __init__(self, worker_id, queue_outcome, queue_start,
-                 queue_tasks):
+    def __init__(self, worker_id, queue_outcome, queue_start, queue_tasks):
+        super(WorkerProcess, self).__init__()
         self._worker_id = worker_id
         self._queue_outcome = queue_outcome
         self._queue_start = queue_start
         self._queue_task = queue_tasks
-        super(WorkerProcess, self).__init__()
 
     @property
     def worker_id(self):

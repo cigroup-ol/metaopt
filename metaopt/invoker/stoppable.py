@@ -14,8 +14,8 @@ class StoppableInvoker(BaseInvoker):
     """Invoker that can be stopped."""
 
     def __init__(self):
-        self._f = None
         super(StoppableInvoker, self).__init__()
+        self._f = None
 
     @property
     def f(self):

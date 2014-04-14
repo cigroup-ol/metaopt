@@ -36,6 +36,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         :param mu: Number of parent arguments
         :param lamb: Number of offspring arguments
         """
+        super(SAESOptimizer, self).__init__()
         self._invoker = None
 
         # TODO: Make sure these value are sane
@@ -52,8 +53,6 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
 
         self.aborted = False
         self.generation = 1
-
-        super(SAESOptimizer, self).__init__()
 
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
         self.invoker = invoker
