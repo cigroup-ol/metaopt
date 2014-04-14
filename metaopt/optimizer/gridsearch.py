@@ -26,7 +26,8 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
 
         return self.best[0]
 
-    def on_result(self, fitness, fargs, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
+        fitness = value
         _, best_fitness = self.best
 
         if best_fitness is None or fitness < best_fitness:

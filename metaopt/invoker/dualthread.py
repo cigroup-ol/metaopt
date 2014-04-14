@@ -8,7 +8,7 @@ from threading import Lock, Thread
 
 from metaopt.core.call import call
 from metaopt.invoker.base import BaseInvoker
-from metaopt.invoker.util.task_handle import TaskHandle
+from metaopt.invoker.util.task_handle import CallHandle
 from metaopt.util.stoppable import stoppable_method, stopping_method
 
 
@@ -23,12 +23,13 @@ class DualThreadInvoker(BaseInvoker):
         self._return_spec = None
 
         self.thread = None
-        self.task = None
+        self.call_handle = None
         self.lock = Lock()
 
         self.current_task = None
         self.cancelled = False
         self.aborted = False
+        self._caller = None  # gets set on invoke
 
     @property
     def f(self):
@@ -63,18 +64,20 @@ class DualThreadInvoker(BaseInvoker):
         self.wait()
 
         with self.lock:
-            self.task = TaskHandle(invoker=self, task_id=uuid.uuid4())
+            call_id = uuid.uuid4()
+            self.call_handle = CallHandle(invoker=self, call_id=call_id)
 
-        self.thread = Thread(target=self.target, args=(self.f, caller, fargs),
+        self.thread = Thread(target=self.target, args=(caller, self.f, fargs),
                              kwargs=kwargs)
         self.thread.start()
 
-        return self.task
+        return self.call_handle
 
-    def target(self, f, caller, fargs, **kwargs):
+    def target(self, caller, f, fargs, **kwargs):
         """Target function/method for a thread to execute."""
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
+        self._caller = caller
         try:
             value = call(f, fargs, self.param_spec, self.return_spec)
         except Exception as e:
@@ -112,7 +115,7 @@ class DualThreadInvoker(BaseInvoker):
     def stop_task(self, task):
         """Stops the given task."""
         with self.lock:
-            if self.task is not task:
+            if self.call_handle is not task:
                 return
 
         with self.lock:

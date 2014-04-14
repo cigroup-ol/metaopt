@@ -31,11 +31,13 @@ class SingleProcessInvoker(BaseInvoker):
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):
         """Calls back to self._caller.on_result() for call(f, fargs)."""
+        self._caller = caller
+        del caller
         try:
             result = call(self.f, fargs)
-            caller.on_result(result, fargs, **kwargs)
+            self._caller.on_result(result, fargs, **kwargs)
         except Exception as error:
-            caller.on_error(error, fargs, **kwargs)
+            self._caller.on_error(error, fargs, **kwargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""

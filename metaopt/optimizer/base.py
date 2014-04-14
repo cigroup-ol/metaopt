@@ -26,7 +26,7 @@ class BaseCaller(object):
         pass
 
     @abstractmethod
-    def on_result(self, result, fargs, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
         """
         Called when :meth:`metaopt.invoker.base.BaseInvoker.invoke` was
         successful.
@@ -37,7 +37,7 @@ class BaseCaller(object):
         pass
 
     @abstractmethod
-    def on_error(self, error, fargs, **kwargs):
+    def on_error(self, value, fargs, **kwargs):
         """
         Called when :meth:`metaopt.invoker.base.BaseInvoker.invoke` was *not*
         successful.

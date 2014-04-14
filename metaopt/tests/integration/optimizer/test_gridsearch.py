@@ -7,6 +7,8 @@ from metaopt.core import param
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.dualthread import DualThreadInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
+from mock import Mock
+from metaopt.core.returnspec import ReturnValuesWrapper
 
 
 @param.int("a", interval=(1, 2))
@@ -14,20 +16,19 @@ from metaopt.optimizer.gridsearch import GridSearchOptimizer
 def f(a, b):
     return -(a + b)
 
-ARGS = list(ArgsCreator(f.param_spec).product())[-1]
-
 
 def test_optimize_returns_result():
-    invoker = DualThreadInvoker()
+    optimizer = GridSearchOptimizer()
 
+    invoker = DualThreadInvoker()
     invoker.f = f
     invoker.param_spec = f.param_spec
     invoker.return_spec = None
 
-    optimizer = GridSearchOptimizer()
-    optimizer.invoker = invoker
+    ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
-    args = optimizer.optimize(invoker, f.param_spec)
+    args = optimizer.optimize(invoker=invoker, param_spec=f.param_spec)
+
     for arg0, arg1 in zip(args, ARGS):
         assert arg0 == arg1
 

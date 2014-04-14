@@ -27,6 +27,8 @@ class StoppableInvoker(BaseInvoker):
 
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):
+        self._caller = caller
+        del caller
         call(self.f, fargs, **kwargs)
 
     def wait(self):

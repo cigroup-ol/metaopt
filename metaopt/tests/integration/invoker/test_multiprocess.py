@@ -3,14 +3,13 @@ Integration tests for the multiprocess invoker.
 """
 from __future__ import division, print_function, with_statement
 
-from time import sleep
-
 import nose
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator
-from metaopt.core.returnspec import ReturnValuesWrapper
+from metaopt.core.returnspec import ReturnValuesWrapper, ReturnSpec
 from metaopt.invoker.multiprocess import MultiProcessInvoker
+from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 from metaopt.tests.util.function.integer.fast. \
     implicit import FUNCTIONS_FAST_IMPLICIT
 
@@ -22,17 +21,41 @@ def test_invoke_calls_on_result():
         caller = Mock()
         caller.on_result = Mock()
         caller.on_error = Mock()
+
         invoker = MultiProcessInvoker(resources=1)
         invoker.f = function
+        invoker.param_spec = function.param_spec
+        invoker.return_spec = ReturnSpec(function)
 
-        invoker.invoke(caller, ArgsCreator(function.param_spec).args())
+        args = ArgsCreator(function.param_spec).args()
+        invoker.invoke(caller=caller, fargs=args)
         invoker.wait()
 
         assert not caller.on_error.called
         caller.on_result.assert_called_once_with(
-            ReturnValuesWrapper(None, 0),
-            ArgsCreator(function.param_spec).args(),
+            value=ReturnValuesWrapper(None, 0),
+            fargs=ArgsCreator(function.param_spec).args(),
         )
+        del invoker
+
+
+def test_optimizer_on_result():
+    optimizer = SingleInvokeOptimizer()
+    optimizer.on_result = Mock()
+    optimizer.on_error = Mock()
+
+    invoker = MultiProcessInvoker()
+
+    for function in FUNCTIONS_FAST_IMPLICIT[:1]:
+        invoker.f = function
+    optimizer.optimize(invoker, function.param_spec, None)
+
+    args = ArgsCreator(function.param_spec).args()
+
+    assert not optimizer.on_error.called
+    optimizer.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                           fargs=args)
+
 
 # THIS TEST DOESN'T WORK
 # def test_invoke_given_extra_args_calls_on_result_with_them():

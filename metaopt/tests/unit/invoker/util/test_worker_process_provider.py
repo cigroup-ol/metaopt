@@ -20,21 +20,22 @@ class TestWorkerProcessProvider(object):
     def __init__(self):
         self._queue_outcome = None
         self._queue_start = None
-        self._queue_tasks = None
+        self._queue_task = None
         self.provider = None
 
     def setup(self):
         """Nose will run this method before every test method."""
         manager = Manager()
-        self._queue_tasks = manager.Queue()  # ignore error, this works
+        self._queue_task = manager.Queue()  # ignore error, this works
         self._queue_start = manager.Queue()  # ignore error, this works
         self._queue_outcome = manager.Queue()  # ignore error, this works
 
-        self._status_db = StatusDB(queue_outcome=self._queue_outcome,
-                                   queue_status=self._queue_start)
-        self.provider = WorkerProcessProvider(queue_tasks=self._queue_tasks,
+        self._status_db = StatusDB(queue_task=self._queue_task,
+                                   queue_start=self._queue_start,
+                                   queue_outcome=self._queue_outcome)
+        self.provider = WorkerProcessProvider(queue_tasks=self._queue_task,
                                               queue_outcome=self._queue_outcome,
-                                              queue_status=self._queue_start,
+                                              queue_start=self._queue_start,
                                               status_db=self._status_db)
 
     def teardown(self):
@@ -117,9 +118,9 @@ class TestWorkerProcessProvider(object):
 
     def test_worker_process_provider_is_borg(self):
         """There can only be one instance of a worker process provider."""
-        my_provider = WorkerProcessProvider(queue_tasks=self._queue_tasks,
+        my_provider = WorkerProcessProvider(queue_tasks=self._queue_task,
                                             queue_outcome=self._queue_outcome,
-                                            queue_status=self._queue_start,
+                                            queue_start=self._queue_start,
                                             status_db=self._status_db)
 
         number_of_workers = 1

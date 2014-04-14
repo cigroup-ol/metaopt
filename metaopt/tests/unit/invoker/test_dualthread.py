@@ -18,28 +18,30 @@ failing_f = failing_f  # helps static code checkers
 
 
 def test_invoke_calls_on_result():
+    caller = Mock()
+    caller.on_result = Mock()
+    caller.on_error = Mock()
+
     invoker = DualThreadInvoker()
     invoker.f = f
 
     invoker.param_spec = f.param_spec
-
-    # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
     invoker.return_spec = None
-
-    caller = Mock()
-
-    caller.on_result = Mock()
-    caller.on_error = Mock()
+    # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
 
     args = ArgsCreator(f.param_spec).args()
 
-    invoker.invoke(caller, args)
+    invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
 
 
 def test_invoke_multiple_times_calls_on_result():
+    caller = Mock()
+    caller.on_result = Mock()
+    caller.on_error = Mock()
+
     invoker = DualThreadInvoker()
     invoker.f = f
 
@@ -48,22 +50,17 @@ def test_invoke_multiple_times_calls_on_result():
     # invoker.return_spec = ReturnSpec(f)  # TODO: Fix problems with equality
     invoker.return_spec = None
 
-    caller = Mock()
-
-    caller.on_result = Mock()
-    caller.on_error = Mock()
-
     args = ArgsCreator(f.param_spec).args()
 
-    invoker.invoke(caller, args)
+    invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
 
-    invoker.invoke(caller, args)
+    invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
 
 
 def test_invoke_different_invokers_calls_on_result():
@@ -92,8 +89,8 @@ def test_invoke_given_extra_args_calls_on_result_with_them():
     invoker.invoke(caller, args, data=data)
     invoker.wait()
 
-    caller.on_result.assert_called_with(ReturnValuesWrapper(None, 0), args,
-        data=data)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                        fargs=args, data=data)
 
 
 def test_invoke_calls_on_error():

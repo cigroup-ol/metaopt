@@ -30,7 +30,7 @@ from metaopt.tests.util.function.integer.slow.explicit.f import f as f_max_slow
 from metaopt.tests.util.function.integer.slow.explicit.g import f as f_min_slow
 
 
-class TestCustomOptimize(object):
+class TestMain(object):
 
     def __init__(self):
         self._invokers = None
@@ -38,16 +38,16 @@ class TestCustomOptimize(object):
 
     def setup(self):
         self._invokers = [
-            DualThreadInvoker(),
-            MultiProcessInvoker(),
-            #StoppableInvoker(),  # TODO fix NotImplementedError
+            DualThreadInvoker,
+            MultiProcessInvoker,
+            #StoppableInvoker,  # TODO fix NotImplementedError
             #PluggableInvoker(DualThreadInvoker()), # TODO fix faulty result
             #PluggableInvoker(MultiProcessInvoker()),  # TODO fix on_error kwargs
             #SingleProcessInvoker(),  # TODO fix NotImplementedError
             #SimpleMultiprocessInvoker(), # TODO fix hanging
             ]
         self._optimizers = [
-            GridSearchOptimizer(),
+            GridSearchOptimizer,
             #SAESOptimizer(),  # TODO fix me TypeError
             #RechenbergOptimizer(),  # TODO fix TypeError None is not iterable
             ]
@@ -59,8 +59,11 @@ class TestCustomOptimize(object):
     def _wrap(self, target):
         for invoker, optimizer in product(self._invokers, self._optimizers):
             print("next invoker: %s, next optimizer: %s" % \
-                  (invoker.__class__.__name__, optimizer.__class__.__name__))
+                  (invoker.__name__, optimizer.__name__))
+            optimizer = optimizer()
+            invoker = invoker()
             target(invoker=invoker, optimizer=optimizer)
+            del invoker, optimizer
 
     def test_custom_optimize_maximize(self):
         self._wrap(self._test_custom_optimize_maximize)
@@ -86,7 +89,8 @@ class TestCustomOptimize(object):
     def _test_integer_failing(self, invoker, optimizer):
         for function in FUNCTIONS_FAILING:
             print("next function: %s" % function)
-            self._test_function_failing(function, invoker=invoker, optimizer=optimizer)
+            self._test_function_failing(function, invoker=invoker,
+                                        optimizer=optimizer)
 
     def _test_integer_fast_explicit(self, invoker, optimizer):
         for function in FUNCTIONS_FAST_EXPLICIT:

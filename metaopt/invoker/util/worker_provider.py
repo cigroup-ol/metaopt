@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Release, Task
+from metaopt.invoker.util.model import Release, Call
 from metaopt.invoker.util.worker import WorkerProcess
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 from metaopt.plugins.util import Invocation
@@ -25,15 +25,19 @@ class WorkerProcessProvider(object):
     _lock = Lock()
     _worker_processes = []
 
-    def __init__(self, queue_tasks, queue_outcome, queue_status,
-                 status_db):
+    def __init__(self, queue_tasks, queue_outcome, queue_start,
+                 status_db, resources=None):
+        """
+        :param:    resources    number of (possibly virtual) CPUs to use,
+                                defaults to all
+        """
         with self._lock:
             # use the given queues
             self._queue_outcome = queue_outcome
-            self._queue_start = queue_status
+            self._queue_start = queue_start
             self._queue_task = queue_tasks
             # use up to all CPUs
-            self._worker_count_max = determine_worker_count()
+            self._worker_count_max = determine_worker_count(resources)
             self._status_db = status_db
 
     def provision(self, number_of_workers=1):
@@ -41,28 +45,25 @@ class WorkerProcessProvider(object):
         Provisions a given number worker processes for future use.
         """
         with self._lock:
-            if self._worker_count_max < (len(self._worker_processes) +
-                                     number_of_workers):
+            if self._worker_count_max < \
+                    (len(self._worker_processes) + number_of_workers):
                 raise IndexError("Cannot provision so many worker processes.")
 
-            #worker_handles = []
             for _ in range(number_of_workers):
                 worker_id = uuid.uuid4()
                 worker_process = WorkerProcess(worker_id=worker_id,
                                            queue_tasks=self._queue_task,
                                            queue_outcome=self._queue_outcome,
-                                           queue_status=self._queue_start)
+                                           queue_start=self._queue_start)
                 worker_process.daemon = True  # workers don't spawn processes
                 worker_process.start()
                 self._worker_processes.append(worker_process)
 
-                #worker_handles.append(WorkerProcessHandle(worker_id))
-
-    def release(self, task_id):
+    def release(self, call_id):
         """Releases a worker process given by id."""
         with self._lock:
             try:
-                worker_id = self._status_db.get_worker_id(task_id=task_id)
+                worker_id = self._status_db.get_worker_id(call_id=call_id)
             except KeyError:
                 # All workers were killed before one could start the task.
                 # The worker for the given task (None) is already terminated.
@@ -82,35 +83,23 @@ class WorkerProcessProvider(object):
         assert worker_process.is_alive()
         worker_process.terminate()
         worker_process.join()
+        self._worker_processes.remove(worker_process)
 
         try:
-            task = self._status_db.get_running_task(worker_process.worker_id)
+            call = self._status_db.get_running_call(worker_process.worker_id)
         except KeyError:
-            task_id = None
-            task_function = None
-            task_args = (0, 1)
-            task_kwargs = {"a": "0"}
+            # The terminated worker was idle
+            try:
+                call = self._status_db.pop_idle_call()
+            except ValueError:
+                # No task was started for this worker process.
+                #call = None
+                call = Call(id=None, function=None, args=None, kwargs={'fitness': None})
 
-            # The pluggable invoker expects an invocation object.
-            # So create an invocation object manually from the task.
-            # TODO The pluggable invoker should handle NoneType invocations.
-            invocation = Invocation()
-            invocation.fargs = task_args
-            invocation.kwargs = task_kwargs
-            invocation.function = task_function
-
-            # No task was started for this worker process, yet.
-            # We still need to kill the worker process.
-            # So construct an empty task to send in the Release message.
-            task = Task(id=task_id, function=task_function,
-                        args=task_args, kwargs={"invocation": invocation})
-        # send manually constructed error result
+        # send manually constructed release outcome
         release = Release(worker_id=worker_process.worker_id,
-                          task=task, value="release")
+                          call=call, value="release")
         self._queue_outcome.put(release)
-
-        # bookkeeping
-        self._worker_processes.remove(worker_process)
 
     def release_all(self):
         """
@@ -119,6 +108,7 @@ class WorkerProcessProvider(object):
         with self._lock:
             # copy worker processes so that _release does not modify
             worker_processes = self._worker_processes[:]
+            assert len(self._worker_processes) >= 1
             for worker_process in worker_processes:
                 self._release(worker_process)
 

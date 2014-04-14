@@ -135,9 +135,9 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, result, fargs, individual, **kwargs):
+    def on_result(self, value, fargs, individual, **kwargs):
         # _, fitness = result
-        fitness = result
+        fitness = value
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
 
