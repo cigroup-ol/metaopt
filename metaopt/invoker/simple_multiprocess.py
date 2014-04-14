@@ -54,7 +54,10 @@ class SimpleMultiprocessInvoker(BaseInvoker):
         self._return_spec = value
 
     @stoppable_method
-    def invoke(self, caller, fargs, *vargs, **kwargs):
+    def invoke(self, caller, fargs, **kwargs):
+        self._caller = caller
+        del caller
+
         if self.running_worker_count == self.maximum_worker_count:
             result = self.result_queue.get()
 
@@ -67,7 +70,7 @@ class SimpleMultiprocessInvoker(BaseInvoker):
 
                 return
 
-        self.start_worker(caller, fargs, kwargs)
+        self.start_worker(self._caller, fargs, kwargs)
 
     def start_worker(self, caller, fargs, kwargs):
         worker_name = uuid4()

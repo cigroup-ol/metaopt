@@ -88,9 +88,10 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
 
         return invocation.current_task
 
-    def on_result(self, result, fargs, invocation, **kwargs):
+    def on_result(self, value, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_result method."""
         # TODO an invocation=None default makes no sense if the following fails
+        result = value
         invocation.current_result = result
 
         for plugin in self.plugins:
@@ -101,7 +102,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
             self.invoke(self._caller, invocation.fargs, invocation,
                         **invocation.kwargs)
         else:
-            self._caller.on_result(result, fargs, **invocation.kwargs)
+            self._caller.on_result(value=result, fargs=fargs, **invocation.kwargs)
 
     def on_error(self, error, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_error method."""
