@@ -141,15 +141,14 @@ class TestMain(object):
         # so just check that there is any result
         assert result is not None
 
-    @raises(TypeError)
     def _test_function_failing(self, function, invoker, optimizer):
         # it is assumed that there is a best individual
         # so we expect a TypeError when optimizing an always-failing function
-        _ = custom_optimize(f=function, invoker=invoker,
+        result = custom_optimize(f=function, invoker=invoker,
                             optimizer=optimizer)
 
         # will not happen
-        assert False
+        assert result is None
 
 if __name__ == '__main__':
     nose.runmodule()
