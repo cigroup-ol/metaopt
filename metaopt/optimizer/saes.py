@@ -122,7 +122,8 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             args, _ = individual
 
             try:
-                self.invoker.invoke(self, args, individual=individual)
+                self.invoker.invoke(caller=self, fargs=args,
+                                    individual=individual)
             except StoppedException:
                 self.aborted = True
                 break

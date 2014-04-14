@@ -59,10 +59,11 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
 
     """
 
-    invoker = PluggableInvoker(MultiProcessInvoker(), plugins=plugins)
+    invoker = PluggableInvoker(invoker=MultiProcessInvoker(), plugins=plugins)
 
-    return custom_optimize(f, invoker, param_spec, return_spec, timeout,
-                           optimizer)
+    return custom_optimize(f, invoker=invoker, param_spec=param_spec,
+                           return_spec=return_spec, timeout=timeout,
+                           optimizer=optimizer)
 
 
 class NoParamSpecError(Exception):

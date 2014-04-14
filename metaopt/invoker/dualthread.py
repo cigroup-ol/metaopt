@@ -87,9 +87,9 @@ class DualThreadInvoker(BaseInvoker):
             self.cancelled = False
 
         if not cancelled:
-            caller.on_result(value, fargs, **kwargs)
+            self._caller.on_result(value=value, fargs=fargs, **kwargs)
         else:
-            caller.on_error(error, fargs, **kwargs)
+            self._caller.on_error(error=error, fargs=fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:

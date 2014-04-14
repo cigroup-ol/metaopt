@@ -74,7 +74,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         try:
-            invocation.current_task = self.invoker.invoke(self, fargs,
+            invocation.current_task = self.invoker.invoke(caller=self, fargs=fargs,
                 invocation=invocation)
         except StoppedException:
             return invocation.current_task
@@ -110,7 +110,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         for plugin in self.plugins:
             plugin.on_error(invocation)
 
-        self._caller.on_error(error, fargs, **invocation.kwargs)
+        self._caller.on_error(error=error, fargs=fargs, **invocation.kwargs)
 
         invocation.error = None
 
