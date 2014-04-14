@@ -46,6 +46,7 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.tau1 = tau1
 
         self.param_spec = None
+        self._invoker = None
 
         self.population = []
         self.scored_population = []
@@ -55,7 +56,9 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.generation = 1
 
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
-        self.invoker = invoker
+        del return_spec
+        del minimize
+        self._invoker = invoker
         self.param_spec = param_spec
 
         self.initalize_population()
@@ -121,13 +124,13 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
             args, _ = individual
 
             try:
-                self.invoker.invoke(caller=self, fargs=args,
+                self._invoker.invoke(caller=self, fargs=args,
                                     individual=individual)
             except StoppedException:
                 self.aborted = True
                 break
 
-        self.invoker.wait()
+        self._invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])
@@ -135,12 +138,14 @@ class SAESOptimizer(BaseOptimizer, BaseCaller):
         self.population = map(lambda s: s[0], new_scored_population)
 
     def on_result(self, value, fargs, individual, **kwargs):
+        del fargs
+        del kwargs
         # _, fitness = result
         fitness = value
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
 
-        best_individual, best_fitness = self.best_scored_indivual
+        _, best_fitness = self.best_scored_indivual
 
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual

@@ -34,7 +34,8 @@ def test_invoke_calls_on_result():
     invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                        fargs=args)
 
 
 def test_invoke_multiple_times_calls_on_result():
@@ -55,12 +56,14 @@ def test_invoke_multiple_times_calls_on_result():
     invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                        fargs=args)
 
     invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
-    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0), fargs=args)
+    caller.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                        fargs=args)
 
 
 def test_invoke_different_invokers_calls_on_result():

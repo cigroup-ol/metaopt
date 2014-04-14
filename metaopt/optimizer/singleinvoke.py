@@ -17,7 +17,8 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         super(SingleInvokeOptimizer, self).__init__()
         self._result = None
 
-    def optimize(self, invoker, param_spec, return_spec):
+    def optimize(self, invoker, function, param_spec, return_spec):
+        del function  # TODO implement me
         del return_spec  # TODO implement me
         args = ArgsCreator(param_spec).args()
 
@@ -34,4 +35,6 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         pass
 
     def on_result(self, result, fargs, **kwargs):
+        del fargs
+        del kwargs
         self._result = result

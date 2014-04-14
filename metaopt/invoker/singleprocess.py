@@ -13,19 +13,16 @@ class SingleProcessInvoker(BaseInvoker):
 
     def __init__(self):
         super(SingleProcessInvoker, self).__init__()
+        self._f = None
+        self._caller = None
 
     @property
     def f(self):
         return self._f
 
     @f.setter
-    def f(self, f):
-        self._f = f
-
-    def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amount of resources of self."""
-        del resources
-        raise NotImplementedError()
+    def f(self, function):
+        self._f = function
 
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):

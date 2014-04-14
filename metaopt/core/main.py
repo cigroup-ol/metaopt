@@ -36,8 +36,9 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
     if timeout is not None:
         Timer(timeout, invoker.stop).start()
 
-    result = optimizer.optimize(invoker, param_spec=invoker.param_spec,
-        return_spec=invoker.return_spec)
+    result = optimizer.optimize(invoker=invoker, function=f,
+                                param_spec=invoker.param_spec,
+                                return_spec=invoker.return_spec)
 
     try:
         invoker.stop()

@@ -40,16 +40,16 @@ class TestMain(object):
         self._invokers = [
             DualThreadInvoker,
             MultiProcessInvoker,
-            #StoppableInvoker,  # TODO fix NotImplementedError
-            #PluggableInvoker(DualThreadInvoker()), # TODO fix faulty result
-            #PluggableInvoker(MultiProcessInvoker()),  # TODO fix on_error kwargs
-            #SingleProcessInvoker(),  # TODO fix NotImplementedError
-            #SimpleMultiprocessInvoker(), # TODO fix hanging
+            #StoppableInvoker,  # TODO NotImplementedError
+            #PluggableInvoker(DualThreadInvoker()), # TODO faulty result
+            #PluggableInvoker(MultiProcessInvoker()),  # TODO on_error kwargs
+            #SingleProcessInvoker(),  # TODO NotImplementedError
+            #SimpleMultiprocessInvoker(), # TODO hanging
             ]
         self._optimizers = [
             GridSearchOptimizer,
-            #SAESOptimizer(),  # TODO fix me TypeError
-            #RechenbergOptimizer(),  # TODO fix TypeError None is not iterable
+            #SAESOptimizer(),  # TODO TypeError
+            #RechenbergOptimizer(),  # TODO TypeError None is not iterable
             ]
 
     def teardown(self):

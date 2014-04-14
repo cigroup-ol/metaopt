@@ -3,11 +3,9 @@ TODO document me
 """
 from __future__ import division, print_function, with_statement
 
-from mock import Mock
 
 from metaopt.core import param
 from metaopt.core.args import ArgsCreator
-from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.dualthread import DualThreadInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
@@ -28,7 +26,8 @@ def test_optimize_returns_result():
 
     ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
-    args = optimizer.optimize(invoker=invoker, param_spec=f.param_spec)
+    args = optimizer.optimize(invoker=invoker, function=f,
+                              param_spec=f.param_spec)
 
     for arg0, arg1 in zip(args, ARGS):
         assert arg0 == arg1

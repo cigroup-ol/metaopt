@@ -10,7 +10,7 @@ from uuid import uuid4
 import nose
 from nose.tools.nontrivial import raises
 
-from metaopt.invoker.util.model import Call, Result, Start, Task
+from metaopt.invoker.util.model import Call, Result, Start
 from metaopt.invoker.util.status_db import StatusDB
 from metaopt.tests.util.function.integer.fast.explicit.f import f
 
@@ -213,18 +213,15 @@ class TestStatusDB(object):
 
     def test_handle_status_decrements_active_tasks_upon_result_twice(self):
         worker_id = uuid4()
-        call_id = uuid4()
         function = f
         value = None
         args = None
         kwargs = None
 
-        call = Call(id=call_id, function=function, args=args, kwargs=kwargs)
-        task = Task(call=call)
+        call = Call(id=uuid4(), function=function, args=args, kwargs=kwargs)
         start = Start(worker_id=worker_id, call=call)
 
-        call_id = uuid4()
-        call1 = Call(id=call_id, function=function, args=args, kwargs=kwargs)
+        call1 = Call(id=uuid4(), function=function, args=args, kwargs=kwargs)
         start1 = Start(worker_id=worker_id, call=call1)
 
         # once

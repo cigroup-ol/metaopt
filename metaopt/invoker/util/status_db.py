@@ -29,17 +29,6 @@ class StatusDB(Stoppable):
 
     def _handle_start(self, start):
         """Handles a start received from the worker via the status queue."""
-#         try:
-#             if self._call_status_dict[start.call.id] == start:
-#                 # we got the same start repeatedly
-#                 # that does not make any sense
-#                 raise ValueError("Tasks may not be issued repeatedly." +
-#                              " Make sure the IDs are unique.")
-#         except KeyError:
-#             # we could not find the task id in the database
-#             # that is OK, moving on
-#             pass
-
         if not isinstance(start, Start):
             raise TypeError("%s objects are not allowed in the start queue" %
                             type(start))
@@ -54,7 +43,7 @@ class StatusDB(Stoppable):
     def _handle_result(self, result):
         """Handles a result received from the worker via the result queue."""
 
-        if not result.call.id in self._call_status_dict.keys():
+        if result.call.id not in self._call_status_dict.keys():
             raise KeyError("No task to be stopped for ID %s" % result.call.id)
 
         status = self._call_status_dict[result.call.id]
@@ -62,11 +51,7 @@ class StatusDB(Stoppable):
             raise ValueError("Got duplicate result for call with id %s." %
                              result.call.id +
                              "Make sure the task ids are unique.")
-        #if self._call_status_dict[result.call.id] == None:
-            # we got multiple results for the same task
-            # that does not make any sense
-        #    raise ValueError("There may be only one result per task." +
-        #                     " Make sure the IDs are unique.")
+
         self._call_status_dict[result.call.id] = result
 
     def _handle_error(self, error):
@@ -86,17 +71,14 @@ class StatusDB(Stoppable):
 
     def _handle_outcome(self, outcome):
         """"""
-        # handle successful results
         if isinstance(outcome, Result):
             self._handle_result(result=outcome)
             return outcome
 
-        # handle error results
         if isinstance(outcome, Error):
             self._handle_error(error=outcome)
             return outcome
 
-        # handle release results
         if isinstance(outcome, Release):
             self._handle_release(release=outcome)
             return outcome
@@ -137,7 +119,7 @@ class StatusDB(Stoppable):
     def count_running_tasks(self):
         """Returns the number of tasks currently executed by workers."""
         # alternate formulation
-        #while len([f for f in self._call_status_dict.values() if t]) > 0:
+        # while len([f for f in self._call_status_dict.values() if t]) > 0:
 
         count = 0
         for status in self._call_status_dict.values():
@@ -225,7 +207,7 @@ class StatusDB(Stoppable):
         while True:
             try:
                 self._queue_task.task_done()
-            except Exception as e:
+            except Exception:
                 # no more task done allowed, we are done here
                 break
         self._queue_task.join()
@@ -235,13 +217,13 @@ class StatusDB(Stoppable):
         self._queue_start.join()
 
         # We may have recorded tasks in this database that were never started.
-        # This may happen when all workers get stopped before one starts the task.
+        # This happens when all workers get stopped before one starts the task.
         # So send back a release to the caller for all tasks.
         for task in self._call_status_dict.values():
             if not isinstance(task, Task):
                 continue
             release = Release(worker_id=None, call=task.call, value='release')
-            #self._queue_outcome.put(release)
+            # self._queue_outcome.put(release) TODO
 
         while not self._queue_outcome.empty():
             try:

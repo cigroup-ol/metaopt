@@ -36,24 +36,24 @@ class DualThreadInvoker(BaseInvoker):
         return self._f
 
     @f.setter
-    def f(self, value):
-        self._f = value
+    def f(self, function):
+        self._f = function
 
     @property
     def param_spec(self):
         return self._param_spec
 
     @param_spec.setter
-    def param_spec(self, value):
-        self._param_spec = value
+    def param_spec(self, param_spec):
+        self._param_spec = param_spec
 
     @property
     def return_spec(self):
         return self._return_spec
 
     @return_spec.setter
-    def return_spec(self, value):
-        self._return_spec = value
+    def return_spec(self, return_spec):
+        self._return_spec = return_spec
 
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):
@@ -80,10 +80,10 @@ class DualThreadInvoker(BaseInvoker):
         self._caller = caller
         try:
             value = call(f, fargs, self.param_spec, self.return_spec)
-        except Exception as e:
+        except Exception as exception:
             with self.lock:
                 self.cancelled = True
-            error = e
+            error = exception
 
         with self.lock:
             cancelled = self.cancelled

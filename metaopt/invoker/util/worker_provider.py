@@ -10,7 +10,6 @@ from multiprocessing.synchronize import Lock
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Call, Release
 from metaopt.invoker.util.worker import WorkerProcess
-from metaopt.plugins.util import Invocation
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
@@ -94,7 +93,8 @@ class WorkerProcessProvider(object):
             except ValueError:
                 # No task was started for this worker process.
                 #call = None
-                call = Call(id=None, function=None, args=None, kwargs={'fitness': None})
+                call = Call(id=None, function=None, args=None,
+                            kwargs={'fitness': None})
 
         # send manually constructed release outcome
         release = Release(worker_id=worker_process.worker_id,
@@ -115,7 +115,8 @@ class WorkerProcessProvider(object):
         for worker_process in self._worker_processes:
             if worker_process.worker_id == worker_id:
                 return worker_process
-        raise KeyError("There is no worker with the given worker id: %s" % worker_id)
+        raise KeyError("There is no worker with the given worker id: %s" %
+                       worker_id)
 
     @property
     def worker_count(self):

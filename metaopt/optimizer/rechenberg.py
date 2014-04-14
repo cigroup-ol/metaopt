@@ -32,7 +32,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         :param mu: Number of parent arguments
         :param lamb: Number of offspring arguments
         """
-        self.invoker = None
+        self._invoker = None
 
         # TODO: Make sure these value are sane
         self.mu = mu
@@ -53,7 +53,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         self.aborted = False
 
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
-        self.invoker = invoker
+        self._invoker = invoker
         self.param_spec = param_spec
 
         params = param_spec.params.values()
@@ -103,12 +103,12 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
 
         for individual in self.population:
             try:
-                self.invoker.invoke(self, individual)
+                self._invoker.invoke(self, individual)
             except StoppedException:
                 self.aborted = True
                 break
 
-        self.invoker.wait()
+        self._invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])

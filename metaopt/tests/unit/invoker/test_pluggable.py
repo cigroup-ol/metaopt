@@ -10,15 +10,12 @@ from nose.tools import eq_
 
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.pluggable import PluggableInvoker
-from metaopt.plugins.util import Invocation
 from metaopt.tests.util.function.integer.fast.implicit.f import f
 
 f = f  # helps static code checkers identify attributes.
 
 
 def test_before_first_invoke_sets_up_plugins():
-    stub_caller = Mock()
-
     mock_plugin = Mock()
     mock_plugin.setup = Mock()
 
@@ -65,8 +62,6 @@ def test_before_invoke_calls_plugins():
 
 
 def test_on_invoke_calls_plugins():
-    stub_caller = Mock()
-
     mock_plugin = Mock()
     mock_plugin.on_invoke = Mock(spec=[])
 
@@ -103,6 +98,7 @@ def test_on_result_calls_plugins():
     invoker.caller = stub_caller
 
     def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_result(0, fargs, **kwargs)
         return None, False
 
@@ -130,6 +126,7 @@ def test_on_error_calls_plugins():
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
 
     def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_error(None, fargs, **kwargs)
         return None, False
 
@@ -154,6 +151,7 @@ def test_invocation_can_be_retried():
     invoker = PluggableInvoker(mock_invoker, plugins=plugins)
 
     def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_result(0, fargs, **kwargs)
         return None, False
 

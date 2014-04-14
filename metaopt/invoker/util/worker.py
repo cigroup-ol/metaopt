@@ -12,7 +12,7 @@ from tempfile import TemporaryFile
 
 from metaopt.core.call import call
 from metaopt.invoker.util.import_function import import_function
-from metaopt.invoker.util.model import Call, Error, Result, Start
+from metaopt.invoker.util.model import Error, Result, Start
 
 
 class BaseWorker(object):
@@ -57,7 +57,7 @@ class WorkerProcess(Process, Worker):
         return self._worker_id
 
     def run(self):
-        """Makes this worker execute all tasks incoming from the call_handle queue."""
+        """Makes this worker execute all tasks incoming from the call queue."""
 
         while True:
             try:
@@ -67,7 +67,7 @@ class WorkerProcess(Process, Worker):
                 # call_handle queue seems closed, so terminate
                 break
             try:
-                # get call_handle from the queue, execute call_handle and report back
+                # get call_handle from the queue, execute call and report back
                 task = self._queue_task.get()
                 self._queue_start.put(Start(worker_id=self._worker_id,
                                             call=task.call))
