@@ -110,12 +110,7 @@ class MultiProcessInvoker(BaseInvoker):
         assert isinstance(result, Result)
         assert result.value
         assert result.call.args
-        assert result.call.kwargs
 
-#         assert (**result.call.kwargs)
-        #print((**result.call.kwargs,),)
-        self._caller.on_result(value=result.value, fargs=result.call.args,
-                 **result.call.kwargs)
         try:
             self._caller.on_result(value=result.value, fargs=result.call.args,
                              **result.call.kwargs)
@@ -233,6 +228,6 @@ class MultiProcessInvoker(BaseInvoker):
                 outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome=outcome)
 
-            self._status_db.teardown()
+            self._status_db.stop()
 
             self._manager.shutdown()

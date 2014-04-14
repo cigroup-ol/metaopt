@@ -31,11 +31,12 @@ def test_invoke_calls_on_result():
         invoker.invoke(caller=caller, fargs=args)
         invoker.wait()
 
-        assert not caller.on_error.called
         caller.on_result.assert_called_once_with(
             value=ReturnValuesWrapper(None, 0),
             fargs=ArgsCreator(function.param_spec).args(),
         )
+        assert not caller.on_error.called
+
         del invoker
 
 

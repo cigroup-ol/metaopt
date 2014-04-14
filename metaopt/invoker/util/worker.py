@@ -33,8 +33,8 @@ class Worker(BaseWorker):
     """Minimal worker implementation."""
 
     def __init__(self):
-        self._worker_id = None
         super(Worker, self).__init__()
+        self._worker_id = None
 
     @property
     def worker_id(self):

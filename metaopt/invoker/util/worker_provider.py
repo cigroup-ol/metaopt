@@ -107,9 +107,7 @@ class WorkerProcessProvider(object):
         """
         with self._lock:
             # copy worker processes so that _release does not modify
-            worker_processes = self._worker_processes[:]
-            assert len(self._worker_processes) >= 1
-            for worker_process in worker_processes:
+            for worker_process in self._worker_processes[:]:
                 self._release(worker_process)
 
     def _get_worker_process_for_id(self, worker_id):

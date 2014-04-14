@@ -273,8 +273,7 @@ class TestStatusDB(object):
         function = f
         args = None
         kwargs = None
-        call = Call(id=call_id, function=function, args=args,
-                              kwargs=kwargs)
+        call = Call(id=call_id, function=function, args=args, kwargs=kwargs)
 
         value = None
 

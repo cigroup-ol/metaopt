@@ -4,13 +4,14 @@ Database that keeps track of worker task relations.
 from __future__ import division, print_function, with_statement
 
 from metaopt.invoker.util.model import Error, Release, Result, Start, Task
-from metaopt.util.stoppable import stopping_method, Stoppable
+from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class StatusDB(Stoppable):
     """Database that keeps track of worker task relations."""
 
     def __init__(self, queue_start, queue_task, queue_outcome):
+        super(StatusDB, self).__init__()
         self._queue_start = queue_start
         self._queue_task = queue_task
         self._queue_outcome = queue_outcome
@@ -184,11 +185,11 @@ class StatusDB(Stoppable):
         raise ValueError("No call idling at the moment.")
 
     def get_idle_call(self, worker_id):
-        idle_call = None
         for status in self._call_status_dict.values():
             if not status.worker_id == worker_id:
                 return status  # TODO
 
+    @stoppable_method
     def issue_task(self, task):
         """"""
         self._queue_task.put(task)
@@ -216,7 +217,7 @@ class StatusDB(Stoppable):
             self._handle_outcome(outcome)
 
     @stopping_method
-    def teardown(self):
+    def stop(self):
         """"""
         self._empty_queue_task()
         assert self._queue_task.empty()
