@@ -12,7 +12,7 @@ from tempfile import TemporaryFile
 
 from metaopt.core.call import call
 from metaopt.invoker.util.import_function import import_function
-from metaopt.invoker.util.model import Error, Result, Start, Call
+from metaopt.invoker.util.model import Call, Error, Result, Start
 
 
 class BaseWorker(object):

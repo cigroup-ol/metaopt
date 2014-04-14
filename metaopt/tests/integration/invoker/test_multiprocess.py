@@ -7,7 +7,7 @@ import nose
 from mock import Mock
 
 from metaopt.core.args import ArgsCreator
-from metaopt.core.returnspec import ReturnValuesWrapper, ReturnSpec
+from metaopt.core.returnspec import ReturnSpec, ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 from metaopt.tests.util.function.integer.fast. \

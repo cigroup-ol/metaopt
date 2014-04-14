@@ -12,7 +12,7 @@ import nose
 from nose.tools.nontrivial import raises
 
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.invoker.util.model import Error, Result, Start, Call, Call, Task
+from metaopt.invoker.util.model import Call, Error, Result, Start, Task
 from metaopt.invoker.util.worker import Worker, WorkerProcess
 from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
 

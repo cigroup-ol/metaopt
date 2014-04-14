@@ -10,7 +10,7 @@ from uuid import uuid4
 import nose
 from nose.tools.nontrivial import raises
 
-from metaopt.invoker.util.model import Result, Start, Call, Call, Task
+from metaopt.invoker.util.model import Call, Result, Start, Task
 from metaopt.invoker.util.status_db import StatusDB
 from metaopt.tests.util.function.integer.fast.explicit.f import f
 

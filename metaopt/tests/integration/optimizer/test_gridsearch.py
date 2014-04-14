@@ -3,12 +3,13 @@ TODO document me
 """
 from __future__ import division, print_function, with_statement
 
+from mock import Mock
+
 from metaopt.core import param
 from metaopt.core.args import ArgsCreator
+from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.dualthread import DualThreadInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
-from mock import Mock
-from metaopt.core.returnspec import ReturnValuesWrapper
 
 
 @param.int("a", interval=(1, 2))
