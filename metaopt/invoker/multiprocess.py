@@ -14,7 +14,8 @@ from metaopt.invoker.util.model import Error, Release, Result, Task
 from metaopt.invoker.util.status_db import StatusDB
 from metaopt.invoker.util.task_handle import TaskHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
-from metaopt.util.stoppable import stoppable_method, stopping_method
+from metaopt.util.stoppable import stoppable_method, stopping_method,\
+    StoppedException
 from metaopt.plugins.util import Invocation
 
 try:
@@ -185,7 +186,11 @@ class MultiProcessInvoker(BaseInvoker):
             # That is OK, just return a regular task handle anyway.
             pass
 
-        return TaskHandle(invoker=self, task_id=task.id)
+        with self._lock:
+            if self._stopped:
+                raise StoppedException()
+
+            return TaskHandle(invoker=self, task_id=task.id)
 
     @stoppable_method
     @stopping_method
