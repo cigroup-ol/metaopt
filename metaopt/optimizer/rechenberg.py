@@ -136,7 +136,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
 
-        best_individual, best_fitness = self.best_scored_indivual
+        _, best_fitness = self.best_scored_indivual
 
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
