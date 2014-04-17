@@ -26,8 +26,8 @@ def test_optimize_returns_result():
     invoker = SingleProcessInvoker()
     invoker.f = f
 
-    optimizer.optimize(invoker=invoker, function=f,
-                       param_spec=f.param_spec, return_spec=None)
+    optimizer.optimize(invoker=invoker, param_spec=f.param_spec,
+                       return_spec=None)
 
     args = ArgsCreator(f.param_spec).args()
 

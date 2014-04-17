@@ -26,8 +26,7 @@ def test_optimize_returns_result():
 
     ARGS = list(ArgsCreator(f.param_spec).product())[-1]
 
-    args = optimizer.optimize(invoker=invoker, function=f,
-                              param_spec=f.param_spec)
+    args = optimizer.optimize(invoker=invoker, param_spec=f.param_spec)
 
     for arg0, arg1 in zip(args, ARGS):
         assert arg0 == arg1

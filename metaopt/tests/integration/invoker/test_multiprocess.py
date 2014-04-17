@@ -49,8 +49,8 @@ def test_optimizer_on_result():
 
     for function in FUNCTIONS_FAST_IMPLICIT[:1]:
         invoker.f = function
-    optimizer.optimize(invoker=invoker, function=function,
-                       param_spec=function.param_spec, return_spec=None)
+    optimizer.optimize(invoker=invoker, param_spec=function.param_spec,
+                       return_spec=None)
 
     args = ArgsCreator(function.param_spec).args()
 
