@@ -12,5 +12,5 @@ from metaopt.core.returns import maximize
 @maximize("y")
 @param.int("x", interval=[0, 10])
 def f(x):
-    sleep(1)
+    sleep(0.1)
     return x
