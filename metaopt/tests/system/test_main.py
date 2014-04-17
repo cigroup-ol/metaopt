@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 from itertools import product
 
 import nose
-from nose.tools import eq_, raises
+from nose.tools import eq_
 
 from metaopt.core.main import custom_optimize
 from metaopt.invoker.dualthread import DualThreadInvoker
@@ -57,6 +57,9 @@ class TestMain(object):
         del self._optimizers
 
     def _wrap(self, target):
+        """
+        Calls the given target method with all invokers and optimizers.
+        """
         for invoker, optimizer in product(self._invokers, self._optimizers):
             print("next invoker: %s, next optimizer: %s" % \
                   (invoker.__name__, optimizer.__name__))
