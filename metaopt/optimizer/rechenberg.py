@@ -116,7 +116,7 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
 
     def change_mutation_strength(self):
         if self.previous_best_fitness is None:
-            return  # We can't estimate success probablity yet
+            return  # We can't estimate success probability yet
 
         successes = len(filter(lambda scored: scored[1] <
                                self.previous_best_fitness,
