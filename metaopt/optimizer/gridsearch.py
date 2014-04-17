@@ -13,8 +13,7 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
         super(GridSearchOptimizer, self).__init__()
         self.best = (None, None)
 
-    def optimize(self, invoker, function, param_spec, return_spec=None):
-        del function  # TODO
+    def optimize(self, invoker, param_spec, return_spec=None):
         del return_spec  # TODO
         args_creator = ArgsCreator(param_spec)
 

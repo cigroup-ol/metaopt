@@ -17,8 +17,7 @@ class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
         super(SingleInvokeOptimizer, self).__init__()
         self._result = None
 
-    def optimize(self, invoker, function, param_spec, return_spec):
-        del function  # TODO implement me
+    def optimize(self, invoker, param_spec, return_spec):
         del return_spec  # TODO implement me
         args = ArgsCreator(param_spec).args()
 

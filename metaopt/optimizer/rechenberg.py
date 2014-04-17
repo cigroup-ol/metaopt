@@ -39,7 +39,6 @@ class RechenbergOptimizer(BaseOptimizer, BaseCaller):
         self.lamb = lamb
         self.a = a
 
-        self.f = None
         self.param_spec = None
 
         self.population = []

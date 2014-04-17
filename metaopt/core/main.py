@@ -37,8 +37,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         timer = Timer(timeout, invoker.stop)
         timer.start()
 
-    result = optimizer.optimize(invoker=invoker, function=f,
-                                param_spec=invoker.param_spec,
+    result = optimizer.optimize(invoker=invoker, param_spec=invoker.param_spec,
                                 return_spec=invoker.return_spec)
 
     try:
