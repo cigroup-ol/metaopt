@@ -114,19 +114,23 @@ class MultiProcessInvoker(BaseInvoker):
 
         try:
             self._caller.on_result(value=result.value, fargs=result.call.args,
-                             **result.call.kwargs)
+                                   **result.call.kwargs)
         except TypeError:
             # result.kwargs was None
             self._caller.on_result(value=result.value, fargs=result.call.args)
 
     def _handle_release(self, release):
         assert isinstance(release, Release)
+
         try:
             self._caller.on_error(error=release.value, fargs=release.call.args,
-                            **release.call.kwargs)
-        except TypeError:
-            # error.kwargs was None
-            self._caller.on_error(error=release.value, fargs=release.call.args)
+                                  **release.call.kwargs)
+        except AttributeError:
+            # release.call was None
+            # This means, the WPP constructed the "call" object manually.
+            # The caller is not expecting a result for those calls.
+            # Nothing to do here.
+            return
 
     def _handle_outcome(self, outcome):
         """"""
@@ -136,6 +140,10 @@ class MultiProcessInvoker(BaseInvoker):
             self._handle_result(result=outcome)
         elif isinstance(outcome, Release):
             self._handle_release(release=outcome)
+        else:
+            # Will not happen
+            raise ValueError("Objects of this type are not allowed in the"
+                             "outcome queue: %s" % type(outcome))
 
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):
@@ -154,8 +162,12 @@ class MultiProcessInvoker(BaseInvoker):
             with self._lock:
                 self._worker_provider.provision()
         except IndexError:
-            # no worker could be provisioned
-            pass
+            # The worker process provider was at its worker limit, already.
+            # So no new worker could be provisioned.
+            # We can not assume this invoke's task will be started immediately.
+            # So wait for a free worker by getting and handling an outcome.
+            outcome = self._status_db.wait_for_one_outcome()
+            self._handle_outcome(outcome)
 
         # issue task, the first worker to become idle will execute it
         call = Call(id=uuid.uuid4(),

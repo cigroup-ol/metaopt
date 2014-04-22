@@ -92,9 +92,8 @@ class WorkerProcessProvider(object):
                 call = self._status_db.pop_idle_call()
             except ValueError:
                 # No task was started for this worker process.
-                #call = None
-                call = Call(id=None, function=None, args=None,
-                            kwargs={'fitness': None})
+                # Construct a None "call" manually to use as a dummy pay load.
+                call = None
 
         # send manually constructed release outcome
         release = Release(worker_id=worker_process.worker_id,
