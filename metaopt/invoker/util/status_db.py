@@ -230,6 +230,8 @@ class StatusDB(Stoppable):
                 self._empty_queue_outcome()
             except ValueError:
                 # Duplicate result. Should not happen. TODO
+                raise ValueError("Got a duplicate outcome." +
+                                 "Make sure IDs are unique.")
                 pass
         self._queue_outcome.join()
 
