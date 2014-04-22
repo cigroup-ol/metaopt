@@ -17,5 +17,9 @@ class CallHandle(Stoppable):
     @stoppable_method
     @stopping_method
     def stop(self):
-        """Cancels the worker executing this task."""
+        """
+        Cancels the worker executing this call.
+
+        Gets called by a timer from another thread.
+        """
         self._invoker.stop_call(call_id=self._call_id)

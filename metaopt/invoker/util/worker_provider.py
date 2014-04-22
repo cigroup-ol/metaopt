@@ -59,7 +59,7 @@ class WorkerProcessProvider(object):
                 self._worker_processes.append(worker_process)
 
     def release(self, call_id):
-        """Releases a worker process given by id."""
+        """Releases the worker process that started the call given by id, if any."""
         with self._lock:
             try:
                 worker_id = self._status_db.get_worker_id(call_id=call_id)
@@ -123,37 +123,3 @@ class WorkerProcessProvider(object):
         """Returns the number of currently running worker processes."""
         with self._lock:
             return len(self._worker_processes)
-
-
-class WorkerHandle(Stoppable):
-    """Interface definition for worker handle implementations."""
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def __init__(self):
-        super(WorkerHandle, self).__init__()
-
-    @stoppable_method
-    @stopping_method
-    def release(self):
-        """Stops this worker."""
-        raise NotImplementedError()  # Implementations need to overwrite
-
-
-class WorkerProcessHandle(WorkerHandle):
-    """A means to stop a worker."""
-
-    def __init__(self, worker_id):
-        super(WorkerProcessHandle, self).__init__()
-        self._worker_id = worker_id
-
-    @property
-    def worker_id(self):
-        """Property for the worker id attribute."""
-        return self._worker_id
-
-    @stoppable_method
-    @stopping_method
-    def release(self):
-        """Stops this worker."""
-        WorkerProcessProvider().release(self._worker_id)
