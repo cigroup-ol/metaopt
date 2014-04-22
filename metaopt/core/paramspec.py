@@ -200,6 +200,7 @@ class NonIntIntervalError(Exception):
     """The error that occurs when a non-intergral bound is specified"""
 
     def __init__(self, param, interval, index):
+        del index  # TODO
         Exception.__init__(
             self,
             "Interval [%s, %s] contains non-interger for parameter: %s"

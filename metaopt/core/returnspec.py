@@ -22,6 +22,7 @@ class ReturnSpec(object):
             self.create_default_return_values(f)
 
     def create_default_return_values(self, f):
+        del f  # TODO
         self.minimize(DEFAULT_RETURN_VALUE_NAME)
 
     def minimize(self, name):
