@@ -7,7 +7,7 @@ from metaopt.util.stoppable import StoppedException
 
 
 class GridSearchOptimizer(BaseOptimizer, BaseCaller):
-    """TODO: Document me"""
+    """Optimizer that systematically tests parameters in a grid pattern."""
 
     def __init__(self):
         super(GridSearchOptimizer, self).__init__()
