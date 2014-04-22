@@ -58,7 +58,8 @@ class MultiProcessInvoker(BaseInvoker):
 
         # set by the pluggable invoker or another caller
         self._f = None  # objective function
-        self._param_spec = None
+        self._param_spec = None  # parameter specification
+        self._return_spec = None  # return specification
 
     @property
     def f(self):
