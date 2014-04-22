@@ -74,8 +74,9 @@ class TestMultiProcessInvoker(object):
         args = ArgsCreator(self._invoker.param_spec).args()
 
         assert not optimizer.on_error.called
-        optimizer.on_result.assert_called_with(value=ReturnValuesWrapper(None, 0),
-                                               fargs=args)
+        optimizer.on_result.\
+                assert_called_with(value=ReturnValuesWrapper(None, 0),
+                                   fargs=args)
 
     def test_invoke_given_extra_args_calls_on_result_with_them(self):
         caller = Mock()
@@ -92,8 +93,9 @@ class TestMultiProcessInvoker(object):
         self._invoker.wait()
 
         assert not caller.on_error.called
-        caller.on_result.assert_called_once_with(value=ReturnValuesWrapper(None, 0),
-                                                 fargs=args, data=data)
+        caller.on_result.\
+                assert_called_once_with(value=ReturnValuesWrapper(None, 0),
+                                        fargs=args, data=data)
 
     def test_invoke_not_successful_calls_on_error(self):
         caller = Mock()

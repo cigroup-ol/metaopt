@@ -4,13 +4,11 @@ Various utilities for the multiprocess invoker.
 from __future__ import division, print_function, with_statement
 
 import uuid
-from abc import ABCMeta, abstractmethod
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.invoker.util.model import Call, Release
 from metaopt.invoker.util.worker import WorkerProcess
-from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class WorkerProcessProvider(object):
@@ -59,7 +57,9 @@ class WorkerProcessProvider(object):
                 self._worker_processes.append(worker_process)
 
     def release(self, call_id):
-        """Releases the worker process that started the call given by id, if any."""
+        """
+        Releases the worker process that started the call given by id, if any.
+        """
         with self._lock:
             try:
                 worker_id = self._status_db.get_worker_id(call_id=call_id)

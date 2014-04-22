@@ -20,6 +20,7 @@ from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.tests.util.function.integer.failing import FUNCTIONS_FAILING
+from metaopt.util.stoppable import StoppedException
 from metaopt.tests.util.function.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
 from metaopt.tests.util.function.integer.fast.explicit.f import f as f_max_fast
@@ -31,6 +32,9 @@ from metaopt.tests.util.function.integer.slow.explicit.g import f as f_min_slow
 
 
 class TestMain(object):
+    """
+    System tests for the custom optimize.
+    """
 
     def __init__(self):
         self._invokers = None
@@ -38,23 +42,28 @@ class TestMain(object):
 
     def setup(self):
         self._invokers = [
-            DualThreadInvoker,
-            MultiProcessInvoker,
-            #StoppableInvoker,  # TODO NotImplementedError
+            DualThreadInvoker(),
+            MultiProcessInvoker(),
+            #StoppableInvoker(),  # TODO NotImplementedError
             #PluggableInvoker(DualThreadInvoker()), # TODO faulty result
             #PluggableInvoker(MultiProcessInvoker()),  # TODO on_error kwargs
             #SingleProcessInvoker(),  # TODO NotImplementedError
             #SimpleMultiprocessInvoker(), # TODO hanging
             ]
         self._optimizers = [
-            GridSearchOptimizer,
+            GridSearchOptimizer(),
             #SAESOptimizer(),  # TODO TypeError
             #RechenbergOptimizer(),  # TODO TypeError None is not iterable
             ]
 
     def teardown(self):
-        del self._invokers
-        del self._optimizers
+        for invoker in self._invokers:
+            try:
+                invoker.stop()
+            except StoppedException:
+                pass
+        self._invokers = None
+        self._optimizers = None
 
     def _wrap(self, target):
         """
@@ -62,9 +71,7 @@ class TestMain(object):
         """
         for invoker, optimizer in product(self._invokers, self._optimizers):
             print("next invoker: %s, next optimizer: %s" % \
-                  (invoker.__name__, optimizer.__name__))
-            optimizer = optimizer()
-            invoker = invoker()
+                  (invoker.__class__.__name__, optimizer.__class__.__name__))
             target(invoker=invoker, optimizer=optimizer)
             del invoker, optimizer
 

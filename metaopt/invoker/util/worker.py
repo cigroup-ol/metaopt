@@ -28,6 +28,13 @@ class BaseWorker(object):
         """Property for the _worker_id attribute."""
         pass
 
+    @abstractmethod
+    def run(self):
+        """
+        Makes this worker idle and pick up tasks from the  queue.
+        """
+        pass
+
 
 class Worker(BaseWorker):
     """Minimal worker implementation."""
@@ -39,6 +46,9 @@ class Worker(BaseWorker):
     @property
     def worker_id(self):
         return self._worker_id
+
+    def run(self):
+        raise NotImplementedError()
 
 
 class WorkerProcess(Process, Worker):
