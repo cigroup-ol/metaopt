@@ -33,8 +33,3 @@ class StoppableInvoker(BaseInvoker):
 
     def wait(self):
         raise NotImplementedError()
-
-    def get_subinvoker(self, resources):
-        """Returns a subinvoker using the given amount of resources of self."""
-        del resources
-        raise NotImplementedError()
