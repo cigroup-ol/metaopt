@@ -223,7 +223,7 @@ class StatusDB(Stoppable):
             if not isinstance(task, Task):
                 continue
             release = Release(worker_id=None, call=task.call, value='release')
-            # self._queue_outcome.put(release) TODO
+            self._queue_outcome.put(release)
 
         while not self._queue_outcome.empty():
             try:
