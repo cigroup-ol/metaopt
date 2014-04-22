@@ -97,7 +97,8 @@ def test_on_result_calls_plugins():
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
     invoker.caller = stub_caller
 
-    def stub_invoke(f, fargs, **kwargs):
+    def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_result(0, fargs, **kwargs)
         return None, False
 
@@ -105,7 +106,7 @@ def test_on_result_calls_plugins():
     stub_invoker.invoke.side_effect = stub_invoke
 
     args = ArgsCreator(f.param_spec).args()
-    invoker.invoke(stub_caller, args)
+    invoker.invoke(caller=stub_caller, fargs=args)
 
     assert mock_plugin.on_result.called
 
@@ -124,7 +125,8 @@ def test_on_error_calls_plugins():
 
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
 
-    def stub_invoke(f, fargs, **kwargs):
+    def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_error(None, fargs, **kwargs)
         return None, False
 
@@ -149,6 +151,7 @@ def test_invocation_can_be_retried():
     invoker = PluggableInvoker(mock_invoker, plugins=plugins)
 
     def stub_invoke(caller, fargs, **kwargs):
+        del caller  # TODO
         invoker.on_result(0, fargs, **kwargs)
         return None, False
 

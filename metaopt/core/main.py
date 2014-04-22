@@ -37,8 +37,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         timer = Timer(timeout, invoker.stop)
         timer.start()
 
-    result = optimizer.optimize(invoker, param_spec=invoker.param_spec,
-        return_spec=invoker.return_spec)
+    result = optimizer.optimize(invoker=invoker, param_spec=invoker.param_spec,
+                                return_spec=invoker.return_spec)
 
     try:
         invoker.stop()
@@ -66,10 +66,11 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
 
     """
 
-    invoker = PluggableInvoker(MultiProcessInvoker(resources=3), plugins=plugins)
+    invoker = PluggableInvoker(invoker=MultiProcessInvoker(), plugins=plugins)
 
-    return custom_optimize(f, invoker, param_spec, return_spec, timeout,
-                           optimizer)
+    return custom_optimize(f, invoker=invoker, param_spec=param_spec,
+                           return_spec=return_spec, timeout=timeout,
+                           optimizer=optimizer)
 
 
 class NoParamSpecError(Exception):

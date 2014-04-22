@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 from itertools import product
 
 import nose
-from nose.tools import eq_, raises
+from nose.tools import eq_
 
 from metaopt.core.main import custom_optimize
 from metaopt.invoker.dualthread import DualThreadInvoker
@@ -20,6 +20,7 @@ from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.tests.util.function.integer.failing import FUNCTIONS_FAILING
+from metaopt.util.stoppable import StoppedException
 from metaopt.tests.util.function.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
 from metaopt.tests.util.function.integer.fast.explicit.f import f as f_max_fast
@@ -30,7 +31,10 @@ from metaopt.tests.util.function.integer.slow.explicit.f import f as f_max_slow
 from metaopt.tests.util.function.integer.slow.explicit.g import f as f_min_slow
 
 
-class TestCustomOptimize(object):
+class TestMain(object):
+    """
+    System tests for the custom optimize.
+    """
 
     def __init__(self):
         self._invokers = None
@@ -40,27 +44,36 @@ class TestCustomOptimize(object):
         self._invokers = [
             DualThreadInvoker(),
             MultiProcessInvoker(),
-            #StoppableInvoker(),  # TODO fix NotImplementedError
-            #PluggableInvoker(DualThreadInvoker()), # TODO fix faulty result
-            #PluggableInvoker(MultiProcessInvoker()),  # TODO fix on_error kwargs
-            #SingleProcessInvoker(),  # TODO fix NotImplementedError
-            #SimpleMultiprocessInvoker(), # TODO fix hanging
+            #StoppableInvoker(),  # TODO NotImplementedError
+            #PluggableInvoker(DualThreadInvoker()), # TODO faulty result
+            #PluggableInvoker(MultiProcessInvoker()),  # TODO on_error kwargs
+            #SingleProcessInvoker(),  # TODO NotImplementedError
+            #SimpleMultiprocessInvoker(), # TODO hanging
             ]
         self._optimizers = [
             GridSearchOptimizer(),
-            #SAESOptimizer(),  # TODO fix me TypeError
-            #RechenbergOptimizer(),  # TODO fix TypeError None is not iterable
+            #SAESOptimizer(),  # TODO TypeError
+            #RechenbergOptimizer(),  # TODO TypeError None is not iterable
             ]
 
     def teardown(self):
-        del self._invokers
-        del self._optimizers
+        for invoker in self._invokers:
+            try:
+                invoker.stop()
+            except StoppedException:
+                pass
+        self._invokers = None
+        self._optimizers = None
 
     def _wrap(self, target):
+        """
+        Calls the given target method with all invokers and optimizers.
+        """
         for invoker, optimizer in product(self._invokers, self._optimizers):
             print("next invoker: %s, next optimizer: %s" % \
                   (invoker.__class__.__name__, optimizer.__class__.__name__))
             target(invoker=invoker, optimizer=optimizer)
+            del invoker, optimizer
 
     def test_custom_optimize_maximize(self):
         self._wrap(self._test_custom_optimize_maximize)
@@ -86,7 +99,8 @@ class TestCustomOptimize(object):
     def _test_integer_failing(self, invoker, optimizer):
         for function in FUNCTIONS_FAILING:
             print("next function: %s" % function)
-            self._test_function_failing(function, invoker=invoker, optimizer=optimizer)
+            self._test_function_failing(function, invoker=invoker,
+                                        optimizer=optimizer)
 
     def _test_integer_fast_explicit(self, invoker, optimizer):
         for function in FUNCTIONS_FAST_EXPLICIT:
@@ -137,15 +151,14 @@ class TestCustomOptimize(object):
         # so just check that there is any result
         assert result is not None
 
-    @raises(TypeError)
     def _test_function_failing(self, function, invoker, optimizer):
         # it is assumed that there is a best individual
         # so we expect a TypeError when optimizing an always-failing function
-        _ = custom_optimize(f=function, invoker=invoker,
+        result = custom_optimize(f=function, invoker=invoker,
                             optimizer=optimizer)
 
         # will not happen
-        assert False
+        assert result is None
 
 if __name__ == '__main__':
     nose.runmodule()

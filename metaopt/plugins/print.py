@@ -27,5 +27,5 @@ class PrintPlugin(DummyPlugin):
 
     def on_error(self, invocation):
         print("Failed", "f%s, %s" % (tuple(invocation.fargs), "\n" +
-            str(invocation.error.__class__.__name__) + ": "  +
+            str(invocation.error.__class__.__name__) + ": " +
             str(invocation.error)))

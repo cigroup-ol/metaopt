@@ -12,5 +12,5 @@ from metaopt.core.returns import minimize
 @minimize("y")
 @param.int("x", interval=[0, 10])
 def f(x):
-    sleep(1)
+    sleep(0.1)
     return x

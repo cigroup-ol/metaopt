@@ -75,7 +75,6 @@ class TestDeterminePackage(object):
     def test_determine_imported(self):
         for index, function in enumerate(FUNCTIONS_FAST):
             package_remote_function = determine_package(function)
-            print(package_remote_function)
             assert package_remote_function == \
                ("metaopt.tests.util.function.integer.fast.explicit." +
                 string.ascii_lowercase[5 + index]) or\

@@ -5,13 +5,13 @@ SVM (SAES, global timeout)
 """
 from __future__ import division, print_function, with_statement
 
+from time import sleep
+
 from sklearn import cross_validation, datasets, svm
 
 from metaopt.core import param
 from metaopt.core.returns import maximize
 
-
-from time import sleep
 
 @maximize("Score")
 @param.int("a", interval=[1, 9])

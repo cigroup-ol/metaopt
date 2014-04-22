@@ -21,7 +21,7 @@ class BasePlugin(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def setup(f, param_spec, return_spec):
+    def setup(self, f, param_spec, return_spec):
         """
         Called before the invoker calls the objective function the first time
 

@@ -28,29 +28,38 @@ class BaseWorker(object):
         """Property for the _worker_id attribute."""
         pass
 
+    @abstractmethod
+    def run(self):
+        """
+        Makes this worker idle and pick up tasks from the  queue.
+        """
+        pass
+
 
 class Worker(BaseWorker):
     """Minimal worker implementation."""
 
     def __init__(self):
-        self._worker_id = None
         super(Worker, self).__init__()
+        self._worker_id = None
 
     @property
     def worker_id(self):
         return self._worker_id
 
+    def run(self):
+        raise NotImplementedError()
+
 
 class WorkerProcess(Process, Worker):
     """Calls functions with arguments, both given by a queue."""
 
-    def __init__(self, worker_id, queue_results, queue_status,
-                 queue_tasks):
-        self._worker_id = worker_id
-        self._queue_outcome = queue_results
-        self._queue_status = queue_status
-        self._queue_task = queue_tasks
+    def __init__(self, worker_id, queue_outcome, queue_start, queue_tasks):
         super(WorkerProcess, self).__init__()
+        self._worker_id = worker_id
+        self._queue_outcome = queue_outcome
+        self._queue_start = queue_start
+        self._queue_task = queue_tasks
 
     @property
     def worker_id(self):
@@ -58,46 +67,45 @@ class WorkerProcess(Process, Worker):
         return self._worker_id
 
     def run(self):
-        """Makes this worker execute all tasks incoming from the task queue."""
+        """Makes this worker execute all tasks incoming from the call queue."""
 
         while True:
             try:
                 self._queue_task.qsize()
-            except Exception as e:
-                print("Queue.qsize():", e)
-                # task queue seems closed, so terminate
+            except Exception:
+                #print("Queue.qsize():", e)
+                # call_handle queue seems closed, so terminate
                 break
             try:
-                # get task from the queue, execute task and report back
+                # get call_handle from the queue, execute call and report back
                 task = self._queue_task.get()
+                self._queue_start.put(Start(worker_id=self._worker_id,
+                                            call=task.call))
                 self._execute(task)
                 self._queue_task.task_done()
-            except EOFError as e:
+            except EOFError:
                 # the queue was closed by the invoker, so terminate
-                print("Queue.get():", e)
-                # task queue seems closed, so terminate
+                #print("Queue.get():", e)
+                # call_handle queue seems closed, so terminate
                 break
 
     def _execute(self, task):
-        """Executes the given task."""
-
-        # announce start of work
-        self._queue_status.put(Start(task_id=task.id,
-                                      worker_id=self._worker_id,
-                                      function=task.function,
-                                      args=task.args,
-                                      kwargs=task.kwargs))
+        """Executes the given call_handle."""
 
         # make the actual call
+        function = import_function(function=task.call.function)
         try:
-            value = call(f=import_function(function=task.function),
-                         fargs=task.args, param_spec=task.param_spec,
-                         return_spec=task.return_spec)
-            self._queue_outcome.put(Result(task_id=task.id,
-                                          worker_id=self._worker_id,
-                                          function=task.function,
-                                          args=task.args, value=value,
-                                          kwargs=task.kwargs))
+            try:
+                value = call(f=function, fargs=task.call.args,
+                             param_spec=function.param_spec,
+                             return_spec=function.return_spec)
+            except AttributeError:
+                # function had no return type specification
+                value = call(f=function, fargs=task.call.args,
+                             param_spec=function.param_spec)
+            self._queue_outcome.put(Result(worker_id=self._worker_id,
+                                           call=task.call,
+                                           value=value))
         except Exception as value:
             # the objective function may raise any exception
             # we can not do anything more helpful than propagate the exception
@@ -111,8 +119,6 @@ class WorkerProcess(Process, Worker):
                 except PicklingError:
                     value = traceback.format_exc()
 
-            self._queue_outcome.put(Error(task_id=task.id,
-                                          worker_id=self._worker_id,
-                                          function=task.function,
-                                          args=task.args, value=value,
-                                          kwargs=task.kwargs))
+            self._queue_outcome.put(Error(worker_id=self._worker_id,
+                                          call=task.call,
+                                          value=value))

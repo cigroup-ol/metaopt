@@ -8,6 +8,7 @@ from multiprocessing import Manager
 import nose
 from nose.tools.nontrivial import raises
 
+from metaopt.invoker.util.status_db import StatusDB
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 
 
@@ -17,21 +18,25 @@ class TestWorkerProcessProvider(object):
     """
 
     def __init__(self):
-        self.queue_results = None
-        self.queue_status = None
-        self.queue_tasks = None
+        self._queue_outcome = None
+        self._queue_start = None
+        self._queue_task = None
         self.provider = None
 
     def setup(self):
         """Nose will run this method before every test method."""
         manager = Manager()
-        self.queue_tasks = manager.Queue()  # ignore error, this works
-        self.queue_status = manager.Queue()  # ignore error, this works
-        self.queue_results = manager.Queue()  # ignore error, this works
+        self._queue_task = manager.Queue()  # ignore error, this works
+        self._queue_start = manager.Queue()  # ignore error, this works
+        self._queue_outcome = manager.Queue()  # ignore error, this works
 
-        self.provider = WorkerProcessProvider(queue_tasks=self.queue_tasks,
-                                              queue_results=self.queue_results,
-                                              queue_status=self.queue_status)
+        self._status_db = StatusDB(queue_task=self._queue_task,
+                                   queue_start=self._queue_start,
+                                   queue_outcome=self._queue_outcome)
+        self.provider = WorkerProcessProvider(queue_tasks=self._queue_task,
+                                              queue_outcome=self._queue_outcome,
+                                              queue_start=self._queue_start,
+                                              status_db=self._status_db)
 
     def teardown(self):
         """Nose will run this method after every test method."""
@@ -87,7 +92,6 @@ class TestWorkerProcessProvider(object):
 
     def test_worker_process_provider_counts_up(self):
         """A worker process provider counts in increments of 1."""
-        # once
         self.provider.provision(1)
         assert self.provider.worker_count == 1
 
@@ -114,9 +118,10 @@ class TestWorkerProcessProvider(object):
 
     def test_worker_process_provider_is_borg(self):
         """There can only be one instance of a worker process provider."""
-        my_provider = WorkerProcessProvider(queue_tasks=self.queue_tasks,
-                                            queue_results=self.queue_results,
-                                            queue_status=self.queue_status)
+        my_provider = WorkerProcessProvider(queue_tasks=self._queue_task,
+                                            queue_outcome=self._queue_outcome,
+                                            queue_start=self._queue_start,
+                                            status_db=self._status_db)
 
         number_of_workers = 1
 

@@ -6,16 +6,20 @@ from __future__ import division, print_function, with_statement
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
-class TaskHandle(Stoppable):
+class CallHandle(Stoppable):
     """A means to stopped a task."""
 
-    def __init__(self, invoker, task_id):
+    def __init__(self, invoker, call_id):
+        super(CallHandle, self).__init__()
         self._invoker = invoker
-        self._task_id = task_id
-        super(TaskHandle, self).__init__()
+        self._call_id = call_id
 
     @stoppable_method
     @stopping_method
     def stop(self):
-        """Cancels the worker executing this task."""
-        self._invoker.stop_task(task_id=self._task_id)
+        """
+        Cancels the worker executing this call.
+
+        Gets called by a timer from another thread.
+        """
+        self._invoker.stop_call(call_id=self._call_id)

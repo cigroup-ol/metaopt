@@ -1,5 +1,5 @@
 """
-TODO document me
+Tests for the single invoke invoker.
 """
 from __future__ import division, print_function, with_statement
 
@@ -17,21 +17,22 @@ from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 def f(a, b):
     return -(a + b)
 
-ARGS = ArgsCreator(f.param_spec).args()
-
 
 def test_optimize_returns_result():
-    invoker = SingleProcessInvoker()
-    invoker.f = f
-
     optimizer = SingleInvokeOptimizer()
     optimizer.on_result = Mock()
     optimizer.on_error = Mock()
 
-    optimizer.optimize(invoker, f.param_spec, None)
+    invoker = SingleProcessInvoker()
+    invoker.f = f
+
+    optimizer.optimize(invoker=invoker, param_spec=f.param_spec,
+                       return_spec=None)
+
+    args = ArgsCreator(f.param_spec).args()
 
     assert not optimizer.on_error.called
-    optimizer.on_result.assert_called_with(ReturnValuesWrapper(None, -3), ARGS)
+    optimizer.on_result.assert_called_with(ReturnValuesWrapper(None, -3), args)
 
 if __name__ == '__main__':
     import nose

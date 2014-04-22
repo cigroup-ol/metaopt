@@ -26,7 +26,7 @@ class BaseCaller(object):
         pass
 
     @abstractmethod
-    def on_result(self, result, fargs, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
         """
         Called when :meth:`metaopt.invoker.base.BaseInvoker.invoke` was
         successful.
@@ -37,7 +37,7 @@ class BaseCaller(object):
         pass
 
     @abstractmethod
-    def on_error(self, error, fargs, **kwargs):
+    def on_error(self, value, fargs, **kwargs):
         """
         Called when :meth:`metaopt.invoker.base.BaseInvoker.invoke` was *not*
         successful.
@@ -56,14 +56,13 @@ class BaseOptimizer(BaseCaller):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def optimize(self, invoker, function, param_spec, return_spec):
+    def optimize(self, invoker, param_spec, return_spec):
         """
         Optimize objective function for a given parameters specification.
 
         Currently, implementations are expected to *minimize* the objective
         function. This may change in later versions by using `return_spec`.
 
-        :param function: Objective function
         :param param_spec: Parameters specification for `function`
         :param return_spec: Return value specification for `function`
         :returns: Optimal arguments

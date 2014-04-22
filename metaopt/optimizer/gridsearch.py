@@ -10,14 +10,16 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
     """TODO: Document me"""
 
     def __init__(self):
+        super(GridSearchOptimizer, self).__init__()
         self.best = (None, None)
 
     def optimize(self, invoker, param_spec, return_spec=None):
+        del return_spec  # TODO
         args_creator = ArgsCreator(param_spec)
 
         for args in args_creator.product():
             try:
-                invoker.invoke(self, args)
+                invoker.invoke(caller=self, fargs=args)
             except StoppedException:
                 return self.best[0]
 
@@ -25,7 +27,9 @@ class GridSearchOptimizer(BaseOptimizer, BaseCaller):
 
         return self.best[0]
 
-    def on_result(self, fitness, fargs, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
+        del kwargs  # TODO
+        fitness = value
         _, best_fitness = self.best
 
         if best_fitness is None or fitness < best_fitness:

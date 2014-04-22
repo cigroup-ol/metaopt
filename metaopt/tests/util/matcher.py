@@ -47,5 +47,7 @@ class EqualityMatcher(object):
                 if not other[key] == value:
                     return False
             return True
-
+        if type(self.one) == Exception and type(other) == Exception:
+            if repr(self.one) == repr(other):
+                return True
         raise NotImplementedError(type(self.one), type(other))

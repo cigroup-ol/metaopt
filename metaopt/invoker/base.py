@@ -74,7 +74,7 @@ class BaseInvoker(Stoppable):
         :meth:`metaopt.optimizer.base.BaseCaller.on_error` were called for each
         call to :meth:`invoke`.
 
-        TODO: Return value
+        :rtype: None
         """
         raise NotImplementedError()
 
