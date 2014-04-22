@@ -7,7 +7,7 @@ import uuid
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Call, Release
+from metaopt.invoker.util.model import Release
 from metaopt.invoker.util.worker import WorkerProcess
 
 
