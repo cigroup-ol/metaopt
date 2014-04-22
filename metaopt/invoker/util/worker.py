@@ -73,7 +73,6 @@ class WorkerProcess(Process, Worker):
             try:
                 self._queue_task.qsize()
             except Exception:
-                #print("Queue.qsize():", e)
                 # call_handle queue seems closed, so terminate
                 break
             try:
@@ -85,7 +84,6 @@ class WorkerProcess(Process, Worker):
                 self._queue_task.task_done()
             except EOFError:
                 # the queue was closed by the invoker, so terminate
-                #print("Queue.get():", e)
                 # call_handle queue seems closed, so terminate
                 break
 
