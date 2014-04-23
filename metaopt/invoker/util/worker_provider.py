@@ -11,6 +11,12 @@ from metaopt.invoker.util.model import Release
 from metaopt.invoker.util.worker import WorkerProcess
 
 
+class ReleaseException(object):
+
+    def __init__(self, param0):
+        pass
+
+
 class WorkerProcessProvider(object):
     """
     Keeps track of up to as many worker processes as there are CPUs.
@@ -56,7 +62,7 @@ class WorkerProcessProvider(object):
                 worker_process.start()
                 self._worker_processes.append(worker_process)
 
-    def release(self, call_id):
+    def release(self, call_id, reason):
         """
         Releases the worker process that started the call given by id, if any.
         """
@@ -73,9 +79,9 @@ class WorkerProcessProvider(object):
             except KeyError:
                 # nothing to do
                 return
-            self._release(worker_process)
+            self._release(worker_process, reason)
 
-    def _release(self, worker_process):
+    def _release(self, worker_process, reason):
         """Releases the given worker process."""
 
         # send kill signal and wait for the process to die
@@ -97,7 +103,7 @@ class WorkerProcessProvider(object):
 
         # send manually constructed release outcome
         release = Release(worker_id=worker_process.worker_id,
-                          call=call, value="release")
+                          call=call, value=reason)
         self._queue_outcome.put(release)
 
     def release_all(self):
@@ -106,8 +112,9 @@ class WorkerProcessProvider(object):
         """
         with self._lock:
             # copy worker processes so that _release does not modify
+            reason = ReleaseException("Releasing all workers.")
             for worker_process in self._worker_processes[:]:
-                self._release(worker_process)
+                self._release(worker_process, reason)
 
     def _get_worker_process_for_id(self, worker_id):
         """Utility method to resolve a worker id to a worker process."""

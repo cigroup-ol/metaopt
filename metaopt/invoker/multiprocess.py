@@ -209,7 +209,7 @@ class MultiProcessInvoker(BaseInvoker):
                     return
                 self._handle_outcome(outcome=outcome)
 
-    def stop_call(self, call_id):
+    def stop_call(self, call_id, reason):
         """
         Stop a call given by its id, by restarting the executing worker.
 
@@ -217,7 +217,7 @@ class MultiProcessInvoker(BaseInvoker):
         """
 
         assert call_id is not None
-        self._worker_provider.release(call_id=call_id)
+        self._worker_provider.release(call_id=call_id, reason=reason)
         try:
             self._worker_provider.provision(number_of_workers=1)
         except IndexError:
