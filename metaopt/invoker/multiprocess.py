@@ -11,7 +11,7 @@ from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.model import Call, Error, Release, Result, Task
 from metaopt.invoker.util.status_db import StatusDB
-from metaopt.invoker.util.task_handle import CallHandle
+from metaopt.invoker.util.call_handle import CallHandle
 from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import StoppedException, stoppable_method, \
     stopping_method

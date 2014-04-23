@@ -8,7 +8,7 @@ from threading import Lock, Thread
 
 from metaopt.core.call import call
 from metaopt.invoker.base import BaseInvoker
-from metaopt.invoker.util.task_handle import CallHandle
+from metaopt.invoker.util.call_handle import CallHandle
 from metaopt.util.stoppable import stoppable_method, stopping_method
 
 
