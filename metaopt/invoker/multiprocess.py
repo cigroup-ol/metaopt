@@ -215,16 +215,16 @@ class MultiProcessInvoker(BaseInvoker):
 
         Gets called by a timer in an individual thread.
         """
-        with self._lock:
-            assert call_id is not None
-            self._worker_provider.release(call_id=call_id)
-            try:
-                self._worker_provider.provision(number_of_workers=1)
-            except IndexError:
-                # An invoke call provisioned another worker, already.
-                # Therefore another worker took the place of the one we killed.
-                # That is OK, moving on.
-                pass
+
+        assert call_id is not None
+        self._worker_provider.release(call_id=call_id)
+        try:
+            self._worker_provider.provision(number_of_workers=1)
+        except IndexError:
+            # An invoke call provisioned another worker, already.
+            # Therefore another worker took the place of the one we killed.
+            # That is OK, moving on.
+            pass
 
     @stoppable_method
     @stopping_method
