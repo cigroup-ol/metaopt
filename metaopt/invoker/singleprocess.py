@@ -41,6 +41,7 @@ class SingleProcessInvoker(BaseInvoker):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def stop(self, reason=None):
         """Stops this invoker."""
+        del reason  # TODO
         raise NotImplementedError()

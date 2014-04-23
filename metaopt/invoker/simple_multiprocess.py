@@ -117,7 +117,8 @@ class SimpleMultiprocessInvoker(BaseInvoker):
         actual_result = result.actual_result
         caller.on_result(actual_result, worker_fargs, **worker_kwargs)
 
-    def stop(self):
+    def stop(self, reason=None):
+        del reason  # TODO
         self.result_queue.put(None)
 
 

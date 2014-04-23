@@ -105,15 +105,16 @@ class DualThreadInvoker(BaseInvoker):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def stop(self, reason=None):
         """Stops this invoker."""
         with self.lock:
             self.aborted = True
 
-        self.stop_task(self.current_task)
+        self.stop_task(self.current_task, reason=reason)
 
-    def stop_task(self, task):
+    def stop_task(self, task, reason=None):
         """Stops the given task."""
+        del reason  # TODO
         with self.lock:
             if self.call_handle is not task:
                 return

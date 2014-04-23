@@ -12,7 +12,7 @@ class BaseStoppable(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def stop(self):
+    def stop(self, reason=None):
         """
         Stops this object.
 
@@ -81,7 +81,7 @@ class Stoppable(BaseStoppable):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def stop(self, reason=None):
         """"Stops this object."""
         pass  # implementations may overwrite this method or check for .stopped
 

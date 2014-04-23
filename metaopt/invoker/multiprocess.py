@@ -228,7 +228,7 @@ class MultiProcessInvoker(BaseInvoker):
 
     @stoppable_method
     @stopping_method
-    def stop(self):
+    def stop(self, reason=None):
         """
         Terminates all worker processes for immediate shutdown.
 
@@ -242,6 +242,6 @@ class MultiProcessInvoker(BaseInvoker):
                 outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome=outcome)
 
-            self._status_db.stop()
+            self._status_db.stop(reason=reason)
 
             self._manager.shutdown()

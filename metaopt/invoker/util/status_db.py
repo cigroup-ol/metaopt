@@ -199,7 +199,7 @@ class StatusDB(Stoppable):
             self._handle_outcome(outcome)
 
     @stopping_method
-    def stop(self):
+    def stop(self, reason=None):
         """"""
         self._empty_queue_task()
         assert self._queue_task.empty()
@@ -222,7 +222,7 @@ class StatusDB(Stoppable):
         for task in self._call_status_dict.values():
             if not isinstance(task, Task):
                 continue
-            release = Release(worker_id=None, call=task.call, value='release')
+            release = Release(worker_id=None, call=task.call, value=reason)
             self._queue_outcome.put(release)
 
         while not self._queue_outcome.empty():
