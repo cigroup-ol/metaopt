@@ -16,7 +16,10 @@ help:
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "venv - create and activate virtual environment"
 
-clean: clean-backup clean-build clean-patch clean-pyc clean-reverse
+check-manifest:
+	 check-manifest
+
+clean: clean-backup clean-build clean-patch clean-pyc clean-reverse clean-release
 
 clean-backup:
 	find . -name '*~' -exec rm -f {} +
