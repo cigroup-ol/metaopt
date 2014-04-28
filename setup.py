@@ -23,9 +23,11 @@ def extract_package_name(requirement):
 def find_requirements(req_file='requirements.txt'):
     return [extract_package_name(r) for r in parse_requirements(req_file)]
 
-DESCRIPTION = 'MetaOpt Package'
+DESCRIPTION = 'MetaOpt is a Python-based organic computing framework for ' + \
+              'difficult blackbox optimization problems.'
 if os.path.isfile('README.rst'):
-    LONG_DESCRIPTION = open('README.rst').read()
+    LONG_DESCRIPTION = content = "\n\n".join([open('README.rst').read(),
+                                              open('CHANGELOG.rst').read()])
 else:
     LONG_DESCRIPTION = DESCRIPTION
 
@@ -61,10 +63,11 @@ setup(
     data_files=[("", ["README.rst", "LICENSE.rst", "requirements_cli.txt",
                       "requirements_examples.txt", "requirements_lint.txt",
                       "requirements_tests.txt"])],
-    description=LONG_DESCRIPTION,
+    description=DESCRIPTION,
     ext_modules=[],
     install_requires=[],
     license=metaopt.__license__,
+    long_description=LONG_DESCRIPTION,
     name='metaopt',
     packages=find_packages(exclude=('examples', 'docs', 'tests')),
     package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},

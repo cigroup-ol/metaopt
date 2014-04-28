@@ -39,6 +39,11 @@ clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 
+clean-release: clean-build
+	rm -rf venv-27-sdist  # virtualenv for py27-sdist
+	rm -rf venv-27-wheel # virtualenv for py27-wheel
+	rm -rf metaopt-pypi-test  # install for packages from PyPI's test server
+
 clean-reverse:
 	rm classes_MetaOpt.png packages_MetaOpt.png &> /dev/null || exit 0
 
@@ -72,8 +77,31 @@ lint:
 reindent:
 	find metaopt -name "*.py" -exec python `locate reindent.py` {} +
 
-release: clean
-	python setup.py sdist upload
+release-build: clean-release release-build-sdist release-build-wheel
+
+release-build-sdist:
+	python setup.py sdist
+	virtualenv venv-27-sdist
+	venv-27-sdist/bin/pip install --no-index dist/metaopt-*.tar.gz
+	venv-27-sdist/bin/python -c "import metaopt; print metaopt.__version__"
+
+release-build-wheel:
+	python setup.py bdist_wheel
+	virtualenv venv-27-wheel
+	venv-27-wheel/bin/pip install --use-wheel --no-index dist/metaopt-*.whl
+	venv-27-wheel/bin/python -c "import metaopt; print metaopt.__version__"
+
+release-test: release-build
+	python setup.py register -r test
+	python setup.py sdist upload -r test
+	python setup.py bdist_wheel upload -r test
+	pip install --target metaopt-pypi-test -i https://testpypi.python.org/pypi metaopt
+	pip install --use-wheel --target metaopt-pypi-test -i https://testpypi.python.org/pypi metaopt
+
+release: release-build release-test
+	python setup.py register -r pypi
+	python setup.py sdist upload -r pypi
+	python setup.py bdist_wheel upload -r pypi
 
 reverse: clean-reverse
 	pyreverse --ignore tests -o png -p MetaOpt metaopt
