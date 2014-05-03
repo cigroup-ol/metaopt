@@ -7,8 +7,6 @@ from __future__ import division, print_function, with_statement
 
 from time import sleep
 
-from sklearn import cross_validation, datasets, svm
-
 from metaopt.core import param
 from metaopt.core.returns import maximize
 
