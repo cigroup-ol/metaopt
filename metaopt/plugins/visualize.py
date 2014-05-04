@@ -82,7 +82,7 @@ class VisualizeLandscapePlugin(Plugin):
         )
 
         img = ax.imshow(Z, cmap=cmap, extent=extent, vmax=vmax, vmin=vmin,
-            origin="lower")
+                        origin="lower")
 
         plt.colorbar(img)
         plt.show()

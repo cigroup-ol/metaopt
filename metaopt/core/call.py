@@ -32,7 +32,7 @@ def call(f, fargs, param_spec=None, return_spec=None):
     if vargs is None and kwargs is None:
         if len(args) == len(fargs):
             return wrap_return_values(f(*[farg.value for farg in fargs]),
-                return_spec)
+                                      return_spec)
 
         if len(args) == 1:
             dargs = dict()
