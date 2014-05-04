@@ -26,6 +26,7 @@ class PrintPlugin(Plugin):
                                         invocation.current_result))
 
     def on_error(self, invocation):
-        print("Failed", "f%s, %s" % (tuple(invocation.fargs), "\n" +
-            str(invocation.error.__class__.__name__) + ": " +
-            str(invocation.error)))
+        print("Failed", "f%s, %s" % \
+              (tuple(invocation.fargs), "\n" +
+               str(invocation.error.__class__.__name__) + ": " +
+               str(invocation.error)))

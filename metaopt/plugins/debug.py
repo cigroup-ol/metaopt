@@ -4,7 +4,7 @@ Plugin that displays messages for all hooks.
 
 from __future__ import division, print_function, with_statement
 
-from metaopt.plugins.dummy import Plugin
+from metaopt.plugins.plugin import Plugin
 
 
 class DebugPlugin(Plugin):

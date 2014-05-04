@@ -227,12 +227,12 @@ class StatusDB(Stoppable):
 
         # We may have recorded a task in this database that was never started.
         # This happens when all workers get stopped before one starts the task.
-        # So send back a lay_off to the caller for all not yet started tasks.
+        # So send back a layoff to the caller for all not yet started tasks.
         for task in self._call_status_dict.values():
             if not isinstance(task, Task):
                 continue
-            lay_off = Layoff(worker_id=None, call=task.call, value=reason)
-            #self._queue_outcome.put(lay_off)
+            # layoff = Layoff(worker_id=None, call=task.call, value=reason)
+            # self._queue_outcome.put(layoff)
 
         self._empty_queue_outcome()
         assert self._queue_outcome.empty()

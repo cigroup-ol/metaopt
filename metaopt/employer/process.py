@@ -49,10 +49,10 @@ class ProcessWorkerEmployer(Employer):
                 raise IndexError("Cannot employ so many worker processes.")
 
             for _ in range(number_of_workers):
-                worker_process = ProcessWorker(
-                        queue_tasks=self._queue_task,
-                        queue_outcome=self._queue_outcome,
-                        queue_start=self._queue_start)
+                worker_process = \
+                    ProcessWorker(queue_tasks=self._queue_task,
+                                  queue_outcome=self._queue_outcome,
+                                  queue_start=self._queue_start)
                 self._worker_processes.append(worker_process)
 
     def lay_off(self, call_id, reason=None):
