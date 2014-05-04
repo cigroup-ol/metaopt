@@ -21,16 +21,16 @@ def f(a):
 def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.gridsearch import GridSearchOptimizer
-
     from metaopt.plugins.print import PrintPlugin
 
+    timeout = 3
     optimizer = GridSearchOptimizer()
+    plugins = [PrintPlugin()]
 
-    plugins = [
-        PrintPlugin(),
-    ]
+    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
+                       plugins=plugins)
 
-    print(optimize(f, timeout=3, optimizer=optimizer, plugins=plugins))
+    print("The optimal parameters are %s." % str(optimum))
 
 if __name__ == '__main__':
     main()

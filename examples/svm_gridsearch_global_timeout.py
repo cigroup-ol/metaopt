@@ -35,6 +35,7 @@ def main():
     from metaopt.plugins.visualize import VisualizeLandscapePlugin
     from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
 
+    timeout = 3
     optimizer = GridSearchOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
@@ -46,7 +47,10 @@ def main():
         visualize_best_fitness_plugin
     ]
 
-    print(optimize(f, timeout=3, optimizer=optimizer, plugins=plugins))
+    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
+                       plugins=plugins)
+
+    print("The optimal parameters are %s." % str(optimum))
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()

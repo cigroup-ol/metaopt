@@ -37,12 +37,12 @@ def f(C, gamma):
 def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.saes import SAESOptimizer
-
     from metaopt.plugins.print import PrintPlugin
     from metaopt.plugins.visualize import VisualizeLandscapePlugin
     from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
     from metaopt.plugins.timeout import TimeoutPlugin
 
+    timeout = 10
     optimizer = SAESOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
@@ -55,7 +55,10 @@ def main():
         TimeoutPlugin(2),
     ]
 
-    print(optimize(f, timeout=10, optimizer=optimizer, plugins=plugins))
+    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
+                       plugins=plugins)
+
+    print("The optimal parameters are %s." % str(optimum))
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()
