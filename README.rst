@@ -17,10 +17,10 @@ Status
 PyPIn    |download|      |version|     |format| |license|
 ======== =============== ============= ======== =========
 
-======== =============== ================
-master   |Build Master|  |Health Master|
-develop  |Build Develop| |Health Develop|
-======== =============== ================
+======== =============== ================ ==================
+master   |Build Master|  |Health Master|  |Coverage Master|
+develop  |Build Develop| |Health Develop| |Coverage Develop|
+======== =============== ================ ==================
 
 .. |download| image:: https://pypip.in/download/metaopt/badge.png
         :target: https://pypi.python.org/pypi/metaopt/
@@ -53,6 +53,13 @@ develop  |Build Develop| |Health Develop|
 .. |Health Develop| image:: https://landscape.io/github/cigroup-ol/metaopt/develop/landscape.png
         :target: https://landscape.io/github/cigroup-ol/metaopt/develop
         :alt: Code Health
+
+.. |Coverage Develop| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=develop
+  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
+
+.. |Coverage Master| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=master
+  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
+
 
 Download
 --------
