@@ -81,17 +81,8 @@ class DualThreadInvoker(Invoker):
 
         try:
             value = call(f, fargs, self.param_spec, self.return_spec)
-        except Exception as exception:
-            with self.lock:
-                self.cancelled = True
-
-        with self.lock:
-            cancelled = self.cancelled
-            self.cancelled = False
-
-        if not cancelled:
             self._caller.on_result(value=value, fargs=fargs, **kwargs)
-        else:
+        except Exception as exception:
             self._caller.on_error(value=exception, fargs=fargs, **kwargs)
 
     def wait(self):
