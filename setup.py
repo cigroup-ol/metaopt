@@ -26,7 +26,7 @@ def find_requirements(req_file='requirements.txt'):
 DESCRIPTION = 'MetaOpt is a Python-based organic computing framework for ' + \
               'difficult blackbox optimization problems.'
 if os.path.isfile('README.rst'):
-    LONG_DESCRIPTION = content = "\n\n".join([open('README.rst').read(),
+    LONG_DESCRIPTION = "\n\n".join([open('README.rst').read(),
                                               open('CHANGELOG.rst').read()])
 else:
     LONG_DESCRIPTION = DESCRIPTION

@@ -117,7 +117,7 @@ sdist: clean
 	ls -l dist
 
 test:
-	python setup.py nosetests
+	coverage run --source=metaopt setup.py nosetests
 
 test-all:
 	tox

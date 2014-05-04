@@ -126,7 +126,7 @@ def test_on_error_calls_plugins():
     stub_invoker.f = f
     stub_invoker.wait = Mock(return_value=False)
 
-    invoker = PluggableInvoker(stub_invoker, plugins=plugins)
+    invoker = PluggableInvoker(invoker=stub_invoker, plugins=plugins)
 
     def stub_invoke(caller, fargs, **kwargs):
         del caller  # TODO
@@ -153,7 +153,7 @@ def test_invocation_can_be_retried():
 
     plugins = [stub_plugin]
 
-    invoker = PluggableInvoker(mock_invoker, plugins=plugins)
+    invoker = PluggableInvoker(invoker=mock_invoker, plugins=plugins)
 
     def stub_invoke(caller, fargs, **kwargs):
         del caller  # TODO
@@ -189,7 +189,7 @@ def test_invocation_tries_is_saved():
 
     plugins = [stub_plugin]
 
-    invoker = PluggableInvoker(mock_invoker, plugins=plugins)
+    invoker = PluggableInvoker(invoker=mock_invoker, plugins=plugins)
     invoker.f = f
 
     def stub_invoke(caller, fargs, **kwargs):
