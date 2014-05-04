@@ -12,13 +12,16 @@ class StatusDB(Stoppable):
 
     def __init__(self, queue_start, queue_task, queue_outcome):
         super(StatusDB, self).__init__()
+
+        # queues for communicating with workers
         self._queue_start = queue_start
         self._queue_task = queue_task
         self._queue_outcome = queue_outcome
 
+        # central data structure this class takes care of
         self._call_status_dict = dict()
 
-        # counter for the number of tasks issued via this StatusDB
+        # counter for messages passed through this class
         self._count_task = 0
         self._count_start = 0
         self._count_outcome = 0

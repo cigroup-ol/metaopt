@@ -59,7 +59,7 @@ class ProcessWorkerEmployer(Employer):
         """
         Lays off the worker process that started the call given by id, if any.
 
-        :param call_id: ID of the call whose executing worker shall be layed off.
+        :param call_id: ID of the call whose executing worker to lay off.
         :param reason: Reason for the lay off. (optional)
         """
         with self._lock:
