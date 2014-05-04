@@ -4,9 +4,9 @@ from __future__ import division, print_function, with_statement
 
 from metaopt.invoker.base import BaseInvoker
 from metaopt.optimizer.base import BaseCaller
-from metaopt.plugins.util import Invocation
 from metaopt.util.stoppable import StoppedException, stoppable_method, \
     stopping_method
+from metaopt.plugins.util.invocation import Invocation
 
 
 class PluggableInvoker(BaseInvoker, BaseCaller):

@@ -3,13 +3,17 @@ Interface definition and implementation of objects that can be stopped.
 """
 from __future__ import division, print_function, with_statement
 
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 
 class BaseStoppable(object):
     """Abstract object that can be stopped."""
 
     __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self):
+        super(BaseStoppable, self).__init__()
 
     @abstractmethod
     def stop(self, reason=None):
@@ -24,7 +28,8 @@ class BaseStoppable(object):
         """
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def stopped(self):
         """
         Indicates whether this object is stopped.
@@ -77,6 +82,8 @@ class Stoppable(BaseStoppable):
     """An object that can be stopped."""
 
     def __init__(self):
+        super(Stoppable, self).__init__()
+
         self._stopped = False
 
     @stoppable_method

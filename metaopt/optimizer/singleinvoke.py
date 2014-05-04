@@ -5,11 +5,11 @@ Optimizer that issues one single invocation, only.
 from __future__ import division, print_function, with_statement
 
 from metaopt.core.args import ArgsCreator
-from metaopt.optimizer.base import BaseCaller, BaseOptimizer
 from metaopt.util.stoppable import StoppedException
+from metaopt.optimizer.optimizer import Optimizer
 
 
-class SingleInvokeOptimizer(BaseOptimizer, BaseCaller):
+class SingleInvokeOptimizer(Optimizer):
     """
     Optimizer that issues one single invocation, only.
     """

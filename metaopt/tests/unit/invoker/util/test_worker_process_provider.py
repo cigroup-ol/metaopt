@@ -9,7 +9,7 @@ import nose
 from nose.tools.nontrivial import raises
 
 from metaopt.invoker.util.status_db import StatusDB
-from metaopt.invoker.util.worker_provider import WorkerProcessProvider
+from metaopt.employer.process import ProcessWorkerEmployer
 
 
 class TestWorkerProcessProvider(object):
@@ -33,58 +33,58 @@ class TestWorkerProcessProvider(object):
         self._status_db = StatusDB(queue_task=self._queue_task,
                                    queue_start=self._queue_start,
                                    queue_outcome=self._queue_outcome)
-        self.provider = WorkerProcessProvider(queue_tasks=self._queue_task,
+        self.provider = ProcessWorkerEmployer(queue_tasks=self._queue_task,
                                               queue_outcome=self._queue_outcome,
                                               queue_start=self._queue_start,
                                               status_db=self._status_db)
 
     def teardown(self):
         """Nose will run this method after every test method."""
-        self.provider.release_all()
+        self.provider.abandon()
 
     def test_worker_process_provider_provision_once(self):
         """
-        A worker process provider can provision a worker process.
+        A worker process provider can employ a worker process.
         """
-        self.provider.provision()
+        self.provider.employ()
 
     def test_worker_process_provider_provision_repeated(self):
         """
-        A worker process provider can provision multiple worker processes.
+        A worker process provider can employ multiple worker processes.
         """
         number_of_workers = 1
         for _ in range(1, 10):
-            self.provider.provision(number_of_workers=number_of_workers)
+            self.provider.employ(number_of_workers=number_of_workers)
             assert self.provider.worker_count == number_of_workers
-            self.provider.release_all()
+            self.provider.abandon()
 
     @raises(IndexError)
     def test_worker_process_provider_provision_too_many(self):
         """
-        A worker process provider can provision a limited number of workers.
+        A worker process provider can employ a limited number of workers.
         """
-        # Try to provision a lot of workers.
+        # Try to employ a lot of workers.
         for number_of_workers in [_ ** _ for _ in range(0, 100)]:
-            self.provider.provision(number_of_workers=number_of_workers)
+            self.provider.employ(number_of_workers=number_of_workers)
 
     def test_worker_process_provider_provision_release_once(self):
         """
-        A worker process provider can provision and release a worker process.
+        A worker process provider can employ and release a worker process.
         """
-        self.provider.provision()
-        self.provider.release_all()
+        self.provider.employ()
+        self.provider.abandon()
 
     def test_worker_process_provider_provision_release_twice(self):
         """
         A worker process provider can provide a worker process repeatedly.
         """
         # once
-        self.provider.provision()
-        self.provider.release_all()
+        self.provider.employ()
+        self.provider.abandon()
 
         # and once more
-        self.provider.provision()
-        self.provider.release_all()
+        self.provider.employ()
+        self.provider.abandon()
 
     def test_worker_process_provider_initializes_count(self):
         """A worker process provider begins to count at 0."""
@@ -92,33 +92,33 @@ class TestWorkerProcessProvider(object):
 
     def test_worker_process_provider_counts_up(self):
         """A worker process provider counts in increments of 1."""
-        self.provider.provision(1)
+        self.provider.employ(1)
         assert self.provider.worker_count == 1
 
     def test_worker_process_provider_counts_up_down(self):
         """A worker process provider counts up and down."""
-        self.provider.provision(1)
+        self.provider.employ(1)
         assert self.provider.worker_count == 1
-        self.provider.release_all()
+        self.provider.abandon()
         assert self.provider.worker_count == 0
 
     def test_worker_process_provider_counts_up_down_twice(self):
         """A worker process provider counts up and down repeatedly."""
         # once
-        self.provider.provision(1)
+        self.provider.employ(1)
         assert self.provider.worker_count == 1
-        self.provider.release_all()
+        self.provider.abandon()
         assert self.provider.worker_count == 0
 
         # and once more
-        self.provider.provision(1)
+        self.provider.employ(1)
         assert self.provider.worker_count == 1
-        self.provider.release_all()
+        self.provider.abandon()
         assert self.provider.worker_count == 0
 
     def test_worker_process_provider_is_borg(self):
         """There can only be one instance of a worker process provider."""
-        my_provider = WorkerProcessProvider(queue_tasks=self._queue_task,
+        my_provider = ProcessWorkerEmployer(queue_tasks=self._queue_task,
                                             queue_outcome=self._queue_outcome,
                                             queue_start=self._queue_start,
                                             status_db=self._status_db)
@@ -126,12 +126,12 @@ class TestWorkerProcessProvider(object):
         number_of_workers = 1
 
         # left
-        self.provider.provision(number_of_workers=number_of_workers)
+        self.provider.employ(number_of_workers=number_of_workers)
         assert self.provider.worker_count == number_of_workers
         assert self.provider.worker_count == my_provider.worker_count
 
         # right
-        my_provider.provision(number_of_workers=number_of_workers)
+        my_provider.employ(number_of_workers=number_of_workers)
         assert self.provider.worker_count == number_of_workers * 2
         assert self.provider.worker_count == my_provider.worker_count
 
@@ -140,12 +140,12 @@ class TestWorkerProcessProvider(object):
         worker_count = 2  # any number more than one proves the point
 
         # once
-        self.provider.provision(number_of_workers=worker_count)
-        self.provider.release_all()
+        self.provider.employ(number_of_workers=worker_count)
+        self.provider.abandon()
 
         # and once more
-        self.provider.provision(number_of_workers=worker_count)
-        self.provider.release_all()
+        self.provider.employ(number_of_workers=worker_count)
+        self.provider.abandon()
 
 if __name__ == '__main__':
     nose.runmodule()

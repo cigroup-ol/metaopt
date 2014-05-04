@@ -12,8 +12,9 @@ import nose
 from nose.tools.nontrivial import raises
 
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.invoker.util.model import Call, Error, Result, Start, Task
-from metaopt.invoker.util.worker import Worker, WorkerProcess
+from metaopt.worker.util.lifecycle import Call, Error, Result, Start, Task
+from metaopt.worker.worker import Worker
+from metaopt.worker.process import ProcessWorker
 from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
 
 
@@ -34,12 +35,9 @@ class TestWorkerProcess(object):
         self._queue_start = manager.Queue()  # ignore error, this works
         self._queue_outcome = manager.Queue()  # ignore error, this works
 
-        worker_id = uuid.uuid4()
-        self.worker_process = WorkerProcess(worker_id=worker_id,
-                                            queue_outcome=self._queue_outcome,
+        self.worker_process = ProcessWorker(queue_outcome=self._queue_outcome,
                                             queue_start=self._queue_start,
                                             queue_tasks=self._queue_task)
-        self.worker_process.start()
 
     def teardown(self):
         """Nose will run this method after every test method."""

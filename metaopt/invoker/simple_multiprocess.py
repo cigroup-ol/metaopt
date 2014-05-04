@@ -7,19 +7,15 @@ from multiprocessing import Process, Queue
 from uuid import uuid4
 
 from metaopt.core.call import call
-from metaopt.invoker.base import BaseInvoker
+from metaopt.invoker.invoker import Invoker
 from metaopt.util.stoppable import stoppable_method
 
 
-class SimpleMultiprocessInvoker(BaseInvoker):
+class SimpleMultiprocessInvoker(Invoker):
     """Invoker that invokes objective functions sequentially."""
 
     def __init__(self):
         super(SimpleMultiprocessInvoker, self).__init__()
-
-        self._f = None
-        self._param_spec = None
-        self._return_spec = None
 
         self.result_queue = Queue()
 
@@ -28,30 +24,6 @@ class SimpleMultiprocessInvoker(BaseInvoker):
 
         self.running_worker_count = 0
         self.maximum_worker_count = 5
-
-    @property
-    def f(self):
-        return self._f
-
-    @f.setter
-    def f(self, value):
-        self._f = value
-
-    @property
-    def param_spec(self):
-        return self._param_spec
-
-    @param_spec.setter
-    def param_spec(self, value):
-        self._param_spec = value
-
-    @property
-    def return_spec(self):
-        return self._return_spec
-
-    @return_spec.setter
-    def return_spec(self, value):
-        self._return_spec = value
 
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):

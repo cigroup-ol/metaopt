@@ -3,21 +3,16 @@ Various utilities for the multiprocess invoker.
 """
 from __future__ import division, print_function, with_statement
 
-import uuid
 from multiprocessing.synchronize import Lock
 
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.invoker.util.model import Release
-from metaopt.invoker.util.worker import WorkerProcess
+from metaopt.worker.util.lifecycle import Layoff
+from metaopt.worker.process import ProcessWorker
+from metaopt.employer.employer import Employer
+from metaopt.employer.util.exception import LayoffException
 
 
-class ReleaseException(object):
-
-    def __init__(self, param0):
-        pass
-
-
-class WorkerProcessProvider(object):
+class ProcessWorkerEmployer(Employer):
     """
     Keeps track of up to as many worker processes as there are CPUs.
     """
@@ -43,26 +38,23 @@ class WorkerProcessProvider(object):
             self._worker_count_max = determine_worker_count(resources)
             self._status_db = status_db
 
-    def provision(self, number_of_workers=1):
+    def employ(self, number_of_workers=1):
         """
         Provisions a given number worker processes for future use.
         """
         with self._lock:
             if self._worker_count_max < \
                     (len(self._worker_processes) + number_of_workers):
-                raise IndexError("Cannot provision so many worker processes.")
+                raise IndexError("Cannot employ so many worker processes.")
 
             for _ in range(number_of_workers):
-                worker_id = uuid.uuid4()
-                worker_process = WorkerProcess(worker_id=worker_id,
-                                           queue_tasks=self._queue_task,
-                                           queue_outcome=self._queue_outcome,
-                                           queue_start=self._queue_start)
-                worker_process.daemon = True  # workers don't spawn processes
-                worker_process.start()
+                worker_process = ProcessWorker(
+                        queue_tasks=self._queue_task,
+                        queue_outcome=self._queue_outcome,
+                        queue_start=self._queue_start)
                 self._worker_processes.append(worker_process)
 
-    def release(self, call_id, reason):
+    def lay_off(self, call_id, reason):
         """
         Releases the worker process that started the call given by id, if any.
         """
@@ -79,9 +71,9 @@ class WorkerProcessProvider(object):
             except KeyError:
                 # nothing to do
                 return
-            self._release(worker_process, reason)
+            self._lay_off(worker_process, reason)
 
-    def _release(self, worker_process, reason):
+    def _lay_off(self, worker_process, reason):
         """Releases the given worker process."""
 
         # send kill signal and wait for the process to die
@@ -102,19 +94,20 @@ class WorkerProcessProvider(object):
                 call = None
 
         # send manually constructed release outcome
-        release = Release(worker_id=worker_process.worker_id,
+        release = Layoff(worker_id=worker_process.worker_id,
                           call=call, value=reason)
         self._queue_outcome.put(release)
 
-    def release_all(self):
+    def abandon(self, reason=None):
         """
         Releases all worker processes.
         """
         with self._lock:
-            # copy worker processes so that _release does not modify
-            reason = ReleaseException("Releasing all workers.")
+            # copy worker processes so that _lay_off does not modify
+            if reason is None:
+                reason = LayoffException("Releasing all workers.")
             for worker_process in self._worker_processes[:]:
-                self._release(worker_process, reason)
+                self._lay_off(worker_process=worker_process, reason=reason)
 
     def _get_worker_process_for_id(self, worker_id):
         """Utility method to resolve a worker id to a worker process."""

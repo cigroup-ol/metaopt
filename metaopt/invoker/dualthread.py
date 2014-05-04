@@ -7,12 +7,12 @@ import uuid
 from threading import Lock, Thread
 
 from metaopt.core.call import call
-from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.call_handle import CallHandle
 from metaopt.util.stoppable import stoppable_method, stopping_method
+from metaopt.invoker.invoker import Invoker
 
 
-class DualThreadInvoker(BaseInvoker):
+class DualThreadInvoker(Invoker):
     """Invoker that invokes objective functions sequentially."""
 
     def __init__(self):

@@ -2,10 +2,10 @@ from __future__ import division, print_function, with_statement
 
 from threading import Timer
 
-from metaopt.plugins.dummy import DummyPlugin
+from metaopt.plugins.plugin import Plugin
 
 
-class TimeoutPlugin(DummyPlugin):
+class TimeoutPlugin(Plugin):
     """
     Abort an invocation after a certain amount of time.
 

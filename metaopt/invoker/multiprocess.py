@@ -9,12 +9,13 @@ from threading import Lock
 
 from metaopt.invoker.base import BaseInvoker
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.invoker.util.model import Call, Error, Release, Result, Task
+from metaopt.worker.util.lifecycle import Call, Error, Layoff, Result, Task
 from metaopt.invoker.util.status_db import StatusDB
 from metaopt.invoker.util.call_handle import CallHandle
-from metaopt.invoker.util.worker_provider import WorkerProcessProvider
 from metaopt.util.stoppable import StoppedException, stoppable_method, \
     stopping_method
+from metaopt.employer.process import ProcessWorkerEmployer
+from metaopt.invoker.invoker import Invoker
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -22,7 +23,7 @@ except NameError:
     xrange = range  # rename range to xrange in python3
 
 
-class MultiProcessInvoker(BaseInvoker):
+class MultiProcessInvoker(Invoker):
     """
     Invoker that invokes objective functions in parallel using processes.
     """
@@ -44,7 +45,7 @@ class MultiProcessInvoker(BaseInvoker):
                                    queue_start=queue_start,
                                    queue_outcome=queue_outcome)
 
-        wpp = WorkerProcessProvider(resources=resources,
+        wpp = ProcessWorkerEmployer(resources=resources,
                                     queue_outcome=queue_outcome,
                                     queue_start=queue_start,
                                     queue_tasks=queue_task,
@@ -60,42 +61,6 @@ class MultiProcessInvoker(BaseInvoker):
         self._f = None  # objective function
         self._param_spec = None  # parameter specification
         self._return_spec = None  # return specification
-
-    @property
-    def f(self):
-        """Property for the function attribute."""
-        with self._lock:
-            return self._f
-
-    @f.setter
-    def f(self, function):
-        """Property for the function attribute."""
-        with self._lock:
-            self._f = function
-
-    @property
-    def param_spec(self):
-        """Property for the parameter specification attribute."""
-        with self._lock:
-            return self._param_spec
-
-    @param_spec.setter
-    def param_spec(self, param_spec):
-        """Setter for the parameter specification attribute."""
-        with self._lock:
-            self._param_spec = param_spec
-
-    @property
-    def return_spec(self):
-        """Property for the return specification attribute."""
-        with self._lock:
-            return self._return_spec
-
-    @return_spec.setter
-    def return_spec(self, return_spec):
-        """Setter for the return specification attribute."""
-        with self._lock:
-            self._return_spec = return_spec
 
     def _handle_error(self, error):
         """"""
@@ -120,14 +85,14 @@ class MultiProcessInvoker(BaseInvoker):
             # result.kwargs was None
             self._caller.on_result(value=result.value, fargs=result.call.args)
 
-    def _handle_release(self, release):
-        assert isinstance(release, Release)
+    def _handle_release(self, lay_off):
+        assert isinstance(lay_off, Layoff)
 
         try:
-            self._caller.on_error(error=release.value, fargs=release.call.args,
-                                  **release.call.kwargs)
+            self._caller.on_error(error=lay_off.value, fargs=lay_off.call.args,
+                                  **lay_off.call.kwargs)
         except AttributeError:
-            # release.call was None
+            # lay_off.call was None
             # This means, the WPP constructed the "call" object manually.
             # The caller is not expecting a result for those calls.
             # Nothing to do here.
@@ -139,8 +104,8 @@ class MultiProcessInvoker(BaseInvoker):
             self._handle_error(error=outcome)
         elif isinstance(outcome, Result):
             self._handle_result(result=outcome)
-        elif isinstance(outcome, Release):
-            self._handle_release(release=outcome)
+        elif isinstance(outcome, Layoff):
+            self._handle_release(lay_off=outcome)
         else:
             # Will not happen
             raise ValueError("Objects of this type are not allowed in the"
@@ -158,10 +123,10 @@ class MultiProcessInvoker(BaseInvoker):
         """
         self._caller = caller
 
-        # provision one new worker
+        # employ one new worker
         try:
             with self._lock:
-                self._worker_provider.provision()
+                self._worker_provider.employ()
         except IndexError:
             # The worker process provider was at its worker limit, already.
             # So no new worker could be provisioned.
@@ -217,9 +182,9 @@ class MultiProcessInvoker(BaseInvoker):
         """
 
         assert call_id is not None
-        self._worker_provider.release(call_id=call_id, reason=reason)
+        self._worker_provider.lay_off(call_id=call_id, reason=reason)
         try:
-            self._worker_provider.provision(number_of_workers=1)
+            self._worker_provider.employ(number_of_workers=1)
         except IndexError:
             # An invoke call provisioned another worker, already.
             # Therefore another worker took the place of the one we killed.
@@ -235,9 +200,9 @@ class MultiProcessInvoker(BaseInvoker):
         Gets called by a timer in an individual thread.
         """
         with self._lock:
-            # terminate all workers and handle their release outcomes
+            # terminate all workers and handle their lay_off outcomes
             count_workers_killed = self._worker_provider.worker_count
-            self._worker_provider.release_all()
+            self._worker_provider.abandon()
             for _ in xrange(count_workers_killed - 1):
                 outcome = self._status_db.wait_for_one_outcome()
                 self._handle_outcome(outcome=outcome)

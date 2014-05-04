@@ -5,6 +5,7 @@ from __future__ import division, print_function, with_statement
 
 import itertools
 import string
+from metaopt.core.returnspec import ReturnSpec
 
 
 class EqualityMatcher(object):
@@ -47,7 +48,8 @@ class EqualityMatcher(object):
                 if not other[key] == value:
                     return False
             return True
-        if type(self.one) == Exception and type(other) == Exception:
-            if repr(self.one) == repr(other):
-                return True
+        if type(self.one) == ReturnSpec and type(other) == ReturnSpec:
+            return self.one.return_values == other.return_values
+        if repr(self.one) == repr(other):
+            return True
         raise NotImplementedError(type(self.one), type(other))

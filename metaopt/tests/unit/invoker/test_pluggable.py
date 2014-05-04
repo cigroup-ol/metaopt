@@ -11,49 +11,49 @@ from nose.tools import eq_
 from metaopt.core.args import ArgsCreator
 from metaopt.invoker.pluggable import PluggableInvoker
 from metaopt.tests.util.function.integer.fast.implicit.f import f
+from metaopt.core.returnspec import ReturnSpec
+from metaopt.tests.util.matcher import EqualityMatcher
 
 f = f  # helps static code checkers identify attributes.
 
 
 def test_before_first_invoke_sets_up_plugins():
-    mock_plugin = Mock()
-    mock_plugin.setup = Mock()
-
-    plugins = [mock_plugin]
     stub_invoker = Mock()
-
     stub_invoker.f = f
-
-    stub_invoker.param_spec = object()
-    stub_invoker.return_spec = object()
-
+    stub_invoker.param_spec = f.param_spec
+    stub_invoker.return_spec = ReturnSpec(f)
     stub_invoker.invoke = Mock(return_value=(None))
     stub_invoker.wait = Mock(return_value=False)
 
+    mock_plugin = Mock()
+    mock_plugin.setup = Mock()
+    plugins = [mock_plugin]
+
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
+    invoker.f = f
 
     args = ArgsCreator(f.param_spec).args()
-    invoker.invoke(None, args)
+    invoker.invoke(caller=None, fargs=args)
 
     mock_plugin.setup.assert_called_once_with(
-        stub_invoker.f,
-        stub_invoker.param_spec,
-        stub_invoker.return_spec,
+        EqualityMatcher(stub_invoker.f),
+        EqualityMatcher(stub_invoker.param_spec),
+        EqualityMatcher(stub_invoker.return_spec),
     )
 
 
 def test_before_invoke_calls_plugins():
-    mock_plugin = Mock()
-    mock_plugin.before_invoke = Mock(spec=[])
-
-    plugins = [mock_plugin]
     stub_invoker = Mock()
     stub_invoker.f = f
-
     stub_invoker.invoke = Mock(return_value=(None, False))
     stub_invoker.wait = Mock(return_value=False)
 
+    mock_plugin = Mock()
+    mock_plugin.before_invoke = Mock(spec=[])
+    plugins = [mock_plugin]
+
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
+    invoker.f = f
 
     args = ArgsCreator(f.param_spec).args()
     invoker.invoke(None, args)
@@ -73,6 +73,7 @@ def test_on_invoke_calls_plugins():
     stub_invoker.wait = Mock(return_value=False)
 
     invoker = PluggableInvoker(stub_invoker, plugins=plugins)
+    invoker.f = f
 
     args = ArgsCreator(f.param_spec).args()
     invoker.invoke(None, args)
@@ -102,6 +103,8 @@ def test_on_result_calls_plugins():
         invoker.on_result(0, fargs, **kwargs)
         return None, False
 
+    invoker.f = f
+
     stub_invoker.invoke = Mock(spec=[])
     stub_invoker.invoke.side_effect = stub_invoke
 
@@ -130,6 +133,8 @@ def test_on_error_calls_plugins():
         invoker.on_error(None, fargs, **kwargs)
         return None, False
 
+    invoker.f = f
+
     stub_invoker.invoke = Mock(spec=[])
     stub_invoker.invoke.side_effect = stub_invoke
 
@@ -154,6 +159,8 @@ def test_invocation_can_be_retried():
         del caller  # TODO
         invoker.on_result(0, fargs, **kwargs)
         return None, False
+
+    invoker.f = f
 
     mock_invoker.invoke = Mock(spec=[])
     mock_invoker.invoke.side_effect = stub_invoke
@@ -183,6 +190,7 @@ def test_invocation_tries_is_saved():
     plugins = [stub_plugin]
 
     invoker = PluggableInvoker(mock_invoker, plugins=plugins)
+    invoker.f = f
 
     def stub_invoke(caller, fargs, **kwargs):
         caller.on_result(0, fargs, **kwargs)

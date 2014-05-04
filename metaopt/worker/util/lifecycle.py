@@ -1,5 +1,5 @@
 """
-Models for data exchange between processes.
+Models for message exchanges between employers and workers.
 """
 from __future__ import division, print_function, with_statement
 
@@ -21,4 +21,4 @@ Result = namedtuple("Result", ["worker_id", "call", "value"])
 Error = namedtuple("Error", ["worker_id", "call", "value"])
 
 # data structure for declaring that a worker was terminated
-Release = namedtuple("Release", ["worker_id", "call", "value"])
+Layoff = namedtuple("Layoff", ["worker_id", "call", "value"])

@@ -4,7 +4,7 @@ Means to stop tasks for invokers.
 from __future__ import division, print_function, with_statement
 
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
-from metaopt.invoker.util.worker_provider import ReleaseException
+from metaopt.employer.util.exception import LayoffException
 
 
 class CallHandle(Stoppable):
@@ -24,5 +24,5 @@ class CallHandle(Stoppable):
         Gets called by a timer from another thread.
         """
         if reason is None:
-            reason = ReleaseException("Stopping this call.")
+            reason = LayoffException("Stopping a call via its call handle.")
         self._invoker.stop_call(call_id=self._call_id, reason=reason)

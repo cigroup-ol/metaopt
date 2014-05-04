@@ -8,9 +8,9 @@ from math import exp
 from random import gauss, sample
 
 from metaopt.core.args import ArgsCreator
-from metaopt.optimizer.base import BaseCaller, BaseOptimizer
 from metaopt.optimizer.util import default_mutation_stength
 from metaopt.util.stoppable import StoppedException
+from metaopt.optimizer.optimizer import Optimizer
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -18,7 +18,7 @@ except NameError:
     xrange = range  # rename range to xrange in python3
 
 
-class SAESOptimizer(BaseOptimizer, BaseCaller):
+class SAESOptimizer(Optimizer):
     """
     Optimization based on a self-adaptive evolution strategy (SAES)
 

@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D  # Load 3d plots capabilities
 from numpy import meshgrid
 from scipy.interpolate import griddata
 
-from metaopt.plugins.dummy import DummyPlugin
+from metaopt.plugins.plugin import Plugin
 
 NUMBER_OF_SAMPLES = 200
 
@@ -18,7 +18,7 @@ COLORMAP = cm.jet
 REVERSED_COLORMAP = cm.jet_r
 
 
-class VisualizeLandscapePlugin(DummyPlugin):
+class VisualizeLandscapePlugin(Plugin):
     def __init__(self, x_param_index=0, y_param_index=1):
         """Visualize fitness landscape"""
         self.x_param_index = x_param_index
@@ -142,7 +142,7 @@ class VisualizeLandscapePlugin(DummyPlugin):
         return self.param_spec.params.values()[self.y_param_index].interval
 
 
-class VisualizeBestFitnessPlugin(DummyPlugin):
+class VisualizeBestFitnessPlugin(Plugin):
     """Visualize optimization progess"""
     def __init__(self):
         self.best_fitnesses = []

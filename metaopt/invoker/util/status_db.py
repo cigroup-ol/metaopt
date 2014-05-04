@@ -3,7 +3,7 @@ Database that keeps track of worker task relations.
 """
 from __future__ import division, print_function, with_statement
 
-from metaopt.invoker.util.model import Error, Release, Result, Start, Task
+from metaopt.worker.util.lifecycle import Error, Layoff, Result, Start, Task
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
@@ -58,11 +58,11 @@ class StatusDB(Stoppable):
         """Handles an error received from the worker via the result queue."""
         self._call_status_dict[error.call.id] = error
 
-    def _handle_release(self, release):
+    def _handle_release(self, lay_off):
         for (task_id, status) in self._call_status_dict.iteritems():
             try:
-                if release.worker_id == status.worker_id:
-                    self._call_status_dict[task_id] = release
+                if lay_off.worker_id == status.worker_id:
+                    self._call_status_dict[task_id] = lay_off
             except AttributeError:
                 # The status is idle.
                 # We do not know the worker, yet.
@@ -79,8 +79,8 @@ class StatusDB(Stoppable):
             self._handle_error(error=outcome)
             return outcome
 
-        if isinstance(outcome, Release):
-            self._handle_release(release=outcome)
+        if isinstance(outcome, Layoff):
+            self._handle_release(lay_off=outcome)
             return outcome
 
         raise TypeError("%s objects are not allowed in the result queue" %
@@ -196,7 +196,12 @@ class StatusDB(Stoppable):
         """Empties the outcome queue, handling all outcomes."""
         while not self._queue_outcome.empty():
             outcome = self.wait_for_one_outcome()
-            self._handle_outcome(outcome)
+            try:
+                self._handle_outcome(outcome)
+            except ValueError:
+                # Duplicate result. Should not happen. TODO
+                raise ValueError("Got a duplicate outcome. " +
+                                 "Make sure IDs are unique.")
 
     @stopping_method
     def stop(self, reason=None):
@@ -204,10 +209,11 @@ class StatusDB(Stoppable):
         self._empty_queue_task()
         assert self._queue_task.empty()
         # issue task done for all unchecked messages of the task queue
+        # TODO this should not be necessary
         while True:
             try:
                 self._queue_task.task_done()
-            except Exception:
+            except ValueError:
                 # no more task done allowed, we are done here
                 break
         self._queue_task.join()
@@ -216,22 +222,17 @@ class StatusDB(Stoppable):
         assert self._queue_start.empty()
         self._queue_start.join()
 
-        # We may have recorded tasks in this database that were never started.
+        # We may have recorded a task in this database that was never started.
         # This happens when all workers get stopped before one starts the task.
-        # So send back a release to the caller for all tasks.
+        # So send back a lay_off to the caller for all not yet started tasks.
         for task in self._call_status_dict.values():
             if not isinstance(task, Task):
                 continue
-            release = Release(worker_id=None, call=task.call, value=reason)
-            self._queue_outcome.put(release)
+            lay_off = Layoff(worker_id=None, call=task.call, value=reason)
+            #self._queue_outcome.put(lay_off)
 
-        while not self._queue_outcome.empty():
-            try:
-                self._empty_queue_outcome()
-            except ValueError:
-                # Duplicate result. Should not happen. TODO
-                raise ValueError("Got a duplicate outcome." +
-                                 "Make sure IDs are unique.")
+        self._empty_queue_outcome()
+        assert self._queue_outcome.empty()
         self._queue_outcome.join()
 
     @property

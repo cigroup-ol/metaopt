@@ -14,8 +14,8 @@ from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.invoker.pluggable import PluggableInvoker
 from metaopt.invoker.simple_multiprocess import SimpleMultiprocessInvoker
 from metaopt.invoker.singleprocess import SingleProcessInvoker
-from metaopt.invoker.stoppable import StoppableInvoker
-from metaopt.invoker.util.import_function import import_function
+from metaopt.invoker.invoker import Invoker
+from metaopt.worker.util.import_function import import_function
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer

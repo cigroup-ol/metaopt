@@ -27,6 +27,42 @@ class BaseInvoker(Stoppable):
     def __init__(self):
         super(BaseInvoker, self).__init__()
 
+    @property
+    @abc.abstractmethod
+    def f(self):
+        """Property for the function attribute."""
+        pass
+
+    @f.setter
+    @abc.abstractmethod
+    def f(self, function):
+        """Property for the function attribute."""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def param_spec(self):
+        """Property for the parameter specification attribute."""
+        pass
+
+    @param_spec.setter
+    @abc.abstractmethod
+    def param_spec(self, param_spec):
+        """Setter for the parameter specification attribute."""
+        pass
+
+    @property
+    @abc.abstractmethod
+    def return_spec(self):
+        """Property for the return specification attribute."""
+        pass
+
+    @return_spec.setter
+    @abc.abstractmethod
+    def return_spec(self, return_spec):
+        """Setter for the return specification attribute."""
+        pass
+
     @abc.abstractmethod
     @stoppable_method
     def invoke(self, caller, fargs, **kwargs):
@@ -59,7 +95,7 @@ class BaseInvoker(Stoppable):
 
         :rtype: TaskHandle with the task created for the given f and args.
         """
-        raise NotImplementedError()
+        pass
 
     @abc.abstractmethod
     def wait(self):
@@ -76,34 +112,4 @@ class BaseInvoker(Stoppable):
 
         :rtype: None
         """
-        raise NotImplementedError()
-
-    @property
-    def f(self):
-        """Property for the function attribute."""
-        raise NotImplementedError()
-
-    @f.setter
-    def f(self, function):
-        """Property for the function attribute."""
-        raise NotImplementedError()
-
-    @property
-    def param_spec(self):
-        """Property for the parameter specification attribute."""
-        raise NotImplementedError()
-
-    @param_spec.setter
-    def param_spec(self, param_spec):
-        """Setter for the parameter specification attribute."""
-        raise NotImplementedError()
-
-    @property
-    def return_spec(self):
-        """Property for the return specification attribute."""
-        raise NotImplementedError()
-
-    @return_spec.setter
-    def return_spec(self, return_spec):
-        """Setter for the return specification attribute."""
-        raise NotImplementedError()
+        pass

@@ -1,65 +1,38 @@
 """
-Utilities around the worker handle.
+Worker implementation that that runs in an own Python Process.
+
+It calls functions with arguments, both of which it gets from a queue.
 """
-from __future__ import division, print_function, with_statement
 
 import pickle
 import traceback
-from abc import ABCMeta, abstractmethod
 from multiprocessing import Process
 from pickle import PicklingError
 from tempfile import TemporaryFile
+import uuid
 
 from metaopt.core.call import call
-from metaopt.invoker.util.import_function import import_function
-from metaopt.invoker.util.model import Error, Result, Start
+from metaopt.worker.util.import_function import import_function
+from metaopt.worker.util.lifecycle import Error, Result, Start
+from metaopt.worker.worker import Worker
 
 
-class BaseWorker(object):
-    """Interface definition for worker implementations."""
+class ProcessWorker(Process, Worker):
+    """
+    Worker implementation that that runs in an own Python Process.
 
-    __metaclass__ = ABCMeta
+    It calls functions with arguments, both of which it gets from a queue.
+    """
 
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def worker_id(self):
-        """Property for the _worker_id attribute."""
-        pass
-
-    @abstractmethod
-    def run(self):
-        """
-        Makes this worker idle and pick up tasks from the  queue.
-        """
-        pass
-
-
-class Worker(BaseWorker):
-    """Minimal worker implementation."""
-
-    def __init__(self):
-        super(Worker, self).__init__()
-        self._worker_id = None
-
-    @property
-    def worker_id(self):
-        return self._worker_id
-
-    def run(self):
-        raise NotImplementedError()
-
-
-class WorkerProcess(Process, Worker):
-    """Calls functions with arguments, both given by a queue."""
-
-    def __init__(self, worker_id, queue_outcome, queue_start, queue_tasks):
-        super(WorkerProcess, self).__init__()
-        self._worker_id = worker_id
+    def __init__(self, queue_outcome, queue_start, queue_tasks):
+        super(ProcessWorker, self).__init__()
+        self._worker_id = uuid.uuid4()
         self._queue_outcome = queue_outcome
         self._queue_start = queue_start
         self._queue_task = queue_tasks
+
+        self.daemon = True  # workers don't spawn processes
+        self.start()
 
     @property
     def worker_id(self):

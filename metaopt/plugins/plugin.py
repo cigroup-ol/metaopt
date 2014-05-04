@@ -3,10 +3,13 @@ from __future__ import division, print_function, with_statement
 from metaopt.plugins.base import BasePlugin
 
 
-class DummyPlugin(BasePlugin):
+class Plugin(BasePlugin):
     """
     Invocation plugin that does nothing for all hooks.
     """
+
+    def __init__(self):
+        super(Plugin, self).__init__()
 
     def setup(self, f, param_spec, return_spec):
         """Do nothing"""

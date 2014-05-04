@@ -1,5 +1,5 @@
 """
-This module provides an abstract base class for implementing optimizer.
+This module provides an abstract base classes for implementing optimizers.
 
 It provides two abstract base classes :class:`BaseOptimizer` and
 :class:`BaseCaller`. All optimizers should implement :class:`BaseOptimizer`
@@ -23,7 +23,7 @@ class BaseCaller(object):
 
     @abstractmethod
     def __init__(self):
-        pass
+        super(BaseCaller, self).__init__()
 
     @abstractmethod
     def on_result(self, value, fargs, **kwargs):

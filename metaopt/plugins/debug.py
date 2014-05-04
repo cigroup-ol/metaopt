@@ -4,10 +4,10 @@ Plugin that displays messages for all hooks.
 
 from __future__ import division, print_function, with_statement
 
-from metaopt.plugins.dummy import DummyPlugin
+from metaopt.plugins.dummy import Plugin
 
 
-class DebugPlugin(DummyPlugin):
+class DebugPlugin(Plugin):
     """
     Logs all interaction with the invoker to the standard output.
     """

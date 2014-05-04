@@ -6,7 +6,7 @@ from __future__ import division, print_function, with_statement
 import nose
 
 from metaopt.invoker.util.determine_package import determine_package
-from metaopt.invoker.util.import_function import import_function
+from metaopt.worker.util.import_function import import_function
 
 
 def f():

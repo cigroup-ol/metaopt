@@ -3,10 +3,10 @@ Plugin that logs some events to standard output.
 """
 from __future__ import division, print_function, with_statement
 
-from metaopt.plugins.dummy import DummyPlugin
+from metaopt.plugins.plugin import Plugin
 
 
-class PrintPlugin(DummyPlugin):
+class PrintPlugin(Plugin):
     """
     Logs all invocation events to the standard output.
 
