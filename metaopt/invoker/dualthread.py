@@ -78,6 +78,7 @@ class DualThreadInvoker(Invoker):
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
         self._caller = caller
+        value = None
         try:
             value = call(f, fargs, self.param_spec, self.return_spec)
         except Exception as value:
