@@ -78,10 +78,10 @@ class DualThreadInvoker(Invoker):
         # TODO Make this a WorkerThread, subclassing multiprocess.Thread.
         # (Symmetrically to the WorkerProcess)
         self._caller = caller
-        value = None
+
         try:
             value = call(f, fargs, self.param_spec, self.return_spec)
-        except Exception as value:
+        except Exception as exception:
             with self.lock:
                 self.cancelled = True
 
@@ -92,7 +92,7 @@ class DualThreadInvoker(Invoker):
         if not cancelled:
             self._caller.on_result(value=value, fargs=fargs, **kwargs)
         else:
-            self._caller.on_error(value=value, fargs=fargs, **kwargs)
+            self._caller.on_error(value=exception, fargs=fargs, **kwargs)
 
     def wait(self):
         if self.thread is not None:
