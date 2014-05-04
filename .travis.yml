@@ -9,7 +9,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install -r requirements_py2.7.txt; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install -r requirements_py3.2.txt; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then pip install -r requirements_py3.3.txt; fi
-  - pip install -r requirements_coverage.txt
+  - pip install -r requirements_travis.txt
 script:
   # Temporary solution to travis issue #155
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
