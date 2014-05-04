@@ -58,11 +58,11 @@ class StatusDB(Stoppable):
         """Handles an error received from the worker via the result queue."""
         self._call_status_dict[error.call.id] = error
 
-    def _handle_release(self, lay_off):
+    def _handle_layoff(self, layoff):
         for (task_id, status) in self._call_status_dict.iteritems():
             try:
-                if lay_off.worker_id == status.worker_id:
-                    self._call_status_dict[task_id] = lay_off
+                if layoff.worker_id == status.worker_id:
+                    self._call_status_dict[task_id] = layoff
             except AttributeError:
                 # The status is idle.
                 # We do not know the worker, yet.
@@ -80,7 +80,7 @@ class StatusDB(Stoppable):
             return outcome
 
         if isinstance(outcome, Layoff):
-            self._handle_release(lay_off=outcome)
+            self._handle_layoff(layoff=outcome)
             return outcome
 
         raise TypeError("%s objects are not allowed in the result queue" %

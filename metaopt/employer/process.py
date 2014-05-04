@@ -41,7 +41,7 @@ class ProcessWorkerEmployer(Employer):
 
     def employ(self, number_of_workers=1):
         """
-        Provisions a given number worker processes for future use.
+        Employs a given number worker processes for future tasks.
         """
         with self._lock:
             if self._worker_count_max < \
@@ -57,7 +57,10 @@ class ProcessWorkerEmployer(Employer):
 
     def lay_off(self, call_id, reason=None):
         """
-        Releases the worker process that started the call given by id, if any.
+        Lays off the worker process that started the call given by id, if any.
+
+        :param call_id: ID of the call whose executing worker shall be layed off.
+        :param reason: Reason for the lay off. (optional)
         """
         with self._lock:
             try:
@@ -75,7 +78,7 @@ class ProcessWorkerEmployer(Employer):
             self._lay_off(worker_process, reason)
 
     def _lay_off(self, worker_process, reason):
-        """Releases the given worker process."""
+        """Lays off the given process workers for the given reason."""
 
         # send kill signal and wait for the process to die
         assert worker_process.is_alive()
@@ -94,14 +97,14 @@ class ProcessWorkerEmployer(Employer):
                 # Construct a None "call" manually to use as a dummy pay load.
                 call = None
 
-        # send manually constructed release outcome
-        release = Layoff(worker_id=worker_process.worker_id,
+        # send manually constructed layoff outcome
+        layoff = Layoff(worker_id=worker_process.worker_id,
                           call=call, value=reason)
-        self._queue_outcome.put(release)
+        self._queue_outcome.put(layoff)
 
     def abandon(self, reason=None):
         """
-        Releases all worker processes.
+        Lays off all worker processes.
         """
         with self._lock:
             # copy worker processes so that _lay_off does not modify

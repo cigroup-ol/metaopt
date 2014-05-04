@@ -42,13 +42,13 @@ class TestWorkerProcessProvider(object):
         """Nose will run this method after every test method."""
         self.provider.abandon()
 
-    def test_worker_process_provider_provision_once(self):
+    def test_worker_process_provider_employ_once(self):
         """
         A worker process provider can employ a worker process.
         """
         self.provider.employ()
 
-    def test_worker_process_provider_provision_repeated(self):
+    def test_worker_process_provider_employ_repeated(self):
         """
         A worker process provider can employ multiple worker processes.
         """
@@ -59,7 +59,7 @@ class TestWorkerProcessProvider(object):
             self.provider.abandon()
 
     @raises(IndexError)
-    def test_worker_process_provider_provision_too_many(self):
+    def test_worker_process_provider_employ_too_many(self):
         """
         A worker process provider can employ a limited number of workers.
         """
@@ -67,16 +67,16 @@ class TestWorkerProcessProvider(object):
         for number_of_workers in [_ ** _ for _ in range(0, 100)]:
             self.provider.employ(number_of_workers=number_of_workers)
 
-    def test_worker_process_provider_provision_release_once(self):
+    def test_worker_process_provider_employ_layoff_once(self):
         """
-        A worker process provider can employ and release a worker process.
+        A worker process provider can employ and layoff a worker process.
         """
         self.provider.employ()
         self.provider.abandon()
 
-    def test_worker_process_provider_provision_release_twice(self):
+    def test_worker_process_provider_employ_layoff_twice(self):
         """
-        A worker process provider can provide a worker process repeatedly.
+        A worker process provider can employ a worker process repeatedly.
         """
         # once
         self.provider.employ()
@@ -135,8 +135,8 @@ class TestWorkerProcessProvider(object):
         assert self.provider.worker_count == number_of_workers * 2
         assert self.provider.worker_count == my_provider.worker_count
 
-    def test_worker_process_provider_provision_and_stop_multiple_workers(self):
-        """Workers can be provisioned and released repeatedly."""
+    def test_worker_process_provider_employ_and_stop_multiple_workers(self):
+        """Workers can be employed and laid off repeatedly."""
         worker_count = 2  # any number more than one proves the point
 
         # once

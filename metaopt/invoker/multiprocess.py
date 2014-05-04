@@ -70,7 +70,6 @@ class MultiProcessInvoker(Invoker):
                                   **error.call.kwargs)
         except TypeError:
             # error.kwargs was None
-            print(self._caller)
             self._caller.on_error(value=error.value, fargs=error.call.args)
 
     def _handle_result(self, result):
@@ -86,14 +85,14 @@ class MultiProcessInvoker(Invoker):
             # result.kwargs was None
             self._caller.on_result(value=result.value, fargs=result.call.args)
 
-    def _handle_release(self, lay_off):
-        assert isinstance(lay_off, Layoff)
+    def _handle_layoff(self, layoff):
+        assert isinstance(layoff, Layoff)
 
         try:
-            self._caller.on_error(value=lay_off.value, fargs=lay_off.call.args,
-                                  **lay_off.call.kwargs)
+            self._caller.on_error(value=layoff.value, fargs=layoff.call.args,
+                                  **layoff.call.kwargs)
         except AttributeError:
-            # lay_off.call was None
+            # layoff.call was None
             # This means, the WPP constructed the "call" object manually.
             # The caller is not expecting a result for those calls.
             # Nothing to do here.
@@ -106,7 +105,7 @@ class MultiProcessInvoker(Invoker):
         elif isinstance(outcome, Result):
             self._handle_result(result=outcome)
         elif isinstance(outcome, Layoff):
-            self._handle_release(lay_off=outcome)
+            self._handle_layoff(layoff=outcome)
         else:
             # Will not happen
             raise ValueError("Objects of this type are not allowed in the"
@@ -130,7 +129,7 @@ class MultiProcessInvoker(Invoker):
                 self._worker_provider.employ()
         except IndexError:
             # The worker process provider was at its worker limit, already.
-            # So no new worker could be provisioned.
+            # So no new worker could be employed.
             # We can not assume this invoke's task will be started immediately.
             # So wait for a free worker by getting and handling an outcome.
             outcome = self._status_db.wait_for_one_outcome()
@@ -187,7 +186,7 @@ class MultiProcessInvoker(Invoker):
         try:
             self._worker_provider.employ(number_of_workers=1)
         except IndexError:
-            # An invoke call provisioned another worker, already.
+            # An invoke call employed another worker, already.
             # Therefore another worker took the place of the one we killed.
             # That is OK, moving on.
             pass
