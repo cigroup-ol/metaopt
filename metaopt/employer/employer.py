@@ -18,8 +18,8 @@ class Employer(BaseEmployer):
 
         self._worker_count = 0
 
-    def employ(self):
-        self._worker_count += 1
+    def employ(self, number_of_workers=1):
+        self._worker_count += number_of_workers
 
     def lay_off(self, call_id, reason=None):
         del call_id
