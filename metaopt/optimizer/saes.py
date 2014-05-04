@@ -103,13 +103,12 @@ class SAESOptimizer(Optimizer):
 
             child_args = args_creator.randomize(child_args, child_args_sigma)
 
-            tau0_random = gauss(0, 1)
+            self.tau0_random = gauss(0, 1)
 
             def mutate_sigma(sigma):
-                tau0 = self.tau0
-                tau1 = self.tau1
-                return sigma * exp(tau0 * tau0_random) \
-                    * exp(tau1 * gauss(0, 1))
+                tau0_randomized = self.tau0 * self.tau0_random
+                tau1_randomized = self.tau1 * gauss(0, 1)
+                return sigma * exp(tau0_randomized) * exp(tau1_randomized)
 
             child_args_sigma = map(mutate_sigma, child_args_sigma)
 
@@ -150,5 +149,8 @@ class SAESOptimizer(Optimizer):
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_indivual = scored_individual
 
-    def on_error(self, error, fargs, individual, **kwargs):
-        pass
+    def on_error(self, value, fargs, individual, **kwargs):
+        del value  # TODO
+        del fargs  # TODO
+        del individual  # TODO
+        del kwargs  # TODO

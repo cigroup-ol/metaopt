@@ -98,8 +98,8 @@ class ProcessWorkerEmployer(Employer):
                 call = None
 
         # send manually constructed layoff outcome
-        layoff = Layoff(worker_id=worker_process.worker_id,
-                          call=call, value=reason)
+        layoff = Layoff(worker_id=worker_process.worker_id, call=call,
+                        value=reason)
         self._queue_outcome.put(layoff)
 
     def abandon(self, reason=None):

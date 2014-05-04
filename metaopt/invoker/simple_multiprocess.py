@@ -49,7 +49,7 @@ class SimpleMultiprocessInvoker(Invoker):
         worker_data = (caller, fargs, kwargs)
 
         worker = Process(target=self.worker_target,
-            args=(worker_name, self.result_queue, fargs))
+                         args=(worker_name, self.result_queue, fargs))
 
         self.running_worker_count += 1
 

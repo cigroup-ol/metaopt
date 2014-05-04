@@ -76,9 +76,9 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         invocation.tries += 1
 
         try:
-            invocation.current_task = self._invoker.invoke(caller=self,
-                                                           fargs=fargs,
-                invocation=invocation)
+            invocation.current_task = \
+                self._invoker.invoke(caller=self, fargs=fargs,
+                                     invocation=invocation)
         except StoppedException:
             return invocation.current_task
 
@@ -106,7 +106,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
                         invocation=invocation, **invocation.kwargs)
         else:
             self._caller.on_result(value=value, fargs=fargs,
-                                   **invocation.kwargs)
+                                   invocation=invocation, **invocation.kwargs)
 
     def on_error(self, value, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_error method."""
@@ -116,7 +116,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         for plugin in self._plugins:
             plugin.on_error(invocation=invocation)
 
-        self._caller.on_error(value=value, fargs=fargs, **invocation.kwargs)
+        self._caller.on_error(value=value, fargs=fargs, invocation=invocation,
+                              **invocation.kwargs)
 
         invocation.error = None
 
