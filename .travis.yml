@@ -15,4 +15,4 @@ script:
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
   - make test
 after_success:
-  - coveralls debug
+  - coveralls
