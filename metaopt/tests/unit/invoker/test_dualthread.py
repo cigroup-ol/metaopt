@@ -110,7 +110,7 @@ def test_invoke_calls_on_error():
 
     args = ArgsCreator(failing_f.param_spec).args()
 
-    invoker.invoke(caller, args)
+    invoker.invoke(caller=caller, fargs=args)
     invoker.wait()
 
     assert not caller.on_result.called

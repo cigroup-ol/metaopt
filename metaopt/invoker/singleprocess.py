@@ -20,10 +20,10 @@ class SingleProcessInvoker(Invoker):
         self._caller = caller
         del caller
         try:
-            result = call(self.f, fargs)
-            self._caller.on_result(result, fargs, **kwargs)
-        except Exception as error:
-            self._caller.on_error(error, fargs, **kwargs)
+            value = call(self.f, fargs)
+            self._caller.on_result(value=value, fargs=fargs, **kwargs)
+        except Exception as value:
+            self._caller.on_error(value=value, fargs=fargs, **kwargs)
 
     def wait(self):
         """Blocks till all invoke, on_error or on_result calls are done."""

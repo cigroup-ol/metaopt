@@ -35,5 +35,5 @@ class GridSearchOptimizer(Optimizer):
         if best_fitness is None or fitness < best_fitness:
             self.best = (fargs, fitness)
 
-    def on_error(self, error, fargs, **kwargs):
+    def on_error(self, value, fargs, **kwargs):
         pass

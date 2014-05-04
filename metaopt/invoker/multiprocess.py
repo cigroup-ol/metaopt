@@ -66,11 +66,12 @@ class MultiProcessInvoker(Invoker):
         """"""
         assert isinstance(error, Error)
         try:
-            self._caller.on_error(error=error.value, fargs=error.call.args,
+            self._caller.on_error(value=error.value, fargs=error.call.args,
                                   **error.call.kwargs)
         except TypeError:
             # error.kwargs was None
-            self._caller.on_error(error=error.value, fargs=error.call.args)
+            print(self._caller)
+            self._caller.on_error(value=error.value, fargs=error.call.args)
 
     def _handle_result(self, result):
         """"""
@@ -89,7 +90,7 @@ class MultiProcessInvoker(Invoker):
         assert isinstance(lay_off, Layoff)
 
         try:
-            self._caller.on_error(error=lay_off.value, fargs=lay_off.call.args,
+            self._caller.on_error(value=lay_off.value, fargs=lay_off.call.args,
                                   **lay_off.call.kwargs)
         except AttributeError:
             # lay_off.call was None

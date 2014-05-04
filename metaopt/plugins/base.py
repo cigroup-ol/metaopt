@@ -50,7 +50,7 @@ class BasePlugin(object):
         """
         Called after the invoker called the objective function
 
-        Since objective functions are usually called asyncronously `invocation`
+        Since objective functions are usually called asynchronously `invocation`
         will not contain any results yet.
 
         :param invocation: Information about the current (and past) invocations

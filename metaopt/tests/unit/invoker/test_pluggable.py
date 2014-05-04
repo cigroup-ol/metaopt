@@ -100,7 +100,7 @@ def test_on_result_calls_plugins():
 
     def stub_invoke(caller, fargs, **kwargs):
         del caller  # TODO
-        invoker.on_result(0, fargs, **kwargs)
+        invoker.on_result(value=0, fargs=fargs, **kwargs)
         return None, False
 
     invoker.f = f
@@ -130,7 +130,7 @@ def test_on_error_calls_plugins():
 
     def stub_invoke(caller, fargs, **kwargs):
         del caller  # TODO
-        invoker.on_error(None, fargs, **kwargs)
+        invoker.on_error(value=None, fargs=fargs, **kwargs)
         return None, False
 
     invoker.f = f
@@ -157,7 +157,7 @@ def test_invocation_can_be_retried():
 
     def stub_invoke(caller, fargs, **kwargs):
         del caller  # TODO
-        invoker.on_result(0, fargs, **kwargs)
+        invoker.on_result(value=0, fargs=fargs, **kwargs)
         return None, False
 
     invoker.f = f
@@ -193,7 +193,7 @@ def test_invocation_tries_is_saved():
     invoker.f = f
 
     def stub_invoke(caller, fargs, **kwargs):
-        caller.on_result(0, fargs, **kwargs)
+        caller.on_result(value=0, fargs=fargs, **kwargs)
         return None
 
     mock_invoker.invoke = Mock(spec=[])

@@ -32,7 +32,8 @@ def test_optimize_returns_result():
     args = ArgsCreator(f.param_spec).args()
 
     assert not optimizer.on_error.called
-    optimizer.on_result.assert_called_with(ReturnValuesWrapper(None, -3), args)
+    optimizer.on_result.assert_called_with(value=ReturnValuesWrapper(None, -3),
+                                           fargs=args)
 
 if __name__ == '__main__':
     import nose

@@ -39,16 +39,16 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         return self._invoker.param_spec
 
     @param_spec.setter
-    def param_spec(self, value):
-        self._invoker.param_spec = value
+    def param_spec(self, param_spec):
+        self._invoker.param_spec = param_spec
 
     @property
     def return_spec(self):
         return self._invoker.return_spec
 
     @return_spec.setter
-    def return_spec(self, value):
-        self._invoker.return_spec = value
+    def return_spec(self, return_spec):
+        self._invoker.return_spec = return_spec
 
     @property
     def invoker(self):
@@ -95,29 +95,28 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         """Implementation of the inherited abstract on_result method."""
         del kwargs
         # TODO an invocation=None default makes no sense if the following fails
-        result = value
-        invocation.current_result = result
+        invocation.current_result = value
 
         for plugin in self._plugins:
             plugin.on_result(invocation)
 
         if invocation.retry:
             # TODO: Maybe run this in its own thread
-            self.invoke(self._caller, invocation.fargs, invocation,
-                        **invocation.kwargs)
+            self.invoke(caller=self._caller, fargs=invocation.fargs,
+                        invocation=invocation, **invocation.kwargs)
         else:
-            self._caller.on_result(value=result, fargs=fargs,
+            self._caller.on_result(value=value, fargs=fargs,
                                    **invocation.kwargs)
 
-    def on_error(self, error, fargs, invocation, **kwargs):
+    def on_error(self, value, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_error method."""
         del kwargs
-        invocation.error = error
+        invocation.error = value
 
         for plugin in self._plugins:
-            plugin.on_error(invocation)
+            plugin.on_error(invocation=invocation)
 
-        self._caller.on_error(error=error, fargs=fargs, **invocation.kwargs)
+        self._caller.on_error(value=value, fargs=fargs, **invocation.kwargs)
 
         invocation.error = None
 

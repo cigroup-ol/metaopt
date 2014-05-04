@@ -29,6 +29,7 @@ class ProcessWorkerEmployer(Employer):
         :param:    resources    number of (possibly virtual) CPUs to use,
                                 defaults to all
         """
+        super(ProcessWorkerEmployer, self).__init__()
         with self._lock:
             # use the given queues
             self._queue_outcome = queue_outcome
@@ -54,7 +55,7 @@ class ProcessWorkerEmployer(Employer):
                         queue_start=self._queue_start)
                 self._worker_processes.append(worker_process)
 
-    def lay_off(self, call_id, reason):
+    def lay_off(self, call_id, reason=None):
         """
         Releases the worker process that started the call given by id, if any.
         """

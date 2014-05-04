@@ -23,12 +23,15 @@ class BaseEmployer(object):
         super(BaseEmployer, self).__init__()
 
     @abc.abstractmethod
-    def employ(self):
+    def employ(self,  number_of_workers=1):
         """
         Employs a new worker.
 
+        :param  number_of_workers: number of workers to employ, defaults to 1.
+
         :rtype: None
         """
+        del number_of_workers
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -36,6 +39,7 @@ class BaseEmployer(object):
         """
         Lays off the worker that executes the call given by id, if any.
 
+        :param call_id: ID of the call whose worker shall be stopped.
         :param reason: The reason why this worker was laid off. (optional)
 
         :rtype: None
@@ -49,7 +53,7 @@ class BaseEmployer(object):
         """
         Lays off all currently employed workers for the given reason.
 
-        :param reason: The reason why the workers were laid off.
+        :param reason: The reason why the workers were laid off. (optional)
 
         :rtype: None
         """
