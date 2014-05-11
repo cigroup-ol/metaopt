@@ -52,6 +52,13 @@ coverage:
 	coverage html
 	open htmlcov/index.html
 
+coding-comment:
+	find metaopt examples -name "*.py" -exec python3 -c "import sys;[tuple[1].\
+	write(''.join(['# -*- coding: utf-8 -*-\n'] + tuple[0])) for tuple in [(op\
+	en(filepath, 'r').readlines()[:], open(filepath, 'w')) for filepath in sys\
+	.argv[1:] if open(filepath).readlines() and not open(filepath).readlines()\
+	[0] == '# -*- coding: utf-8 -*-\n']]" {} + 
+
 docs:
 	#sphinx-apidoc -o docs/ metaopt
 	$(MAKE) -C docs clean
