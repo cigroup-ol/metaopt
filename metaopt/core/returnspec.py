@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Classes to describe and work with the return values of objective functions
 """

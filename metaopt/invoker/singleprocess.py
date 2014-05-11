@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Invoker that uses a single core or CPU respectively.
 """

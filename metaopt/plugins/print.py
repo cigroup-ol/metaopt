@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Plugin that logs some events to standard output.
 """

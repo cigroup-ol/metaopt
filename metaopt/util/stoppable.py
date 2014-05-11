@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Interface definition and implementation of objects that can be stopped.
 """

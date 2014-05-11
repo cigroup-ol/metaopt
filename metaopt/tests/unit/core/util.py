@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Utilities for writing unit tests for the core.
 """

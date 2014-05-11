@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Worker implementation that that runs in an own Python Process.
 

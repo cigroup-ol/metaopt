@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Utility that detects the package of a given object.
 """

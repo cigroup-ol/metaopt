@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module provides an abstract base class for invocation plugins.
 """

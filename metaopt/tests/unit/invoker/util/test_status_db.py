@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Tests for the Call Database which keeps track of task worker relations.
 """

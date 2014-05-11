@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module provides an abstract base classes for implementing optimizers.
 

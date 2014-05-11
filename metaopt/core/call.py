@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module provides methods for calling objective functions
 """

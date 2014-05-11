@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Worker implementation that executes objective functions in Python threads.
 """

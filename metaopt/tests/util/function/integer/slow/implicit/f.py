@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 A working function with integer parameters for testing purposes.
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module provides a plugin-enabled invoker implementation"""
 
 # Future

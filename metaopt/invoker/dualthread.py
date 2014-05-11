@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module provides a rather simple sequential invoker implementation
 """

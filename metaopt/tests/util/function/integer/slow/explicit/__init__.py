@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Integer functions that hang for a second and state their optimization direction.
 """

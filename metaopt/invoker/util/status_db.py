@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Database that keeps track of worker task relations.
 """

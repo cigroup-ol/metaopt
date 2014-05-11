@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Various utilities for the multiprocess invoker.
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Means to stop tasks for invokers.
 """

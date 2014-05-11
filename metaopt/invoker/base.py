@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Abstract invoker defining the API of invoker implementations.
 """

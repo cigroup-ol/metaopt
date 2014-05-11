@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Package of working integer functions for testing purposes.
 """

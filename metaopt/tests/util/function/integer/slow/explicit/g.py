@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Hanging function with integer parameters and explicit maximization.
 """

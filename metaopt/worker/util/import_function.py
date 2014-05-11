@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Utility that imports a function.
 """

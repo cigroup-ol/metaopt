@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Invoker that uses multiple processes.
 """

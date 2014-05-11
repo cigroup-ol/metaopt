@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Plugin that displays messages for all hooks.
 """

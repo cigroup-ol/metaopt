@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Interface definition for worker implementations.
 """

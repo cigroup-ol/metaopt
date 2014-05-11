@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Integer functions that work and do not state their optimization direction.
 """

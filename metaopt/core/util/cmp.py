@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 cmp built-in implementation for python 3.
 """

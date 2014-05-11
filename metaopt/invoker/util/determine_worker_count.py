@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Utility to determine the number of workers that can run.
 """

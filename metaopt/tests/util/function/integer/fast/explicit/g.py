@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Working function with integer parameters and explicit maximization.
 """
