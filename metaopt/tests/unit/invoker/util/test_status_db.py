@@ -2,17 +2,22 @@
 Tests for the Call Database which keeps track of task worker relations.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from multiprocessing.dummy import Manager
 from uuid import uuid4
 
+# Third Party
 import nose
 from nose.tools.nontrivial import raises
 
-from metaopt.worker.util.lifecycle import Call, Result, Start
+# First Party
 from metaopt.invoker.util.status_db import StatusDB
 from metaopt.tests.util.function.integer.fast.explicit.f import f
+from metaopt.worker.util.lifecycle import Call, Result, Start
 
 
 class TestStatusDB(object):

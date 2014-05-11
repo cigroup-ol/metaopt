@@ -2,20 +2,25 @@
 Tests for the worker process.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 import uuid
 from multiprocessing import Manager
 from multiprocessing.process import Process
 
+# Third Party
 import nose
 from nose.tools.nontrivial import raises
 
+# First Party
 from metaopt.invoker.util.determine_package import determine_package
+from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
+from metaopt.worker.process import ProcessWorker
 from metaopt.worker.util.lifecycle import Call, Error, Result, Start, Task
 from metaopt.worker.worker import Worker
-from metaopt.worker.process import ProcessWorker
-from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
 
 
 class TestWorkerProcess(object):

@@ -1,10 +1,14 @@
 """
 Test for the import function utility.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 
+# First Party
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.worker.util.import_function import import_function
 

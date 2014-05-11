@@ -1,15 +1,19 @@
 """
 This module provides a rather simple sequential invoker implementation
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 import uuid
 from threading import Lock, Thread
 
+# First Party
 from metaopt.core.call import call
+from metaopt.invoker.invoker import Invoker
 from metaopt.invoker.util.call_handle import CallHandle
 from metaopt.util.stoppable import stoppable_method, stopping_method
-from metaopt.invoker.invoker import Invoker
 
 
 class DualThreadInvoker(Invoker):

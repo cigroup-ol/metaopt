@@ -2,11 +2,15 @@
 """
 Test for param_spec
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 from nose.tools import raises
 
+# First Party
 from metaopt.core.paramspec import DuplicateParamError, InvalidIntervalError, \
     NonIntIntervalError, NonIntStepError, ParamSpec
 

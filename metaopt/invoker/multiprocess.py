@@ -1,21 +1,26 @@
 """
 Invoker that uses multiple processes.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 import uuid
 from multiprocessing import Manager
 from threading import Lock
 
+# First Party
+from metaopt.employer.process import ProcessWorkerEmployer
 from metaopt.invoker.base import BaseInvoker
-from metaopt.invoker.util.determine_package import determine_package
-from metaopt.worker.util.lifecycle import Call, Error, Layoff, Result, Task
-from metaopt.invoker.util.status_db import StatusDB
+from metaopt.invoker.invoker import Invoker
 from metaopt.invoker.util.call_handle import CallHandle
+from metaopt.invoker.util.determine_package import determine_package
+from metaopt.invoker.util.status_db import StatusDB
 from metaopt.util.stoppable import StoppedException, stoppable_method, \
     stopping_method
-from metaopt.employer.process import ProcessWorkerEmployer
-from metaopt.invoker.invoker import Invoker
+from metaopt.worker.util.lifecycle import Call, Error, Layoff, Result, Task
+
 
 try:
     xrange  # will work in python2, only @UndefinedVariable

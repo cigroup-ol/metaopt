@@ -1,11 +1,15 @@
 """
 Invoker that invokes objective functions sequentially.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from multiprocessing import Process, Queue
 from uuid import uuid4
 
+# First Party
 from metaopt.core.call import call
 from metaopt.invoker.invoker import Invoker
 from metaopt.util.stoppable import stoppable_method

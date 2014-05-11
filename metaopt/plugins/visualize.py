@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from datetime import datetime
 
+# Third Party
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
@@ -10,7 +14,9 @@ from mpl_toolkits.mplot3d import Axes3D  # Load 3d plots capabilities
 from numpy import meshgrid
 from scipy.interpolate import griddata
 
+# First Party
 from metaopt.plugins.plugin import Plugin
+
 
 NUMBER_OF_SAMPLES = 200
 

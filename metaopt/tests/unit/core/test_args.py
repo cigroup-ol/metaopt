@@ -3,11 +3,15 @@
 Tests for the args module.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 from nose.tools import eq_, raises
 
+# First Party
 from metaopt.core.args import Arg, BoolArg, NoStepArgIterError
 from metaopt.core.paramspec import ParamSpec
 

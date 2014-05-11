@@ -1,17 +1,22 @@
 """
 Integration tests for the multiprocess invoker.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 from mock import Mock
 
+# First Party
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnSpec, ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
-from metaopt.tests.util.function.integer.fast.explicit.f import f as f_working
 from metaopt.tests.util.function.integer.failing.f import f as f_failing
+from metaopt.tests.util.function.integer.fast.explicit.f import f as f_working
+
 
 f_working = f_working
 f_failing = f_failing

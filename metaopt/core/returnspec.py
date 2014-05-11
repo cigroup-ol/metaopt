@@ -1,7 +1,10 @@
 """
 Classes to describe and work with the return values of objective functions
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
 
 DEFAULT_RETURN_VALUE_NAME = "Fitness"
 

@@ -3,10 +3,14 @@
 SVM (SAES, global timeout)
 ================================
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 from sklearn import cross_validation, datasets, svm
 
+# First Party
 from metaopt.core import param
 from metaopt.core.returns import maximize
 

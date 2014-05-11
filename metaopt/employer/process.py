@@ -1,15 +1,19 @@
 """
 Various utilities for the multiprocess invoker.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from multiprocessing.synchronize import Lock
 
-from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.worker.util.lifecycle import Layoff
-from metaopt.worker.process import ProcessWorker
+# First Party
 from metaopt.employer.employer import Employer
 from metaopt.employer.util.exception import LayoffException
+from metaopt.invoker.util.determine_worker_count import determine_worker_count
+from metaopt.worker.process import ProcessWorker
+from metaopt.worker.util.lifecycle import Layoff
 
 
 class ProcessWorkerEmployer(Employer):

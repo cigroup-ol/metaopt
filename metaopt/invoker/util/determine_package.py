@@ -1,8 +1,11 @@
 """
 Utility that detects the package of a given object.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 import inspect
 import os
 

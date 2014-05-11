@@ -2,16 +2,21 @@
 Tests for the dual-threaded invoker.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 from mock import Mock
 
+# First Party
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper
 from metaopt.invoker.dualthread import DualThreadInvoker
 from metaopt.tests.util.function.integer.failing.f import f as failing_f
 from metaopt.tests.util.function.integer.fast.implicit.f import f as f
+
 
 f = f  # helps static code checkers
 failing_f = failing_f  # helps static code checkers

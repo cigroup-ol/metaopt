@@ -4,13 +4,19 @@ Worker implementation that that runs in an own Python Process.
 It calls functions with arguments, both of which it gets from a queue.
 """
 
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
+# Standard Library
 import pickle
 import traceback
+import uuid
 from multiprocessing import Process
 from pickle import PicklingError
 from tempfile import TemporaryFile
-import uuid
 
+# First Party
 from metaopt.core.call import call
 from metaopt.worker.util.import_function import import_function
 from metaopt.worker.util.lifecycle import Error, Result, Start

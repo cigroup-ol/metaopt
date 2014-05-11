@@ -1,9 +1,13 @@
 """
 Models for message exchanges between employers and workers.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from collections import namedtuple
+
 
 # data structure for tasks given to the workers
 Call = namedtuple("Call", ["id", "function", "args", "kwargs"])

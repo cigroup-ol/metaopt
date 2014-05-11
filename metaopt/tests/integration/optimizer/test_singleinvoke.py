@@ -1,10 +1,14 @@
 """
 Tests for the single invoke invoker.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 from mock import Mock
 
+# First Party
 from metaopt.core import param
 from metaopt.core.args import ArgsCreator
 from metaopt.core.returnspec import ReturnValuesWrapper

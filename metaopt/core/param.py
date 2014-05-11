@@ -17,8 +17,11 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# First Party
 from metaopt.core.paramspec import ParamSpec
 
 

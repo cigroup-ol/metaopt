@@ -1,9 +1,12 @@
 # -!- coding: utf-8 -!-
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# First Party
 from metaopt.core.args import ArgsCreator
-from metaopt.util.stoppable import StoppedException
 from metaopt.optimizer.optimizer import Optimizer
+from metaopt.util.stoppable import StoppedException
 
 
 class GridSearchOptimizer(Optimizer):

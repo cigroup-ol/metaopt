@@ -1,26 +1,29 @@
 """
 System tests for the custom optimize.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from itertools import product
 
+# Third Party
 import nose
 from nose.tools import eq_
 
+# First Party
 from metaopt.core.main import custom_optimize
 from metaopt.invoker.dualthread import DualThreadInvoker
+from metaopt.invoker.invoker import Invoker
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.invoker.pluggable import PluggableInvoker
 from metaopt.invoker.simple_multiprocess import SimpleMultiprocessInvoker
 from metaopt.invoker.singleprocess import SingleProcessInvoker
-from metaopt.invoker.invoker import Invoker
-from metaopt.worker.util.import_function import import_function
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.tests.util.function.integer.failing import FUNCTIONS_FAILING
-from metaopt.util.stoppable import StoppedException
 from metaopt.tests.util.function.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
 from metaopt.tests.util.function.integer.fast.explicit.f import f as f_max_fast
@@ -29,6 +32,8 @@ from metaopt.tests.util.function.integer.fast. \
     implicit import FUNCTIONS_FAST_IMPLICIT
 from metaopt.tests.util.function.integer.slow.explicit.f import f as f_max_slow
 from metaopt.tests.util.function.integer.slow.explicit.g import f as f_min_slow
+from metaopt.util.stoppable import StoppedException
+from metaopt.worker.util.import_function import import_function
 
 
 class TestMain(object):

@@ -2,11 +2,15 @@
 Tests for the call module.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 from mock import Mock
 from nose.tools import raises
 
+# First Party
 from metaopt.core.args import Arg
 from metaopt.core.call import CallNotPossibleError, call
 from metaopt.core.paramspec import ParamSpec

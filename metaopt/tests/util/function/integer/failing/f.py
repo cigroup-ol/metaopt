@@ -1,8 +1,11 @@
 """
 A failing function with integer parameters for testing purposes.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# First Party
 from metaopt.core import param
 
 

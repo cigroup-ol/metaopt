@@ -1,10 +1,13 @@
 """
 Means to stop tasks for invokers.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
-from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
+# First Party
 from metaopt.employer.util.exception import LayoffException
+from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class CallHandle(Stoppable):

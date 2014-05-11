@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from random import sample
 
+# First Party
 from metaopt.core.args import ArgsCreator
+from metaopt.optimizer.optimizer import Optimizer
 from metaopt.optimizer.util import default_mutation_stength
 from metaopt.util.stoppable import StoppedException
-from metaopt.optimizer.optimizer import Optimizer
+
 
 try:
     xrange  # will work in python2, only @UndefinedVariable

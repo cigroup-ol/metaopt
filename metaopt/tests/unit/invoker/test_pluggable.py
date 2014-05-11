@@ -2,17 +2,22 @@
 Tests for the pluggable invoker.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 import nose
 from mock import Mock
 from nose.tools import eq_
 
+# First Party
 from metaopt.core.args import ArgsCreator
+from metaopt.core.returnspec import ReturnSpec
 from metaopt.invoker.pluggable import PluggableInvoker
 from metaopt.tests.util.function.integer.fast.implicit.f import f
-from metaopt.core.returnspec import ReturnSpec
 from metaopt.tests.util.matcher import EqualityMatcher
+
 
 f = f  # helps static code checkers identify attributes.
 

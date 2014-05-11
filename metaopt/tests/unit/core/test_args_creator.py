@@ -3,18 +3,24 @@
 Tests for the ArgsCreator module.
 """
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 import itertools
 
+# Third Party
 import nose
 from nose.tools import eq_
 
+# First Party
 from metaopt.core.args import ArgsCreator
 from metaopt.tests.unit.core.util import get_intervals_from_function
 from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
 from metaopt.tests.util.function.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
+
 
 try:
     xrange  # will work in python2, only @UndefinedVariable

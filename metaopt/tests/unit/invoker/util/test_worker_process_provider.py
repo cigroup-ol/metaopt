@@ -1,15 +1,20 @@
 """
 Tests for the worker process provider.
 """
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Standard Library
 from multiprocessing import Manager
 
+# Third Party
 import nose
 from nose.tools.nontrivial import raises
 
-from metaopt.invoker.util.status_db import StatusDB
+# First Party
 from metaopt.employer.process import ProcessWorkerEmployer
+from metaopt.invoker.util.status_db import StatusDB
 
 
 class TestWorkerProcessProvider(object):

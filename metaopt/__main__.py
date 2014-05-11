@@ -13,11 +13,16 @@ Options:
 
 # TODO Figure out what such a command should actually mean and do
 
-from __future__ import division, print_function, with_statement
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
 
+# Third Party
 from docopt import docopt
 
+# First Party
 import metaopt
+
 
 if __name__ == '__main__':
     ARGUMENTS = docopt(__doc__, version=" ".join([metaopt.__name__,
