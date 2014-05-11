@@ -1,6 +1,6 @@
 .PHONY: clean-pyc clean-build docs
 
-IMPORT_TO_ADD = "from __future__ import division, print_function, with_statement"
+IMPORT_TO_ADD = "from __future__ import absolute_import, division, print_function, unicode_literals, with_statement"
 
 help:
 	@echo "clean-build - remove build artifacts"
@@ -11,7 +11,6 @@ help:
 	@echo "isort - sanititize imports with isort"
 	@echo "lint - check style with flake8"	
 	@echo "release - package and upload a release"
-	@echo "sdist - package"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "venv - create and activate virtual environment"
@@ -48,13 +47,13 @@ clean-reverse:
 	rm classes_MetaOpt.png packages_MetaOpt.png &> /dev/null || exit 0
 
 coverage:
-	coverage run --source metaopt setup.py nosetests
+	nosetests
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs:
-	sphinx-apidoc -o docs/ metaopt
+	#sphinx-apidoc -o docs/ metaopt
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html &> /dev/null || echo "";  # works under MacOS
@@ -111,10 +110,6 @@ reverse: clean-reverse
 	start ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Windows
 	xdg-open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Linux
 	xdg-open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Linux
-
-sdist: clean
-	python setup.py sdist
-	ls -l dist
 
 test:
 	coverage run --source=metaopt setup.py nosetests
