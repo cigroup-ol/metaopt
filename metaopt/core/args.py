@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 
 This module is responsible for creating actual args from params that are

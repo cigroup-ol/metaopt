@@ -63,9 +63,16 @@ def test_arg_repr_no_title_shows_name_and_value():
 
 
 def test_arg_repr_title_shows_title_and_value():
+    # setup
     param_spec = ParamSpec()
     param_spec.int("a", interval=(0, 10), title="α")
-    eq_(str(Arg(param_spec.params["a"])), "α=0")
+
+    # run
+    result = unicode(Arg(param_spec.params["a"]))
+    expect = "α=0"
+
+    # assert
+    eq_(result, expect)
 
 
 if __name__ == '__main__':
