@@ -93,10 +93,12 @@ class TestStatusDB(object):
         self._queue_start.put(start)
         _ = self._status_db.wait_for_one_start()
 
-        result = Result(worker_id=worker_id, call=call, value=value)
         # once
+        result = Result(worker_id=worker_id, call=call, value=value)
         self._queue_outcome.put(result)
         # once again
+        worker_id = uuid4()
+        result = Result(worker_id=worker_id, call=call, value=value)
         self._queue_outcome.put(result)
 
         # will work
@@ -270,8 +272,6 @@ class TestStatusDB(object):
 
     @raises(ValueError)
     def test_handle_outcome_start_result_twice(self):
-        worker_id = uuid4()
-
         call_id = uuid4()
         function = f
         args = None
@@ -280,17 +280,19 @@ class TestStatusDB(object):
 
         value = None
 
+        worker_id = uuid4()
         start = Start(worker_id=worker_id, call=call)
         self._queue_start.put(start)
         _ = self._status_db.wait_for_one_start()
 
-        result = Result(worker_id=worker_id, call=call, value=value)
-
         # once
+        result = Result(worker_id=worker_id, call=call, value=value)
         self._queue_outcome.put(result)
         _ = self._status_db.wait_for_one_outcome()
 
         # twice
+        worker_id = uuid4()
+        result = Result(worker_id=worker_id, call=call, value=value)
         self._queue_outcome.put(result)
         _ = self._status_db.wait_for_one_outcome()
 
