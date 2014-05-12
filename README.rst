@@ -112,6 +112,19 @@ To run the test suite on a working copy:
     $ cd metaopt
     $ make tests-all
 
+Examples
+--------
+
+MetaOpt comes with a number of `examples, which you can view in the docs`_, but you can also run them locally.
+
+.. _examples, which you can view in the docs: http://metaopt.readthedocs.org/en/latest/examples/index.html
+
+.. code:: bash
+
+    $ cd metaopt
+    $ sudo pip install -r requirements_examples.txt
+    $ PYTHONPATH=. python examples/svm_saes_global_timeout.py
+
 Documentation
 -------------
 
@@ -124,5 +137,5 @@ To build html documentation from a working copy:
 
 .. code:: bash
 
-    $ sudo pip install -r requirements-docs.txt
+    $ sudo pip install -r requirements_docs.txt
     $ make docs
