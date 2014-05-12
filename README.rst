@@ -64,14 +64,12 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
 Download
 --------
 
-MetaOpt obtainable via archives for past releases,
+MetaOpt is obtainable via `archives of past releases`_,
 but you can also get the sources by cloning the repository.
 
-To download archives of MetaOpt releases visit releases_.
+.. _archives of past releases: https://github.com/cigroup-ol/metaopt/releases
 
-.. _releases: https://github.com/cigroup-ol/metaopt/releases
-
-To clone the MetaOpt repository from GitHub using Git:
+To get a working copy of the MetaOpt repository:
 
 .. code:: bash
 
@@ -105,7 +103,7 @@ MetaOpt has `automated online tests`_, but you can also run them locally.
 
 .. _automated online tests: https://travis-ci.org/cigroup-ol/metaopt
 
-To run the test suite on a working copy:
+To run MetaOpt's test suite from a working copy:
 
 .. code:: bash
 
@@ -118,6 +116,8 @@ Examples
 MetaOpt comes with a number of `examples, which you can view in the docs`_, but you can also run them locally.
 
 .. _examples, which you can view in the docs: http://metaopt.readthedocs.org/en/latest/examples/index.html
+
+To install MetaOpt's example dependecies and run an example from a working copy:
 
 .. code:: bash
 
@@ -133,7 +133,7 @@ yourself a local copy.
 
 .. _automatically generated online documentation: http://metaopt.readthedocs.org/
 
-To build html documentation from a working copy:
+To build MetaOpt's html documentation from a working copy:
 
 .. code:: bash
 
