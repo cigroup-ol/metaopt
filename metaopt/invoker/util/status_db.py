@@ -54,10 +54,14 @@ class StatusDB(Stoppable):
             raise KeyError("No task to be stopped for ID %s" % result.call.id)
 
         status = self._call_status_dict[result.call.id]
+        if status == result:
+            # nothing to do here
+            return
+
         if isinstance(status, Result):
-            raise ValueError("Got duplicate result for call with id %s." %
-                             result.call.id +
-                             "Make sure the task ids are unique.")
+            raise ValueError("Got duplicate unequal result for call." +
+                             "Make sure the call ids are unique:" +
+                             "\n    " + repr(result) + "\n    " + repr(status))
 
         self._call_status_dict[result.call.id] = result
 
@@ -203,12 +207,13 @@ class StatusDB(Stoppable):
         """Empties the outcome queue, handling all outcomes."""
         while not self._queue_outcome.empty():
             outcome = self.wait_for_one_outcome()
-            try:
-                self._handle_outcome(outcome)
-            except ValueError:
-                # Duplicate result. Should not happen. TODO
-                raise ValueError("Got a duplicate outcome. " +
-                                 "Make sure IDs are unique.")
+            self._handle_outcome(outcome)
+            #try:
+            #
+            #except ValueError:
+            #    # Duplicate result. Should not happen. TODO
+            #    raise ValueError("Got a duplicate outcome. " +
+            #                     "Make sure IDs are unique.")
 
     @stopping_method
     def stop(self, reason=None):
