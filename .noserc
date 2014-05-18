@@ -1,9 +1,0 @@
-[nosetests]
-verbosity=2
-detailed-errors=1
-with-coverage=0
-with-doctest=1
-cover-package=metaopt
-debug=nose.loader
-pdb=0
-pdb-failures=0
