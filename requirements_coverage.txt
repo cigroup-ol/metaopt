@@ -1,1 +1,2 @@
 coverage
+-r requirements_test.txt
