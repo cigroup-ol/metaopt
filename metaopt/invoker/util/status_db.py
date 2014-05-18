@@ -70,7 +70,7 @@ class StatusDB(Stoppable):
         self._call_status_dict[error.call.id] = error
 
     def _handle_layoff(self, layoff):
-        for (task_id, status) in self._call_status_dict.iteritems():
+        for (task_id, status) in self._call_status_dict.items():
             try:
                 if layoff.worker_id == status.worker_id:
                     self._call_status_dict[task_id] = layoff
@@ -170,7 +170,7 @@ class StatusDB(Stoppable):
         return status.call
 
     def pop_idle_call(self):
-        for [call_id, status] in self._call_status_dict.iteritems():
+        for [call_id, status] in self._call_status_dict.items():
             if isinstance(status, Task):
                 del self._call_status_dict[call_id]
                 return status.call

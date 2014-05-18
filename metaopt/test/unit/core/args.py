@@ -7,6 +7,10 @@ Tests for the args module.
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
+import sys
+if sys.version_info[0] == 3:
+    unicode = str
+
 # Third Party
 import nose
 from nose.tools import eq_, raises
