@@ -46,11 +46,11 @@ clean-release: clean-build
 clean-reverse:
 	rm classes_MetaOpt.png packages_MetaOpt.png &> /dev/null || exit 0
 
-coverage:
-	nosetests
-	coverage report -m
-	coverage html
-	open htmlcov/index.html
+coverage: test-coverage
+	coverage html --directory=cover
+	xdg-open cover/index.html  # Linux
+	start cover/index.html  # Windows
+	open cover/index.html  # MacOS
 
 coding-comment:
 	find metaopt examples -name "*.py" -exec python3 -c "import sys;[tuple[1].\
@@ -63,9 +63,9 @@ docs:
 	#sphinx-apidoc -o docs/ metaopt
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	open docs/_build/html/index.html &> /dev/null || echo "";  # works under MacOS
-	start docs/_build/html/index.html &> /dev/null || echo "";  # works under Windows
 	xdg-open docs/_build/html/index.html &> /dev/null || echo "";  # works under Linux
+	start docs/_build/html/index.html &> /dev/null || echo "";  # works under Windows
+	open docs/_build/html/index.html &> /dev/null || echo "";  # works under MacOS
 
 install:
 	python setup.py install
@@ -111,14 +111,17 @@ release: release-build release-test
 
 reverse: clean-reverse
 	pyreverse --ignore tests -o png -p MetaOpt metaopt
-	open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
-	open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
-	start ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Windows
-	start ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Windows
 	xdg-open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Linux
 	xdg-open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Linux
+	start ./classes_MetaOpt.png &> /dev/null || echo "";  # works under Windows
+	start ./packages_MetaOpt.png &> /dev/null || echo "";  # works under Windows
+	open ./classes_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
+	open ./packages_MetaOpt.png &> /dev/null || echo "";  # works under MacOS
 
 test:
+	python setup.py nosetests
+
+test-coverage:
 	coverage run --source=metaopt setup.py nosetests
 
 test-all:

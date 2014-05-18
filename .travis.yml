@@ -13,6 +13,6 @@ install:
 script:
   # Temporary solution to travis issue #155
   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
-  - make test
+  - make test-coverage
 after_success:
   - coveralls
