@@ -92,7 +92,7 @@ To install MetaOpt from a working copy:
 
 .. code:: bash
 
-    $ cd metaopt/
+    $ cd metaopt
     $ sudo pip install -r requirements.txt
     $ sudo python setup.py install
 
@@ -109,11 +109,25 @@ To run MetaOpt's test suite from a working copy:
 
     $ cd metaopt
     $ make tests-all
+    
+Coverage
+--------
+
+MetaOpt has `automated online test coverage reports`_, but you can also create them locally.
+
+.. _automated online test coverage reports: https://coveralls.io/r/cigroup-ol/metaopt
+
+To create MetaOpt's coverage reports from a working copy:
+
+.. code:: bash
+
+    $ cd metaopt
+    $ make coverage
 
 Examples
 --------
 
-MetaOpt comes with a number of `examples, which you can view in the docs`_, but you can also run them locally.
+MetaOpt comes with `examples, which you can view in the docs`_, but you can also run them locally.
 
 .. _examples, which you can view in the docs: http://metaopt.readthedocs.org/en/latest/examples/index.html
 
