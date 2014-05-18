@@ -93,8 +93,14 @@ To install MetaOpt from a working copy:
 .. code:: bash
 
     $ cd metaopt
-    $ sudo pip install -r requirements.txt
     $ sudo python setup.py install
+
+To verify MetaOpt was installed correctly:
+
+.. code:: bash
+
+    $ python metaopt --version
+    metaopt 0.1.0.0
 
 Tests
 -----
@@ -108,6 +114,7 @@ To run MetaOpt's test suite from a working copy:
 .. code:: bash
 
     $ cd metaopt
+    $ sudo pip install -r requirements_test.txt
     $ make tests-all
     
 Coverage
@@ -122,6 +129,7 @@ To create MetaOpt's coverage reports from a working copy:
 .. code:: bash
 
     $ cd metaopt
+    $ sudo pip install -r requirements_coverage.txt
     $ make coverage
 
 Examples
@@ -151,5 +159,6 @@ To build MetaOpt's html documentation from a working copy:
 
 .. code:: bash
 
+    $ cd metaopt
     $ sudo pip install -r requirements_docs.txt
     $ make docs
