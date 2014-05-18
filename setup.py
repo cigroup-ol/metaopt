@@ -60,9 +60,8 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Distributed Computing'
     ],
-    data_files=[("", ["README.rst", "LICENSE.rst", "requirements_cli.txt",
-                      "requirements_examples.txt", "requirements_lint.txt",
-                      "requirements_test.txt"])],
+    data_files=[("", ["README.rst", "LICENSE.rst", "requirements_examples.txt",
+                      "requirements_lint.txt", "requirements_test.txt"])],
     description=DESCRIPTION,
     ext_modules=[],
     install_requires=[],
