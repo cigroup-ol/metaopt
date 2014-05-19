@@ -62,8 +62,8 @@ class TestStatusDB(object):
         self._queue_start.put(start)
         _ = self._status_db.wait_for_one_start()
 
-    @raises(KeyError)
-    def test_handle_status_start_duplicate_raises(self):
+    def test_handle_status_start_duplicate_is_silent(self):
+        """Duplicate starts are handled quietly and do not issue errors."""
         worker_id = uuid4()
         call_id = uuid4()
         function = f
@@ -76,6 +76,7 @@ class TestStatusDB(object):
         # once
         self._queue_start.put(start)
         _ = self._status_db.wait_for_one_start()
+
         # once again
         # will raise error because issuing the same task twice makes no sense
         self._queue_start.put(start)
