@@ -114,7 +114,7 @@ class MultiProcessInvoker(Invoker):
             self._handle_layoff(layoff=outcome)
         else:
             # Will not happen
-            raise ValueError("Objects of this type are not allowed in the"
+            raise ValueError("Objects of this type are not allowed in the " +
                              "outcome queue: %s" % type(outcome))
 
     @stoppable_method

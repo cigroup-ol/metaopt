@@ -40,10 +40,15 @@ class StatusDB(Stoppable):
             raise TypeError("%s objects are not allowed in the start queue" %
                             type(start))
 
-        if start.call.id in self._call_status_dict.keys() and \
-                isinstance(self._call_status_dict[start.call.id], Start):
-            raise KeyError("Got duplicate start for task %s" % start.call.id +
-                           "Make sure IDs are unique.")
+        try:
+            if isinstance(self._call_status_dict[start.call.id], Start):
+                raise KeyError("Got duplicate start for task %s" % \
+                               start.call.id +
+                               "Make sure IDs are unique.")
+        except KeyError:
+            # There was no entry for this task's uuid in the status database.
+            # That is OK, moving on to create one.
+            pass
 
         self._call_status_dict[start.call.id] = start
 
@@ -111,7 +116,14 @@ class StatusDB(Stoppable):
         """
         Blocks till one start was gotten from the start queue and processed.
         """
-        start = self._queue_start.get()
+        try:
+            start = self._queue_start.get()
+        except IOError:
+            # The queue was closed before we could read a start.
+            # This may happen with fast terminations.
+            # The invoker expects an outcome.
+            # So send back a manually constructed outcome.
+            return Start(worker_id=None, call=None)
         self._handle_start(start)
         self._count_start += 1
         self._queue_start.task_done()
@@ -128,7 +140,7 @@ class StatusDB(Stoppable):
             # That must have been the queue's manager
             # This means that the invoker tries to stop.
             # So get out of the way.
-            return
+            return Layoff(worker_id=None, call=None, value=None)
         self._handle_outcome(outcome)
         self._count_outcome += 1
         self._queue_outcome.task_done()

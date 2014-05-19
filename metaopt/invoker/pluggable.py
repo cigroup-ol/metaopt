@@ -133,4 +133,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
     @stopping_method
     def stop(self, reason=None):
         """Stops this invoker."""
-        self._invoker.stop(reason=reason)
+        try:
+            self._invoker.stop(reason=reason)
+        except StoppedError:
+            pass

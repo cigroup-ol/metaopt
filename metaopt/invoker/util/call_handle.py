@@ -8,7 +8,8 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.employer.util.error import LayoffError
-from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
+from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method,\
+    StoppedError
 
 
 class CallHandle(Stoppable):
@@ -30,4 +31,10 @@ class CallHandle(Stoppable):
         """
         if reason is None:
             reason = LayoffError("Stopping a call via its call handle.")
-        self._invoker.stop_call(call_id=self._call_id, reason=reason)
+
+        try:
+            self._invoker.stop_call(call_id=self._call_id, reason=reason)
+        except StoppedError:
+            # The invoker was already stopped.
+            # So there is nothing left to do here
+            pass
