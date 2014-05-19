@@ -9,6 +9,7 @@ from random import sample
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
+from metaopt.core.arg.util.modifier import ArgsModifier
 from metaopt.optimizer.util. \
     default_mutation_stength import default_mutation_stength
 from metaopt.util.stoppable import StoppedError
@@ -95,13 +96,11 @@ class RechenbergOptimizer(Optimizer):
             self.population.append(individual)
 
     def add_offspring(self):
-        args_creator = ArgsCreator(self.param_spec)
-
         for _ in xrange(self.lamb):
             mother, father = sample(self.population, 2)
 
-            child = args_creator.combine(mother, father)
-            child = args_creator.randomize(child, self.sigmas)
+            child = ArgsModifier.combine(mother, father)
+            child = ArgsModifier.randomize(child, self.sigmas)
 
             self.population.append(child)
 
