@@ -62,7 +62,7 @@ class ProcessWorker(Process, Worker):
                                             call=task.call))
                 self._execute(task)
                 self._queue_task.task_done()
-            except EOFError, IOError:
+            except (EOFError, IOError):
                 # the queue was closed by the invoker, so terminate
                 # call_handle queue seems closed, so terminate
                 break
