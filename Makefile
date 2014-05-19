@@ -18,7 +18,7 @@ help:
 check-manifest:
 	 check-manifest
 
-clean: clean-backup clean-build clean-patch clean-pyc clean-reverse clean-release
+clean: clean-backup clean-build clean-coverage clean-patch clean-pyc clean-reverse clean-release clean-venv
 
 clean-backup:
 	find . -name '*~' -exec rm -f {} +
@@ -29,6 +29,10 @@ clean-build:
 	rm -fr dist/
 	rm -fr *.egg-info
 	rm -fr *.egg
+
+clean-coverage:
+	rm -rf htmlcov/
+	rm -rf cover/
 
 clean-patch:
 	find . -name '*.orig' -exec rm -f {} +
@@ -45,6 +49,12 @@ clean-release: clean-build
 
 clean-reverse:
 	rm classes_MetaOpt.png packages_MetaOpt.png &> /dev/null || exit 0
+
+clean-tox:
+	rm -rf .tox/
+
+clean-venv:
+	rm -rf venv/
 
 coverage: test-coverage
 	coverage html --directory=cover
