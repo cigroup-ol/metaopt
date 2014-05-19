@@ -146,6 +146,11 @@ class MultiProcessInvoker(Invoker):
                     function=determine_package(self._f), args=fargs,
                     kwargs=kwargs)
         task = Task(call=call)
+
+        with self._lock:
+            if self._stopped:
+                raise StoppedError()
+
         self._status_db.issue_task(task)
 
         # wait for any worker to start working on the task

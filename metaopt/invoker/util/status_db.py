@@ -121,7 +121,14 @@ class StatusDB(Stoppable):
         """
         Blocks till an outcome was gotten from the outcome queue and processed.
         """
-        outcome = self._queue_outcome.get()
+        try:
+            outcome = self._queue_outcome.get()
+        except EOFError:
+            # The outcome queue was closed on the other end.
+            # That must have been the queue's manager
+            # This means that the invoker tries to stop.
+            # So get out of the way.
+            return
         self._handle_outcome(outcome)
         self._count_outcome += 1
         self._queue_outcome.task_done()

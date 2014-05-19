@@ -87,7 +87,7 @@ class ProcessWorkerEmployer(Employer):
         """Lays off the given process workers for the given reason."""
 
         # send kill signal and wait for the process to die
-        assert worker_process.is_alive()
+        # TODO assert worker_process.is_alive()
         worker_process.terminate()
         worker_process.join()
         self._worker_processes.remove(worker_process)
