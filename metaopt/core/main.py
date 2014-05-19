@@ -37,8 +37,15 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
     except AttributeError:
         invoker.return_spec = ReturnSpec(f)
 
+    def stop_optimization():
+        error = GlobalTimeoutError(
+            "The optimization ran out of time (%s seconds)" % timeout
+        )
+
+        invoker.stop(error)
+
     if timeout is not None:
-        timer = Timer(timeout, invoker.stop)
+        timer = Timer(timeout, stop_optimization)
         timer.start()
 
     result = optimizer.optimize(invoker=invoker, param_spec=invoker.param_spec,
@@ -57,6 +64,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
 
     return tuple(result)
 
+class GlobalTimeoutError(Exception):
+    pass
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
              optimizer=SAESOptimizer()):
