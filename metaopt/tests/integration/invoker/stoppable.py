@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+"""
+Tests for the pluggable invoker.
+"""
+
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
+# Third Party
+import nose
+from nose.tools.nontrivial import raises
+from nose.tools.trivial import eq_
+
+# First Party
+from metaopt.invoker.invoker import Invoker
+from metaopt.tests.util.function.integer.fast.implicit.f import f
+from metaopt.util.stoppable import StoppedError
+from metaopt.core.arg.util.creator import ArgsCreator
+
+
+f = f  # helps static code checkers identify attributes.
+
+
+def test_instanciation():
+    stoppable_invoker = Invoker()
+    stoppable_invoker.f = f
+    assert not stoppable_invoker.stopped
+    stoppable_invoker.stop()
+    assert stoppable_invoker.stopped
+
+
+@raises(StoppedError)
+def test_repeated_stop_raises_exception():
+    stoppable_invoker = Invoker()
+    stoppable_invoker.f = f
+    stoppable_invoker.stop()
+    stoppable_invoker.stop()
+
+
+def test_invoke():
+    stoppable_invoker = Invoker()
+    stoppable_invoker.f = f
+    args = ArgsCreator(f.param_spec).args()
+    eq_(stoppable_invoker.invoke(None, args), None)
+
+
+@raises(StoppedError)
+def test_invoke_raises_exception_when_stopped():
+    stoppable_invoker = Invoker()
+    stoppable_invoker.f = f
+    args = ArgsCreator(f.param_spec).args()
+    eq_(stoppable_invoker.invoke(None, args), None)
+    stoppable_invoker.stop()
+    eq_(stoppable_invoker.invoke(None, args), None)
+
+
+if __name__ == '__main__':
+    nose.runmodule()

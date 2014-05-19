@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.core.call import call
+from metaopt.core.call.call import call
 from metaopt.invoker.invoker import Invoker
 from metaopt.util.stoppable import stoppable_method, stopping_method
 

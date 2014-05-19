@@ -7,11 +7,11 @@ from __future__ import absolute_import, division, print_function, \
 from threading import Timer
 
 # First Party
-from metaopt.core.returnspec import ReturnSpec
+from metaopt.core.returns.returnspec import ReturnSpec
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.invoker.pluggable import PluggableInvoker
 from metaopt.optimizer.saes import SAESOptimizer
-from metaopt.util.stoppable import StoppedException
+from metaopt.util.stoppable import StoppedError
 
 
 def custom_optimize(f, invoker, param_spec=None, return_spec=None,
@@ -46,7 +46,7 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
 
     try:
         invoker.stop()
-    except StoppedException:
+    except StoppedError:
         pass
 
     if timeout is not None:
@@ -79,4 +79,5 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
 
 class NoParamSpecError(Exception):
     """The error that occurs when no ParamSpec object is provided"""
-    pass
+    def __init__(self):
+        super(NoParamSpecError, self).__init__()

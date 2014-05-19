@@ -11,8 +11,8 @@ from __future__ import absolute_import, division, print_function, \
 from sklearn import cross_validation, datasets, svm
 
 # First Party
-from metaopt.core import param
-from metaopt.core.returns import maximize
+from metaopt.core.param.util import param
+from metaopt.core.returns.util.decorator import maximize
 
 
 @maximize("Score")

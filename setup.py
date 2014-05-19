@@ -72,7 +72,7 @@ setup(
     package_data={'': ['LICENSE.rst', 'README.rst', 'requirements*.txt']},
     setup_requires=[],
     tests_require=find_requirements('requirements_test.txt'),
-    test_suite='metaopt.test',
+    test_suite='metaopt.tests',
     url=metaopt.__url__,
     use_2to3=(sys.version_info >= (3,)),
     version=metaopt.__version__,

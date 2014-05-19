@@ -22,6 +22,8 @@ class TimeoutPlugin(Plugin):
         """
         :param timeout: Available time for invocation (in seconds)
         """
+        super(TimeoutPlugin, self).__init__()
+
         self.timeout = timeout
 
     def on_invoke(self, invocation):

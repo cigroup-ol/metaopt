@@ -7,10 +7,10 @@ from __future__ import absolute_import, division, print_function, \
 from random import sample
 
 # First Party
-from metaopt.core.args import ArgsCreator
+from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.optimizer.util import default_mutation_stength
-from metaopt.util.stoppable import StoppedException
+from metaopt.optimizer.util.default_mutation_stength import default_mutation_stength
+from metaopt.util.stoppable import StoppedError
 
 
 try:
@@ -37,6 +37,8 @@ class RechenbergOptimizer(Optimizer):
         :param mu: Number of parent arguments
         :param lamb: Number of offspring arguments
         """
+        super(RechenbergOptimizer, self).__init__()
+
         self._invoker = None
 
         # TODO: Make sure these value are sane
@@ -108,7 +110,7 @@ class RechenbergOptimizer(Optimizer):
         for individual in self.population:
             try:
                 self._invoker.invoke(self, individual)
-            except StoppedException:
+            except StoppedError:
                 self.aborted = True
                 break
 

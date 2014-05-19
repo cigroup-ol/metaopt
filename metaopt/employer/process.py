@@ -11,10 +11,10 @@ from multiprocessing.synchronize import Lock
 
 # First Party
 from metaopt.employer.employer import Employer
-from metaopt.employer.util.exception import LayoffException
+from metaopt.employer.util.error import LayoffError
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
 from metaopt.worker.process import ProcessWorker
-from metaopt.worker.util.lifecycle import Layoff
+from metaopt.model.call_lifecycle import Layoff
 
 
 class ProcessWorkerEmployer(Employer):
@@ -35,6 +35,7 @@ class ProcessWorkerEmployer(Employer):
                                 defaults to all
         """
         super(ProcessWorkerEmployer, self).__init__()
+
         with self._lock:
             # use the given queues
             self._queue_outcome = queue_outcome
@@ -114,7 +115,7 @@ class ProcessWorkerEmployer(Employer):
         with self._lock:
             # copy worker processes so that _lay_off does not modify
             if reason is None:
-                reason = LayoffException("Releasing all workers.")
+                reason = LayoffError("Releasing all workers.")
             for worker_process in self._worker_processes[:]:
                 self._lay_off(worker_process=worker_process, reason=reason)
 

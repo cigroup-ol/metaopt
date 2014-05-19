@@ -11,10 +11,11 @@ from math import exp
 from random import gauss, sample
 
 # First Party
-from metaopt.core.args import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.optimizer.util import default_mutation_stength
-from metaopt.util.stoppable import StoppedException
+from metaopt.optimizer.util.default_mutation_stength import default_mutation_stength
+from metaopt.util.stoppable import StoppedError
+from metaopt.core.arg.util.creator import ArgsCreator
+from metaopt.core.arg.util.modifier import ArgsModifier
 
 
 try:
@@ -42,6 +43,7 @@ class SAESOptimizer(Optimizer):
         :param lamb: Number of offspring arguments
         """
         super(SAESOptimizer, self).__init__()
+
         self._invoker = None
 
         # TODO: Make sure these value are sane
@@ -96,17 +98,15 @@ class SAESOptimizer(Optimizer):
             self.population.append(individual)
 
     def add_offspring(self):
-        args_creator = ArgsCreator(self.param_spec)
-
         for _ in xrange(self.lamb):
             mother, father = sample(self.population, 2)
 
-            child_args = args_creator.combine(mother[0], father[0])
+            child_args = ArgsModifier.combine(mother[0], father[0])
 
             mean = lambda x1, x2: float((x1 + x2) / 2)
             child_args_sigma = map(mean, mother[1], father[1])
 
-            child_args = args_creator.randomize(child_args, child_args_sigma)
+            child_args = ArgsModifier.randomize(child_args, child_args_sigma)
 
             self.tau0_random = gauss(0, 1)
 
@@ -130,7 +130,7 @@ class SAESOptimizer(Optimizer):
             try:
                 self._invoker.invoke(caller=self, fargs=args,
                                      individual=individual)
-            except StoppedException:
+            except StoppedError:
                 self.aborted = True
                 break
 

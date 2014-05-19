@@ -43,28 +43,30 @@ class BaseStoppable(object):
         pass
 
 
-class StoppedException(Exception):
+class StoppedError(Exception):
     """
     Indicates a call to an object that should *not* have been stopped before.
     """
-    pass
+    def __init__(self):
+        super(StoppedError, self).__init__()
 
 
-class NotStoppedException(BaseException):
+class NotStoppedError(BaseException):
     """Indicates a call to an object that should have been stopped before."""
-    pass
+    def __init__(self):
+        super(NotStoppedError, self).__init__()
 
 
 def stoppable_method(method):
     """
-    Decorator that raises an StoppedException if self is stopped.
+    Decorator that raises an StoppedError if self is stopped.
 
     Note that it needs to placed before an eventual stopping_method decorator.
     """
     def wrapped_method(self, *args, **kwargs):
         """The given method wrapped appended with test if self is stopped."""
         if self.stopped:
-            raise StoppedException()
+            raise StoppedError()
         return method(self, *args, **kwargs)
     return wrapped_method
 

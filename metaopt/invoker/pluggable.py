@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function, \
 from metaopt.invoker.base import BaseInvoker
 from metaopt.optimizer.base import BaseCaller
 from metaopt.plugins.util.invocation import Invocation
-from metaopt.util.stoppable import StoppedException, stoppable_method, \
+from metaopt.util.stoppable import StoppedError, stoppable_method, \
     stopping_method
 
 
@@ -83,7 +83,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
             invocation.current_task = \
                 self._invoker.invoke(caller=self, fargs=fargs,
                                      invocation=invocation)
-        except StoppedException:
+        except StoppedError:
             return invocation.current_task
 
         # FIXME: This should not be required somehow

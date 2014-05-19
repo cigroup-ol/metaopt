@@ -27,6 +27,8 @@ REVERSED_COLORMAP = cm.jet_r
 class VisualizeLandscapePlugin(Plugin):
     def __init__(self, x_param_index=0, y_param_index=1):
         """Visualize fitness landscape"""
+        super(VisualizeLandscapePlugin, self).__init__()
+
         self.x_param_index = x_param_index
         self.y_param_index = y_param_index
 

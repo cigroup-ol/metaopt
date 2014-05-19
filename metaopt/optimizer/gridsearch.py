@@ -5,9 +5,9 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.core.args import ArgsCreator
+from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.util.stoppable import StoppedException
+from metaopt.util.stoppable import StoppedError
 
 
 class GridSearchOptimizer(Optimizer):
@@ -24,7 +24,7 @@ class GridSearchOptimizer(Optimizer):
         for args in args_creator.product():
             try:
                 invoker.invoke(caller=self, fargs=args)
-            except StoppedException:
+            except StoppedError:
                 return self.best[0]
 
         invoker.wait()

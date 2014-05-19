@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.employer.util.exception import LayoffException
+from metaopt.employer.util.error import LayoffError
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
@@ -16,6 +16,7 @@ class CallHandle(Stoppable):
 
     def __init__(self, invoker, call_id):
         super(CallHandle, self).__init__()
+
         self._invoker = invoker
         self._call_id = call_id
 
@@ -28,5 +29,5 @@ class CallHandle(Stoppable):
         Gets called by a timer from another thread.
         """
         if reason is None:
-            reason = LayoffException("Stopping a call via its call handle.")
+            reason = LayoffError("Stopping a call via its call handle.")
         self._invoker.stop_call(call_id=self._call_id, reason=reason)
