@@ -1,7 +1,7 @@
 try:
     from itertools import izip as zip
-except ImportError:
-    # we are running python 3 which as zip built in
+except ImportError as e:
+    # python 3 has an iterative zip built in
     pass
 
 
