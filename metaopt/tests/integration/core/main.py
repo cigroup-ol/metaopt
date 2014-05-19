@@ -26,11 +26,11 @@ def f(a):
 
 
 def test_all_timings():
-    for timeout_local in [0.05 * i for i in range(10)]:
-        for timeout_global in [0.05 * o for o in range(10)]:
+    for timeout_local in [0.05 * i for i in range(5)]:
+        for timeout_global in [0.05 * o for o in range(5)]:
 
-            print("testing global %s s and local %s s" % (timeout_global,
-                                                          timeout_local))
+            #  print("testing global %s s and local %s s" % (timeout_global,
+            #                                               timeout_local))
 
             optimizer = GridSearchOptimizer()
             plugins = [TimeoutPlugin(timeout_local)]
@@ -38,7 +38,7 @@ def test_all_timings():
             optimum = optimize(f=f, timeout=timeout_global, optimizer=optimizer,
                                plugins=plugins)
 
-            print("The optimal parameters are %s." % str(optimum))
+            # print("The optimal parameters are %s." % str(optimum))
 
 if __name__ == '__main__':
     import nose
