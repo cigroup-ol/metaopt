@@ -29,13 +29,13 @@ class TimeoutPlugin(Plugin):
     def on_invoke(self, invocation):
         current_task = invocation.current_task
 
-        def stop_task():
+        def stop_task(reason=None):
             error = TimeoutError(
                 "The objective function took longer than %s seconds"\
                 % self.timeout
             )
 
-            current_task.stop(error)
+            current_task.stop(reason=error)
 
         Timer(self.timeout, stop_task).start()
 
