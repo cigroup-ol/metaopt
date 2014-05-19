@@ -8,8 +8,8 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.employer.util.error import LayoffError
-from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method,\
-    StoppedError
+from metaopt.util.stoppable import Stoppable, StoppedError, stoppable_method, \
+    stopping_method
 
 
 class CallHandle(Stoppable):
