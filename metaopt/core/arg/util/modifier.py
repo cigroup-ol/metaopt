@@ -3,11 +3,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 
-try:
-    from itertools import izip as zip
-except ImportError as e:
+import sys
+if sys.version_info[0] == 2:
     # python 3 has an iterative zip built in
-    pass
+    from itertools import izip as zip
 
 
 class ArgsModifier(object):
