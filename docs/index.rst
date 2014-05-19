@@ -106,12 +106,12 @@ values between -1 and 1) and returns *some* value.
 
     args = optimize(f)
 
-MetaOpt will optimize ``f`` in parellel and then return a list of arguments for
-which ``f`` is minimal.
+MetaOpt will optimize ``f`` in parellel and finally return a list of arguments
+for which ``f`` is minimal.
 
 By default, MetaOpt uses the :class:`metaopt.optimizer.saes.SAESOptimizer` as
-optimizer. Other optimizers like
-the :class:`metaopt.optimizer.gridsearch.GridSearchOptimizer` can also be used.
+optimizer. Other optimizers like the
+:class:`metaopt.optimizer.gridsearch.GridSearchOptimizer` may also be used.
 
 .. code-block:: python
 
@@ -145,21 +145,27 @@ MetaOpt will abort computations of ``f`` that take longer than 5 seconds and
 return the optimal arguments it found after 60 seconds.
 
 This should explain the most basic use cases of MetaOpt. For more details we
-recommend reading the next sections.
+also recommend reading the next sections.
 
 Installation
 ^^^^^^^^^^^^
 
-- How to install it
+MetaOpt is `available on PyPI`_ and can be installed via the following command:
+
+.. _available on PyPI: https://pypi.python.org/pypi/metaopt
+
+.. code:: bash
+
+    $ sudo pip install metaopt
 
 .. objective-functions-label:
 Objective functions
 ^^^^^^^^^^^^^^^^^^^
 
-Before MetaOpt can be used, an objective function has to be defined. This includes
-a specification of its parameters (and optionally its return values). An
-objective function in MetaOpt is just a regular Python function that is augmented
-with a number of available [decorators] that describe its parameters (and return
+Before MetaOpt can be used, an objective function has to be defined. This
+includes a specification of its parameters (and optionally its return values).
+An objective function in MetaOpt is just a regular Python function that is
+augmented with a number of available that describe its parameters (and return
 values).
 
 .. note::
@@ -169,13 +175,20 @@ values).
 
 Let's say a particular objective function takes three parameters ``a``, ``b``
 and ``g``, where ``a`` is an integer between -10 and 10, ``b`` is a float
-between 0.0 and 1.0 and ``g`` is a boolean. To specify these, the decorators
-:func:`metaopt.core.param.int`, :func:`metaopt.core.param.float` and
-:func:`metaopt.core.param.bool` have to be used as follows.
+between 0.0 and 1.0 and ``g`` is a boolean. To specify these, we use the following decorators on the objective function:
+
+* :func:`metaopt.core.param.util.param.int`
+* :func:`metaopt.core.param.util.param.float`
+* :func:`metaopt.core.param.util.param.bool`
+
+The decorators have to be specified in the same order as the function parameters
+and should have the same name (the first parameter of the decorator). The
+topmost decorator has to specify the leftmost function parameter (preferably
+using the same name) and so forth.
 
 .. code-block:: python
 
-    from metaopt.core import param
+    from metaopt.core.param.util import param
 
     @param.int("a", interval=[-10, 10])
     @param.float("b", interval=[0, 1])
@@ -183,10 +196,6 @@ between 0.0 and 1.0 and ``g`` is a boolean. To specify these, the decorators
     def f(a, b, g):
         return some_expensive_computation(a, b, g)
 
-The decorators have to be specified in the same order as the function parameters
-and should have the same name (the first parameter of the decorator). The
-topmost decorator has to specify the leftmost function parameter (preferably
-using the same name) and so forth.
 
 The ``some_expensive_computation`` stands for anything from doing I/O to number
 crunching. If the computation was successful, it should return a numeric value.
@@ -195,15 +204,18 @@ given arguments), it should raise a meaningful exception. You should also make
 sure that your objective function can run in parallel by avoiding global state
 and similar things.
 
-MetaOpt can both maximize and minimize objective functions. To do this, the
-:func:`metaopt.core.retuns.maximize` and :func:`metaopt.core.retuns.minimize`
-decorators can be used. For example, to maximize the objective function, we use
-the `maximize` decorator as follows.
+MetaOpt can both maximize and minimize objective functions. To do this, the following decorators can be used:
+
+* :func:`metaopt.core.returns.util.decorator.maximize`
+* :func:`metaopt.core.returns.util.decorator.minimize`
+
+For example, to maximize the objective function, we use the `maximize` decorator
+as follows.
 
 .. code-block:: python
 
-    from metaopt.core.returns import maximize
-    from metaopt.core import param
+    from metaopt.core.returns.decorator import maximize
+    from metaopt.core.param.util import param
 
     @maximize("Fitness") # Also give the return value a descriptive name
     @param.int("a", interval=[-10, 10])
@@ -215,9 +227,9 @@ the `maximize` decorator as follows.
 By default, MetaOpt minimizes objective functions and using `minimize` is only
 required to give the return value a descriptive name.
 
-To also give parameters more descriptive names, the ``title`` option supported
-by all parameter decorators can be used. The title will be displayed instead of
-the name whenever its parameter or argument is shown to the user.
+To also give parameters more descriptive names, the ``title`` is supported by
+all parameter decorators. The title will be displayed instead of the name
+whenever its parameter or argument is shown to the user.
 
 .. code-block:: python
 
@@ -232,11 +244,11 @@ the name whenever its parameter or argument is shown to the user.
 The following parameter decorators are available in MetaOpt. More types may be
 added in future versions of MetaOpt.
 
-.. autofunction:: metaopt.core.param.int
+.. autofunction:: metaopt.core.param.ulil.param.int
 
-.. autofunction:: metaopt.core.param.float
+.. autofunction:: metaopt.core.param.util.param.float
 
-.. autofunction:: metaopt.core.param.bool
+.. autofunction:: metaopt.core.param.util.param.bool
 
 For more details about specifying the parameters of an objective function, see
 :doc:`parameter_specification`.
@@ -302,7 +314,7 @@ objective functions. These are listed below.
 
 .. autoclass:: metaopt.optimizer.gridsearch.GridSearchOptimizer
 
-For writing your own optimizers see [How to write an Optimizer].
+.. For writing your own optimizers see [How to write an Optimizer].
 
 .. _invokers-label:
 
@@ -332,7 +344,7 @@ The following invokers are available in MetaOpt.
 
 .. autoclass:: metaopt.invoker.pluggable.PluggableInvoker
 
-For writing your own invokers, see [How to write an Invoker] for more
+.. For writing your own invokers, see [How to write an Invoker] for more
 
 .. _plugins-label:
 
@@ -354,7 +366,7 @@ Plugins can be used by passing them to :func:`metaopt.core.main.optimize`.
 
     args = optimize(f, plugins=[PrintPlugin(), TimeoutPlugin(2)])
 
-If you use your own custom invoker, :func:`metaopt.main.custom_optimize` can be
+If you use your own custom invoker, :func:`metaopt.core.main.custom_optimize` can be
 used.
 
 .. code-block:: python
@@ -382,7 +394,7 @@ The following plugins are available in MetaOpt.
 .. autoclass:: metaopt.plugins.visualize.VisualizeBestFitnessPlugin
    :members: show_fitness_invocations_plot, show_fitness_time_plot
 
-For writing your own plugins, see [How to write a Plugin].
+.. For writing your own plugins, see [How to write a Plugin].
 
 
 .. Plugin

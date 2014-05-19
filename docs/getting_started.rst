@@ -21,12 +21,12 @@ values between -1 and 1) and returns *some* value.
 
     args = optimize(f)
 
-MetaOpt will optimize ``f`` in parellel and then return a list of arguments for
-which ``f`` is minimal.
+MetaOpt will optimize ``f`` in parellel and finally return a list of arguments
+for which ``f`` is minimal.
 
 By default, MetaOpt uses the :class:`metaopt.optimizer.saes.SAESOptimizer` as
-optimizer. Other optimizers like
-the :class:`metaopt.optimizer.gridsearch.GridSearchOptimizer` can also be used.
+optimizer. Other optimizers like the
+:class:`metaopt.optimizer.gridsearch.GridSearchOptimizer` may also be used.
 
 .. code-block:: python
 
@@ -60,21 +60,27 @@ MetaOpt will abort computations of ``f`` that take longer than 5 seconds and
 return the optimal arguments it found after 60 seconds.
 
 This should explain the most basic use cases of MetaOpt. For more details we
-recommend reading the next sections.
+also recommend reading the next sections.
 
 Installation
 ^^^^^^^^^^^^
 
-- How to install it
+MetaOpt is `available on PyPI`_ and can be installed via the following command:
+
+.. _available on PyPI: https://pypi.python.org/pypi/metaopt
+
+.. code:: bash
+
+    $ sudo pip install metaopt
 
 .. objective-functions-label:
 Objective functions
 ^^^^^^^^^^^^^^^^^^^
 
-Before MetaOpt can be used, an objective function has to be defined. This includes
-a specification of its parameters (and optionally its return values). An
-objective function in MetaOpt is just a regular Python function that is augmented
-with a number of available [decorators] that describe its parameters (and return
+Before MetaOpt can be used, an objective function has to be defined. This
+includes a specification of its parameters (and optionally its return values).
+An objective function in MetaOpt is just a regular Python function that is
+augmented with a number of available that describe its parameters (and return
 values).
 
 .. note::

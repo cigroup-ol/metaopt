@@ -29,7 +29,7 @@ def bool(*vargs, **kwargs):
     """
     A decorator that specifies an bool parameter for a function
 
-    See :meth:`metaopt.paramspec.ParamSpec.bool` for the allowed parameters.
+    See :meth:`metaopt.core.paramspec.ParamSpec.bool` for the allowed parameters.
 
     """
     def decorator(func):
@@ -44,7 +44,7 @@ def float(*vargs, **kwargs):
     """
     A decorator that specifies a float parameter for a function
 
-    See :meth:`metaopt.paramspec.ParamSpec.float` for the allowed parameters.
+    See :meth:`metaopt.core.paramspec.ParamSpec.float` for the allowed parameters.
 
     """
 
@@ -60,7 +60,7 @@ def int(*vargs, **kwargs):
     """
     A decorator that specifies an int parameter for a function
 
-    See :meth:`metaopt.paramspec.ParamSpec.int` for the allowed parameters.
+    See :meth:`metaopt.core.paramspec.ParamSpec.int` for the allowed parameters.
 
     """
 
