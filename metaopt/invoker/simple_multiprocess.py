@@ -12,8 +12,8 @@ from uuid import uuid4
 
 # First Party
 from metaopt.core.call.call import call
-from metaopt.util.stoppable import stoppable_method
 from metaopt.invoker.invoker import Invoker
+from metaopt.util.stoppable import stoppable_method
 
 
 class SimpleMultiprocessInvoker(Invoker):

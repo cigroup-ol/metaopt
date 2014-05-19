@@ -7,19 +7,21 @@ Tests for the args module.
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
+# Standard Library
 import sys
-from metaopt.core.arg.arg import Arg
-from metaopt.core.arg.bool import BoolArg
-from metaopt.core.arg.util.exception import NoStepArgIterError
-if sys.version_info[0] == 3:
-    unicode = str  # @ReservedAssignment
 
 # Third Party
 import nose
 from nose.tools import eq_, raises
 
 # First Party
+from metaopt.core.arg.arg import Arg
+from metaopt.core.arg.util.exception import NoStepArgIterError
 from metaopt.core.param.paramspec import ParamSpec
+
+
+if sys.version_info[0] == 3:
+    unicode = str  # @ReservedAssignment
 
 
 def test_arg_iter_bounded_int_works():

@@ -18,9 +18,9 @@ from metaopt.invoker.invoker import Invoker
 from metaopt.invoker.util.call_handle import CallHandle
 from metaopt.invoker.util.determine_package import determine_package
 from metaopt.invoker.util.status_db import StatusDB
+from metaopt.model.call_lifecycle import Call, Error, Layoff, Result, Task
 from metaopt.util.stoppable import StoppedError, stoppable_method, \
     stopping_method
-from metaopt.model.call_lifecycle import Call, Error, Layoff, Result, Task
 
 
 try:

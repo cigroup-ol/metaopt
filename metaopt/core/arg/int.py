@@ -1,5 +1,12 @@
-from random import randint
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
+# Standard Library
 import random
+from random import randint
+
+# First Party
 from metaopt.core.arg.arg import Arg
 
 

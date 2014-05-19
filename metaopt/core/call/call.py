@@ -9,8 +9,10 @@ from __future__ import absolute_import, division, print_function, \
 
 # Standard Library
 from inspect import getargspec
-from metaopt.core.returns.util.wrap_return_values import wrap_return_values
+
+# First Party
 from metaopt.core.call.util.exception import CallNotPossibleError
+from metaopt.core.returns.util.wrap_return_values import wrap_return_values
 
 
 def call(f, fargs, param_spec=None, return_spec=None):

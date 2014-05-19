@@ -19,8 +19,8 @@ from tempfile import TemporaryFile
 
 # First Party
 from metaopt.core.call.call import call
-from metaopt.worker.util.import_function import import_function
 from metaopt.model.call_lifecycle import Error, Result, Start
+from metaopt.worker.util.import_function import import_function
 from metaopt.worker.worker import Worker
 
 

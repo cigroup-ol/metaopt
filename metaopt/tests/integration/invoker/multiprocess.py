@@ -13,11 +13,11 @@ from mock import Mock
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.returns.returnspec import ReturnSpec
+from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
 from metaopt.invoker.multiprocess import MultiProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 from metaopt.tests.util.function.integer.failing.f import f as f_failing
 from metaopt.tests.util.function.integer.fast.explicit.f import f as f_working
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
 
 
 f_working = f_working

@@ -3,9 +3,9 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
-# Standard Library
+# First Party
+from metaopt.core.param.param import BoolParam, IntParam, Param
 from metaopt.core.param.util.exception import DuplicateParamError
-from metaopt.core.param.param import Param, IntParam, BoolParam
 
 
 try:

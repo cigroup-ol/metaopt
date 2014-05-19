@@ -10,11 +10,11 @@ from __future__ import absolute_import, division, print_function, \
 from mock import Mock
 
 # First Party
-from metaopt.core.param.util import param
 from metaopt.core.arg.util.creator import ArgsCreator
+from metaopt.core.param.util import param
+from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
 from metaopt.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
 
 
 @param.int("a", interval=(2, 2))

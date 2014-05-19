@@ -7,8 +7,8 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 from metaopt.model.call_lifecycle import Error, Layoff, Result, Start, Task
+from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
 
 
 class StatusDB(Stoppable):

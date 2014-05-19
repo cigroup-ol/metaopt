@@ -1,4 +1,11 @@
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
+# Standard Library
 import itertools
+
+# First Party
 from metaopt.core.arg.util.create_arg import create_arg
 
 

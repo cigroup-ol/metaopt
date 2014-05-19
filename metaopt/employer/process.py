@@ -13,8 +13,8 @@ from multiprocessing.synchronize import Lock
 from metaopt.employer.employer import Employer
 from metaopt.employer.util.error import LayoffError
 from metaopt.invoker.util.determine_worker_count import determine_worker_count
-from metaopt.worker.process import ProcessWorker
 from metaopt.model.call_lifecycle import Layoff
+from metaopt.worker.process import ProcessWorker
 
 
 class ProcessWorkerEmployer(Employer):

@@ -17,8 +17,9 @@ from nose.tools.nontrivial import raises
 
 # First Party
 from metaopt.invoker.util.status_db import StatusDB
-from metaopt.tests.util.function.integer.fast.explicit.f import f
 from metaopt.model.call_lifecycle import Call, Result, Start
+from metaopt.tests.util.function.integer.fast.explicit.f import f
+
 
 # TODO test all stages of the call life cycle
 

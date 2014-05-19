@@ -11,11 +11,12 @@ from math import exp
 from random import gauss, sample
 
 # First Party
-from metaopt.optimizer.optimizer import Optimizer
-from metaopt.optimizer.util.default_mutation_stength import default_mutation_stength
-from metaopt.util.stoppable import StoppedError
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.arg.util.modifier import ArgsModifier
+from metaopt.optimizer.optimizer import Optimizer
+from metaopt.optimizer.util. \
+    default_mutation_stength import default_mutation_stength
+from metaopt.util.stoppable import StoppedError
 
 
 try:

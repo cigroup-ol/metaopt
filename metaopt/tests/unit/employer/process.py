@@ -11,11 +11,11 @@ from multiprocessing import Manager
 
 # Third Party
 import nose
+from mock import Mock
 from nose.tools.nontrivial import raises
 
 # First Party
 from metaopt.employer.process import ProcessWorkerEmployer
-from mock import Mock
 
 
 class TestProcessWorkerEmployer(object):

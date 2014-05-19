@@ -9,7 +9,8 @@ from random import sample
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.optimizer.util.default_mutation_stength import default_mutation_stength
+from metaopt.optimizer.util. \
+    default_mutation_stength import default_mutation_stength
 from metaopt.util.stoppable import StoppedError
 
 

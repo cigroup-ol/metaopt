@@ -1,7 +1,13 @@
+# Future
+from __future__ import absolute_import, division, print_function, \
+    unicode_literals, with_statement
+
+# Standard Library
 from numbers import Integral
 
-from metaopt.core.param.util.exception import InvalidIntervalError, NonIntStepError,\
-    NonIntIntervalError
+# First Party
+from metaopt.core.param.util.exception import InvalidIntervalError, \
+    NonIntIntervalError, NonIntStepError
 
 
 class Param(object):

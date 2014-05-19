@@ -9,9 +9,9 @@ from __future__ import absolute_import, division, print_function, \
 # Third Party
 import nose
 from nose.tools import eq_
-from metaopt.core.param.util import param
 
 # First Party
+from metaopt.core.param.util import param
 
 
 def test_int_first_param_creates_param_spec():

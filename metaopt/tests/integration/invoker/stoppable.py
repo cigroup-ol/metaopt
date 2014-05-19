@@ -13,10 +13,10 @@ from nose.tools.nontrivial import raises
 from nose.tools.trivial import eq_
 
 # First Party
+from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.invoker.invoker import Invoker
 from metaopt.tests.util.function.integer.fast.implicit.f import f
 from metaopt.util.stoppable import StoppedError
-from metaopt.core.arg.util.creator import ArgsCreator
 
 
 f = f  # helps static code checkers identify attributes.
