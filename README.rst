@@ -17,11 +17,6 @@ Status
 PyPIn    |download|      |version|     |format| |license|
 ======== =============== ============= ======== =========
 
-======== =============== ================ ==================
-master   |Build Master|  |Health Master|  |Coverage Master|
-develop  |Build Develop| |Health Develop| |Coverage Develop|
-======== =============== ================ ==================
-
 .. |download| image:: https://pypip.in/download/metaopt/badge.png
         :target: https://pypi.python.org/pypi/metaopt/
         :alt: PyPIn downloads
@@ -37,6 +32,26 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
 .. |license| image:: https://pypip.in/license/metaopt/badge.png
         :target: https://pypi.python.org/pypi/metaopt/
         :alt: PyPIn License
+
+====== ========== ========= =====
+GitHub |reposize| |release| |tag|
+====== ========== ========= =====
+
+.. |reposize| image:: https://reposs.herokuapp.com/?path=cigroup-ol/metaopt
+       :alt: repo size
+
+.. |release| image:: http://img.shields.io/github/release/cigroup-ol/metaopt.svg
+       :target: https://github.com/cigroup-ol/metaopt/releases
+       :alt: releases
+
+.. |tag| image:: http://img.shields.io/github/tag/cigroup-ol/metaopt.svg
+       :target: https://github.com/cigroup-ol/metaopt/tags
+       :alt: tags
+
+======== =============== ================ ==================
+master   |Build Master|  |Health Master|  |Coverage Master|
+develop  |Build Develop| |Health Develop| |Coverage Develop|
+======== =============== ================ ==================
 
 .. |Build Master| image:: https://travis-ci.org/cigroup-ol/metaopt.png?branch=master
         :target: https://travis-ci.org/cigroup-ol/metaopt
