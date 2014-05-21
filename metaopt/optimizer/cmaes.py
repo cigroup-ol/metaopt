@@ -31,7 +31,6 @@ try:
 except NameError:
     xrange = range  # rename range to xrange in python3
 
-
 class CMAESOptimizer(Optimizer):
     """
     Optimization based on the (mu, lambda)-CMA-ES. 
@@ -41,7 +40,7 @@ class CMAESOptimizer(Optimizer):
     """
 
     def __init__(self):
-	super(CMAESOptimizer, self).__init__()
+	    super(CMAESOptimizer, self).__init__()
         self._invoker = None
 
         self.param_spec = None
@@ -60,23 +59,23 @@ class CMAESOptimizer(Optimizer):
         self._invoker = invoker
         self.param_spec = param_spec
 
-	args_creator = ArgsCreator(self.param_spec)
+	    args_creator = ArgsCreator(self.param_spec)
 
-	# dimensions for equation setup
-	self._n = len(args_creator.random())
+	    # dimensions for equation setup
+	    self._n = len(args_creator.random())
 
-	# start position as numpy array, numpify	
-	start = args_creator.random()
-	self._xmean = array(map(lambda arg : arg.value, start))
+	    # start position as numpy array, numpify	
+	    start = args_creator.random()
+	    self._xmean = array(map(lambda arg : arg.value, start))
 
-	# step size
-	self._sigma = 0.5
+	    # step size
+	    self._sigma = 0.5
 
-	# mu and lambda
-	self._mu, self._lambd = 15, 100
+	    # mu and lambda
+	    self._mu, self._lambd = 15, 100
 
-	# initialize the parameters with member variables
-	self.initialize_parameters()
+	    # initialize the parameters with member variables
+	    self.initialize_parameters()
 
         while not self.exit_condition():
             self.add_offspring()
@@ -86,16 +85,14 @@ class CMAESOptimizer(Optimizer):
                 return self.best_scored_indivual[0]
 
             self.select_parents()
-
             self.generation += 1
 
         return self.best_scored_indivual[0]
 
     def initialize_parameters(self):
-
-	# alias
-	n = self._n
-
+	    # alias
+	    n = self._n
+    
         # recombination weights
         self._weights = [log(self._mu + 0.5) - log(i + 1) for i in range(self._mu)]  
 
@@ -139,7 +136,7 @@ class CMAESOptimizer(Optimizer):
         # approx. norm of random vector
         self._norm = sqrt(n) * (1.0 - (1.0/(4*n)) + (1.0/(21*n**2)))
 
-	# first run
+	    # first run
         self._D, self._B = eigh(self._C)
         self._B = matrix(self._B)
         self._D = [d ** 0.5 for d in self._D] 
@@ -170,7 +167,6 @@ class CMAESOptimizer(Optimizer):
         self.scored_population = []
 
         for individual in self.population:
-            
             # metaoptify
             args_creator = ArgsCreator(self.param_spec)
             individual = individual.getA1().tolist()
@@ -192,11 +188,11 @@ class CMAESOptimizer(Optimizer):
         values = map(lambda s: s[0], new_scored_population)
 
         # numpify
-	numpify = lambda val : array(map(lambda arg : arg.value, val))
+	    numpify = lambda val : array(map(lambda arg : arg.value, val))
         values = map(numpify, values)
 
-	# alias
-	n = self._n	
+	    # alias
+	    n = self._n	
 
         # remember old xmean for parameter adjustment
         oldxmean = deepcopy(self._xmean)
