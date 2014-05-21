@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Optimizer implementing the CMA-ES.
+Optimizer implementing the (mu, lambda)-CMA-ES.
+
+http://www.lri.fr/~hansen/gecco2013-CMA-ES-tutorial.pdf
+http://www.lri.fr/~hansen/cmatutorial.pdf
 """
+
 # Future
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
@@ -17,7 +21,6 @@ from metaopt.optimizer.optimizer import Optimizer
 from metaopt.util.stoppable import StoppedError
 
 # Numpy
-
 from numpy import array, mean, log, eye, diag, transpose
 from numpy import identity, matrix, dot, exp, zeros, ones, sqrt
 from numpy.random import normal, rand
@@ -31,7 +34,7 @@ except NameError:
 
 class CMAESOptimizer(Optimizer):
     """
-    Optimization based on the CMA-ES. 
+    Optimization based on the (mu, lambda)-CMA-ES. 
 
     This optimizer should be combined with a global timeout, otherwise it will
     run indefinitely.
@@ -62,8 +65,9 @@ class CMAESOptimizer(Optimizer):
 	# dimensions for equation setup
 	self._n = len(args_creator.random())
 
-	# start position as numpy array	
-	self._xmean = array(args_creator.random())
+	# start position as numpy array, numpify	
+	start = args_creator.random()
+	self._xmean = array(map(lambda arg : arg.value, start))
 
 	# step size
 	self._sigma = 0.5
@@ -149,27 +153,29 @@ class CMAESOptimizer(Optimizer):
     def initalize_population(self):
         args_creator = ArgsCreator(self.param_spec)
 
-        for _ in xrange(self.mu):
-            args = args_creator.random()
-            args_sigma = [default_mutation_stength(arg.param) for arg in args]
-
-            individual = (args, args_sigma)
-            self.population.append(individual)
+        for _ in xrange(self._mu):
+            normals = transpose(matrix([normal(0.0, d) for d in self._D]))
+            value = self._xmean + transpose(self._sigma * self._B * normals)
+            self.population.append(value)
 
     def add_offspring(self):
         args_creator = ArgsCreator(self.param_spec)
 
         for _ in xrange(self._lambd):
             normals = transpose(matrix([normal(0.0, d) for d in self._D]))
-            import pdb; pdb.set_trace()
             value = self._xmean + transpose(self._sigma * self._B * normals)
-            self.population.append(child)
+            self.population.append(value)
 
     def score_population(self):
         self.scored_population = []
 
         for individual in self.population:
-            args, _ = individual
+            
+            # metaoptify
+            args_creator = ArgsCreator(self.param_spec)
+            individual = individual.getA1().tolist()
+            individual = args_creator.args(individual)
+            args = individual
 
             try:
                 self._invoker.invoke(caller=self, fargs=args,
@@ -182,8 +188,12 @@ class CMAESOptimizer(Optimizer):
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])
-        new_scored_population = self.scored_population[0:self.mu]
+        new_scored_population = self.scored_population[0:self._mu]
         values = map(lambda s: s[0], new_scored_population)
+
+        # numpify
+	numpify = lambda val : array(map(lambda arg : arg.value, val))
+        values = map(numpify, values)
 
 	# alias
 	n = self._n	
@@ -235,8 +245,6 @@ class CMAESOptimizer(Optimizer):
 
         invD = diag([1.0/d for d in self._D])
         self._invsqrtC = self._B * invD * transpose(self._B) 
-
-        import pdb; pdb.set_trace()
 
     def on_result(self, value, fargs, individual, **kwargs):
         del fargs
