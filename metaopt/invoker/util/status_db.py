@@ -9,6 +9,7 @@ from __future__ import absolute_import, division, print_function, \
 # First Party
 from metaopt.model.call_lifecycle import Error, Layoff, Result, Start, Task
 from metaopt.util.stoppable import Stoppable, stoppable_method, stopping_method
+import time
 
 
 class StatusDB(Stoppable):
@@ -237,8 +238,13 @@ class StatusDB(Stoppable):
     @stopping_method
     def stop(self, reason=None):
         """"""
-        self._empty_queue_task()
+
+        # TODO This loop should not be necessary.
+        while not self._queue_task.empty():
+            self._empty_queue_task()
+            time.sleep(0.001)
         assert self._queue_task.empty()
+
         # issue task done for all unchecked messages of the task queue
         # TODO this should not be necessary
         while True:
