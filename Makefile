@@ -25,7 +25,7 @@ clean-backup:
 	find . -name '*.bak' -exec rm -f {} +
 
 clean-build:
-	rm -fr build/
+	rm -fr ./build/
 	rm -fr dist/
 	rm -fr *.egg-info
 	rm -fr *.egg
