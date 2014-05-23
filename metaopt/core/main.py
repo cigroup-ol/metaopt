@@ -70,8 +70,10 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
 
     return tuple(result)
 
+
 class GlobalTimeoutError(Exception):
     pass
+
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
              optimizer=SAESOptimizer()):
