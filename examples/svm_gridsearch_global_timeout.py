@@ -35,9 +35,10 @@ def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
-    from metaopt.plugins.print import PrintPlugin
-    from metaopt.plugins.visualize import VisualizeLandscapePlugin
-    from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
+    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
+    from metaopt.plugin.visualization.best_fitness import \
+        VisualizeBestFitnessPlugin
 
     timeout = 3
     optimizer = GridSearchOptimizer()
@@ -46,7 +47,7 @@ def main():
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [
-        PrintPlugin(),
+        StatusPrintPlugin(),
         visualize_landscape_plugin,
         visualize_best_fitness_plugin
     ]

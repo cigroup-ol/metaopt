@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
 from threading import Timer
 
 # First Party
-from metaopt.plugins.plugin import Plugin
+from metaopt.plugin.plugin import Plugin
 
 
 class Stopper(object):

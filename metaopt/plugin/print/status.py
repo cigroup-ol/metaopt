@@ -7,10 +7,10 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.plugins.plugin import Plugin
+from metaopt.plugin.plugin import Plugin
 
 
-class PrintPlugin(Plugin):
+class StatusPrintPlugin(Plugin):
     """
     Logs all invocation events to the standard output.
 

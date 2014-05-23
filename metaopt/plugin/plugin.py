@@ -4,12 +4,12 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.plugins.base import BasePlugin
+from metaopt.plugin.base import BasePlugin
 
 
 class Plugin(BasePlugin):
     """
-    Invocation plugin that does nothing for all hooks.
+    Plugin that does nothing for all hooks.
     """
 
     def __init__(self):
