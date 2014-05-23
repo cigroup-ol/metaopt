@@ -1,34 +1,29 @@
-# -*- coding: utf-8 -*-
 """
-SVM (Gridsearch, global timeout)
-================================
+One Min (grid search)
+=====================
 """
+
 # Future
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
-# Third Party
-from sklearn import cross_validation, datasets, svm
-
 # First Party
 from metaopt.core.param.util import param
-from metaopt.core.returns.util.decorator import maximize
+from metaopt.core.returns.util.decorator import minimize
+from metaopt.plugin.print.optimum import OptimumPrintPlugin
 
 
-@maximize("Score")
-@param.float("C", interval=[1, 10], step=0.25)
-@param.float("gamma", interval=[1, 10], step=0.25)
-def f(C, gamma):
-    iris = datasets.load_iris()
-
-    X_train, X_test, y_train, y_test = cross_validation.train_test_split(
-        iris.data, iris.target, test_size=0.4, random_state=0)
-
-    clf = svm.SVC(C=C, gamma=gamma)
-
-    clf.fit(X_train, y_train)
-
-    return clf.score(X_test, y_test)
+@minimize("value")
+@param.bool("a")
+@param.bool("b")
+@param.bool("c")
+@param.bool("d")
+@param.bool("e")
+@param.bool("f")
+@param.bool("g")
+@param.bool("h")
+def f(**kwargs):
+    return sum(kwargs.values())
 
 
 def main():
@@ -40,22 +35,21 @@ def main():
     from metaopt.plugin.visualization.best_fitness import \
         VisualizeBestFitnessPlugin
 
-    timeout = 3
     optimizer = GridSearchOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
+    status_print_plugin = StatusPrintPlugin()
+    optimum_print_plugin = OptimumPrintPlugin()
 
     plugins = [
-        StatusPrintPlugin(),
+        status_print_plugin,
+        optimum_print_plugin,
         visualize_landscape_plugin,
         visualize_best_fitness_plugin
     ]
 
-    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
-                       plugins=plugins)
-
-    print("The optimal parameters are %s." % str(optimum))
+    optimize(f=f, optimizer=optimizer, plugins=plugins)
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()

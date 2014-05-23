@@ -42,7 +42,13 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
             "The optimization ran out of time (%s seconds)" % timeout
         )
 
-        invoker.stop(error)
+        try:
+            invoker.stop(error)
+        except StoppedError:
+            # The invoker was already stopped.
+            # TODO Who might have stopped the invoker?
+            # Nothing to do here.
+            pass
 
     if timeout is not None:
         timer = Timer(timeout, stop_optimization)
@@ -64,8 +70,10 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
 
     return tuple(result)
 
+
 class GlobalTimeoutError(Exception):
     pass
+
 
 def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
              optimizer=SAESOptimizer()):

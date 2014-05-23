@@ -15,7 +15,7 @@ from metaopt.core.main import optimize
 from metaopt.core.param.util import param
 from metaopt.core.returns.util.decorator import maximize
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
-from metaopt.plugins.timeout import TimeoutPlugin
+from metaopt.plugin.timeout import TimeoutPlugin
 
 
 @maximize("Score")

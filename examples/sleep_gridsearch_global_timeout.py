@@ -25,11 +25,11 @@ def f(a):
 def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.gridsearch import GridSearchOptimizer
-    from metaopt.plugins.print import PrintPlugin
+    from metaopt.plugin.print.status import StatusPrintPlugin
 
     timeout = 3
     optimizer = GridSearchOptimizer()
-    plugins = [PrintPlugin()]
+    plugins = [StatusPrintPlugin()]
 
     optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
                        plugins=plugins)

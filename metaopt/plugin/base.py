@@ -17,7 +17,7 @@ class BasePlugin(object):
     Abstract base class for invocation plugins.
 
     Plugin developers can either derive their objects directly from this class
-    or from :class:`metaopt.plugins.plugin.DummyPlugin` to only override
+    or from :class:`metaopt.plugin.plugin.DummyPlugin` to only override
     methods selectively.
 
     """

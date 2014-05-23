@@ -35,18 +35,20 @@ def main():
     from metaopt.core.main import optimize
     from metaopt.optimizer.saes import SAESOptimizer
 
-    from metaopt.plugins.print import PrintPlugin
-    from metaopt.plugins.visualize import VisualizeLandscapePlugin
-    from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
+    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
+    from metaopt.plugin.visualization.best_fitness import \
+        VisualizeBestFitnessPlugin
 
     timeout = 3
     optimizer = SAESOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
+    print_plugin = StatusPrintPlugin()
 
     plugins = [
-        PrintPlugin(),
+        print_plugin,
         visualize_landscape_plugin,
         visualize_best_fitness_plugin
     ]

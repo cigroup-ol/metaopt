@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function, \
 # First Party
 from metaopt.invoker.base import BaseInvoker
 from metaopt.optimizer.base import BaseCaller
-from metaopt.plugins.util.invocation import Invocation
+from metaopt.plugin.util.invocation import Invocation
 from metaopt.util.stoppable import StoppedError, stoppable_method, \
     stopping_method
 

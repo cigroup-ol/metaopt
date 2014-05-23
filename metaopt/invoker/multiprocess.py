@@ -147,11 +147,13 @@ class MultiProcessInvoker(Invoker):
                     kwargs=kwargs)
         task = Task(call=call)
 
-        with self._lock:
-            if self._stopped:
-                raise StoppedError()
-
-        self._status_db.issue_task(task)
+        try:
+            self._status_db.issue_task(task)
+        except StoppedError:
+            # The status database was already stoppped.
+            # This means we are stopped,  too.
+            # So abort this invocation.
+            return
 
         # wait for any worker to start working on the task
         # there is always only one task in the queue
