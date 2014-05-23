@@ -18,7 +18,7 @@ class BoolArg(Arg):
 
     def randomize(self, strength):
         del strength  # TODO
-        return self.random(self)
+        return self.random()
 
     def combine(self, other_arg):
         value = self.value or other_arg.value
