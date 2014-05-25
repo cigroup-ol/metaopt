@@ -13,15 +13,8 @@ from metaopt.core.returns.util.decorator import minimize
 from metaopt.plugin.print.optimum import OptimumPrintPlugin
 
 
-@minimize("value")
-@param.bool("a")
-@param.bool("b")
-@param.bool("c")
-@param.bool("d")
-@param.bool("e")
-@param.bool("f")
-@param.bool("g")
-@param.bool("h")
+@minimize("Sum")
+@param.multi(param.bool, ["a", "b", "c", "d", "e", "f", "g", "h"])
 def f(**kwargs):
     return sum(kwargs.values())
 

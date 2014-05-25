@@ -21,8 +21,31 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
+from functools import wraps
+
 # First Party
+from metaopt.core.param.util.exception import TitleForMultiParameterError,\
+    MultiMultiParameterError
+
 from metaopt.core.param.util.make_param_spec import make_param_spec
+
+from functools import partial
+
+def multi(other_decorator, names=[], titles=[], *vargs, **kwargs):
+    if "title" in kwargs:
+        raise TitleForMultiParameterError()
+
+    if other_decorator == multi:
+        raise MultiMultiParameterError()
+
+
+    def decorator(func):
+        for name in reversed(names):
+            other_decorator(name, *vargs, **kwargs)(func)
+
+        return func
+
+    return decorator
 
 
 def bool(*vargs, **kwargs):
@@ -63,6 +86,8 @@ def int(*vargs, **kwargs):
     See :meth:`metaopt.core.paramspec.ParamSpec.int` for the allowed parameters.
 
     """
+
+    print(*vargs)
 
     def decorator(func):
         param_spec = make_param_spec(func)
