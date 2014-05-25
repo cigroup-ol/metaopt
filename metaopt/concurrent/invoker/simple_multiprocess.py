@@ -11,8 +11,8 @@ from multiprocessing import Process, Queue
 from uuid import uuid4
 
 # First Party
-from metaopt.core.call.call import call
 from metaopt.concurrent.invoker.invoker import Invoker
+from metaopt.core.call.call import call
 from metaopt.core.stoppable.stoppable import stoppable
 
 

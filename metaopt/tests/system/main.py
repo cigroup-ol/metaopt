@@ -14,25 +14,24 @@ import nose
 from nose.tools import eq_
 
 # First Party
-from metaopt.core.optimize.optimize import custom_optimize
 from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
 from metaopt.concurrent.invoker.invoker import Invoker
 from metaopt.concurrent.invoker.multiprocess import MultiProcessInvoker
 from metaopt.concurrent.invoker.pluggable import PluggableInvoker
-from metaopt.concurrent.invoker.simple_multiprocess import SimpleMultiprocessInvoker
+from metaopt.concurrent.invoker. \
+    simple_multiprocess import SimpleMultiprocessInvoker
 from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
+from metaopt.core.optimize.optimize import custom_optimize
+from metaopt.objective.integer.failing import FUNCTIONS_FAILING
+from metaopt.objective.integer.fast.explicit import FUNCTIONS_FAST_EXPLICIT
+from metaopt.objective.integer.fast.explicit.f import f as f_max_fast
+from metaopt.objective.integer.fast.explicit.g import f as f_min_fast
+from metaopt.objective.integer.fast.implicit import FUNCTIONS_FAST_IMPLICIT
+from metaopt.objective.integer.slow.explicit.f import f as f_max_slow
+from metaopt.objective.integer.slow.explicit.g import f as f_min_slow
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
-from metaopt.objective.integer.failing import FUNCTIONS_FAILING
-from metaopt.objective.integer.fast. \
-    explicit import FUNCTIONS_FAST_EXPLICIT
-from metaopt.objective.integer.fast.explicit.f import f as f_max_fast
-from metaopt.objective.integer.fast.explicit.g import f as f_min_fast
-from metaopt.objective.integer.fast. \
-    implicit import FUNCTIONS_FAST_IMPLICIT
-from metaopt.objective.integer.slow.explicit.f import f as f_max_slow
-from metaopt.objective.integer.slow.explicit.g import f as f_min_slow
 
 
 class TestMain(object):

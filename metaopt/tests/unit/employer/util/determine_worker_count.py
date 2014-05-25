@@ -12,9 +12,10 @@ from multiprocessing import cpu_count
 # Third Party
 import nose
 from nose.tools.nontrivial import raises
-from metaopt.concurrent.employer.util.determine_worker_count import determine_worker_count
 
 # First Party
+from metaopt.concurrent.employer.util. \
+    determine_worker_count import determine_worker_count
 
 
 def test_determine_worker_count():

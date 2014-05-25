@@ -6,8 +6,8 @@ from __future__ import absolute_import, division, print_function, \
 from nose.tools import raises
 
 # First Party
-from metaopt.core.optimize.optimize import NoParamSpecError, custom_optimize
 from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
+from metaopt.core.optimize.optimize import NoParamSpecError, custom_optimize
 
 
 @raises(NoParamSpecError)

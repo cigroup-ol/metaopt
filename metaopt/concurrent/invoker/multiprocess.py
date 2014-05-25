@@ -15,12 +15,12 @@ from threading import Lock
 from metaopt.concurrent.employer.process import ProcessWorkerEmployer
 from metaopt.concurrent.invoker.invoker import Invoker
 from metaopt.concurrent.invoker.util.call_handle import CallHandle
+from metaopt.concurrent.invoker.util.determine_package import determine_package
 from metaopt.concurrent.invoker.util.status_db import StatusDB
 from metaopt.concurrent.model.call_lifecycle import Call, Error, Layoff, \
     Result, Task
 from metaopt.core.stoppable.util.decorator import stoppable, stopping
 from metaopt.core.stoppable.util.exception import StoppedError
-from metaopt.concurrent.invoker.util.determine_package import determine_package
 
 
 try:

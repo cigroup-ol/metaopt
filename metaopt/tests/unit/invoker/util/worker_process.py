@@ -17,11 +17,12 @@ import nose
 from nose.tools.nontrivial import raises
 
 # First Party
-from metaopt.concurrent.model.call_lifecycle import Call, Error, Result, Start, Task
-from metaopt.objective.integer.fast import FUNCTIONS_FAST
+from metaopt.concurrent.invoker.util.determine_package import determine_package
+from metaopt.concurrent.model.call_lifecycle import Call, Error, Result, \
+    Start, Task
 from metaopt.concurrent.worker.process import ProcessWorker
 from metaopt.concurrent.worker.worker import Worker
-from metaopt.concurrent.invoker.util.determine_package import determine_package
+from metaopt.objective.integer.fast import FUNCTIONS_FAST
 
 
 class TestWorkerProcess(object):

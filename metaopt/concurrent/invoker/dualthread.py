@@ -11,9 +11,9 @@ import uuid
 from threading import Lock, Thread
 
 # First Party
-from metaopt.core.call.call import call
 from metaopt.concurrent.invoker.invoker import Invoker
 from metaopt.concurrent.invoker.util.call_handle import CallHandle
+from metaopt.core.call.call import call
 from metaopt.core.stoppable.stoppable import stoppable
 from metaopt.core.stoppable.util.decorator import stopping
 

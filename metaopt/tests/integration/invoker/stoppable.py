@@ -13,8 +13,8 @@ from nose.tools.nontrivial import raises
 from nose.tools.trivial import eq_
 
 # First Party
-from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.concurrent.invoker.invoker import Invoker
+from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.objective.integer.fast.implicit.f import f
 

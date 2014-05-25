@@ -13,8 +13,8 @@ from nose.tools.nontrivial import raises
 
 # First Party
 from metaopt.core.stoppable.stoppable import Stoppable
-from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.core.stoppable.util.decorator import stoppable
+from metaopt.core.stoppable.util.exception import StoppedError
 
 
 def test_stoppable_is_not_stopped_initially():

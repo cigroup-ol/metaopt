@@ -16,11 +16,10 @@ from nose.tools import eq_
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
+from metaopt.objective.integer.fast import FUNCTIONS_FAST
+from metaopt.objective.integer.fast.explicit import FUNCTIONS_FAST_EXPLICIT
 from metaopt.tests.unit.core.arg.util. \
     get_intervals_from_function import get_intervals_from_function
-from metaopt.objective.integer.fast import FUNCTIONS_FAST
-from metaopt.objective.integer.fast. \
-    explicit import FUNCTIONS_FAST_EXPLICIT
 
 
 try:

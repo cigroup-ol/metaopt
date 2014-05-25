@@ -10,10 +10,10 @@ from __future__ import absolute_import, division, print_function, \
 from mock import Mock
 
 # First Party
+from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.paramspec.util import param
 from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
-from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 
 

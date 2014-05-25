@@ -13,9 +13,9 @@ from mock import Mock
 from nose.tools import eq_
 
 # First Party
+from metaopt.concurrent.invoker.pluggable import PluggableInvoker
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.returnspec.returnspec import ReturnSpec
-from metaopt.concurrent.invoker.pluggable import PluggableInvoker
 from metaopt.objective.integer.fast.implicit.f import f
 from metaopt.tests.util.matcher import EqualityMatcher
 
