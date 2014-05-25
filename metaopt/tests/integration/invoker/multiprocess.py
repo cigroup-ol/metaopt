@@ -33,15 +33,16 @@ class TestMultiProcessInvoker(object):
         self._invoker = None
 
     def setup(self):
-        resources = 2 # 1  # Use only one CPU for reproducible results.
+        resources = 1  # Use only one CPU for reproducible results.
         self._invoker = MultiProcessInvoker(resources=resources)
 
     def teardown(self):
         self._invoker.stop()
 
     def test_instanciation(self):
-        return  # TODO
-        self._invoker = MultiProcessInvoker()
+        return  # really do nothing here, setup and teardown do everything.
+
+    def test_single_call(self):
         self._invoker.f = f_working
         caller = Mock()
         fargs = {'a': 0}
