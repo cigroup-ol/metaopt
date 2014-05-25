@@ -5,8 +5,8 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
+from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.util.stoppable import StoppedError
 
 
 class GridSearchOptimizer(Optimizer):

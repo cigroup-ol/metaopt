@@ -11,8 +11,8 @@ from __future__ import absolute_import, division, print_function, \
 from time import sleep
 
 # First Party
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.decorator import maximize
+from metaopt.core.paramspec.util import param
+from metaopt.core.returnspec.util.decorator import maximize
 
 
 @maximize("Score")
@@ -23,7 +23,7 @@ def f(a):
 
 
 def main():
-    from metaopt.core.main import optimize
+    from metaopt.core.optimize.optimize import optimize
     from metaopt.optimizer.gridsearch import GridSearchOptimizer
     from metaopt.plugin.print.status import StatusPrintPlugin
 

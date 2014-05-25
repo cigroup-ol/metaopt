@@ -12,7 +12,9 @@ import nose
 from nose.tools.nontrivial import raises
 
 # First Party
-from metaopt.util.stoppable import Stoppable, StoppedError, stoppable_method
+from metaopt.core.stoppable.stoppable import Stoppable
+from metaopt.core.stoppable.util.exception import StoppedError
+from metaopt.core.stoppable.util.decorator import stoppable
 
 
 def test_stoppable_is_not_stopped_initially():
@@ -49,7 +51,7 @@ def test_stopping_is_idempotent():
 class MockStoppable(Stoppable):
     """Mock up Stoppable with a stoppable method."""
 
-    @stoppable_method
+    @stoppable
     def run(self):
         """A method that does something."""
         pass  # no operation qualifies as "something"

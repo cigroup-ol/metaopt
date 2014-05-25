@@ -7,7 +7,7 @@ from nose.tools import eq_
 
 # First Party
 from metaopt.core.arg.bool import BoolArg
-from metaopt.core.param.paramspec import ParamSpec
+from metaopt.core.paramspec.paramspec import ParamSpec
 
 
 def test_arg_iter_bool_works():

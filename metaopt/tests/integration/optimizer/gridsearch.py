@@ -8,8 +8,8 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.core.param.util import param
-from metaopt.invoker.dualthread import DualThreadInvoker
+from metaopt.core.paramspec.util import param
+from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
 

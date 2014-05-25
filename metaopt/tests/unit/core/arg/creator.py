@@ -18,8 +18,8 @@ from nose.tools import eq_
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.tests.unit.core.arg.util. \
     get_intervals_from_function import get_intervals_from_function
-from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
-from metaopt.tests.util.function.integer.fast. \
+from metaopt.objective.integer.fast import FUNCTIONS_FAST
+from metaopt.objective.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
 
 
@@ -32,7 +32,7 @@ except NameError:
 def test_ArgsCreator_product_versus_itertools_product():
     for function in FUNCTIONS_FAST:
         # log
-        print(function)
+        print("next function: %s" % function.__module__)
 
         # mock
         intervals = get_intervals_from_function(function)
@@ -67,7 +67,7 @@ def test_ArgsCreator_product_versus_itertools_product():
 def test_ArgsCreator_args_versus_nested_loop():
     for function in FUNCTIONS_FAST_EXPLICIT:
         # log
-        print(function)
+        print("next function: %s" % function.__module__)
 
         # mock
         intervals = get_intervals_from_function(function)

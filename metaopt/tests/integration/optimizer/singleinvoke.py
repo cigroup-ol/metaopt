@@ -11,9 +11,9 @@ from mock import Mock
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
-from metaopt.invoker.singleprocess import SingleProcessInvoker
+from metaopt.core.paramspec.util import param
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
+from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 
 

@@ -4,5 +4,5 @@ from __future__ import absolute_import, division, print_function, \
 
 
 class CallNotPossibleError(Exception):
-    def __init__(self, msg):
-        super(CallNotPossibleError, self).__init__(msg)
+    def __init__(self, message=None):
+        super(CallNotPossibleError, self).__init__(message)

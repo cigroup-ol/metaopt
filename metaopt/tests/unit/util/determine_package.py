@@ -14,8 +14,8 @@ import nose
 from nose.tools.trivial import eq_
 
 # First Party
-from metaopt.invoker.util.determine_package import determine_package
-from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
+from metaopt.concurrent.invoker.util.determine_package import determine_package
+from metaopt.objective.integer.fast import FUNCTIONS_FAST
 
 
 def local_function():
@@ -81,12 +81,12 @@ class TestDeterminePackage(object):
     def test_determine_imported(self):
         for index, function in enumerate(FUNCTIONS_FAST):
             package_remote_function = determine_package(function)
-            assert package_remote_function == \
-               ("metaopt.tests.util.function.integer.fast.explicit." +
-                string.ascii_lowercase[5 + index]) or\
-                package_remote_function == \
-               ("metaopt.tests.util.function.integer.fast.implicit." +
-                string.ascii_lowercase[3 + index])
+            a = "metaopt.objective.integer.fast.explicit." + \
+                 string.ascii_lowercase[5 + index]
+            b = "metaopt.objective.integer.fast.implicit." + \
+                string.ascii_lowercase[3 + index]
+            assert package_remote_function == a or \
+                package_remote_function == b
 
             __import__(name=package_remote_function, globals=globals(),
                    locals=locals(), fromlist=())

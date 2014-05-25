@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function, \
 import nose
 
 # First Party
-from metaopt.core.returns.util.decorator import maximize, minimize
+from metaopt.core.returnspec.util.decorator import maximize, minimize
 
 
 def test_maximize_creates_return_spec():

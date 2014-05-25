@@ -12,9 +12,10 @@ import nose
 from nose.tools import raises
 
 # First Party
-from metaopt.core.returns.returnspec import ReturnSpec
-from metaopt.core.returns.util.exception import MultiObjectivesNotSupportedError
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
+from metaopt.core.returnspec.returnspec import ReturnSpec
+from metaopt.core.returnspec.util. \
+    exception import MultiObjectivesNotSupportedError
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
 
 
 def test_return_spec_maximize():

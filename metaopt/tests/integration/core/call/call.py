@@ -15,9 +15,9 @@ from nose.tools import raises
 from metaopt.core.arg.arg import Arg
 from metaopt.core.call.call import call
 from metaopt.core.call.util.exception import CallNotPossibleError
-from metaopt.core.param.paramspec import ParamSpec
-from metaopt.core.returns.returnspec import ReturnSpec
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
+from metaopt.core.paramspec.paramspec import ParamSpec
+from metaopt.core.returnspec.returnspec import ReturnSpec
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
 
 
 def test_call_func_with_return_spec():

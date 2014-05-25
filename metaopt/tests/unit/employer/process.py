@@ -15,7 +15,7 @@ from mock import Mock
 from nose.tools.nontrivial import raises
 
 # First Party
-from metaopt.employer.process import ProcessWorkerEmployer
+from metaopt.concurrent.employer.process import ProcessWorkerEmployer
 
 
 class TestProcessWorkerEmployer(object):

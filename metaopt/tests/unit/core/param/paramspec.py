@@ -12,8 +12,8 @@ import nose
 from nose.tools import raises
 
 # First Party
-from metaopt.core.param.paramspec import ParamSpec
-from metaopt.core.param.util.exception import DuplicateParamError, \
+from metaopt.core.paramspec.paramspec import ParamSpec
+from metaopt.core.paramspec.util.exception import DuplicateParamError, \
     InvalidIntervalError, NonIntIntervalError, NonIntStepError
 
 

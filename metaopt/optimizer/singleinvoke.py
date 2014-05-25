@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function, \
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.util.stoppable import StoppedError
+from metaopt.core.stoppable.util.exception import StoppedError
 
 
 class SingleInvokeOptimizer(Optimizer):

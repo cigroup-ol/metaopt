@@ -10,8 +10,8 @@ from __future__ import absolute_import, division, print_function, \
 import nose
 
 # First Party
-from metaopt.invoker.util.determine_package import determine_package
-from metaopt.worker.util.import_function import import_function
+from metaopt.concurrent.invoker.util.determine_package import determine_package
+from metaopt.concurrent.worker.util.import_function import import_function
 
 
 def f():

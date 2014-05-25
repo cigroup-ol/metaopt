@@ -17,7 +17,7 @@ from nose.tools import eq_, raises
 # First Party
 from metaopt.core.arg.arg import Arg
 from metaopt.core.arg.util.exception import NoStepArgIterError
-from metaopt.core.param.paramspec import ParamSpec
+from metaopt.core.paramspec.paramspec import ParamSpec
 
 
 if sys.version_info[0] == 3:

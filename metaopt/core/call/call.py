@@ -12,7 +12,7 @@ from inspect import getargspec
 
 # First Party
 from metaopt.core.call.util.exception import CallNotPossibleError
-from metaopt.core.returns.util.wrap_return_values import wrap_return_values
+from metaopt.core.returnspec.util.wrap_return_values import wrap_return_values
 
 
 def call(f, fargs, param_spec=None, return_spec=None):

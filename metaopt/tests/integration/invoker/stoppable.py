@@ -14,9 +14,9 @@ from nose.tools.trivial import eq_
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.invoker.invoker import Invoker
-from metaopt.tests.util.function.integer.fast.implicit.f import f
-from metaopt.util.stoppable import StoppedError
+from metaopt.concurrent.invoker.invoker import Invoker
+from metaopt.core.stoppable.util.exception import StoppedError
+from metaopt.objective.integer.fast.implicit.f import f
 
 
 f = f  # helps static code checkers identify attributes.

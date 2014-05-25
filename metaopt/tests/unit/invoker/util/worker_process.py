@@ -17,11 +17,11 @@ import nose
 from nose.tools.nontrivial import raises
 
 # First Party
-from metaopt.invoker.util.determine_package import determine_package
-from metaopt.model.call_lifecycle import Call, Error, Result, Start, Task
-from metaopt.tests.util.function.integer.fast import FUNCTIONS_FAST
-from metaopt.worker.process import ProcessWorker
-from metaopt.worker.worker import Worker
+from metaopt.concurrent.model.call_lifecycle import Call, Error, Result, Start, Task
+from metaopt.objective.integer.fast import FUNCTIONS_FAST
+from metaopt.concurrent.worker.process import ProcessWorker
+from metaopt.concurrent.worker.worker import Worker
+from metaopt.concurrent.invoker.util.determine_package import determine_package
 
 
 class TestWorkerProcess(object):
@@ -108,7 +108,7 @@ class TestWorkerProcess(object):
 
         for function in FUNCTIONS_FAST:
             # log
-            print(function)
+            print("next function: %s" % function.__module__)
 
             # run
             function = determine_package(function)
@@ -133,7 +133,7 @@ class TestWorkerProcess(object):
 
         for function in FUNCTIONS_FAST:
             # log
-            print(function)
+            print("next function: %s" % function.__module__)
 
             # run
             function = determine_package(function)

@@ -14,27 +14,27 @@ import nose
 from nose.tools import eq_
 
 # First Party
-from metaopt.core.main import custom_optimize
-from metaopt.invoker.dualthread import DualThreadInvoker
-from metaopt.invoker.invoker import Invoker
-from metaopt.invoker.multiprocess import MultiProcessInvoker
-from metaopt.invoker.pluggable import PluggableInvoker
-from metaopt.invoker.simple_multiprocess import SimpleMultiprocessInvoker
-from metaopt.invoker.singleprocess import SingleProcessInvoker
+from metaopt.core.optimize.optimize import custom_optimize
+from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
+from metaopt.concurrent.invoker.invoker import Invoker
+from metaopt.concurrent.invoker.multiprocess import MultiProcessInvoker
+from metaopt.concurrent.invoker.pluggable import PluggableInvoker
+from metaopt.concurrent.invoker.simple_multiprocess import SimpleMultiprocessInvoker
+from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
-from metaopt.tests.util.function.integer.failing import FUNCTIONS_FAILING
-from metaopt.tests.util.function.integer.fast. \
+from metaopt.core.stoppable.util.exception import StoppedError
+from metaopt.objective.integer.failing import FUNCTIONS_FAILING
+from metaopt.objective.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
-from metaopt.tests.util.function.integer.fast.explicit.f import f as f_max_fast
-from metaopt.tests.util.function.integer.fast.explicit.g import f as f_min_fast
-from metaopt.tests.util.function.integer.fast. \
+from metaopt.objective.integer.fast.explicit.f import f as f_max_fast
+from metaopt.objective.integer.fast.explicit.g import f as f_min_fast
+from metaopt.objective.integer.fast. \
     implicit import FUNCTIONS_FAST_IMPLICIT
-from metaopt.tests.util.function.integer.slow.explicit.f import f as f_max_slow
-from metaopt.tests.util.function.integer.slow.explicit.g import f as f_min_slow
-from metaopt.util.stoppable import StoppedError
-from metaopt.worker.util.import_function import import_function
+from metaopt.objective.integer.slow.explicit.f import f as f_max_slow
+from metaopt.objective.integer.slow.explicit.g import f as f_min_slow
+from metaopt.concurrent.worker.util.import_function import import_function
 
 
 class TestMain(object):
@@ -104,19 +104,19 @@ class TestMain(object):
 
     def _test_integer_failing(self, invoker, optimizer):
         for function in FUNCTIONS_FAILING:
-            print("next function: %s" % function)
+            print("next function: %s" % function.__module__)
             self._test_function_failing(function, invoker=invoker,
                                         optimizer=optimizer)
 
     def _test_integer_fast_explicit(self, invoker, optimizer):
         for function in FUNCTIONS_FAST_EXPLICIT:
-            print("next function: %s" % function)
+            print("next function: %s" % function.__module__)
             self._test_function_fast(function=function, invoker=invoker,
                                      optimizer=optimizer)
 
     def _test_integer_fast_implicit(self, invoker, optimizer):
         for function in FUNCTIONS_FAST_IMPLICIT:
-            print("next function: %s" % function)
+            print("next function: %s" % function.__module__)
             self._test_function_fast(function=function, invoker=invoker,
                                      optimizer=optimizer)
 

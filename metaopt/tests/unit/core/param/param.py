@@ -11,7 +11,7 @@ import nose
 from nose.tools import eq_
 
 # First Party
-from metaopt.core.param.util import param
+from metaopt.core.paramspec.util import param
 
 
 def test_int_first_param_creates_param_spec():
