@@ -64,7 +64,12 @@ class SimpleMultiprocessInvoker(Invoker):
         worker.start()
 
     def worker_target(self, worker_name, result_queue, fargs):
-        actual_result = call(self.f, fargs, self.param_spec, self.return_spec)
+        try:
+            actual_result = call(self.f, fargs, self.param_spec, self.return_spec)
+        except Exception as exception:
+            # The objective function has risen an exception.
+            # So the exception becomes the result.
+            actual_result = exception
 
         result = WorkerResult()
         result.worker_name = worker_name

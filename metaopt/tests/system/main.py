@@ -24,7 +24,6 @@ from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.optimizer.rechenberg import RechenbergOptimizer
 from metaopt.optimizer.saes import SAESOptimizer
-from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.objective.integer.failing import FUNCTIONS_FAILING
 from metaopt.objective.integer.fast. \
     explicit import FUNCTIONS_FAST_EXPLICIT
@@ -34,7 +33,6 @@ from metaopt.objective.integer.fast. \
     implicit import FUNCTIONS_FAST_IMPLICIT
 from metaopt.objective.integer.slow.explicit.f import f as f_max_slow
 from metaopt.objective.integer.slow.explicit.g import f as f_min_slow
-from metaopt.concurrent.worker.util.import_function import import_function
 
 
 class TestMain(object):
@@ -48,26 +46,18 @@ class TestMain(object):
 
     def setup(self):
         self._invokers = [
-            DualThreadInvoker(),
-            MultiProcessInvoker(),
-            #StoppableInvoker(),  # TODO NotImplementedError
-            #PluggableInvoker(DualThreadInvoker()), # TODO faulty result
-            #PluggableInvoker(MultiProcessInvoker()),  # TODO on_error kwargs
-            #SingleProcessInvoker(),  # TODO NotImplementedError
-            #SimpleMultiprocessInvoker(), # TODO hanging
+            DualThreadInvoker,  # works
+            MultiProcessInvoker,  # works
+            #SingleProcessInvoker,  # TODO faulty result
+            #SimpleMultiprocessInvoker, # TODO hangs
             ]
         self._optimizers = [
-            GridSearchOptimizer(),
-            #SAESOptimizer(),  # TODO TypeError
-            #RechenbergOptimizer(),  # TODO TypeError None is not iterable
+            GridSearchOptimizer,  # works
+            #SAESOptimizer,  # TODO TypeError
+            #RechenbergOptimizer,  # TODO TypeError None is not iterable
             ]
 
     def teardown(self):
-        for invoker in self._invokers:
-            try:
-                invoker.stop()
-            except StoppedError:
-                pass
         self._invokers = None
         self._optimizers = None
 
@@ -75,11 +65,21 @@ class TestMain(object):
         """
         Calls the given target method with all invokers and optimizers.
         """
-        for invoker, optimizer in product(self._invokers, self._optimizers):
+        # test invoker directly
+        for Invoker, Optimizer in product(self._invokers, self._optimizers):
+            invoker = Invoker()
+            optimizer = Optimizer()
             print("next invoker: %s, next optimizer: %s" % \
                   (invoker.__class__.__name__, optimizer.__class__.__name__))
             target(invoker=invoker, optimizer=optimizer)
-            del invoker, optimizer
+
+        # test invokers via pluggable invoker
+        for Invoker, Optimizer in product(self._invokers, self._optimizers):
+            invoker = PluggableInvoker(Invoker())
+            optimizer = Optimizer()
+            print("next invoker: %s, next optimizer: %s" % \
+                  (invoker.__class__.__name__, optimizer.__class__.__name__))
+            target(invoker=invoker, optimizer=optimizer)
 
     def test_custom_optimize_maximize(self):
         self._wrap(self._test_custom_optimize_maximize)
