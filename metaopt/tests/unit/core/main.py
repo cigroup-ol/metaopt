@@ -12,27 +12,29 @@ import nose
 from mock import Mock
 
 # First Party
-from metaopt.core.main import custom_optimize
+from metaopt.core.optimize.optimize import custom_optimize
 
 
-def test_custom_optimize_stops_invoker():
-    invoker = Mock()
-    invoker.stop = Mock()
+class TestCustomOptimize(object):
 
-    optimizer = Mock()
-    optimizer.optimize = Mock()
-    optimizer.optimize.return_value = (1, 0)
+    def test_custom_optimize_stops_invoker(self):
+        invoker = Mock()
+        invoker.stop = Mock()
 
-    param_spec = Mock()
-    return_spec = Mock()
+        optimizer = Mock()
+        optimizer.optimize = Mock()
+        optimizer.optimize.return_value = (1, 0)
 
-    def f(x, y):
-        pass
+        param_spec = Mock()
+        return_spec = Mock()
 
-    custom_optimize(f, invoker, optimizer=optimizer, param_spec=param_spec,
-        return_spec=return_spec)
+        def f(x, y):
+            pass
 
-    assert invoker.stop.called
+        custom_optimize(f, invoker, optimizer=optimizer, param_spec=param_spec,
+            return_spec=return_spec)
+
+        assert invoker.stop.called
 
 
 if __name__ == '__main__':

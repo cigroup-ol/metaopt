@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # Third Party
+import nose
 from mock import Mock
 
 # First Party
@@ -41,5 +42,4 @@ def test_optimize_returns_result():
                                            fargs=args)
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

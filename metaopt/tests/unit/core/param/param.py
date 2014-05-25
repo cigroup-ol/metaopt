@@ -14,31 +14,30 @@ from nose.tools import eq_
 from metaopt.core.paramspec.util import param
 
 
-def test_int_first_param_creates_param_spec():
-    @param.int("a", interval=(1, 10))
-    def f():
-        pass
+class TestParam(object):
+    def test_int_first_param_creates_param_spec(self):
+        @param.int("a", interval=(1, 10))
+        def f():
+            pass
 
-    assert "a" in f.param_spec.params
+        assert "a" in f.param_spec.params
 
+    def test_int_multiple_params_are_saved(self):
+        @param.int("a", interval=(1, 10))
+        @param.int("b", interval=(1, 10))
+        def f():
+            pass
 
-def test_int_multiple_params_are_saved():
-    @param.int("a", interval=(1, 10))
-    @param.int("b", interval=(1, 10))
-    def f():
-        pass
+        assert "a" in f.param_spec.params
+        assert "b" in f.param_spec.params
 
-    assert "a" in f.param_spec.params
-    assert "b" in f.param_spec.params
+    def test_int_multiple_params_are_saved_in_order(self):
+        @param.int("a", interval=(1, 10))
+        @param.int("b", interval=(1, 10))
+        def f():
+            pass
 
-
-def test_int_multiple_params_are_saved_in_order():
-    @param.int("a", interval=(1, 10))
-    @param.int("b", interval=(1, 10))
-    def f():
-        pass
-
-    eq_(list(f.param_spec.params), ["a", "b"])
+        eq_(list(f.param_spec.params), ["a", "b"])
 
 if __name__ == '__main__':
     nose.runmodule()

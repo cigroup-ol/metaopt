@@ -10,6 +10,9 @@ from __future__ import absolute_import, division, print_function, \
 # Standard Library
 from time import sleep
 
+# Third Party
+import nose
+
 # First Party
 from metaopt.core.optimize.optimize import optimize
 from metaopt.core.paramspec.util import param
@@ -25,21 +28,17 @@ def f(a):
     return a
 
 
-def test_all_timings():
-    for timeout_local in [0.05 * i for i in range(5)]:
-        for timeout_global in [0.05 * o for o in range(5)]:
+class TestTimings(object):
 
-            #  print("testing global %s s and local %s s" % (timeout_global,
-            #                                               timeout_local))
+    def test_all_timings(self):
+        for timeout_local in [0.05 * i for i in range(5)]:
+            for timeout_global in [0.05 * o for o in range(5)]:
+                optimizer = GridSearchOptimizer()
+                plugins = [TimeoutPlugin(timeout_local)]
 
-            optimizer = GridSearchOptimizer()
-            plugins = [TimeoutPlugin(timeout_local)]
+                optimize(f=f, timeout=timeout_global, optimizer=optimizer,
+                                   plugins=plugins)
 
-            optimum = optimize(f=f, timeout=timeout_global, optimizer=optimizer,
-                               plugins=plugins)
-
-            # print("The optimal parameters are %s." % str(optimum))
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()
