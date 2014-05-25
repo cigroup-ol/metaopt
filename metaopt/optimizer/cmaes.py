@@ -83,13 +83,13 @@ class CMAESOptimizer(Optimizer):
             self.score_population()
 
             if self.aborted:
-                return self.best_scored_indivual[0][0]
+                return self.best_scored_indivual[0]
 
             self.select_parents()
 
             self.generation += 1
 
-        return self.best_scored_indivual[0][0]
+        return self.best_scored_indivual[0]
 
     def initialize_parameters(self):
 
