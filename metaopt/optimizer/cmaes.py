@@ -170,7 +170,6 @@ class CMAESOptimizer(Optimizer):
         self.scored_population = []
 
         for individual in self.population:
-
             # metaoptify
             args_creator = ArgsCreator(self.param_spec)
             individual = individual.getA1().tolist()

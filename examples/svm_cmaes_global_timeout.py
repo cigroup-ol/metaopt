@@ -39,6 +39,7 @@ def main():
     from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
     timeout = 30
+
     optimizer = CMAESOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
