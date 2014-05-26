@@ -12,16 +12,22 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.core.optimize.optimize import optimize
-from metaopt.objective.bool.one_min_eight import f as one_min_eight
+from metaopt.core.paramspec.util import param
+from metaopt.core.returnspec.util.decorator import minimize
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
+from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.plugin.print.optimum import OptimumPrintPlugin
-
 from metaopt.plugin.print.status import StatusPrintPlugin
 from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
 
+@minimize("Sum")
+@param.multi(param.bool, ["a", "b", "c", "d", "e", "f", "g", "h"])
+def f(**kwargs):
+    return sum(kwargs.values())
+
 def main():
-    optimizer = GridSearchOptimizer()
+    optimizer = SAESOptimizer(mu=1000,lamb=1000)
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
@@ -35,7 +41,7 @@ def main():
         visualize_best_fitness_plugin
     ]
 
-    optimize(f=one_min_eight, optimizer=optimizer, plugins=plugins)
+    optimize(f=f, timeout=10, optimizer=optimizer, plugins=plugins)
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()
