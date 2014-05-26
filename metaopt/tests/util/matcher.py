@@ -11,7 +11,7 @@ import itertools
 import string
 
 # First Party
-from metaopt.core.returns.returnspec import ReturnSpec
+from metaopt.core.returnspec.returnspec import ReturnSpec
 
 
 class EqualityMatcher(object):

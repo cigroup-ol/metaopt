@@ -10,23 +10,24 @@ from __future__ import absolute_import, division, print_function, \
 import nose
 
 # First Party
-from metaopt.core.returns.util.decorator import maximize, minimize
+from metaopt.core.returnspec.util.decorator import maximize, minimize
 
 
-def test_maximize_creates_return_spec():
-    @maximize("y")
-    def f():
-        pass
+class TestDecorators(object):
 
-    assert "y" == f.return_spec.return_values[0]["name"]
+    def test_maximize_creates_return_spec(self):
+        @maximize("y")
+        def f():
+            pass
 
+        assert "y" == f.return_spec.return_values[0]["name"]
 
-def test_minimize_creates_return_spec():
-    @minimize("y")
-    def f():
-        pass
+    def test_minimize_creates_return_spec(self):
+        @minimize("y")
+        def f():
+            pass
 
-    assert "y" == f.return_spec.return_values[0]["name"]
+        assert "y" == f.return_spec.return_values[0]["name"]
 
 if __name__ == '__main__':
     nose.runmodule()

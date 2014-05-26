@@ -16,8 +16,6 @@ from metaopt.core.param.util.exception import TitleForMultiParameterError,\
     MultiMultiParameterError
 
 
-
-
 def test_multi_creates_two_params():
     @param.multi(param.int, ["a", "b"], interval=(1, 10))
     def f():
@@ -25,14 +23,6 @@ def test_multi_creates_two_params():
 
     assert "a" in f.param_spec.params
     assert "b" in f.param_spec.params
-
-# def test_multi_creates_float_two_params():
-#     @param.multi(param.float, ["a", "b"])
-#     def f():
-#         pass
-
-#     assert "a" in f.param_spec.params
-#     assert "b" in f.param_spec.params
 
 def test_multi_creates_two_params_are_saved_in_order():
     @param.multi(param.int, ["a", "b"], interval=(1, 10))
@@ -66,8 +56,12 @@ def test_int_first_param_creates_param_spec():
     def f():
         pass
 
-    assert "a" in f.param_spec.params
+def test_int_first_param_creates_param_spec():
+    @param.int("a", interval=(1, 10))
+    def f():
+        pass
 
+    assert "a" in f.param_spec.params
 
 def test_int_multiple_params_are_saved():
     @param.int("a", interval=(1, 10))
@@ -77,7 +71,6 @@ def test_int_multiple_params_are_saved():
 
     assert "a" in f.param_spec.params
     assert "b" in f.param_spec.params
-
 
 def test_int_multiple_params_are_saved_in_order():
     @param.int("a", interval=(1, 10))

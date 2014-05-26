@@ -12,11 +12,11 @@ import nose
 from mock import Mock
 
 # First Party
+from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
-from metaopt.invoker.dualthread import DualThreadInvoker
-from metaopt.tests.util.function.integer.failing.f import f as failing_f
-from metaopt.tests.util.function.integer.fast.implicit.f import f as f
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
+from metaopt.objective.integer.failing.f import f as failing_f
+from metaopt.objective.integer.fast.implicit.f import f as f
 
 
 f = f  # helps static code checkers

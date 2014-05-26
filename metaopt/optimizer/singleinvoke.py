@@ -8,8 +8,8 @@ from __future__ import absolute_import, division, print_function, \
 
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
+from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.util.stoppable import StoppedError
 
 
 class SingleInvokeOptimizer(Optimizer):
@@ -33,12 +33,12 @@ class SingleInvokeOptimizer(Optimizer):
 
         return args
 
-    def on_error(self, error, fargs, **kwargs):
+    def on_error(self, value, fargs, **kwargs):
         del fargs
         del kwargs
-        self._outcome = error
+        self._outcome = value
 
-    def on_result(self, result, fargs, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
         del fargs
         del kwargs
-        self._outcome = result
+        self._outcome = value

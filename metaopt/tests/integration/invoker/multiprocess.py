@@ -11,13 +11,14 @@ import nose
 from mock import Mock
 
 # First Party
+from metaopt.concurrent.invoker.multiprocess import MultiProcessInvoker
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.core.returns.returnspec import ReturnSpec
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
-from metaopt.invoker.multiprocess import MultiProcessInvoker
+from metaopt.core.returnspec.returnspec import ReturnSpec
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
+from metaopt.core.stoppable.util.exception import StoppedError
+from metaopt.objective.integer.failing.f import f as f_failing
+from metaopt.objective.integer.fast.explicit.f import f as f_working
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
-from metaopt.tests.util.function.integer.failing.f import f as f_failing
-from metaopt.tests.util.function.integer.fast.explicit.f import f as f_working
 
 
 f_working = f_working
@@ -33,13 +34,20 @@ class TestMultiProcessInvoker(object):
         self._invoker = None
 
     def setup(self):
-        self._invoker = MultiProcessInvoker(resources=1)
+        resources = 1  # Use only one CPU for reproducible results.
+        self._invoker = MultiProcessInvoker(resources=resources)
 
     def teardown(self):
-        self._invoker.stop()
+        try:
+            self._invoker.stop()
+        except StoppedError:
+            # raise  # TODO
+            pass
 
     def test_instanciation(self):
-        self._invoker = MultiProcessInvoker()
+        return  # really do nothing here, setup and teardown do everything.
+
+    def test_single_call(self):
         self._invoker.f = f_working
         caller = Mock()
         fargs = {'a': 0}

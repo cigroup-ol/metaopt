@@ -7,13 +7,14 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # Third Party
+import nose
 from mock import Mock
 
 # First Party
+from metaopt.concurrent.invoker.singleprocess import SingleProcessInvoker
 from metaopt.core.arg.util.creator import ArgsCreator
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.wrapper import ReturnValuesWrapper
-from metaopt.invoker.singleprocess import SingleProcessInvoker
+from metaopt.core.paramspec.util import param
+from metaopt.core.returnspec.util.wrapper import ReturnValuesWrapper
 from metaopt.optimizer.singleinvoke import SingleInvokeOptimizer
 
 
@@ -41,5 +42,4 @@ def test_optimize_returns_result():
                                            fargs=args)
 
 if __name__ == '__main__':
-    import nose
     nose.runmodule()

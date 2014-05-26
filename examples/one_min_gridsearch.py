@@ -1,6 +1,9 @@
 """
 One Min (grid search)
 =====================
+
+This example uses an objective function included in MetaOpt. For it's
+implementation see `metaopt.objective.bool.one_min_eight`.
 """
 
 # Future
@@ -8,26 +11,16 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # First Party
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.decorator import minimize
+from metaopt.core.optimize.optimize import optimize
+from metaopt.objective.bool.one_min_eight import f as one_min_eight
+from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.plugin.print.optimum import OptimumPrintPlugin
 
-
-@minimize("Sum")
-@param.multi(param.bool, ["a", "b", "c", "d", "e", "f", "g", "h"])
-def f(**kwargs):
-    return sum(kwargs.values())
-
+from metaopt.plugin.print.status import StatusPrintPlugin
+from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
+from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
 
 def main():
-    from metaopt.core.main import optimize
-    from metaopt.optimizer.gridsearch import GridSearchOptimizer
-
-    from metaopt.plugin.print.status import StatusPrintPlugin
-    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-    from metaopt.plugin.visualization.best_fitness import \
-        VisualizeBestFitnessPlugin
-
     optimizer = GridSearchOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
@@ -42,7 +35,7 @@ def main():
         visualize_best_fitness_plugin
     ]
 
-    optimize(f=f, optimizer=optimizer, plugins=plugins)
+    optimize(f=one_min_eight, optimizer=optimizer, plugins=plugins)
 
     visualize_landscape_plugin.show_surface_plot()
     visualize_landscape_plugin.show_image_plot()
