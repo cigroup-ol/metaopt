@@ -13,13 +13,13 @@ from windml.datasets.nrel import NREL
 from windml.mapping.power_mapping import PowerMapping
 import math
 from wdknn import KNN
+from metaopt.core.returnspec.util.decorator import minimize
+from metaopt.core.paramspec.util import param
+from metaopt.core.optimize.optimize import optimize
 
 # First Party
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.decorator import maximize
-from metaopt.core.returns.util.decorator import minimize
 
-feature_window, horizon = 1, 3 
+feature_window, horizon = 1, 3
 train_step, test_step = 50,50 #only every n data points
 park_id=NREL.park_id['lancaster']
 windpark = NREL().get_windpark_nearest(park_id, 3, 2004, 2005)
@@ -48,25 +48,22 @@ y_test=y[train_to:test_to:test_step]
 @param.float("c",interval=[5,100.0],step=50)
 @param.float("d",interval=[5,100.0],step=50)
 def f(a,b,c,d):
-    clf = KNN(n_neighbors=5, weights=[a,b,c,d]) 
+    clf = KNN(n_neighbors=5, weights=[a,b,c,d])
     clf.fit(X_train, y_train)
     return clf.score(X_test, y_test)
 
 
 def main():
-    from metaopt.core.main import optimize
-    from metaopt.core.main import custom_optimize
     from metaopt.optimizer.saes import SAESOptimizer
-    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
-    from metaopt.invoker.dualthread import DualThreadInvoker
-    from metaopt.invoker.pluggable import PluggableInvoker
+    from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
+    from metaopt.concurrent.invoker.pluggable import PluggableInvoker
 
-    from metaopt.plugins.print import PrintPlugin
-    from metaopt.plugins.visualize import VisualizeLandscapePlugin
-    from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
+    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
+    from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
-    timeout = 20 
+    timeout = 20
     optimizer = SAESOptimizer(mu=5, lamb=5)
     #optimizer = GridSearchOptimizer()
 
@@ -74,7 +71,7 @@ def main():
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [
-        PrintPlugin(),
+        StatusPrintPlugin(),
         visualize_landscape_plugin,
         visualize_best_fitness_plugin
     ]
