@@ -11,8 +11,8 @@ import nose
 from nose.tools import eq_, raises
 
 # First Party
-from metaopt.core.param.util import param
-from metaopt.core.param.util.exception import MultiMultiParameterError, \
+from metaopt.core.paramspec.util import param
+from metaopt.core.paramspec.util.exception import MultiMultiParameterError, \
     TitleForMultiParameterError
 
 
