@@ -164,7 +164,19 @@ class StatusDB(Stoppable):
         Blocks till an outcome was gotten from the outcome queue and processed.
         """
         try:
-            outcome = self._queue_outcome.get()
+            #outcome = self._queue_outcome.get()
+
+            # TODO this is polling which is bad.
+            # Unfortunately this is necessary because of the concurrent stop.
+            while True:
+                try:
+                    outcome = self._queue_outcome.get(timeout=1)
+                    break
+                except Empty:
+                    pass
+                if self._stopped:
+                    raise StoppedError()
+
         except EOFError:
             # The outcome queue was closed on the other end.
             # That must have been the queue's manager
