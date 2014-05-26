@@ -21,15 +21,14 @@ This code specifies that some_function takes 3 parameters ``a``, ``b``, and
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
-from functools import wraps
+# Standard Library
+from functools import partial, wraps
 
 # First Party
-from metaopt.core.param.util.exception import TitleForMultiParameterError,\
-    MultiMultiParameterError
+from metaopt.core.paramspec.util.exception import MultiMultiParameterError, \
+    TitleForMultiParameterError
+from metaopt.core.paramspec.util.make_param_spec import make_param_spec
 
-from metaopt.core.param.util.make_param_spec import make_param_spec
-
-from functools import partial
 
 def multi(other_decorator, names=[], titles=[], *vargs, **kwargs):
     if "title" in kwargs:

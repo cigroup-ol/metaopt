@@ -12,8 +12,8 @@ from nose.tools import eq_, raises
 
 # First Party
 from metaopt.core.param.util import param
-from metaopt.core.param.util.exception import TitleForMultiParameterError,\
-    MultiMultiParameterError
+from metaopt.core.param.util.exception import MultiMultiParameterError, \
+    TitleForMultiParameterError
 
 
 def test_multi_creates_two_params():
