@@ -137,7 +137,7 @@ class RechenbergOptimizer(Optimizer):
         elif probablity < (1 / 5):
             self.sigmas = map(lambda sigma: sigma * self.a, self.sigmas)
 
-    def on_result(self, value, fargs, individual, **kwargs):
+    def on_result(self, value, fargs, **kwargs):
         fitness = value
         individual = fargs
         scored_individual = (individual, fitness)
