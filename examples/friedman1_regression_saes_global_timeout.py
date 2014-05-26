@@ -68,7 +68,7 @@ class KNN:
         return math.sqrt(mse(res,y))
 
 # Generate a Friedman #1 Problem
-X,Y = make_friedman1(n_samples=300, n_features=10, noise=0.0, random_state=13)
+X,Y = make_friedman1(n_samples=600, n_features=10, noise=0.0, random_state=13)
 train_to, test_to = int(math.floor(len(X) * 0.5)), len(X)
 X_train=X[:train_to:1]
 y_train=Y[:train_to:1]
@@ -95,7 +95,7 @@ def main():
     from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
     from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
-    timeout = 5
+    timeout = 180 
     optimizer = SAESOptimizer(mu=5, lamb=5)
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
