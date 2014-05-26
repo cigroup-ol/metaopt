@@ -22,7 +22,7 @@ from metaopt.plugin.timeout import TimeoutPlugin
 
 
 @maximize("Score")
-@param.float("a", interval=[0.1, 0.5], step=0.05)
+@param.float("a", interval=[0.01, 0.04], step=0.01)
 def f(a):
     sleep(a)
     return a
@@ -31,8 +31,9 @@ def f(a):
 class TestTimings(object):
 
     def test_all_timings(self):
-        for timeout_local in [0.05 * i for i in range(5)]:
-            for timeout_global in [0.05 * o for o in range(5)]:
+        for timeout_local in [0.01 * i for i in range(5)]:
+            for timeout_global in [0.01 * o for o in range(5)]:
+                print("testing timeouts: local %s s, global %s s" % (timeout_local, timeout_global))
                 optimizer = GridSearchOptimizer()
                 plugins = [TimeoutPlugin(timeout_local)]
 

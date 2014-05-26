@@ -90,7 +90,12 @@ class ProcessWorkerEmployer(Employer):
         # send kill signal and wait for the process to die
         # TODO assert worker_process.is_alive()
         worker_process.terminate()
-        worker_process.join()
+        try:
+            worker_process.join()
+        except OSError:
+            # The worker has already terminated.
+            # That is OK, just carry on.
+            pass
         self._worker_processes.remove(worker_process)
 
         try:

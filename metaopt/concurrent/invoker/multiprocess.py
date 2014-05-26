@@ -127,45 +127,44 @@ class MultiProcessInvoker(Invoker):
         Can be called asynchronously, but will block if the call can not be
         executed immediately, especially when using multiple processes/threads.
         """
-        self._caller = caller
-
-        # employ one new worker
-        try:
-            with self._lock:
-                self._worker_provider.employ()
-        except IndexError:
-            # The worker process provider was at its worker limit, already.
-            # So no new worker could be employed.
-            # We can not assume this invoke's task will be started immediately.
-            # So wait for a free worker by getting and handling an outcome.
-            outcome = self._status_db.wait_for_one_outcome()
-            self._handle_outcome(outcome)
-
-        # issue task, the first worker to become idle will execute it
-        call = Call(id=uuid.uuid4(),
-                    function=determine_package(self._f), args=fargs,
-                    kwargs=kwargs)
-        task = Task(call=call)
-
-        try:
-            self._status_db.issue_task(task)
-        except StoppedError:
-            # The status database was already stoppped.
-            # This means we are stopped,  too.
-            # So abort this invocation.
-            return
-
-        # wait for any worker to start working on the task
-        # there is always only one task in the queue
-        # so the task that gets started is the one we just issued
-        try:
-            _ = self._status_db.wait_for_one_start()
-        except EOFError:
-            # All workers were stopped before this task was started.
-            # That is OK, just return a regular task handle anyway.
-            pass
-
         with self._lock:
+            self._caller = caller
+
+            # employ one new worker
+            try:
+                self._worker_provider.employ()
+            except IndexError:
+                # The worker process provider was at its worker limit, already.
+                # So no new worker could be employed.
+                # We can not assume this invoke's task will be started immediately.
+                # So wait for a free worker by getting and handling an outcome.
+                outcome = self._status_db.wait_for_one_outcome()
+                self._handle_outcome(outcome)
+
+            # issue task, the first worker to become idle will execute it
+            call = Call(id=uuid.uuid4(),
+                        function=determine_package(self._f), args=fargs,
+                        kwargs=kwargs)
+            task = Task(call=call)
+
+            try:
+                self._status_db.issue_task(task)
+            except StoppedError:
+                # The status database was already stopped.
+                # This means we are stopped, too.
+                # So abort this invoke.
+                raise StoppedError()
+
+            # wait for any worker to start working on the task
+            # there is always only one task in the queue
+            # so the task that gets started is the one we just issued
+            try:
+                _ = self._status_db.wait_for_one_start()
+            except EOFError:
+                # All workers were stopped before this task was started.
+                # That is OK, just return a regular task handle anyway.
+                pass
+
             if self._stopped:
                 raise StoppedError()
 
@@ -173,18 +172,18 @@ class MultiProcessInvoker(Invoker):
 
     def wait(self):
         """Blocks till all currently invoked tasks terminate."""
-        with self._lock:
-            while self._status_db.outcomes_awaited > 0:
-                # we are still expecting another outcome
-                try:
-                    outcome = self._status_db.wait_for_one_outcome()
-                except IOError as e:
-                    # This invoker was stopped via self.stop()
-                    # All workers were killed and the queue closed.
-                    # We will never get the expected outcome.
-                    # That is OK, just do nothing.
-                    print(e)
-                    return
+        while self._status_db.outcomes_awaited > 0:
+            # we are still expecting another outcome
+            try:
+                outcome = self._status_db.wait_for_one_outcome()
+            except IOError as e:
+                # This invoker was stopped via self.stop()
+                # All workers were killed and the queue closed.
+                # We will never get the expected outcome.
+                # That is OK, just do nothing.
+                print(e)
+                return
+            with self._lock:
                 self._handle_outcome(outcome=outcome)
 
     def stop_call(self, call_id, reason):
@@ -212,20 +211,19 @@ class MultiProcessInvoker(Invoker):
 
         Gets called by a timer in an individual thread.
         """
-        with self._lock:
-            # terminate all workers and handle their lay_off outcomes
-            count_workers_killed = self._worker_provider.worker_count
-            self._worker_provider.abandon()
-            for _ in xrange(count_workers_killed - 1):
-                outcome = self._status_db.wait_for_one_outcome()
-                self._handle_outcome(outcome=outcome)
+        # terminate all workers and handle their lay_off outcomes
+        count_workers_killed = self._worker_provider.worker_count
+        self._worker_provider.abandon()
+        for _ in xrange(count_workers_killed - 1):
+            outcome = self._status_db.wait_for_one_outcome()
+            self._handle_outcome(outcome=outcome)
 
-            self._status_db.stop(reason=reason)
+        self._status_db.stop(reason=reason)
 
-            try:
-                self._manager.shutdown()
-            except OSError:
-                # The manager has already shutdown.
-                # This may happen when all it's queue got closed.
-                # That is OK since we wanted to shut it down anyway.
-                pass
+        try:
+            self._manager.shutdown()
+        except OSError:
+            # The manager has already shutdown.
+            # This may happen when all it's queue got closed.
+            # That is OK since we wanted to shut it down anyway.
+            pass

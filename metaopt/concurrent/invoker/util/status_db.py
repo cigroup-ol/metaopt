@@ -8,12 +8,21 @@ from __future__ import absolute_import, division, print_function, \
 
 # Standard Library
 import time
+from multiprocessing.synchronize import Lock
 
 # First Party
 from metaopt.concurrent.model.call_lifecycle import Error, Layoff, Result, \
     Start, Task
 from metaopt.core.stoppable.stoppable import Stoppable
 from metaopt.core.stoppable.util.decorator import stoppable, stopping
+from metaopt.core.stoppable.util.exception import StoppedError
+
+
+try:
+    from Queue import Empty
+except ImportError:
+    # Queue was renamed to queue in Python 3
+    from queue import Empty
 
 
 class StatusDB(Stoppable):
@@ -34,6 +43,9 @@ class StatusDB(Stoppable):
         self._count_task = 0
         self._count_start = 0
         self._count_outcome = 0
+
+        # lock for public methods
+        self._lock = Lock()
 
     def _handle_task(self, idle):
         """Handles an initially idle task issued by the invoker."""
@@ -107,22 +119,34 @@ class StatusDB(Stoppable):
         raise TypeError("%s objects are not allowed in the result queue" %
                         type(outcome))
 
+    @stoppable
     def wait_for_one_task(self):
         """
         Blocks till one task was gotten from the task queue and processed.
         """
-        task = self._queue_task.get()
-        self._handle_task(task)
-        self._count_task += 1
-        self._queue_task.task_done()
-        return task
+        with self._lock:
+            task = self._queue_task.get()
+            self._handle_task(task)
+            self._count_task += 1
+            self._queue_task.task_done()
+            return task
 
+    @stoppable
     def wait_for_one_start(self):
         """
         Blocks till one start was gotten from the start queue and processed.
         """
         try:
-            start = self._queue_start.get()
+            # TODO this is polling which is bad.
+            # Unfortunately this is necessary because of the concurrent stop.
+            while True:
+                try:
+                    start = self._queue_start.get(timeout=1)
+                    break
+                except Empty:
+                    pass
+                if self._stopped:
+                    raise StoppedError()
         except IOError:
             # The queue was closed before we could read a start.
             # This may happen with fast terminations.
@@ -134,6 +158,7 @@ class StatusDB(Stoppable):
         self._queue_start.task_done()
         return start
 
+    @stoppable
     def wait_for_one_outcome(self):
         """
         Blocks till an outcome was gotten from the outcome queue and processed.
@@ -151,16 +176,17 @@ class StatusDB(Stoppable):
         self._queue_outcome.task_done()
         return outcome
 
+    @stoppable
     def count_running_tasks(self):
         """Returns the number of tasks currently executed by workers."""
         # alternate formulation
         # while len([f for f in self._call_status_dict.values() if t]) > 0:
-
-        count = 0
-        for status in self._call_status_dict.values():
-            if isinstance(status, Start):
-                count += 1
-        return count
+        with self._lock:
+            count = 0
+            for status in self._call_status_dict.values():
+                if isinstance(status, Start):
+                    count += 1
+            return count
 
     def get_worker_id(self, call_id):
         """
@@ -169,8 +195,9 @@ class StatusDB(Stoppable):
         Raises KeyError if there was no worker for that task id. That means,
         all workers were killed before one could start working on the task.
         """
-        status = self._call_status_dict[call_id]
-        return status.worker_id
+        with self._lock:
+            status = self._call_status_dict[call_id]
+            return status.worker_id
 
     def get_running_call(self, worker_id):
         task_found = False
@@ -202,9 +229,10 @@ class StatusDB(Stoppable):
         raise ValueError("No call idling at the moment.")
 
     def get_idle_call(self, worker_id):
-        for status in self._call_status_dict.values():
-            if not status.worker_id == worker_id:
-                return status  # TODO
+        with self._lock:
+            for status in self._call_status_dict.values():
+                if not status.worker_id == worker_id:
+                    return status  # TODO
 
     @stoppable
     def issue_task(self, task):
@@ -240,8 +268,9 @@ class StatusDB(Stoppable):
             #                     "Make sure IDs are unique.")
 
     @stopping
+    @stoppable
     def stop(self, reason=None):
-        """"""
+        """Stops this status database."""
 
         # TODO This loop should not be necessary.
         while not self._queue_task.empty():
@@ -278,4 +307,17 @@ class StatusDB(Stoppable):
 
     @property
     def outcomes_awaited(self):
-        return self._count_task - self._count_outcome
+        """
+        Returns the number of outcomes that are still awaited.
+
+        Returns 0, if stopped.
+        """
+        with self._lock:
+            if self._stopped:
+                return 0
+
+            # Note that we use the start count instead of the the task count.
+            # Some issued tasks might never get started if a stop occurs.
+            # In that case, no worker will start them.
+            # Thus await only started tasks to have a result.
+            return self._count_start - self._count_outcome
