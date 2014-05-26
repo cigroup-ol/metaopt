@@ -15,10 +15,10 @@ from metaopt.core.optimize.optimize import optimize
 from metaopt.objective.bool.one_min_eight import f as one_min_eight
 from metaopt.optimizer.gridsearch import GridSearchOptimizer
 from metaopt.plugin.print.optimum import OptimumPrintPlugin
+
 from metaopt.plugin.print.status import StatusPrintPlugin
 from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-
 
 def main():
     optimizer = GridSearchOptimizer()

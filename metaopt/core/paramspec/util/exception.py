@@ -14,9 +14,20 @@ class NonIntIntervalError(Exception):
     def __init__(self, param, interval, index):
         del index  # TODO
 
-        message = "Interval [%s, %s] contains non-interger for parameter: %s" \
-                  % (interval[0], interval[1], param.name)
-        super(NonIntIntervalError, self).__init__(message)
+        try:
+            lower = interval[0]
+        except IndexError:
+            lower = None
+
+        try:
+            upper = interval[1]
+        except IndexError:
+            upper = None
+
+        super(NonIntIntervalError, self).__init__(
+            "Interval [%s, %s] contains non-integers for parameter: %s"
+            % (lower, upper, param.name)
+        )
 
 
 class NonIntStepError(Exception):
@@ -38,3 +49,20 @@ class InvalidIntervalError(Exception):
 
         super(InvalidIntervalError, self).__init__(message)
         self.param = param
+
+class TitleForMultiParameterError(Exception):
+    """The error that occurs when a title is specified for a multi parameter"""
+
+    def __init__(self):
+        super(TitleForMultiParameterError, self).__init__(
+            "Specifying a title for a multi parameter is not currently "
+            "supported"
+        )
+
+class MultiMultiParameterError(Exception):
+    """The error that occurs when using a multi multi parameter"""
+
+    def __init__(self):
+        super(MultiMultiParameterError, self).__init__(
+            "Multi multi parameters are not supported"
+        )
