@@ -18,7 +18,7 @@ from copy import deepcopy
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.util.stoppable import StoppedError
+from metaopt.core.stoppable.util.exception import StoppedError
 
 # Numpy
 from numpy import array, mean, log, eye, diag, transpose
@@ -34,7 +34,7 @@ except NameError:
 
 class CMAESOptimizer(Optimizer):
     """
-    Optimization based on the (mu, lambda)-CMA-ES. 
+    Optimization based on the (mu, lambda)-CMA-ES.
 
     This optimizer should be combined with a global timeout, otherwise it will
     run indefinitely.
@@ -65,7 +65,7 @@ class CMAESOptimizer(Optimizer):
 	# dimensions for equation setup
 	self._n = len(args_creator.random())
 
-	# start position as numpy array, numpify	
+	# start position as numpy array, numpify
 	start = args_creator.random()
 	self._xmean = array(map(lambda arg : arg.value, start))
 
@@ -97,31 +97,31 @@ class CMAESOptimizer(Optimizer):
 	n = self._n
 
         # recombination weights
-        self._weights = [log(self._mu + 0.5) - log(i + 1) for i in range(self._mu)]  
+        self._weights = [log(self._mu + 0.5) - log(i + 1) for i in range(self._mu)]
 
         # normalize recombination weights array
-        self._weights = [w / sum(self._weights) for w in self._weights]  
+        self._weights = [w / sum(self._weights) for w in self._weights]
 
         # variance-effectiveness of sum w_i x_i
         self._mueff = sum(self._weights) ** 2 / sum(w ** 2 for w in self._weights)
-        
+
         # time constant for cumulation for C
-        self._cc = (4 + self._mueff / n) / (n + 4 + 2 * self._mueff / n)  
+        self._cc = (4 + self._mueff / n) / (n + 4 + 2 * self._mueff / n)
 
         # t-const for cumulation for sigma control
         self._cs = (self._mueff + 2) / (n + self._mueff + 5)
 
         # learning rate for rank-one update of C
         self._c1 = 2 / ((n + 1.3) ** 2 + self._mueff)
-  
+
         # and for rank-mu update
         term_a = 1 - self._c1
         term_b = 2 * (self._mueff - 2 + 1 / self._mueff) / ((n + 2) ** 2 + self._mueff)
-        self._cmu = min(term_a, term_b)  
+        self._cmu = min(term_a, term_b)
 
         # damping for sigma, usually close to 1
-        self._damps = 2 * self._mueff / self._lambd + 0.3 + self._cs  
-        
+        self._damps = 2 * self._mueff / self._lambd + 0.3 + self._cs
+
         # evolution paths for C and sigma
         self._pc = zeros(n)
         self._ps = zeros(n)
@@ -129,12 +129,12 @@ class CMAESOptimizer(Optimizer):
         # B-matrix of eigenvectors, defines the coordinate system
         self._B = identity(n)
 
-        # diagonal matrix of eigenvalues (sigmas of axes) 
+        # diagonal matrix of eigenvalues (sigmas of axes)
         self._D = ones(n)  # diagonal D defines the scaling
 
         # covariance matrix, rotation of mutation ellipsoid
         self._C = identity(n)
-        self._invsqrtC = identity(n)  # C^-1/2 
+        self._invsqrtC = identity(n)  # C^-1/2
 
         # approx. norm of random vector
         self._norm = sqrt(n) * (1.0 - (1.0/(4*n)) + (1.0/(21*n**2)))
@@ -142,10 +142,10 @@ class CMAESOptimizer(Optimizer):
 	# first run
         self._D, self._B = eigh(self._C)
         self._B = matrix(self._B)
-        self._D = [d ** 0.5 for d in self._D] 
+        self._D = [d ** 0.5 for d in self._D]
 
         invD = diag([1.0/d for d in self._D])
-        self._invsqrtC = self._B * invD * transpose(self._B) 
+        self._invsqrtC = self._B * invD * transpose(self._B)
 
     def exit_condition(self):
         pass
@@ -170,7 +170,7 @@ class CMAESOptimizer(Optimizer):
         self.scored_population = []
 
         for individual in self.population:
-            
+
             # metaoptify
             args_creator = ArgsCreator(self.param_spec)
             individual = individual.getA1().tolist()
@@ -196,13 +196,13 @@ class CMAESOptimizer(Optimizer):
         values = map(numpify, values)
 
 	# alias
-	n = self._n	
+	n = self._n
 
         # remember old xmean for parameter adjustment
         oldxmean = deepcopy(self._xmean)
 
         # calculate new xmean
-        self._xmean = matrix([[0.0 for i in range(0,n)]]) 
+        self._xmean = matrix([[0.0 for i in range(0,n)]])
         weighted_values = zip(self._weights, values)
         for weight, value in weighted_values:
             self._xmean += weight * value
@@ -219,13 +219,13 @@ class CMAESOptimizer(Optimizer):
         # without hsig (!)
         c = (self._cc * (2 - self._cc) * self._mueff) ** 0.5 / self._sigma
         self._pc = (1 - self._cc) * self._pc + c * y
-        
+
         # adapt covariance matrix C
         # rank one update term
-        term_cov1 = self._c1 * (transpose(matrix(self._pc)) * matrix(self._pc))       
+        term_cov1 = self._c1 * (transpose(matrix(self._pc)) * matrix(self._pc))
 
         # ranke mu update term
-        valuesv = [(value - oldxmean) / self._sigma for value in values] 
+        valuesv = [(value - oldxmean) / self._sigma for value in values]
         term_covmu = self._cmu *\
             sum([self._weights[i] * (transpose(matrix(valuesv[i])) *\
             matrix(valuesv[i]))\
@@ -233,7 +233,7 @@ class CMAESOptimizer(Optimizer):
 
         self._C = (1 - self._c1 - self._cmu) * self._C + term_cov1 + term_covmu
 
-        # update global sigma by comparing evolution path 
+        # update global sigma by comparing evolution path
         # with approx. norm of random vector
         self._sigma *= exp(self._cs / self._damps) *\
             ((norm(self._ps.getA1()) / self._norm) - 1)
@@ -241,10 +241,10 @@ class CMAESOptimizer(Optimizer):
         # calculate new matrices
         self._D, self._B = eigh(self._C)
         self._B = matrix(self._B)
-        self._D = [d ** 0.5 for d in self._D] 
+        self._D = [d ** 0.5 for d in self._D]
 
         invD = diag([1.0/d for d in self._D])
-        self._invsqrtC = self._B * invD * transpose(self._B) 
+        self._invsqrtC = self._B * invD * transpose(self._B)
 
     def on_result(self, value, fargs, individual, **kwargs):
         del fargs

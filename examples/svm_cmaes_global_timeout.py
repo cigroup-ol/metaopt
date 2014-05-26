@@ -11,8 +11,8 @@ from __future__ import absolute_import, division, print_function, \
 from sklearn import cross_validation, datasets, svm
 
 # First Party
-from metaopt.core.param.util import param
-from metaopt.core.returns.util.decorator import maximize
+from metaopt.core.paramspec.util import param
+from metaopt.core.returnspec.util.decorator import maximize
 
 @maximize("Score")
 @param.float("C", interval=[1, 10], step=0.5)
@@ -31,22 +31,21 @@ def f(C, gamma):
 
 
 def main():
-    from metaopt.core.main import optimize
-    from metaopt.core.main import custom_optimize
+    from metaopt.core.optimize.optimize import optimize
     from metaopt.optimizer.cmaes import CMAESOptimizer
 
-    from metaopt.plugins.print import PrintPlugin
-    from metaopt.plugins.visualize import VisualizeLandscapePlugin
-    from metaopt.plugins.visualize import VisualizeBestFitnessPlugin
+    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
+    from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
-    timeout = 3
+    timeout = 30
     optimizer = CMAESOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [
-        PrintPlugin(),
+        StatusPrintPlugin(),
         visualize_landscape_plugin,
         visualize_best_fitness_plugin
     ]
