@@ -47,17 +47,21 @@ class MultiProcessInvoker(Invoker):
         queue_start = self._manager.Queue()
         queue_outcome = self._manager.Queue()
 
+        # TODO don't
+        self._clean_workers = 0
+        self._queue_task = queue_task
+        self._queue_start = queue_start
+        self._queue_outcome = queue_outcome
+
         self._status_db = StatusDB(queue_task=queue_task,
                                    queue_start=queue_start,
                                    queue_outcome=queue_outcome)
 
-        wpp = ProcessWorkerEmployer(resources=resources,
+        self._employer = ProcessWorkerEmployer(resources=resources,
                                     queue_outcome=queue_outcome,
                                     queue_start=queue_start,
                                     queue_tasks=queue_task,
                                     status_db=self._status_db)
-        self._worker_provider = wpp
-        del wpp
 
         # we can not prohibit others to use us in parallel, so
         # make this invoker thread-safe
@@ -131,15 +135,16 @@ class MultiProcessInvoker(Invoker):
             self._caller = caller
 
             # employ one new worker
-            try:
-                self._worker_provider.employ()
-            except IndexError:
-                # The worker process provider was at its worker limit, already.
-                # So no new worker could be employed.
-                # We can not assume this invoke's task will be started immediately.
-                # So wait for a free worker by getting and handling an outcome.
-                outcome = self._status_db.wait_for_one_outcome()
-                self._handle_outcome(outcome)
+            if self._clean_workers <= 0:
+                try:
+                    self._employer.employ()
+                except IndexError:
+                    # The worker process provider was at its worker limit, already.
+                    # So no new worker could be employed.
+                    # We can not assume this invoke's task will be started immediately.
+                    # So wait for a free worker by getting and handling an outcome.
+                    outcome = self._status_db.wait_for_one_outcome()
+                    self._handle_outcome(outcome)
 
             # issue task, the first worker to become idle will execute it
             call = Call(id=uuid.uuid4(),
@@ -149,6 +154,7 @@ class MultiProcessInvoker(Invoker):
 
             try:
                 self._status_db.issue_task(task)
+                self._clean_workers -= 1
             except StoppedError:
                 # The status database was already stopped.
                 # This means we are stopped, too.
@@ -186,6 +192,9 @@ class MultiProcessInvoker(Invoker):
             with self._lock:
                 self._handle_outcome(outcome=outcome)
 
+        #self._stop_workers(reason="wait")
+        self._clean_workers = self._employer.worker_count_max
+
     def stop_call(self, call_id, reason):
         """
         Stop a call given by its id, by restarting the executing worker.
@@ -194,9 +203,9 @@ class MultiProcessInvoker(Invoker):
         """
 
         assert call_id is not None
-        self._worker_provider.lay_off(call_id=call_id, reason=reason)
+        self._employer.lay_off(call_id=call_id, reason=reason)
         try:
-            self._worker_provider.employ(number_of_workers=1)
+            self._employer.employ(number_of_workers=1)
         except IndexError:
             # An invoke call employed another worker, already.
             # Therefore another worker took the place of the one we killed.
@@ -211,15 +220,13 @@ class MultiProcessInvoker(Invoker):
 
         Gets called by a timer in an individual thread.
         """
-        # terminate all workers and handle their lay_off outcomes
-        count_workers_killed = self._worker_provider.worker_count
-        self._worker_provider.abandon()
-        for _ in xrange(count_workers_killed - 1):
-            outcome = self._status_db.wait_for_one_outcome()
-            self._handle_outcome(outcome=outcome)
+        self._stop_workers(reason=reason)
 
         self._status_db.stop(reason=reason)
 
+        self._stop_manager()
+
+    def _stop_manager(self):
         try:
             self._manager.shutdown()
         except OSError:
@@ -227,3 +234,16 @@ class MultiProcessInvoker(Invoker):
             # This may happen when all it's queue got closed.
             # That is OK since we wanted to shut it down anyway.
             pass
+
+    def _stop_workers(self, reason):
+        # terminate all workers and handle their lay_off outcomes
+        count_workers_killed = self._employer.worker_count
+        self._employer.abandon()
+        for _ in xrange(count_workers_killed - 1):
+            outcome = self._status_db.wait_for_one_outcome()
+            self._handle_outcome(outcome=outcome)
+        #self._employer = ProcessWorkerEmployer(resources=self._resources,
+        #                                       queue_outcome=self._queue_outcome,
+        #                                       queue_start=self._queue_start,
+        #                                       queue_tasks=self._queue_task,
+        #                                       status_db=self._status_db)

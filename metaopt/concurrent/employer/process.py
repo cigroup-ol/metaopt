@@ -46,6 +46,10 @@ class ProcessWorkerEmployer(Employer):
             self._worker_count_max = determine_worker_count(resources)
             self._status_db = status_db
 
+    @property
+    def worker_count_max(self):
+        return self._worker_count_max
+
     def employ(self, number_of_workers=1):
         """
         Employs a given number worker processes for future tasks.

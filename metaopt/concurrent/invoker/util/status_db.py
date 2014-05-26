@@ -183,6 +183,7 @@ class StatusDB(Stoppable):
             # This means that the invoker tries to stop.
             # So get out of the way.
             return Layoff(worker_id=None, call=None, value=None)
+
         self._handle_outcome(outcome)
         self._count_outcome += 1
         self._queue_outcome.task_done()
