@@ -27,7 +27,7 @@ def f(**kwargs):
     return sum(kwargs.values())
 
 def main():
-    optimizer = SAESOptimizer(mu=1000,lamb=1000)
+    optimizer = GridSearchOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
