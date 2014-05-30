@@ -64,7 +64,7 @@ class CMAESOptimizer(Optimizer):
         # dimensions for equation setup
         self._n = len(args_creator.random())
 
-	    # start position as numpy array, numpify	
+        # start position as numpy array, numpify	
         start = args_creator.random()
         self._xmean = array(map(lambda arg : arg.value, start))
 
@@ -92,7 +92,7 @@ class CMAESOptimizer(Optimizer):
     def initialize_parameters(self):
         # alias
         n = self._n
-    
+        
         # recombination weights
         self._weights = [log(self._mu + 0.5) - log(i + 1) for i in range(self._mu)]
 
