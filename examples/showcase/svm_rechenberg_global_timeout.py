@@ -4,7 +4,7 @@ Optimizing the parameters of a SVM applied to the Iris data set
 ===============================================================
 
 The parameters are optimized with an evoluation strategy that uses Rechenberg's
-1/5th success rule. Optimization stops after a global timeout of 10 seconds.-
+1/5th success rule. Optimization stops after a global timeout of 10 seconds.
 
 """
 # Future
