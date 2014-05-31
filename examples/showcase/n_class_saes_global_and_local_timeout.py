@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-SVM (SAES, global timeout)
-================================
+Optimizing the parameters of a SVM applied to a 2-class classification problem
+==============================================================================
+
+The parameters are optimized with a self-adaptive evoluation strategy.
+Optimization stops after a global timeout of 10 seconds. The computation of the
+objective function is stopped after a local timeout of 2 seconds.
+
 """
 # Future
 from __future__ import absolute_import, division, print_function, \
@@ -41,27 +46,29 @@ def f(C, gamma):
 def main():
     from metaopt.core.optimize.optimize import optimize
     from metaopt.optimizer.saes import SAESOptimizer
-    from metaopt.plugin.print.status import StatusPrintPlugin
-    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-    from metaopt.plugin.visualization.best_fitness import \
-        VisualizeBestFitnessPlugin
+
+    from metaopt.plugin.print.optimum import OptimumPrintPlugin
     from metaopt.plugin.timeout import TimeoutPlugin
 
+    from metaopt.plugin.visualization.best_fitness \
+        import VisualizeBestFitnessPlugin
+
+    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
+
     timeout = 10
-    optimizer = SAESOptimizer()
+    optimizer = SAESOptimizer(mu=3, lamb=2)
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [
-        StatusPrintPlugin(),
+        OptimumPrintPlugin(),
         visualize_landscape_plugin,
         visualize_best_fitness_plugin,
         TimeoutPlugin(2),
     ]
 
-    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
-                       plugins=plugins)
+    optimum = optimize(f, timeout=timeout, optimizer=optimizer, plugins=plugins)
 
     print("The optimal parameters are %s." % str(optimum))
 

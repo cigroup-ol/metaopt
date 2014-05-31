@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-SVM (SAES, global timeout)
-================================
+Optimizing the parameters of a SVM applied to the Iris data set
+===============================================================
+
+The parameters are optimized with an evoluation strategy that uses Rechenberg's
+1/5th success rule. Optimization stops after a global timeout of 10 seconds.-
+
 """
 # Future
 from __future__ import absolute_import, division, print_function, \
@@ -33,24 +37,26 @@ def f(C, gamma):
 
 def main():
     from metaopt.core.optimize.optimize import optimize
-    from metaopt.optimizer.saes import SAESOptimizer
+    from metaopt.optimizer.rechenberg import RechenbergOptimizer
 
-    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.print.optimum import OptimumPrintPlugin
+    from metaopt.plugin.timeout import TimeoutPlugin
+
+    from metaopt.plugin.visualization.best_fitness \
+        import VisualizeBestFitnessPlugin
+
     from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-    from metaopt.plugin.visualization.best_fitness import \
-        VisualizeBestFitnessPlugin
 
-    timeout = 3
-    optimizer = SAESOptimizer()
+    timeout = 10
+    optimizer = RechenbergOptimizer(mu=3, lamb=2)
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
-    print_plugin = StatusPrintPlugin()
 
     plugins = [
-        print_plugin,
+        OptimumPrintPlugin(),
         visualize_landscape_plugin,
-        visualize_best_fitness_plugin
+        visualize_best_fitness_plugin,
     ]
 
     optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,

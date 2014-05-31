@@ -149,5 +149,7 @@ class RechenbergOptimizer(Optimizer):
             self.best_scored_indivual = scored_individual
             self.best_fitness = fitness
 
-    def on_error(self, value, fargs, individual):
-        pass
+    def on_error(self, value, fargs, **kwargs):
+            del value  # TODO
+            del fargs  # TODO
+            del kwargs  # TODO
