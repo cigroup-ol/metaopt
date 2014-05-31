@@ -68,7 +68,8 @@ class CustomExampleBuilder(ExampleBuilder):
 
 def main(app):
     target_dir = os.path.join(app.builder.srcdir, 'examples')
-    source_dir = os.path.abspath(app.builder.srcdir +  '/../' + 'examples')
+    source_dir = os.path.abspath(app.builder.srcdir +  '/../'
+        + 'examples/showcase')
 
     try:
         plot_gallery = eval(app.builder.config.plot_gallery)

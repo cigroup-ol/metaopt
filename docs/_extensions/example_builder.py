@@ -240,15 +240,15 @@ class ExecFile(object):
         cwd = os.getcwd()
 
         try:
-            if dirname:
-                os.chdir(dirname)
+            # if dirname:
+            #     os.chdir(dirname)
 
             # set stdout to self in order to catch output (with write method)
             sys.stdout = self
 
             # execute the file
             import __main__
-            execfile(os.path.basename(self.filename), __main__.__dict__)
+            execfile(self.filename, __main__.__dict__)
 
             fig_mgr_list = matplotlib._pylab_helpers.Gcf.get_all_fig_managers()
             self.figlist = [manager.canvas.figure for manager in fig_mgr_list]
