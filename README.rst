@@ -5,6 +5,11 @@ MetaOpt is a library that optimizes black-box functions using a limited
 amount of time and utilizing multiple processors. The main focus of MetaOpt
 is the parameter tuning for machine learning and heuristic optimization.
 
+MetaOpt has been developed by the `Computational Intelligence Group`_ at the University of Oldenburg.
+The authors are: Renke Grunwald, Bengt Lüers, Jendrik Poloczek, Justin Heinermann, Oliver Kramer.
+
+.. _Computational Intelligence Group: http://www.ci.uni-oldenburg.de/
+
 For a user guide, see `the documentation`_.
 The following describes basic operations with the repository.
 
