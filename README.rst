@@ -1,9 +1,9 @@
 MetaOpt
 =======
 
-MetaOpt is a Python-based organic computing framework for difficult blackbox
-optimization problems. It allows easy self-configuration of complex
-optimization heuristics.
+MetaOpt is a library that optimizes black-box functions using a limited
+amount of time and utilizing multiple processors. The main focus of MetaOpt
+is the parameter tuning for machine learning and heuristic optimization.
 
 For a user guide, see `the documentation`_.
 The following describes basic operations with the repository.
