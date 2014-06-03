@@ -75,11 +75,12 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
         :alt: Code Health
 
 .. |Coverage Develop| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=develop
-  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
+        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
+        :alt: Test Coverage
 
 .. |Coverage Master| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=master
-  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
-
+        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
+        :alt: Test Coverage
 
 Download
 --------
