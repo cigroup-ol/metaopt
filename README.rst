@@ -1,9 +1,9 @@
+MetaOpt
+=======
+
 .. image :: https://raw.githubusercontent.com/cigroup-ol/metaopt/develop/docs/images/logo.png
     :align: right
     :alt: logo
-
-MetaOpt
-=======
 
 MetaOpt is a library that optimizes black-box functions using a limited
 amount of time and utilizing multiple processors. The main focus of MetaOpt
