@@ -1,3 +1,7 @@
+.. image :: https://raw.githubusercontent.com/cigroup-ol/metaopt/develop/docs/images/logo.png
+    :align: right
+    :alt: logo
+
 MetaOpt
 =======
 
