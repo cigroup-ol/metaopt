@@ -70,6 +70,10 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
         :target: https://landscape.io/github/cigroup-ol/metaopt/master
         :alt: Code Health
 
+.. |Coverage Master| image:: http://img.shields.io/coveralls/cigroup-ol/metaopt/master.svg
+        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
+        :alt: Test Coverage
+
 .. |Build Develop| image:: https://travis-ci.org/cigroup-ol/metaopt.png?branch=develop
         :target: https://travis-ci.org/cigroup-ol/metaopt
         :alt: Build Status
@@ -78,12 +82,8 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
         :target: https://landscape.io/github/cigroup-ol/metaopt/develop
         :alt: Code Health
 
-.. |Coverage Develop| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=develop
+.. |Coverage Develop| image:: http://img.shields.io/coveralls/cigroup-ol/metaopt/develop.svg
         :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
-        :alt: Test Coverage
-
-.. |Coverage Master| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=master
-        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
         :alt: Test Coverage
 
 Download
