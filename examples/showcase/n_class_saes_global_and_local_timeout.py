@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-SVM (Gridsearch, global timeout)
-================================
+Optimizing the parameters of a SVM applied to a 2-class classification problem
+==============================================================================
+
+The parameters are optimized with a self-adaptive evoluation strategy.
+Optimization stops after a global timeout of 10 seconds. The computation of the
+objective function is stopped after a local timeout of 2 seconds.
+
 """
 # Future
 from __future__ import absolute_import, division, print_function, \
@@ -16,13 +21,20 @@ from metaopt.core.returnspec.util.decorator import maximize
 
 
 @maximize("Score")
-@param.float("C", interval=[1, 10], step=0.25)
-@param.float("gamma", interval=[1, 10], step=0.25)
+@param.float("C", interval=[1, 10], step=0.5)
+@param.float("gamma", interval=[1, 10], step=0.5)
 def f(C, gamma):
-    iris = datasets.load_iris()
+    X, y = datasets.make_classification(
+        n_samples=1000,
+        n_features=10,
+        n_informative=2,
+        n_classes=2,
+        n_clusters_per_class=1,
+        random_state=0
+    )
 
     X_train, X_test, y_train, y_test = cross_validation.train_test_split(
-        iris.data, iris.target, test_size=0.4, random_state=0)
+        X, y, test_size=0.4, random_state=0)
 
     clf = svm.SVC(C=C, gamma=gamma)
 
@@ -33,27 +45,30 @@ def f(C, gamma):
 
 def main():
     from metaopt.core.optimize.optimize import optimize
-    from metaopt.optimizer.gridsearch import GridSearchOptimizer
+    from metaopt.optimizer.saes import SAESOptimizer
 
-    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.print.optimum import OptimumPrintPlugin
+    from metaopt.plugin.timeout import TimeoutPlugin
+
+    from metaopt.plugin.visualization.best_fitness \
+        import VisualizeBestFitnessPlugin
+
     from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-    from metaopt.plugin.visualization.best_fitness import \
-        VisualizeBestFitnessPlugin
 
-    timeout = 3
-    optimizer = GridSearchOptimizer()
+    timeout = 10
+    optimizer = SAESOptimizer(mu=3, lamb=2)
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [
-        StatusPrintPlugin(),
+        OptimumPrintPlugin(),
         visualize_landscape_plugin,
-        visualize_best_fitness_plugin
+        visualize_best_fitness_plugin,
+        TimeoutPlugin(2),
     ]
 
-    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
-                       plugins=plugins)
+    optimum = optimize(f, timeout=timeout, optimizer=optimizer, plugins=plugins)
 
     print("The optimal parameters are %s." % str(optimum))
 

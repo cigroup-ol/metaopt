@@ -1,9 +1,18 @@
 MetaOpt
 =======
 
-MetaOpt is a Python-based organic computing framework for difficult blackbox
-optimization problems. It allows easy self-configuration of complex
-optimization heuristics.
+.. image :: https://raw.githubusercontent.com/cigroup-ol/metaopt/develop/docs/images/logo.png
+    :align: right
+    :alt: logo
+
+MetaOpt is a library that optimizes black-box functions using a limited
+amount of time and utilizing multiple processors. The main focus of MetaOpt
+is the parameter tuning for machine learning and heuristic optimization.
+
+MetaOpt has been developed by the `Computational Intelligence Group`_ at the University of Oldenburg.
+The authors are: Renke Grunwald, Bengt Lüers, Jendrik Poloczek, Justin Heinermann, Oliver Kramer.
+
+.. _Computational Intelligence Group: http://www.ci.uni-oldenburg.de/
 
 For a user guide, see `the documentation`_.
 The following describes basic operations with the repository.
@@ -61,6 +70,10 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
         :target: https://landscape.io/github/cigroup-ol/metaopt/master
         :alt: Code Health
 
+.. |Coverage Master| image:: http://img.shields.io/coveralls/cigroup-ol/metaopt/master.svg
+        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
+        :alt: Test Coverage
+
 .. |Build Develop| image:: https://travis-ci.org/cigroup-ol/metaopt.png?branch=develop
         :target: https://travis-ci.org/cigroup-ol/metaopt
         :alt: Build Status
@@ -69,12 +82,9 @@ develop  |Build Develop| |Health Develop| |Coverage Develop|
         :target: https://landscape.io/github/cigroup-ol/metaopt/develop
         :alt: Code Health
 
-.. |Coverage Develop| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=develop
-  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
-
-.. |Coverage Master| image:: https://coveralls.io/repos/cigroup-ol/metaopt/badge.png?branch=master
-  :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=master
-
+.. |Coverage Develop| image:: http://img.shields.io/coveralls/cigroup-ol/metaopt/develop.svg
+        :target: https://coveralls.io/r/cigroup-ol/metaopt?branch=develop
+        :alt: Test Coverage
 
 Download
 --------

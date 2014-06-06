@@ -1,9 +1,9 @@
 """
-One Min (grid search)
-=====================
+Optimzing the OneMin objective function with grid search
+========================================================
 
-This example uses an objective function included in MetaOpt. For it's
-implementation see `metaopt.objective.bool.one_min_eight`.
+The optimization stops after a global timeout of 10 seconds.
+
 """
 
 # Future
@@ -19,32 +19,26 @@ from metaopt.optimizer.saes import SAESOptimizer
 from metaopt.plugin.print.optimum import OptimumPrintPlugin
 from metaopt.plugin.print.status import StatusPrintPlugin
 from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
-from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
 
 @minimize("Sum")
-@param.multi(param.bool, ["a", "b", "c", "d", "e", "f", "g", "h"])
+@param.multi(param.bool, map(str, range(16)))
 def f(**kwargs):
     return sum(kwargs.values())
 
 def main():
     optimizer = GridSearchOptimizer()
+    timeout = 10
 
-    visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
-    status_print_plugin = StatusPrintPlugin()
-    optimum_print_plugin = OptimumPrintPlugin()
 
     plugins = [
-        status_print_plugin,
-        optimum_print_plugin,
-        visualize_landscape_plugin,
-        visualize_best_fitness_plugin
+        OptimumPrintPlugin(),
+        visualize_best_fitness_plugin,
     ]
 
-    optimize(f=f, timeout=10, optimizer=optimizer, plugins=plugins)
+    optimum = optimize(f, timeout=timeout, optimizer=optimizer, plugins=plugins)
 
-    visualize_landscape_plugin.show_surface_plot()
-    visualize_landscape_plugin.show_image_plot()
+    print("The optimal parameters are %s." % str(optimum))
 
     visualize_best_fitness_plugin.show_fitness_invocations_plot()
     visualize_best_fitness_plugin.show_fitness_time_plot()

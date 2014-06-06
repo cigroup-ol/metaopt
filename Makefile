@@ -114,10 +114,16 @@ release-test: release-build
 	pip install --target metaopt-pypi-test -i https://testpypi.python.org/pypi metaopt
 	pip install --use-wheel --target metaopt-pypi-test -i https://testpypi.python.org/pypi metaopt
 
-release: release-build release-test
+release-github:
+	-git tag v`python -c "import metaopt; print metaopt.__version__"`> /dev/null
+	git push --tags
+
+release-pypi:
 	python setup.py register -r pypi
 	python setup.py sdist upload -r pypi
 	python setup.py bdist_wheel upload -r pypi
+
+release: release-build release-test release-github release-pypi
 
 reverse: clean-reverse
 	pyreverse --ignore tests -o png -p MetaOpt metaopt

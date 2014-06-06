@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-SVM (SAES, global timeout)
-================================
+Optimizing the parameters of a SVM applied to the Iris data set
+===============================================================
+
+The parameters are optimized with grid search. Optimization stops after a global
+timeout of 10 seconds.
+
 """
 # Future
 from __future__ import absolute_import, division, print_function, \
@@ -16,8 +20,8 @@ from metaopt.core.returnspec.util.decorator import maximize
 
 
 @maximize("Score")
-@param.float("C", interval=[1, 10], step=0.5)
-@param.float("gamma", interval=[1, 10], step=0.5)
+@param.float("C", interval=[1, 10], step=0.25)
+@param.float("gamma", interval=[1, 10], step=0.25)
 def f(C, gamma):
     iris = datasets.load_iris()
 
@@ -33,28 +37,29 @@ def f(C, gamma):
 
 def main():
     from metaopt.core.optimize.optimize import optimize
-    from metaopt.optimizer.saes import SAESOptimizer
+    from metaopt.optimizer.gridsearch import GridSearchOptimizer
 
-    from metaopt.plugin.print.status import StatusPrintPlugin
+    from metaopt.plugin.print.optimum import OptimumPrintPlugin
+    from metaopt.plugin.timeout import TimeoutPlugin
+
+    from metaopt.plugin.visualization.best_fitness \
+        import VisualizeBestFitnessPlugin
+
     from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
-    from metaopt.plugin.visualization.best_fitness import \
-        VisualizeBestFitnessPlugin
 
-    timeout = 3
-    optimizer = SAESOptimizer()
+    timeout = 15
+    optimizer = GridSearchOptimizer()
 
     visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
-    print_plugin = StatusPrintPlugin()
 
     plugins = [
-        print_plugin,
+        OptimumPrintPlugin(),
         visualize_landscape_plugin,
-        visualize_best_fitness_plugin
+        visualize_best_fitness_plugin,
     ]
 
-    optimum = optimize(f=f, timeout=timeout, optimizer=optimizer,
-                       plugins=plugins)
+    optimum = optimize(f, timeout=timeout, optimizer=optimizer, plugins=plugins)
 
     print("The optimal parameters are %s." % str(optimum))
 

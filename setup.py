@@ -23,8 +23,10 @@ def extract_package_name(requirement):
 def find_requirements(req_file='requirements.txt'):
     return [extract_package_name(r) for r in parse_requirements(req_file)]
 
-DESCRIPTION = 'MetaOpt is a Python-based organic computing framework for ' + \
-              'difficult blackbox optimization problems.'
+DESCRIPTION = 'MetaOpt is a library that optimizes black-box functions using ' + \
+              'a limited amount of time and utilizing multiple processors. ' + \
+              'The main focus of MetaOpt is the parameter tuning for machine ' + \
+              'learning and heuristic optimization.'
 if os.path.isfile('README.rst'):
     LONG_DESCRIPTION = "\n\n".join([open('README.rst').read(),
                                               open('CHANGELOG.rst').read()])
