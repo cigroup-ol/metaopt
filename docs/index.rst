@@ -73,11 +73,11 @@ some examples see below or visit the :ref:`examples` page.
     .. figure:: ./_images/svm_gridsearch_global_timeout_1_thumb.png
         :target: ./examples/svm_gridsearch_global_timeout.html
 
-    .. figure:: ./_images/svm_saes_global_timeout_1_thumb.png
-        :target: ./examples/svm_saes_global_timeout.html
+    .. figure:: ./_images/sum_of_squares_saes_global_timeout_1_thumb.png
+        :target: ./examples/sum_of_squares_saes_global_timeout.html
 
-    .. figure:: ./_images/svm_saes_global_timeout_1_thumb.png
-        :target: ./examples/svm_saes_global_timeout.html
+    .. figure:: ./_images/n_class_saes_global_and_local_timeout_1_thumb.png
+        :target: ./examples/n_class_saes_global_and_local_timeout.html
 
 .. raw:: html
 
