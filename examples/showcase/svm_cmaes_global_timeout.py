@@ -15,16 +15,17 @@ from metaopt.core.paramspec.util import param
 from metaopt.core.returnspec.util.decorator import maximize
 
 @maximize("Score")
-@param.float("C", interval=[1, 10], step=0.5)
-@param.float("gamma", interval=[1, 10], step=0.5)
-def f(C, gamma):
+@param.float("C-Exp", interval=[0, 4])
+@param.float("Gamma-Exp", interval=[-6, 0])
+def f(C_exp, gamma_exp):
     iris = datasets.load_iris()
 
     X_train, X_test, y_train, y_test = cross_validation.train_test_split(
         iris.data, iris.target, test_size=0.4, random_state=0)
 
+    C = 10 ** C_exp
+    gamma = 10 ** gamma_exp
     clf = svm.SVC(C=C, gamma=gamma)
-
     clf.fit(X_train, y_train)
 
     return clf.score(X_test, y_test)
