@@ -29,8 +29,7 @@ class RechenbergOptimizer(Optimizer):
     run indefinitely.
 
     """
-    # TODO: Find good default values
-    MU = 100
+    MU = 15
     LAMBDA = 100
     A = 0.1
 

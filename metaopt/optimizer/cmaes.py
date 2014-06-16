@@ -39,7 +39,11 @@ class CMAESOptimizer(Optimizer):
     run indefinitely.
     """
 
-    def __init__(self):
+    MU = 15
+    LAMBDA = 100
+    STEP_SIZE = 1.0 
+   
+    def __init__(self, mu=MU, lamb=LAMBDA, global_step_size=STEP_SIZE):
         super(CMAESOptimizer, self).__init__()
         self._invoker = None
 
@@ -52,6 +56,10 @@ class CMAESOptimizer(Optimizer):
 
         self.aborted = False
         self.generation = 1
+
+        self._mu = mu
+        self._lambd = lamb
+        self._sigma = global_step_size
 
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
         del return_spec
@@ -67,12 +75,6 @@ class CMAESOptimizer(Optimizer):
         # start position as numpy array, numpify	
         start = args_creator.random()
         self._xmean = array(map(lambda arg : arg.value, start))
-
-        # step size
-        self._sigma = 0.5
-
-        # mu and lambda
-        self._mu, self._lambd = 15, 100
 
         # initialize the parameters with member variables
         self.initialize_parameters()

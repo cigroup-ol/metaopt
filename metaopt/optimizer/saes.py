@@ -33,7 +33,7 @@ class SAESOptimizer(Optimizer):
     run indefinitely.
 
     """
-    MU = 100
+    MU = 15 
     LAMBDA = 100
     TAU0 = 0.5
     TAU1 = 0.5
