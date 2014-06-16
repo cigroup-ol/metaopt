@@ -71,7 +71,7 @@ class ProcessWorker(Process, Worker):
         """Executes the given call_handle."""
 
         # make the actual call
-        function = import_function(function=task.call.function)
+        function = task.call.function
         try:
             try:
                 value = call(f=function, fargs=task.call.args,
