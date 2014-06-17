@@ -149,12 +149,21 @@ class CMAESOptimizer(Optimizer):
     def exit_condition(self):
         pass
 
-    def add_offspring(self):
-        args_creator = ArgsCreator(self.param_spec)
+    def limit_to_interval(self, x):
+        params = self.param_spec.params.values()
+        for i, param in enumerate(params):
+            interval = param.interval
+            if x[0, i] < interval[0]:
+                x[0, i] = interval[0]
+            elif x[0, i] > interval[1]:
+                x[0, i] = interval[1]
+        return x
 
+    def add_offspring(self):
         for _ in xrange(self._lambd):
             normals = transpose(matrix([normal(0.0, d) for d in self._D]))
             value = self._xmean + transpose(self._sigma * self._B * normals)
+            value = self.limit_to_interval(value)
             self.population.append(value)
 
     def score_population(self):
