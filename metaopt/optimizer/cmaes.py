@@ -152,11 +152,10 @@ class CMAESOptimizer(Optimizer):
     def limit_to_interval(self, x):
         params = self.param_spec.params.values()
         for i, param in enumerate(params):
-            interval = param.interval
-            if x[0, i] < interval[0]:
-                x[0, i] = interval[0]
-            elif x[0, i] > interval[1]:
-                x[0, i] = interval[1]
+            if x[0, i] < param.lower_bound:
+                x[0, i] = param.lower_bound
+            elif x[0, i] > param.upper_bound:
+                x[0, i] = param.upper_bound
         return x
 
     def add_offspring(self):
