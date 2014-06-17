@@ -41,8 +41,8 @@ class CMAESOptimizer(Optimizer):
 
     MU = 15
     LAMBDA = 100
-    STEP_SIZE = 1.0 
-   
+    STEP_SIZE = 1.0
+
     def __init__(self, mu=MU, lamb=LAMBDA, global_step_size=STEP_SIZE):
         super(CMAESOptimizer, self).__init__()
         self._invoker = None
@@ -66,13 +66,13 @@ class CMAESOptimizer(Optimizer):
         del minimize
         self._invoker = invoker
         self.param_spec = param_spec
-        
+
         args_creator = ArgsCreator(self.param_spec)
 
         # dimensions for equation setup
         self._n = len(args_creator.random())
 
-        # start position as numpy array, numpify	
+        # start position as numpy array, numpify
         start = args_creator.random()
         self._xmean = array(map(lambda arg : arg.value, start))
 
@@ -94,7 +94,7 @@ class CMAESOptimizer(Optimizer):
     def initialize_parameters(self):
         # alias
         n = self._n
-        
+
         # recombination weights
         self._weights = [log(self._mu + 0.5) - log(i + 1) for i in range(self._mu)]
 
@@ -149,14 +149,6 @@ class CMAESOptimizer(Optimizer):
     def exit_condition(self):
         pass
 
-    def initalize_population(self):
-        args_creator = ArgsCreator(self.param_spec)
-
-        for _ in xrange(self._mu):
-            normals = transpose(matrix([normal(0.0, d) for d in self._D]))
-            value = self._xmean + transpose(self._sigma * self._B * normals)
-            self.population.append(value)
-
     def add_offspring(self):
         args_creator = ArgsCreator(self.param_spec)
 
@@ -194,7 +186,7 @@ class CMAESOptimizer(Optimizer):
         values = map(numpify, values)
 
         # alias
-        n = self._n	
+        n = self._n
 
         # remember old xmean for parameter adjustment
         oldxmean = deepcopy(self._xmean)
