@@ -18,6 +18,7 @@ from copy import deepcopy
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
+from metaopt.core.optimize.util.exception import WrongArgumentTypeException
 from metaopt.core.stoppable.util.exception import StoppedError
 
 # Numpy
@@ -64,6 +65,12 @@ class CMAESOptimizer(Optimizer):
     def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
         del return_spec
         del minimize
+
+        # param constraint check
+        for param in param_spec.params.values():
+            if not param.type == 'float':
+                raise WrongArgumentTypeException()
+
         self._invoker = invoker
         self.param_spec = param_spec
 
