@@ -19,13 +19,17 @@ from copy import deepcopy
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
 from metaopt.core.optimize.util.exception import WrongArgumentTypeException
+from metaopt.core.optimize.util.exception import MissingRequirementsException
 from metaopt.core.stoppable.util.exception import StoppedError
 
-# Numpy
-from numpy import array, mean, log, eye, diag, transpose
-from numpy import identity, matrix, dot, exp, zeros, ones, sqrt
-from numpy.random import normal, rand
-from numpy.linalg import eigh, norm
+try:
+    # Numpy
+    from numpy import array, mean, log, eye, diag, transpose
+    from numpy import identity, matrix, dot, exp, zeros, ones, sqrt
+    from numpy.random import normal, rand
+    from numpy.linalg import eigh, norm
+except ImportError:
+    raise MissingRequirementsException('NumPy')
 
 try:
     xrange  # will work in python2, only @UndefinedVariable

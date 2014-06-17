@@ -7,6 +7,12 @@ class OptimizerException(Exception):
     def __init__(self, message=None):
         super(OptimizerException, self).__init__(message)
 
+class MissingRequirementsException(Exception):
+     def __init__(self, module_name='Not specified'):
+        message = 'Please install required dependencies to use ' \
+            + 'this optimizer: %s' % module_name
+        super(MissingRequirementsException, self).__init__(message)
+
 class WrongArgumentTypeException(Exception):
     """Indicates wrong type of parameters."""
     def __init__(self, message=None):
