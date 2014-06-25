@@ -88,8 +88,6 @@ def int(*vargs, **kwargs):
 
     """
 
-    print(*vargs)
-
     def decorator(func):
         param_spec = make_param_spec(func)
         param_spec.int(*vargs, **kwargs)
