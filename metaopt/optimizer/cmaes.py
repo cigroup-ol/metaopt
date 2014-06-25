@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, print_function, \
 
 # Standard Library
 from math import exp
-from random import gauss, sample
 from copy import deepcopy
 
 # First Party
