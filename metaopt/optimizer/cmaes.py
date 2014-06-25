@@ -50,10 +50,6 @@ class CMAESOptimizer(Optimizer):
 
     def __init__(self, mu=MU, lamb=LAMBDA, global_step_size=STEP_SIZE):
         super(CMAESOptimizer, self).__init__()
-        self._invoker = None
-
-        self.param_spec = None
-        self._invoker = None
 
         self.population = []
         self.scored_population = []
