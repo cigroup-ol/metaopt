@@ -17,8 +17,8 @@ from copy import deepcopy
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.core.optimize.util.exception import WrongArgumentTypeException
-from metaopt.core.optimize.util.exception import MissingRequirementsException
+from metaopt.core.optimize.util.exception import WrongArgumentTypeError
+from metaopt.core.optimize.util.exception import MissingRequirementsError
 from metaopt.core.stoppable.util.exception import StoppedError
 
 try:
@@ -28,7 +28,7 @@ try:
     from numpy.random import normal, rand
     from numpy.linalg import eigh, norm
 except ImportError:
-    raise MissingRequirementsException('NumPy')
+    raise MissingRequirementsError('NumPy')
 
 try:
     xrange  # will work in python2, only @UndefinedVariable
@@ -68,7 +68,7 @@ class CMAESOptimizer(Optimizer):
         # param constraint check
         for param in param_spec.params.values():
             if not param.type == 'float':
-                raise WrongArgumentTypeException()
+                raise WrongArgumentTypeError()
 
         self._invoker = invoker
         self.param_spec = param_spec

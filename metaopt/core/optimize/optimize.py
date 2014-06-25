@@ -10,7 +10,7 @@ from threading import Timer
 from metaopt.concurrent.invoker.multiprocess import MultiProcessInvoker
 from metaopt.concurrent.invoker.pluggable import PluggableInvoker
 from metaopt.core.optimize.util.exception import GlobalTimeoutError, \
-    NoParamSpecError
+    NoParamSpecError, OptimizerError
 from metaopt.core.returnspec.returnspec import ReturnSpec
 from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.saes import SAESOptimizer
@@ -56,8 +56,14 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
         timer = Timer(timeout, stop_optimization)
         timer.start()
 
-    result = optimizer.optimize(invoker=invoker, param_spec=invoker.param_spec,
-                                return_spec=invoker.return_spec)
+    try:
+        result = optimizer.optimize(invoker=invoker, param_spec=invoker.param_spec,
+                                    return_spec=invoker.return_spec)
+    except Exception as e:
+        if timeout is not None:
+            timer.cancel()
+
+        raise OptimizerError(e)
 
     try:
         invoker.stop()

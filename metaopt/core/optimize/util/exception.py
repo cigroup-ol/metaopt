@@ -2,21 +2,24 @@
 from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
-class OptimizerException(Exception):
+class OptimizerError(Exception):
     """Indicates general error in optimizer."""
-    def __init__(self, message=None):
-        super(OptimizerException, self).__init__(message)
+    def __init__(self, error):
+        message = str(error.__class__.__name__) + ": "\
+            + str(error)
 
-class MissingRequirementsException(Exception):
+        super(OptimizerError, self).__init__(message)
+
+class MissingRequirementsError(Exception):
      def __init__(self, module_name='Not specified'):
         message = 'Please install required dependencies to use ' \
             + 'this optimizer: %s' % module_name
-        super(MissingRequirementsException, self).__init__(message)
+        super(MissingRequirementsError, self).__init__(message)
 
-class WrongArgumentTypeException(Exception):
+class WrongArgumentTypeError(Exception):
     """Indicates wrong type of parameters."""
     def __init__(self, message=None):
-        super(WrongArgumentTypeException, self).__init__(message)
+        super(WrongArgumentTypeError, self).__init__(message)
 
 class GlobalTimeoutError(Exception):
     """Indicates that the the global timeout has occurred."""
