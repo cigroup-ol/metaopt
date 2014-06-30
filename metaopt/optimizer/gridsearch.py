@@ -14,7 +14,7 @@ class GridSearchOptimizer(Optimizer):
 
     def __init__(self):
         super(GridSearchOptimizer, self).__init__()
-        self.best = (None, None)
+        self.best = (None, None) # (args, fitness)
 
     def optimize(self, invoker, param_spec, return_spec=None):
         del return_spec  # TODO
