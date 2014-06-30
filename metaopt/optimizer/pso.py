@@ -64,10 +64,9 @@ class PSOOptimizer(Optimizer):
         self._invoker = invoker
         self.param_spec = param_spec
 
-        args_creator = ArgsCreator(self.param_spec)
-        dims = len(args_creator.random())
-
         # initialize population
+        args_creator = ArgsCreator(self.param_spec)
+        dims = self.param_spec.dimensions
         while len(self.population) < self._lambd:
             pos = args_creator.random() # numpify
             pos = array(map(lambda arg : arg.value, pos))
