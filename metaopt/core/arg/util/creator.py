@@ -20,13 +20,16 @@ class ArgsCreator(object):
         self.param_spec = param_spec
 
     def args(self, values=None):
-        """Returns an args derived from the params given on instantiation.Given values, uses values"""
-	param_values = self.param_spec.params.values()
-        if values == None: 
+        """Returns an args derived from the params given on instantiation. Given
+         values, uses values"""
+        param_values = self.param_spec.params.values()
+
+        if values == None:
             return [create_arg(param) for param in param_values]
-	else:
-	    mapping = zip(param_values, values)
-            return [create_arg(param, value) for param, value in mapping]
+        else:
+            mapping = zip(param_values, values)
+
+        return [create_arg(param, value) for param, value in mapping]
 
     def random(self):
         """Returns a randomized version of self.args()."""
