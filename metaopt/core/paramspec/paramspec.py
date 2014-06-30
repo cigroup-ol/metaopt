@@ -59,6 +59,10 @@ class ParamSpec(object):
 
         return ordered_params
 
+    @property
+    def dimensions(self):
+        return len(self.params.values())
+
     def add_param(self, param):
         """Add a param to this param_spec object manually"""
         if param.name in self.params:

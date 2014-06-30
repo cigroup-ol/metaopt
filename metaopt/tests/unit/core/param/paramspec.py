@@ -121,5 +121,15 @@ class TestParamspec(object):
         assert param_spec.params["b"].title == "β"
         assert param_spec.params["g"].title == "γ"
 
+    def test_dimensions_given_one_parameters(self):
+        param_spec = ParamSpec()
+
+        param_spec.int("a", interval=(1, 10))
+        param_spec.float("b", interval=(0, 1))
+        param_spec.bool("g")
+
+        assert param_spec.dimensions == 3
+
+
 if __name__ == '__main__':
     nose.runmodule()
