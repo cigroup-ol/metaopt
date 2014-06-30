@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # Standard Library
-from math import exp
+from math import exp, sqrt
 from random import gauss, sample
 
 # First Party
@@ -33,12 +33,10 @@ class SAESOptimizer(Optimizer):
     run indefinitely.
 
     """
-    MU = 15 
+    MU = 15
     LAMBDA = 100
-    TAU0 = 0.5
-    TAU1 = 0.5
 
-    def __init__(self, mu=MU, lamb=LAMBDA, tau0=TAU0, tau1=TAU1):
+    def __init__(self, mu=MU, lamb=LAMBDA, tau0=None, tau1=None):
         """
         :param mu: Number of parent arguments
         :param lamb: Number of offspring arguments
@@ -50,6 +48,7 @@ class SAESOptimizer(Optimizer):
         # TODO: Make sure these value are sane
         self.mu = mu
         self.lamb = lamb
+
         self.tau0 = tau0
         self.tau1 = tau1
 
@@ -68,6 +67,14 @@ class SAESOptimizer(Optimizer):
         del minimize
         self._invoker = invoker
         self.param_spec = param_spec
+
+        N = self.param_spec.dimensions
+
+        if self.tau0 is None:
+            self.tau0 = 1 / sqrt(2 * N)
+
+        if self.tau1 is None:
+            self.tau1 = 1 / sqrt(2 * sqrt(N))
 
         self.initalize_population()
         self.score_population()
