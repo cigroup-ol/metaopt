@@ -73,12 +73,11 @@ class CMAESOptimizer(Optimizer):
         self._invoker = invoker
         self.param_spec = param_spec
 
-        args_creator = ArgsCreator(self.param_spec)
-
         # dimensions for equation setup
-        self._n = len(args_creator.random())
+        self._n = self.param_spec.dimensions
 
         # start position as numpy array, numpify
+        args_creator = ArgsCreator(self.param_spec)
         start = args_creator.random()
         self._xmean = array(map(lambda arg : arg.value, start))
 
