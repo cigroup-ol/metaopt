@@ -57,7 +57,7 @@ class SAESOptimizer(Optimizer):
 
         self.population = []
         self.scored_population = []
-        self.best_scored_indivual = (None, None)
+        self.best_scored_individual = (None, None)
 
         self.aborted = False
         self.generation = 1
@@ -89,13 +89,13 @@ class SAESOptimizer(Optimizer):
             self.score_population()
 
             if self.aborted:
-                return self.best_scored_indivual[0][0]
+                return self.best_scored_individual[0][0]
 
             self.select_parents()
 
             self.generation += 1
 
-        return self.best_scored_indivual[0][0]
+        return self.best_scored_individual[0][0]
 
     def exit_condition(self):
         pass
@@ -119,14 +119,14 @@ class SAESOptimizer(Optimizer):
             mean = lambda x1, x2: float((x1 + x2) / 2)
             child_args_sigma = map(mean, mother[1], father[1])
 
-            child_args = ArgsModifier.randomize(child_args, child_args_sigma)
+            child_args = ArgsModifier.mutate(child_args, child_args_sigma)
 
             self.tau0_random = gauss(0, 1)
 
             def mutate_sigma(sigma):
-                tau0_randomized = self.tau0 * self.tau0_random
-                tau1_randomized = self.tau1 * gauss(0, 1)
-                return sigma * exp(tau0_randomized) * exp(tau1_randomized)
+                tau0_mutated = self.tau0 * self.tau0_random
+                tau1_mutated = self.tau1 * gauss(0, 1)
+                return sigma * exp(tau0_mutated) * exp(tau1_mutated)
 
             child_args_sigma = map(mutate_sigma, child_args_sigma)
 
@@ -162,10 +162,10 @@ class SAESOptimizer(Optimizer):
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
 
-        _, best_fitness = self.best_scored_indivual
+        _, best_fitness = self.best_scored_individual
 
         if best_fitness is None or fitness < best_fitness:
-            self.best_scored_indivual = scored_individual
+            self.best_scored_individual = scored_individual
 
     def on_error(self, value, fargs, individual, **kwargs):
         del value  # TODO
