@@ -70,6 +70,11 @@ class SAESOptimizer(Optimizer):
 
         N = self.param_spec.dimensions
 
+        # For a detailed description of the tau0, tau1 heuristic see:
+        #
+        # Schwefel H-P (1995) Evolution and Optimum Seeking. Wiley, New York,
+        # NY, p. 388
+
         if self.tau0 is None:
             self.tau0 = 1 / sqrt(2 * N)
 
