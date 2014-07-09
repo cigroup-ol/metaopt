@@ -21,7 +21,7 @@ class IntArg(Arg):
         value = randint(self.param.lower_bound, self.param.upper_bound)
         return IntArg(self.param, value=value)
 
-    def randomize(self, strength):
+    def mutate(self, strength):
         value = int(self.value + random.gauss(0, 1) * strength)
 
         if value < self.param.lower_bound:

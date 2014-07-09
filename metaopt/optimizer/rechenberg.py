@@ -99,7 +99,7 @@ class RechenbergOptimizer(Optimizer):
             mother, father = sample(self.population, 2)
 
             child = ArgsModifier.combine(mother, father)
-            child = ArgsModifier.randomize(child, self.sigmas)
+            child = ArgsModifier.mutate(child, self.sigmas)
 
             self.population.append(child)
 

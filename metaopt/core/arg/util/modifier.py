@@ -8,7 +8,7 @@ class ArgsModifier(object):
     Modifies args in useful ways.
 
     This module provides ways to modify given args. Specifically, args can be
-    combined to each other and randomized with a certain strength.
+    combined to each other and mutated with a certain strength.
     '''
 
     @staticmethod
@@ -17,7 +17,7 @@ class ArgsModifier(object):
         return [arg1.combine(arg2) for arg1, arg2 in zip(args1, args2)]
 
     @staticmethod
-    def randomize(args, strengths):
-        """Randomizes all of the given args with the given strength."""
-        return [arg.randomize(strength) for arg, strength in
+    def mutate(args, strengths):
+        """Mutates all of the given args with the given strength."""
+        return [arg.mutate(strength) for arg, strength in
                 zip(args, strengths)]

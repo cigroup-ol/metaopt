@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function, \
 # First Party
 from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.core.optimize.util.exception import WrongArgumentTypeException
+from metaopt.core.optimize.util.exception import WrongArgumentTypeError
 from metaopt.core.stoppable.util.exception import StoppedError
 
 try:
@@ -18,7 +18,7 @@ try:
     from numpy import array
     from numpy.random import normal
 except ImportError:
-    raise MissingRequirementsException('NumPy')
+    raise MissingRequirementsError('NumPy')
 
 try:
     xrange  # will work in python2, only @UndefinedVariable

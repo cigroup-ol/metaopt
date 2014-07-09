@@ -16,7 +16,7 @@ class BoolArg(Arg):
     def random(self):
         return BoolArg(self.param, value=random.choice([True, False]))
 
-    def randomize(self, strength):
+    def mutate(self, strength):
         del strength  # TODO
         return self.random()
 

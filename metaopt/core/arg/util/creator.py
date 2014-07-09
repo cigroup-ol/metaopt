@@ -32,7 +32,7 @@ class ArgsCreator(object):
         return [create_arg(param, value) for param, value in mapping]
 
     def random(self):
-        """Returns a randomized version of self.args()."""
+        """Returns a mutated version of self.args()."""
         return [arg.random() for arg in self.args()]
 
     def product(self):

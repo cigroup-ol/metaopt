@@ -44,7 +44,7 @@ class Arg(object):
 
         return Arg(self.param, value)
 
-    def randomize(self, strength):
+    def mutate(self, strength):
         value = self.value + random.gauss(0, 1) * strength
 
         if value < self.param.lower_bound:
