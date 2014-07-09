@@ -48,6 +48,10 @@ class CMAESOptimizer(Optimizer):
     STEP_SIZE = 1.0
 
     def __init__(self, mu=MU, lamb=LAMBDA, global_step_size=STEP_SIZE):
+        """
+        :param mu: Number of parent arguments
+        :param lamb: Number of offspring arguments
+        """
         super(CMAESOptimizer, self).__init__()
 
         self.population = []

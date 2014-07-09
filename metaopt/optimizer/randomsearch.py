@@ -10,7 +10,13 @@ from metaopt.optimizer.optimizer import Optimizer
 
 
 class RandomSearchOptimizer(Optimizer):
-    """Optimizer that systematically tests parameters in a grid pattern."""
+    """
+    Optimizer that randomly tests parameters.
+
+    This optimizer should be combined with a global timeout, otherwise it will
+    run indefinitely.
+
+    """
 
     def __init__(self):
         super(RandomSearchOptimizer, self).__init__()

@@ -31,6 +31,15 @@ from metaopt.core.paramspec.util.make_param_spec import make_param_spec
 
 
 def multi(other_decorator, names=[], titles=[], *vargs, **kwargs):
+    """
+    A decorator that specifies multiple parameters of the same type.
+
+    All parameters share the same attributes expect for their names and titles
+    which are specified as list of names and titles. The number of parameters
+    added is derived from the length of the former list.
+
+    """
+
     if "title" in kwargs:
         raise TitleForMultiParameterError()
 
@@ -49,9 +58,9 @@ def multi(other_decorator, names=[], titles=[], *vargs, **kwargs):
 
 def bool(*vargs, **kwargs):
     """
-    A decorator that specifies an bool parameter for a function
+    A decorator that specifies an bool parameter for a function.
 
-    See :meth:`metaopt.core.paramspec.ParamSpec.bool` for the allowed
+    See :meth:`metaopt.core.paramspec.paramspec.ParamSpec.bool` for the allowed
     parameters.
 
     """
@@ -65,9 +74,9 @@ def bool(*vargs, **kwargs):
 
 def float(*vargs, **kwargs):
     """
-    A decorator that specifies a float parameter for a function
+    A decorator that specifies a float parameter for a function.
 
-    See :meth:`metaopt.core.paramspec.ParamSpec.float` for the allowed
+    See :meth:`metaopt.core.paramspec.paramspec.ParamSpec.float` for the allowed
     parameters.
 
     """
@@ -82,9 +91,9 @@ def float(*vargs, **kwargs):
 
 def int(*vargs, **kwargs):
     """
-    A decorator that specifies an int parameter for a function
+    A decorator that specifies an int parameter for a function.
 
-    See :meth:`metaopt.core.paramspec.ParamSpec.int` for the allowed parameters.
+    See :meth:`metaopt.core.paramspec.paramspec.ParamSpec.int` for the allowed parameters.
 
     """
 
