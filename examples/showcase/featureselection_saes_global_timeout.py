@@ -23,7 +23,7 @@ from metaopt.core.optimize.optimize import optimize
 # Third Party
 from sklearn.datasets import make_friedman1
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.base import BaseEstimator 
+from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.metrics import mean_squared_error as mse
 import numpy as np
@@ -31,12 +31,12 @@ import math
 
 class KNN(BaseEstimator, RegressorMixin):
     """
-    K Nearest Neighbors Regression with feature filter 
+    K Nearest Neighbors Regression with feature filter
     """
     def __init__(self, n_neighbors=5, ff=[True,True,True,True]):
         """
         :param n_neighbors: number of nearest neighbors searched
-        :param ff: feature filter 
+        :param ff: feature filter
         """
         self.n_neighbors=n_neighbors
         self.ff = np.array(ff,dtype=bool)
@@ -67,11 +67,11 @@ n_features=n_informative+n_zeros+n_random
 X,Y = make_friedman1(n_samples=n_samples, n_features=n_informative, noise=0.0, random_state=13)
 X=np.array(X)
 
-# Fill up the data with zeros 
+# Fill up the data with zeros
 Z1=np.zeros((n_samples, n_zeros))
 X=np.hstack((X,Z1))
 
-# Fill up the data with random 
+# Fill up the data with random
 Z2=np.random.random((n_samples, n_random))
 X=np.hstack((X,Z2))
 
@@ -88,7 +88,7 @@ Evaluate the KNN regression using the featrue filter ff
 @param.multi(param.bool, map(str,range(n_features)))
 def f(**kwargs):
     """
-    :param ff: feature filter 
+    :param ff: feature filter
     """
     clf = KNN(n_neighbors=5, ff=kwargs.values())
     clf.fit(X_train, y_train)
@@ -96,16 +96,11 @@ def f(**kwargs):
 
 def main():
     from metaopt.optimizer.saes import SAESOptimizer
-    from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
-    from metaopt.concurrent.invoker.pluggable import PluggableInvoker
-    from metaopt.plugin.print.status import StatusPrintPlugin
-    from metaopt.plugin.visualization.landscape import VisualizeLandscapePlugin
     from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
-    timeout = 10 
+    timeout = 10
     optimizer = SAESOptimizer(mu=5, lamb=5)
 
-    visualize_landscape_plugin = VisualizeLandscapePlugin()
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 
     plugins = [

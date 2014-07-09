@@ -14,7 +14,6 @@ import nose
 from nose.tools import eq_
 
 # First Party
-from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
 from metaopt.concurrent.invoker.invoker import Invoker
 from metaopt.concurrent.invoker.multiprocess import MultiProcessInvoker
 from metaopt.concurrent.invoker.pluggable import PluggableInvoker
@@ -45,7 +44,6 @@ class TestMain(object):
 
     def setup(self):
         self._invokers = [
-            DualThreadInvoker,  # works
             MultiProcessInvoker,  # works
             #SingleProcessInvoker,  # TODO faulty result
             #SimpleMultiprocessInvoker, # TODO hangs

@@ -27,12 +27,11 @@ def f(**kwargs):
 
 def main():
     from metaopt.optimizer.saes import SAESOptimizer
-    from metaopt.concurrent.invoker.dualthread import DualThreadInvoker
     from metaopt.concurrent.invoker.pluggable import PluggableInvoker
     from metaopt.plugin.print.status import StatusPrintPlugin
     from metaopt.plugin.visualization.best_fitness import VisualizeBestFitnessPlugin
 
-    timeout = 30 
+    timeout = 10
     optimizer = SAESOptimizer(mu=5, lamb=5)
     visualize_best_fitness_plugin = VisualizeBestFitnessPlugin()
 

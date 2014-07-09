@@ -340,8 +340,6 @@ The following invokers are available in MetaOpt.
 
 .. autoclass:: metaopt.invoker.multiprocess.MultiProcessInvoker
 
-.. autoclass:: metaopt.invoker.dualthread.DualThreadInvoker
-
 .. autoclass:: metaopt.invoker.pluggable.PluggableInvoker
 
 .. For writing your own invokers, see [How to write an Invoker] for more
