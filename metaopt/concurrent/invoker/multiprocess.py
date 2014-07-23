@@ -149,7 +149,9 @@ class MultiProcessInvoker(Invoker):
             # issue task, the first worker to become idle will execute it
             call = Call(id=uuid.uuid4(),
                         function=self._f, args=fargs,
-                        kwargs=kwargs)
+                        kwargs=kwargs,
+                        param_spec=self._param_spec,
+                        return_spec=self.return_spec)
             task = Task(call=call)
 
             try:

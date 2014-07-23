@@ -11,7 +11,7 @@ from collections import namedtuple
 
 
 # data structure for tasks given to the workers
-Call = namedtuple("Call", ["id", "function", "args", "kwargs"])
+Call = namedtuple("Call", ["id", "function", "args", "kwargs", "param_spec", "return_spec"])
 
 # data structure for declaring a task is idle before being executed by a worker
 Task = namedtuple("Task", ["call"])

@@ -75,8 +75,8 @@ class ProcessWorker(Process, Worker):
         try:
             try:
                 value = call(f=function, fargs=task.call.args,
-                             param_spec=function.param_spec,
-                             return_spec=function.return_spec)
+                             param_spec=task.call.param_spec,
+                             return_spec=task.call.return_spec)
             except AttributeError:
                 # function had no return type specification
                 value = call(f=function, fargs=task.call.args,

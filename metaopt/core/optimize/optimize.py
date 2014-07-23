@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 # Standard Library
+from copy import deepcopy
 from threading import Timer
 
 # First Party
@@ -17,7 +18,7 @@ from metaopt.optimizer.saes import SAESOptimizer
 
 
 def custom_optimize(f, invoker, param_spec=None, return_spec=None,
-                    timeout=None, optimizer=SAESOptimizer()):
+                    extra_kwargs=None, timeout=None, optimizer=SAESOptimizer()):
     """
     Optimizes the given objective function using the specified invoker.
 
@@ -30,7 +31,9 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
     invoker.f = f
 
     try:
-        invoker.param_spec = param_spec or f.param_spec
+        param_spec = param_spec or f.param_spec
+        invoker.param_spec = deepcopy(param_spec)
+        invoker.param_spec.extra_kwargs = extra_kwargs
     except AttributeError:
         raise NoParamSpecError()
 
@@ -79,8 +82,8 @@ def custom_optimize(f, invoker, param_spec=None, return_spec=None,
     return tuple(result)
 
 
-def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
-             optimizer=SAESOptimizer()):
+def optimize(f, param_spec=None, return_spec=None, extra_kwargs=None,
+             timeout=None, plugins=[], optimizer=SAESOptimizer()):
     """
     Optimizes the given objective function.
 
@@ -94,5 +97,5 @@ def optimize(f, param_spec=None, return_spec=None, timeout=None, plugins=[],
     invoker = PluggableInvoker(invoker=MultiProcessInvoker(), plugins=plugins)
 
     return custom_optimize(f, invoker=invoker, param_spec=param_spec,
-                           return_spec=return_spec, timeout=timeout,
-                           optimizer=optimizer)
+                           return_spec=return_spec, extra_kwargs=extra_kwargs,
+                           timeout=timeout, optimizer=optimizer)

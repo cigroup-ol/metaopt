@@ -37,6 +37,7 @@ class ParamSpec(object):
     """
     def __init__(self, via_decorator=False):
         self._params = []
+        self._extra_kwargs = None
         self.via_decorator = via_decorator
 
     @property
@@ -62,6 +63,14 @@ class ParamSpec(object):
     @property
     def dimensions(self):
         return len(self.params.values())
+
+    @property
+    def extra_kwargs(self):
+        return self._extra_kwargs
+
+    @extra_kwargs.setter
+    def extra_kwargs(self, value):
+        self._extra_kwargs = value
 
     def add_param(self, param):
         """Add a param to this param_spec object manually"""
