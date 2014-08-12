@@ -12,7 +12,7 @@ from metaopt.core.arg.util.modifier import ArgsModifier
 from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.optimizer import Optimizer
 from metaopt.optimizer.util. \
-    default_mutation_stength import default_mutation_stength
+    default_mutation_strength import default_mutation_strength
 
 
 try:
@@ -64,7 +64,7 @@ class RechenbergOptimizer(Optimizer):
         self.param_spec = param_spec
 
         params = param_spec.params.values()
-        self.sigmas = [default_mutation_stength(param) for param in params]
+        self.sigmas = [default_mutation_strength(param) for param in params]
 
         self.initalize_population()
         self.score_population()

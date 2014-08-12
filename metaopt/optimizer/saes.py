@@ -16,7 +16,7 @@ from metaopt.core.arg.util.modifier import ArgsModifier
 from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.optimizer import Optimizer
 from metaopt.optimizer.util. \
-    default_mutation_stength import default_mutation_stength
+    default_mutation_strength import default_mutation_strength
 
 
 try:
@@ -105,7 +105,7 @@ class SAESOptimizer(Optimizer):
 
         for _ in xrange(self.mu):
             args = args_creator.random()
-            args_sigma = [default_mutation_stength(arg.param) for arg in args]
+            args_sigma = [default_mutation_strength(arg.param) for arg in args]
 
             individual = (args, args_sigma)
             self.population.append(individual)

@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, \
     unicode_literals, with_statement
 
 
-def default_mutation_stength(param):
+def default_mutation_strength(param):
     """
     Returns the default mutation strength for a parameter.
 
