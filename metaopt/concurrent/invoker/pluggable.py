@@ -109,8 +109,8 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
             self.invoke(caller=self._caller, fargs=invocation.fargs,
                         invocation=invocation, **invocation.kwargs)
         else:
-            self._caller.on_result(value=value, fargs=fargs,
-                                   invocation=invocation, **invocation.kwargs)
+            self._caller.on_result(value, fargs, invocation=invocation,
+                                   **invocation.kwargs)
 
     def on_error(self, value, fargs, invocation, **kwargs):
         """Implementation of the inherited abstract on_error method."""
@@ -120,7 +120,7 @@ class PluggableInvoker(BaseInvoker, BaseCaller):
         for plugin in self._plugins:
             plugin.on_error(invocation=invocation)
 
-        self._caller.on_error(value=value, fargs=fargs, invocation=invocation,
+        self._caller.on_error(value, fargs, invocation=invocation,
                               **invocation.kwargs)
 
         invocation.error = None

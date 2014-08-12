@@ -43,9 +43,6 @@ class SAESOptimizer(Optimizer):
         """
         super(SAESOptimizer, self).__init__()
 
-        self._invoker = None
-
-        # TODO: Make sure these value are sane
         self.mu = mu
         self.lamb = lamb
 
@@ -53,33 +50,26 @@ class SAESOptimizer(Optimizer):
         self.tau1 = tau1
 
         self.param_spec = None
-        self._invoker = None
+        self.invoker = None
+
+        self.parents = []
+        self.offspring = []
 
         self.population = []
         self.scored_population = []
+
         self.best_scored_individual = (None, None)
 
         self.aborted = False
         self.generation = 1
 
-    def optimize(self, invoker, param_spec, return_spec=None, minimize=True):
+    def optimize(self, invoker, param_spec, return_spec=None):
         del return_spec
-        del minimize
-        self._invoker = invoker
+
         self.param_spec = param_spec
+        self.invoker = invoker
 
-        N = self.param_spec.dimensions
-
-        # For a detailed description of the tau0, tau1 heuristic see:
-        #
-        # Schwefel H-P (1995) Evolution and Optimum Seeking. Wiley, New York,
-        # NY, p. 388
-
-        if self.tau0 is None:
-            self.tau0 = 1 / sqrt(2 * N)
-
-        if self.tau1 is None:
-            self.tau1 = 1 / sqrt(2 * sqrt(N))
+        self.initialize_tau()
 
         self.initalize_population()
         self.score_population()
@@ -96,6 +86,23 @@ class SAESOptimizer(Optimizer):
             self.generation += 1
 
         return self.best_scored_individual[0][0]
+
+    def initialize_tau(self):
+        """
+        For a detailed description of the heuristic used to intialize tau0 and
+        tau1 see:
+
+        Schwefel H-P (1995) Evolution and Optimum Seeking. Wiley, New York, NY,
+        p. 388
+        """
+
+        N = self.param_spec.dimensions
+
+        if self.tau0 is None:
+            self.tau0 = 1 / sqrt(2 * N)
+
+        if self.tau1 is None:
+            self.tau1 = 1 / sqrt(2 * sqrt(N))
 
     def exit_condition(self):
         pass
@@ -141,24 +148,23 @@ class SAESOptimizer(Optimizer):
             args, _ = individual
 
             try:
-                self._invoker.invoke(caller=self, fargs=args,
+                self.invoker.invoke(caller=self, fargs=args,
                                      individual=individual)
             except StoppedError:
                 self.aborted = True
                 break
 
-        self._invoker.wait()
+        self.invoker.wait()
 
     def select_parents(self):
         self.scored_population.sort(key=lambda s: s[1])
         new_scored_population = self.scored_population[0:self.mu]
         self.population = map(lambda s: s[0], new_scored_population)
 
-    def on_result(self, value, fargs, individual, **kwargs):
+    def on_result(self, fitness, fargs, individual, **kwargs):
         del fargs
         del kwargs
-        # _, fitness = result
-        fitness = value
+
         scored_individual = (individual, fitness)
         self.scored_population.append(scored_individual)
 
@@ -167,8 +173,8 @@ class SAESOptimizer(Optimizer):
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_individual = scored_individual
 
-    def on_error(self, value, fargs, individual, **kwargs):
-        del value  # TODO
+    def on_error(self, error, fargs, individual, **kwargs):
+        del error  # TODO
         del fargs  # TODO
         del individual  # TODO
         del kwargs  # TODO
