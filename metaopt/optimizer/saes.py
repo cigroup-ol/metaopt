@@ -52,15 +52,11 @@ class SAESOptimizer(Optimizer):
         self.param_spec = None
         self.invoker = None
 
-        self.parents = []
-        self.offspring = []
+        self.scored_parents = []
+        self.scored_children = []
 
-        self.population = []
-        self.scored_population = []
+        self.best_scored_individual = (None, None) # (Individual, Fitness)
 
-        self.best_scored_individual = (None, None)
-
-        self.aborted = False
         self.generation = 1
 
     def optimize(self, invoker, param_spec, return_spec=None):
@@ -71,21 +67,22 @@ class SAESOptimizer(Optimizer):
 
         self.initialize_tau()
 
-        self.initalize_population()
-        self.score_population()
+        try:
+            self.scored_parents = self.create_scored_individuals(
+                self.create_parent, self.mu)
 
-        while not self.exit_condition():
-            self.add_offspring()
-            self.score_population()
+            while not self.exit_condition():
+                self.scored_children = self.create_scored_individuals(
+                    self.create_child, self.lamb)
 
-            if self.aborted:
-                return self.best_scored_individual[0][0]
+                self.scored_parents = self.select_parents(
+                    self.scored_parents + self.scored_children)
 
-            self.select_parents()
+                self.generation += 1
+        except StoppedError:
+            pass
 
-            self.generation += 1
-
-        return self.best_scored_individual[0][0]
+        return self.extract_best_fargs()
 
     def initialize_tau(self):
         """
@@ -104,77 +101,103 @@ class SAESOptimizer(Optimizer):
         if self.tau1 is None:
             self.tau1 = 1 / sqrt(2 * sqrt(N))
 
-    def exit_condition(self):
-        pass
+    def extract_best_fargs(self):
+        return self.best_scored_individual[0][0]
 
-    def initalize_population(self):
-        args_creator = ArgsCreator(self.param_spec)
+    def create_scored_individuals(self, individual_factory, n_individuals):
+        scored_individuals = []
+        n_missing = n_individuals
 
-        for _ in xrange(self.mu):
-            args = args_creator.random()
-            args_sigma = [default_mutation_strength(arg.param) for arg in args]
+        while(n_missing > 0):
+            n_missing = n_individuals - len(scored_individuals)
 
-            individual = (args, args_sigma)
-            self.population.append(individual)
+            individuals = [individual_factory()
+                for _ in range(n_missing)]
 
-    def add_offspring(self):
-        for _ in xrange(self.lamb):
-            mother, father = sample(self.population, 2)
+            scored_individuals += self.score_individuals(individuals)
 
-            child_args = ArgsModifier.combine(mother[0], father[0])
+        return scored_individuals
 
-            mean = lambda x1, x2: float((x1 + x2) / 2)
-            child_args_sigma = map(mean, mother[1], father[1])
+    def score_individuals(self, individuals):
+        if not individuals:
+            return []
 
-            child_args = ArgsModifier.mutate(child_args, child_args_sigma)
+        score_caller = ScoreIndividualCaller(self)
 
-            self.tau0_random = gauss(0, 1)
-
-            def mutate_sigma(sigma):
-                tau0_mutated = self.tau0 * self.tau0_random
-                tau1_mutated = self.tau1 * gauss(0, 1)
-                return sigma * exp(tau0_mutated) * exp(tau1_mutated)
-
-            child_args_sigma = map(mutate_sigma, child_args_sigma)
-
-            child = (child_args, child_args_sigma)
-
-            self.population.append(child)
-
-    def score_population(self):
-        self.scored_population = []
-
-        for individual in self.population:
-            args, _ = individual
-
-            try:
-                self.invoker.invoke(caller=self, fargs=args,
-                                     individual=individual)
-            except StoppedError:
-                self.aborted = True
-                break
+        for individual in individuals:
+            fargs, _ = individual
+            self.invoker.invoke(score_caller, fargs, individual=individual)
 
         self.invoker.wait()
 
-    def select_parents(self):
-        self.scored_population.sort(key=lambda s: s[1])
-        new_scored_population = self.scored_population[0:self.mu]
-        self.population = map(lambda s: s[0], new_scored_population)
+        return score_caller.scored_individuals
+
+    def create_child(self):
+        scored_mother, scored_father = sample(self.scored_parents, 2)
+
+        mother, _ = scored_mother
+        father, _ = scored_father
+
+        child_args = ArgsModifier.combine(mother[0], father[0])
+
+        mean = lambda x1, x2: float((x1 + x2) / 2)
+        child_args_sigma = map(mean, mother[1], father[1])
+
+        child_args = ArgsModifier.mutate(child_args, child_args_sigma)
+
+        self.tau0_random = gauss(0, 1)
+
+        def mutate_sigma(sigma):
+            tau0_mutated = self.tau0 * self.tau0_random
+            tau1_mutated = self.tau1 * gauss(0, 1)
+            return sigma * exp(tau0_mutated) * exp(tau1_mutated)
+
+        child_args_sigma = map(mutate_sigma, child_args_sigma)
+
+        child = (child_args, child_args_sigma)
+
+        return child
+
+    def create_parent(self):
+        args_creator = ArgsCreator(self.param_spec)
+
+        args = args_creator.random()
+        args_sigma = [default_mutation_strength(arg.param) for arg in args]
+
+        individual = (args, args_sigma)
+        return individual
+
+    def exit_condition(self):
+        pass
+
+    def select_parents(self, scored_individuals):
+        sorted_scored_individuals = sorted(
+            scored_individuals, key=lambda i: i[0])
+
+        return sorted_scored_individuals[0:self.mu]
 
     def on_result(self, fitness, fargs, individual, **kwargs):
-        del fargs
-        del kwargs
-
         scored_individual = (individual, fitness)
-        self.scored_population.append(scored_individual)
-
         _, best_fitness = self.best_scored_individual
 
         if best_fitness is None or fitness < best_fitness:
             self.best_scored_individual = scored_individual
 
     def on_error(self, error, fargs, individual, **kwargs):
-        del error  # TODO
-        del fargs  # TODO
-        del individual  # TODO
-        del kwargs  # TODO
+        pass
+
+class ScoreIndividualCaller(object):
+    def __init__(self, other_caller=None):
+        self.other_caller = other_caller
+        self.scored_individuals = []
+
+    def on_result(self, result, fargs, individual, **kwargs):
+        if self.other_caller:
+            self.other_caller.on_result(result, fargs, individual, **kwargs)
+
+        scored_individual = (individual, result)
+        self.scored_individuals.append(scored_individual)
+
+    def on_error(self, error, fargs, individual, **kwargs):
+        if self.other_caller:
+            self.other_caller.on_error(error, fargs, individual, **kwargs)
