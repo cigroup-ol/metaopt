@@ -152,7 +152,7 @@ class SAESOptimizer(Optimizer):
 
     def select_parents(self, scored_individuals):
         sorted_scored_individuals = sorted(
-            scored_individuals, key=lambda i: i[0])
+            scored_individuals, key=lambda i: i[1])
 
         return sorted_scored_individuals[0:self.mu]
 
