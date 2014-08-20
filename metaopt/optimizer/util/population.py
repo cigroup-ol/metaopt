@@ -1,4 +1,16 @@
 def create_scored_individuals(invoker, individual_factory, fargs_extractor, n_individuals, other_caller=None):
+    """
+    Create exactly n_individuals number of individuals and evaluate their
+    fitness. An individual is an object created by individual_factory containing
+    function arguments that can be extraced with fargs_extractor.
+
+    If the fitness of an individual cannot be evaulated due to an error, a new
+    individual is created until the desired number of individuals could be
+    successfully evaluated.
+
+    Given an other_caller object, the methods on_result and on_success are
+    called on it.
+    """
     scored_individuals = []
     n_missing = n_individuals
 
@@ -13,6 +25,9 @@ def create_scored_individuals(invoker, individual_factory, fargs_extractor, n_in
     return scored_individuals
 
 def score_individuals(invoker, fargs_extractor, individuals, other_caller=None):
+    """
+    Evaluate the fitness of the given individuals.
+    """
     if not individuals:
         return []
 
@@ -28,6 +43,9 @@ def score_individuals(invoker, fargs_extractor, individuals, other_caller=None):
 
 
 class ScoreIndividualCaller(object):
+    """
+    Caller object used by score_individuals.
+    """
     def __init__(self, other_caller=None):
         self.other_caller = other_caller
         self.scored_individuals = []
