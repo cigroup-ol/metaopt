@@ -15,8 +15,11 @@ from metaopt.core.arg.util.creator import ArgsCreator
 from metaopt.core.arg.util.modifier import ArgsModifier
 from metaopt.core.stoppable.util.exception import StoppedError
 from metaopt.optimizer.optimizer import Optimizer
-from metaopt.optimizer.util. \
-    default_mutation_strength import default_mutation_strength
+
+from metaopt.optimizer.util.default_mutation_strength\
+    import default_mutation_strength
+
+from metaopt.optimizer.util.population import create_scored_individuals
 
 
 try:
@@ -68,12 +71,12 @@ class SAESOptimizer(Optimizer):
         self.initialize_tau()
 
         try:
-            self.scored_parents = self.create_scored_individuals(
-                self.create_parent, self.mu)
+            self.scored_parents = create_scored_individuals(
+                self.invoker, self.create_parent, self.extract_fargs, self.mu, self)
 
             while not self.exit_condition():
-                self.scored_children = self.create_scored_individuals(
-                    self.create_child, self.lamb)
+                self.scored_children = create_scored_individuals(
+                    self.invoker, self.create_child, self.extract_fargs, self.lamb, self)
 
                 self.scored_parents = self.select_parents(
                     self.scored_parents + self.scored_children)
@@ -101,36 +104,13 @@ class SAESOptimizer(Optimizer):
         if self.tau1 is None:
             self.tau1 = 1 / sqrt(2 * sqrt(N))
 
+    def extract_fargs(self, indivdual):
+        return indivdual[0]
+
     def extract_best_fargs(self):
-        return self.best_scored_individual[0][0]
-
-    def create_scored_individuals(self, individual_factory, n_individuals):
-        scored_individuals = []
-        n_missing = n_individuals
-
-        while(n_missing > 0):
-            n_missing = n_individuals - len(scored_individuals)
-
-            individuals = [individual_factory()
-                for _ in range(n_missing)]
-
-            scored_individuals += self.score_individuals(individuals)
-
-        return scored_individuals
-
-    def score_individuals(self, individuals):
-        if not individuals:
-            return []
-
-        score_caller = ScoreIndividualCaller(self)
-
-        for individual in individuals:
-            fargs, _ = individual
-            self.invoker.invoke(score_caller, fargs, individual=individual)
-
-        self.invoker.wait()
-
-        return score_caller.scored_individuals
+        if self.best_scored_individual[0]:
+            return self.extract_fargs(self.best_scored_individual[0])
+        return None
 
     def create_child(self):
         scored_mother, scored_father = sample(self.scored_parents, 2)
@@ -185,19 +165,3 @@ class SAESOptimizer(Optimizer):
 
     def on_error(self, error, fargs, individual, **kwargs):
         pass
-
-class ScoreIndividualCaller(object):
-    def __init__(self, other_caller=None):
-        self.other_caller = other_caller
-        self.scored_individuals = []
-
-    def on_result(self, result, fargs, individual, **kwargs):
-        if self.other_caller:
-            self.other_caller.on_result(result, fargs, individual, **kwargs)
-
-        scored_individual = (individual, result)
-        self.scored_individuals.append(scored_individual)
-
-    def on_error(self, error, fargs, individual, **kwargs):
-        if self.other_caller:
-            self.other_caller.on_error(error, fargs, individual, **kwargs)
